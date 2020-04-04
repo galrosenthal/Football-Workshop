@@ -3,6 +3,9 @@ package Users;
 import Game.Team;
 
 public class Coach extends Registered {
+    public enum CoachQualification {
+            MAIN_COACH,SECOND_COACH,JUNIOR_COACH;
+    }
 
     private CoachQualification qualification;
     private Team coachedTeam;
