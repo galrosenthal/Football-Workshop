@@ -1,0 +1,3 @@
+# Add 'User-Related' label to any changes within 'Users' folder or any subfolders
+User-Related:
+  - System/src/main/java/Users/**/*
