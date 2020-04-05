@@ -14,7 +14,7 @@ public class Coach extends Registered {
 
     public Coach(String type, String username, String pass, String name,
                  CoachQualification qlf, Team teamToCoach, String jobTitle) {
-        super("Coach", username, pass, name);
+        super(RegisteredTypes.COACH, username, pass, name);
         qualification = qlf;
         coachedTeam = teamToCoach;
         teamJob = jobTitle;

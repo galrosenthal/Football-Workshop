@@ -1,0 +1,3 @@
+/System/target/classes/*/*.class
+/System/target/test-classes/*/*.class
+*.xml
