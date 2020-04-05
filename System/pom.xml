@@ -6,10 +6,8 @@
 
     <groupId>OurID</groupId>
          
-    <plugin>
-      <artifactId>System</artifactId>
-      <version>1.0</version>
-    </plugin>
+    <artifactId>System</artifactId>
+    <version>1.0</version>
          
     <properties>
       <maven.compiler.source>1.8</maven.compiler.source>
