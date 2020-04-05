@@ -1,6 +1,5 @@
-package DB;
+package main.java.DB;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Table {

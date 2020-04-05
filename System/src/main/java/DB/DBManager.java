@@ -1,9 +1,5 @@
-package DB;
+package main.java.DB;
 
-import Users.Player;
-import Users.SystemUser;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class DBManager {
@@ -36,7 +32,7 @@ public class DBManager {
 
     private void initSystemUsers(String path) {
         //init systemUsers
-        this.systemUsers = CSVEditor.readListFromCSV(path);
+        this.systemUsers = main.java.DB.CSVEditor.readListFromCSV(path);
         /**
          * Usage Example
          */
