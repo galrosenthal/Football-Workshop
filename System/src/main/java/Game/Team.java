@@ -21,6 +21,9 @@ public class Team {
         return false;
     }
 
+    public void addTeamStaff(Registered regUser) {
+    }
+
 
 //    public boolean addTeamCoach(Registered teamPlayer)
 //    {
