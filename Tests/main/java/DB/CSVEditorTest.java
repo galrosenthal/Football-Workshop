@@ -11,7 +11,8 @@ class CSVEditorTest {
 
     @Test
     void readListFromCSV() {
-        main.java.DB.Table tadble = CSVEditor.readListFromCSV("System/src/main/java/DB/SystemUsers.csv");
+        main.java.DB.Table table = CSVEditor.readListFromCSV("System/src/main/java/DB/SystemUsers.csv");
+        System.out.println(table);
     }
 
     @Test
