@@ -23,5 +23,5 @@ jobs:
     - name: Build with Maven
       run: mvn -B -DskipTests clean package --file System/pom.xml
     - name: Run All Unit Tests with Maven
-      run: mvn -Dtest="Tests/*" test
+      run: mvn -Dtest="Tests/**/*" test
       
