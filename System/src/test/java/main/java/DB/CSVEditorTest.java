@@ -12,7 +12,7 @@ class CSVEditorTest {
 
     @Test
     void readListFromCSV() {
-        Table table = CSVEditor.readListFromCSV("System/src/main/java/DB/SystemUsers.csv");
+        Table table = CSVEditor.readListFromCSV("src/main/java/DB/SystemUsers.csv");
         System.out.println(table);
     }
 
