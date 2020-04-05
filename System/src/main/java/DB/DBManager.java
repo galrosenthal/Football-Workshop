@@ -1,6 +1,5 @@
 package DB;
 
-import main.java.DB.Table;
 
 import java.util.List;
 

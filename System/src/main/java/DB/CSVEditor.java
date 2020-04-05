@@ -1,7 +1,5 @@
 package DB;
 
-import main.java.DB.Table;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
