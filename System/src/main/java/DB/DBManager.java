@@ -7,7 +7,7 @@ public class DBManager {
 
     private static DBManager dbManagerInstance = null;
 
-    private final String tablesDetailsPath = "System/resources/Tables/tablesDetails.csv";
+    private final String tablesDetailsPath = "resources/Tables/tablesDetails.csv";
     private Table tablesDetails;
 
     private Table systemUsers;
