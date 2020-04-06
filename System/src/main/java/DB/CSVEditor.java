@@ -1,9 +1,6 @@
 package DB;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,7 +9,7 @@ public class CSVEditor {
 
     private static final String cvsSplitBy = ",";
 
-    public static Table readListFromCSV(String path){
+    public static Table readTableFromCSV(String path) {
 
         Table table = new Table();
 
@@ -44,8 +41,38 @@ public class CSVEditor {
         return table;
     }
 
-    public static boolean writeListToCSV(Table table, String path){
-        //TODO
+    public static boolean writeTableToCSV(Table table, String path) {
+        if (table == null || table.size() == 0 || path == null) {
+            return false;
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        List<String> titles = table.getTitles();
+        String titlesStr = titles.get(0);
+        for (int i = 1; i < titles.size(); i++) {
+            titlesStr = titlesStr + "," + titles.get(i);
+        }
+        stringBuilder.append(titlesStr + "\n");
+
+        for (List<String> record : table.getTable()) {
+            String recordLine = record.get(0);
+            for (int i = 1; i < record.size(); i++) {
+                recordLine = recordLine + "," + record.get(i);
+            }
+            stringBuilder.append(recordLine + "\n");
+        }
+
+        BufferedWriter writer;
+        try {
+            writer = new BufferedWriter(new FileWriter(path));
+            writer.write(stringBuilder.toString());
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 

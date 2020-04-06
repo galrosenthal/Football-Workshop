@@ -7,14 +7,14 @@ public class DBManager {
 
     private static DBManager dbManagerInstance = null;
 
-    private final String tablesDetailsPath = "tables";
+    private final String tablesDetailsPath = "resources/Tables/tablesDetails.csv";
 
     private Table systemUsers;
     //...
 
     private DBManager() {
         //read tables details from csv, init
-        Table tablesDetails = CSVEditor.readListFromCSV(tablesDetailsPath);
+        Table tablesDetails = CSVEditor.readTableFromCSV(tablesDetailsPath);
         //init lists
         for (int i = 0; i < tablesDetails.size(); i++) {
             switch (tablesDetails.getRecordValue(i, "name")) {
@@ -33,7 +33,7 @@ public class DBManager {
 
     private void initSystemUsers(String path) {
         //init systemUsers
-        this.systemUsers = CSVEditor.readListFromCSV(path);
+        this.systemUsers = CSVEditor.readTableFromCSV(path);
         /**
          * Usage Example
          */
