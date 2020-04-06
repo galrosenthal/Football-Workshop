@@ -5,7 +5,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>OurID</groupId>
-         
     <artifactId>System</artifactId>
     <version>1.0</version>
 
@@ -18,7 +17,7 @@
                 <version>3.0.0-M4</version>
                 <configuration>
                     <includes>
-                        <include>*Test.java</include>
+                        <include>**/*Test.java</include>
                     </includes>
                 </configuration>
             </plugin>
@@ -26,8 +25,9 @@
     </build>
 
     <properties>
-      <maven.compiler.source>1.8</maven.compiler.source>
-      <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
     </properties>
 
     <dependencies>
@@ -44,6 +44,8 @@
             <version>5.4.2</version>
             <scope>test</scope>
         </dependency>
+
+
 
     </dependencies>
 

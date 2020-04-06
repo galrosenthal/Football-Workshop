@@ -1,3 +1,11 @@
-/System/target/classes/*/*.class
-/System/target/test-classes/*/*.class
+target/classes/*/*.class
+target/test-classes/*/*.class
 *.xml
+target/**/*.html
+target/**/*.png
+target/**/*.gif
+target/**/*.gif
+target/**/*.txt
+target/**/*.js
+target/**/*.css
+target/**/*.properties
