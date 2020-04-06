@@ -59,7 +59,6 @@ public class CSVEditor {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-
         List<String> titles = table.getTitles();
         String titlesStr = titles.get(0);
         for (int i = 1; i < titles.size(); i++) {
