@@ -21,7 +21,7 @@ public class CSVEditor {
         Table table = new Table();
 
         BufferedReader bufferedReader = null;
-        String line = "";
+        String line;
         try {
 
             bufferedReader = new BufferedReader(new FileReader(path));
@@ -32,8 +32,6 @@ public class CSVEditor {
                 List<String> record = Arrays.asList(line.split(cvsSplitBy));
                 table.addRecord(record);
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -61,19 +59,22 @@ public class CSVEditor {
 
         StringBuilder stringBuilder = new StringBuilder();
 
+
         List<String> titles = table.getTitles();
         String titlesStr = titles.get(0);
         for (int i = 1; i < titles.size(); i++) {
             titlesStr = titlesStr + cvsSplitBy + titles.get(i);
         }
-        stringBuilder.append(titlesStr + "\n");
+        titlesStr = titlesStr + "\n";
+        stringBuilder.append(titlesStr);
 
         for (List<String> record : table.getTable()) {
             String recordLine = record.get(0);
             for (int i = 1; i < record.size(); i++) {
                 recordLine = recordLine + cvsSplitBy + record.get(i);
             }
-            stringBuilder.append(recordLine + "\n");
+            recordLine = recordLine + "\n";
+            stringBuilder.append(recordLine);
         }
 
         BufferedWriter writer;
