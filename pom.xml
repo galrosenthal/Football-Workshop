@@ -17,7 +17,7 @@
                 <version>3.0.0-M4</version>
                 <configuration>
                     <includes>
-                        <include>*Test.java</include>
+                        <include>**/*Test.java</include>
                     </includes>
                 </configuration>
             </plugin>
@@ -44,6 +44,8 @@
             <version>5.4.2</version>
             <scope>test</scope>
         </dependency>
+
+
 
     </dependencies>
 
