@@ -11,6 +11,7 @@ public class DBManager {
     private Table tablesDetails;
 
     private Table systemUsers;
+    private Table teamManage;
     //TODO: add fields for different tables
 
     /**
@@ -18,17 +19,21 @@ public class DBManager {
      */
     private DBManager() {
         //read tables details from csv, init
+        //TODO: Maybe we should change this, and implemet Strategey Design Pattern here?
+        
         tablesDetails = CSVEditor.readTableFromCSV(tablesDetailsPath);
         //init lists
+        String path = "";
         for (int i = 0; i < tablesDetails.size(); i++) {
             switch (tablesDetails.getRecordValue(i, "name")) {
                 case "SystemUsers":
-                    String path = tablesDetails.getRecordValue(i, "path");
+                     path = tablesDetails.getRecordValue(i, "path");
                     this.systemUsers = CSVEditor.readTableFromCSV(path);
                     //this.initSystemUsers(path);
                     break;
-                case "players":
-
+                case "team":
+                    path = tablesDetails.getRecordValue(i, "path");
+                    this.teamManage = CSVEditor.readTableFromCSV(path);
                     break;
                 case "coaches":
 
