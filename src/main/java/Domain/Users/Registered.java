@@ -31,4 +31,8 @@ public class Registered extends Roles {
     public RegisteredTypes getType() {
         return type;
     }
+
+    public void setType(RegisteredTypes type) {
+        this.type = type;
+    }
 }

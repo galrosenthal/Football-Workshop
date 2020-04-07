@@ -15,10 +15,10 @@ public class Team {
     private List<Player> teamPlayers;
     private List<Coach> teamCoaches;
     private List<TeamManager> teamManagers;
-    private List<TeamOwner> teamOwner;
+    private List<TeamOwner> teamOwners;
 
     public Team() {
-        this.teamOwner = new ArrayList<>();;
+        this.teamOwners = new ArrayList<>();;
         teamPlayers = new ArrayList<>();
         teamCoaches = new ArrayList<>();
         teamManagers = new ArrayList<>();
@@ -54,7 +54,7 @@ public class Team {
      */
     public boolean addTeamPlayer(TeamOwner townr, Registered teamPlayer)
     {
-        if(!townr.equals(this.teamOwner))
+        if(!teamOwners.contains(townr))
         {
             return false;
         }
@@ -79,7 +79,7 @@ public class Team {
 
     public boolean addTeamCoach(TeamOwner townr, Registered coach)
     {
-        if(!townr.equals(this.teamOwner))
+        if(!teamOwners.contains(townr))
         {
             return false;
         }
@@ -93,7 +93,7 @@ public class Team {
 
     public boolean addTeamManager(TeamOwner townr,Registered teamManager)
     {
-        if(!townr.equals(this.teamOwner))
+        if(!teamOwners.contains(townr))
         {
             return false;
         }
@@ -127,7 +127,7 @@ public class Team {
                 checkPlayerListEquals(this.teamPlayers,team.teamPlayers) &&
                 checkCoachListEquals(this.teamCoaches,team.teamCoaches) &&
                 checkManagersListEquals(this.teamManagers,team.teamManagers) &&
-                this.teamOwner.getUsername().equals(team.teamOwner.getUsername());
+                checkTeamOwnersrListEquals(this.teamOwners,team.teamOwners);
     }
 
     /**
@@ -182,6 +182,21 @@ public class Team {
         return true;
     }
 
-
+    /**
+     * Iterate over all the teamPlayers and check if the other team has all of them.
+     * @param currentTeamOwners a list of this team owners
+     * @param anotherTeamOwners a list of the other team owners
+     * @return true if the lists are equal
+     */
+    private boolean checkTeamOwnersrListEquals(List<TeamOwner> currentTeamOwners, List<TeamOwner> anotherTeamOwners) {
+        for(TeamOwner tw: currentTeamOwners)
+        {
+            if(!anotherTeamOwners.contains(tw))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }
