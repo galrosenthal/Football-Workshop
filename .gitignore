@@ -1,4 +1,5 @@
 target/classes/*/*.class
+target/**/*.class
 target/test-classes/*/*.class
 *.xml
 target/**/*.html
