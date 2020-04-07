@@ -24,6 +24,10 @@ public class Registered extends Roles {
         return name;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public RegisteredTypes getType() {
         return type;
     }
