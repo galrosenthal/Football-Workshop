@@ -18,6 +18,8 @@ public class DBManager {
      */
     private DBManager() {
         //read tables details from csv, init
+        //TODO: Maybe we should change this, and implemet Strategey Design Pattern here?
+        
         tablesDetails = CSVEditor.readTableFromCSV(tablesDetailsPath);
         //init lists
         for (int i = 0; i < tablesDetails.size(); i++) {

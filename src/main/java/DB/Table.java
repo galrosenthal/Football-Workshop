@@ -7,6 +7,14 @@ import java.util.List;
  * Represents a DB table
  */
 public class Table {
+    // Just setting the Table columns names so we will never miss a letter
+    public final static String USERNAME = "username";
+    public final static String PASSWORD = "password";
+    public final static String NAME = "name";
+    public final static String ROLE = "role";
+
+
+
     /**
      * The columns names
      */
@@ -148,7 +156,7 @@ public class Table {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Table:\n");
         for (String columnName : titles) {
-            stringBuilder.append(columnName + " ");
+            stringBuilder.append(columnName + "|");
         }
         stringBuilder.append("\n");
 
@@ -156,7 +164,7 @@ public class Table {
         for (int recordIndex = 0; recordIndex < table.size(); recordIndex++) {
             List<String> currentRecord = table.get(recordIndex);
             for (int columnIndex = 0; columnIndex < tableLength; columnIndex++) {
-                stringBuilder.append(currentRecord.get(columnIndex) + " ");
+                stringBuilder.append(currentRecord.get(columnIndex) + "|");
             }
             stringBuilder.append("\n");
         }
