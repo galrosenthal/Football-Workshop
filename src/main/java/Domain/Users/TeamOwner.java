@@ -6,9 +6,8 @@ public class TeamOwner extends Registered {
 
     private Team ownedTeam;
 
-    public TeamOwner(String type, String username, String pass, String name, Team ownedTeam) {
+    public TeamOwner(String username, String pass, String name) {
         super(RegisteredTypes.TEAM_OWNER, username, pass, name);
-        this.ownedTeam = ownedTeam;
     }
 
     public boolean addPplToTeam(Registered regUser)
@@ -28,6 +27,16 @@ public class TeamOwner extends Registered {
             }
         }
 
+        return false;
+    }
+
+    public boolean addTeamToOwn(Team teamToOwn)
+    {
+        if(this.ownedTeam == null)
+        {
+            ownedTeam = teamToOwn;
+            return true;
+        }
         return false;
     }
 

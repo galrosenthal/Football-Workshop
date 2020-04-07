@@ -37,7 +37,19 @@ public class Team {
         }
         if(teamPlayer.getType() == RegisteredTypes.PLAYER)
         {
-            return teamPlayers.add((Player)teamPlayer);
+            boolean addedPlayer = teamPlayers.add((Player)teamPlayer);
+            if(addedPlayer)
+            {
+                if( ((Player) teamPlayer).addTeam(this))
+                {
+                    return true;
+                }
+                else
+                {
+                    teamPlayers.remove((Player)teamPlayer);
+                    return false;
+                }
+            }
         }
         return false;
     }

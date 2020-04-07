@@ -13,12 +13,23 @@ public class Player extends Registered {
     private Date bday;
 
     public Player(String username, String pass, String name,
-                  PlayerFieldJobs fieldJob, Team playTeam, Date brthDay) {
+                  PlayerFieldJobs fieldJob, Date brthDay) {
         super(RegisteredTypes.PLAYER, username, pass, name);
         this.fieldJob = fieldJob;
-        playerTeam = playTeam;
         bday = brthDay;
     }
+
+
+    public boolean addTeam(Team playTeam)
+    {
+        if(playerTeam == null)
+        {
+            playerTeam = playTeam;
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     public boolean equals(Object o) {
