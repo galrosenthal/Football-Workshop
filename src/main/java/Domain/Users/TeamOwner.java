@@ -15,25 +15,47 @@ public class TeamOwner extends Registered {
     {
         if(regUser != null)
         {
-            if(isUserPartOfTeam(regUser))
-            {
-                ownedTeam.addTeamStaff(regUser);
+            switch (regUser.type){
+                case PLAYER:
+                    ownedTeam.addTeamPlayer(this,regUser);
+                    break;
+                case COACH:
+                    ownedTeam.addTeamCoach(this,regUser);
+                    break;
+                case TEAM_MANAGER:
+                    ownedTeam.addTeamManager(this,regUser);
+                    break;
             }
         }
 
         return false;
     }
 
-    private boolean isUserPartOfTeam(Registered regUser) {
-        if(regUser != null)
-        {
-            if(regUser.type == RegisteredTypes.COACH ||
-                    regUser.type == RegisteredTypes.PLAYER ||
-                    regUser.type == RegisteredTypes.TEAM_MANAGER)
-            {
-                return true;
-            }
-        }
-        return false;
+//    /**
+////     * Checks whether or not the user is part of the team asset or not,
+////     * @param regUser
+////     * @return
+////     */
+////    private boolean isUserPartOfTeamAssets(Registered regUser) {
+////        if(regUser != null)
+////        {
+////            if(regUser.type == RegisteredTypes.COACH ||
+////                    regUser.type == RegisteredTypes.PLAYER ||
+////                    regUser.type == RegisteredTypes.TEAM_MANAGER)
+////            {
+////                return true;
+////            }
+////        }
+////        return false;
+////    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TeamOwner)) return false;
+        TeamOwner teamOwner = (TeamOwner) o;
+        return ownedTeam.equals(teamOwner.ownedTeam);
     }
+
 }
