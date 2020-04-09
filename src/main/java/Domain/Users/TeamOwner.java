@@ -32,12 +32,20 @@ public class TeamOwner extends Registered {
 
     public boolean addTeamToOwn(Team teamToOwn)
     {
-        if(this.ownedTeam == null)
+        if(!isOwnTeam())
         {
             ownedTeam = teamToOwn;
             return true;
         }
         return false;
+    }
+
+    public boolean isOwnTeam(){
+        if (this.ownedTeam == null){
+            return false;
+        }
+
+        return true;
     }
 
 //    /**
