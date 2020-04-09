@@ -17,6 +17,10 @@ public class Team {
     private List<TeamManager> teamManagers;
     private List<TeamOwner> teamOwners;
 
+    public List<TeamOwner> getTeamOwners() {
+        return teamOwners;
+    }
+
     public Team() {
         this.teamOwners = new ArrayList<>();;
         teamPlayers = new ArrayList<>();
@@ -102,6 +106,16 @@ public class Team {
             return teamManagers.add((TeamManager) teamManager);
         }
         return false;
+    }
+
+    public boolean addTeamOwner(TeamOwner townr,TeamOwner teamOwner)
+    {
+        if(!teamOwners.contains(townr))
+        {
+            return false;
+        }
+
+        return teamOwners.add(teamOwner);
     }
 
     public List<Player> getTeamPlayers() {
@@ -198,5 +212,6 @@ public class Team {
         }
         return true;
     }
+
 
 }

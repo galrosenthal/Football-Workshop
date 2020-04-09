@@ -1,3 +1,4 @@
+/*
 //package Service;
 //
 //import DB.*;
@@ -10,7 +11,7 @@
 //    {
 //        System.out.println("System is Loading...");
 //        initSystem();
-//    }
+//    }initSystem
 //
 //    private static void initSystem()
 //    {
@@ -84,3 +85,4 @@
 //    }
 //
 //}
+*/

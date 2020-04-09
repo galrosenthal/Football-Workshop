@@ -128,6 +128,13 @@ public class Table {
         return null;
     }
 
+    public boolean updateRecord(int recordIndex,String colTitle,String valueToAdd){
+        int indexTitle = titles.indexOf(colTitle);
+        String record =table.get(recordIndex).get(indexTitle);
+        record += +';'+ valueToAdd;
+        //table.get(recordIndex).get(indexTitle) = record;
+        return  false;
+    }
 
     /**
      * Receives a record index and a column name and returns the record's value of that column.

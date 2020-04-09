@@ -9,22 +9,27 @@ import java.util.List;
 
 public class TeamController {
 
-    public boolean addTeamOwner(Registered newOwner,Team teamToOwn){
+    public boolean addTeamOwner(String username,Team teamToOwn,TeamOwner owner){
 
+        List<TeamOwner> teamOwners = teamToOwn.getTeamOwners();
 
-         //If the user already team owner
-        if(newOwner.getType() ==  RegisteredTypes.TEAM_OWNER){
-            if(((TeamOwner)newOwner).isOwnTeam()){
+        List<String> teamOwnerDetails = DBManager.getInstance().getSystemUsers().getRecord(new String[]{"username"},new String[]{username});
+        String[] roles = teamOwnerDetails.get(teamOwnerDetails.size()-1).split(";");
+        for (String rol : roles){
+            if(rol.equalsIgnoreCase("team owner")){
                 return false;
             }
+        }
 
-            ((TeamOwner)newOwner).addTeamToOwn(teamToOwn);
+        if(!teamOwners.contains(owner)){
+            return false;
         }
-        else{
-            List<String> teamOwnerDetails = DBManager.getInstance().getSystemUsers().getRecord(new String[]{"username"},new String[]{newOwner.getName()});
-            TeamOwner newTeamOWner = new TeamOwner(newOwner.getUsername(),teamOwnerDetails.get(1),newOwner.getName());
-            newOwner.setType(RegisteredTypes.TEAM_OWNER);
-        }
+
+        TeamOwner newTeamOWner = new TeamOwner(username,teamOwnerDetails.get(1),teamOwnerDetails.get(2));
+        newTeamOWner.addTeamToOwn(teamToOwn);
+        teamToOwn.addTeamOwner(owner,newTeamOWner);
+
+
 
         return true;
     }
