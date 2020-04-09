@@ -4,7 +4,6 @@ import Domain.Users.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This Class is representing a Football Team
@@ -18,33 +17,23 @@ public class Team {
     private List<TeamOwner> teamOwners;
 
     public Team() {
-        this.teamOwners = new ArrayList<>();;
+        this.teamOwners = new ArrayList<>();
         teamPlayers = new ArrayList<>();
         teamCoaches = new ArrayList<>();
         teamManagers = new ArrayList<>();
     }
-    /**
-     * A method that returns a string containing all team information for display
-     * @return string containing all team information.
-     */
-    public String DisplayTeam(){
-        String output = "Team Name:" + teamName + "\n" +
-                        "Team Coaches:";
-
-
-
-        return output;
-    }
-
-    @Override
-    public String toString() {
-        return "Team{" +
-                "teamName='" + teamName + '\'' + "\n" +
-                ", teamPlayers=" + teamPlayers +"\n" +
-                ", teamCoaches=" + teamCoaches +"\n" +
-                ", teamManagers=" + teamManagers +"\n" +
-                '}';
-    }
+//    /**
+//     * A method that returns a string containing all team information for display
+//     * @return string containing all team information.
+//     */
+//    public String DisplayTeam(){
+//        String output = "Team Name:" + teamName + "\n" +
+//                        "Team Coaches:";
+//
+//
+//
+//        return output;
+//    }
 
     /**
      * Add a Player to the team,
@@ -60,18 +49,15 @@ public class Team {
         }
         if(teamPlayer.getType() == RegisteredTypes.PLAYER)
         {
-            boolean addedPlayer = teamPlayers.add((Player)teamPlayer);
-            if(addedPlayer)
+            teamPlayers.add((Player)teamPlayer);
+            if( ((Player) teamPlayer).addTeam(this))
             {
-                if( ((Player) teamPlayer).addTeam(this))
-                {
-                    return true;
-                }
-                else
-                {
-                    teamPlayers.remove((Player)teamPlayer);
-                    return false;
-                }
+                return true;
+            }
+            else
+            {
+                teamPlayers.remove(teamPlayer);
+                return false;
             }
         }
         return false;
@@ -205,8 +191,21 @@ public class Team {
                 "teamPlayers=" + teamPlayersToString() +
                 ", teamCoaches=" + teamCoachesToString() +
                 ", teamManagers=" + teamManagersToString() +
-                ", teamOwner=" + teamOwner.toString() +
+                ", teamOwners=" + teamOwnersToString() +
                 '}';
+    }
+
+    private String teamOwnersToString() {
+        StringBuilder teamOwnersString = new StringBuilder();
+        teamOwnersString.append("Owners: \n");
+
+        for (int i = 0; i < teamOwners.size(); i++)
+        {
+            teamOwnersString.append(i+1).append(". ");
+            teamOwnersString.append(teamOwners.get(i).getName());
+            teamOwnersString.append("\n");
+        }
+        return teamOwnersString.toString();
     }
 
     private String teamManagersToString() {
