@@ -40,6 +40,7 @@ class TeamTest {
         assertEquals(0, team.getTeamPlayers().size());
         assertTrue(team.addTeamPlayer(to,p));
         assertEquals(1, team.getTeamPlayers().size());
+        System.out.println(team);
 
     }
 
