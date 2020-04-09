@@ -19,7 +19,7 @@ class TeamTest {
     @BeforeEach
     void setUp() {
         to = new TeamOwner("rosengal","12345678","Gal Rosenthal");
-        team = new Team(to);
+        team = new Team();
     }
 
 

@@ -75,4 +75,39 @@ class TableTest {
         assertNull(record);
     }
 
+    @Test
+    void addValueToRecord() {
+        assertEquals(0, table.size());
+        table = initTestTable(table);
+        assertEquals(10, table.size());
+        System.out.println(table);
+
+        assertFalse(table.addValueToRecordInSpecificCol(0,"COL1","12345"));
+
+        assertTrue(table.addValueToRecordInSpecificCol(0,"col1","12345"));
+        assertEquals("rec1-0;12345",table.getTable().get(0).get(0));
+
+    }
+
+    @Test
+    void RemoveValueFromRecord() {
+        assertEquals(0, table.size());
+        table = initTestTable(table);
+        assertEquals(10, table.size());
+
+
+        assertTrue(table.addValueToRecordInSpecificCol(0,"col1","12345"));
+        assertEquals("rec1-0;12345",table.getTable().get(0).get(0));
+
+        assertFalse(table.removeValueFromRecordInSpecificCol(0,"COL1","12345"));
+        assertTrue(table.removeValueFromRecordInSpecificCol(0,"col1","12345"));
+        assertEquals("rec1-0",table.getTable().get(0).get(0));
+
+        assertTrue(table.addValueToRecordInSpecificCol(0,"col1","123"));
+        assertTrue(table.addValueToRecordInSpecificCol(0,"col1","456"));
+        assertTrue(table.removeValueFromRecordInSpecificCol(0,"col1","123"));
+        assertEquals("rec1-0;456",table.getTable().get(0).get(0));
+
+    }
+
 }
