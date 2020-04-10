@@ -220,7 +220,7 @@ public class Team {
         for (int i = 0; i < teamOwners.size(); i++)
         {
             teamOwnersString.append(i+1).append(". ");
-            teamOwnersString.append(teamOwners.get(i).getName());
+            teamOwnersString.append(teamOwners.get(i).getSystemUser().getName());
             teamOwnersString.append("\n");
         }
         return teamOwnersString.toString();
@@ -233,7 +233,7 @@ public class Team {
         for (int i = 0; i < teamManagers.size(); i++)
         {
             teamManagersString.append(i+1).append(". ");
-            teamManagersString.append(teamManagers.get(i).getName());
+            teamManagersString.append(teamManagers.get(i).getSystemUser().getName());
             teamManagersString.append("\n");
         }
         return teamManagersString.toString();
@@ -246,7 +246,7 @@ public class Team {
         for (int i = 0; i < teamCoaches.size(); i++)
         {
             teamCoachesString.append(i+1).append(". ");
-            teamCoachesString.append(teamCoaches.get(i).getName());
+            teamCoachesString.append(teamCoaches.get(i).getSystemUser().getName());
             teamCoachesString.append("\n");
         }
         return teamCoachesString.toString();
@@ -259,7 +259,7 @@ public class Team {
         for (int i = 0; i < teamPlayers.size(); i++)
         {
             teamPlayersString.append(i+1).append(". ");
-            teamPlayersString.append(teamPlayers.get(i).getName());
+            teamPlayersString.append(teamPlayers.get(i).getSystemUser().getName());
             teamPlayersString.append("\n");
         }
         return teamPlayersString.toString();

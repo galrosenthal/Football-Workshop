@@ -11,6 +11,10 @@ public abstract class Role {
         systemUser.addNewRole(this);
     }
 
+    public SystemUser getSystemUser() {
+        return systemUser;
+    }
+
     public RoleTypes getType() {
         return type;
     }
