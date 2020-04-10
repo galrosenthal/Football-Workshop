@@ -10,7 +10,7 @@ public class Fan extends Registered {
     protected List<PersonalPage> followedPages = new ArrayList<PersonalPage>();
 
     public Fan(String username, String pass, String name) {
-        super(RegisteredTypes.FAN,username,pass,name);
+        super(RoleTypes.FAN,username,pass,name);
     }
 
     public List<Team> getFanTeams() {

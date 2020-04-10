@@ -39,15 +39,6 @@ public class Team {
         return output;
     }
 
-    @Override
-    public String toString() {
-        return "Team{" +
-                "teamName='" + teamName + '\'' + "\n" +
-                ", teamPlayers=" + teamPlayers +"\n" +
-                ", teamCoaches=" + teamCoaches +"\n" +
-                ", teamManagers=" + teamManagers +"\n" +
-                '}';
-    }
 
     /**
      * Add a Player to the team,
@@ -55,13 +46,13 @@ public class Team {
      * @param teamPlayer a register user that represents a player
      * @return true if the player added successfully to the Team.
      */
-    public boolean addTeamPlayer(TeamOwner townr, Registered teamPlayer)
+    public boolean addTeamPlayer(TeamOwner townr, Role teamPlayer)
     {
         if(!teamOwners.contains(townr))
         {
             return false;
         }
-        if(teamPlayer.getType() == RegisteredTypes.PLAYER)
+        if(teamPlayer.getType() == RoleTypes.PLAYER)
         {
             boolean addedPlayer = teamPlayers.add((Player)teamPlayer);
             if(addedPlayer)
@@ -80,13 +71,13 @@ public class Team {
         return false;
     }
 
-    public boolean addTeamCoach(TeamOwner townr, Registered coach)
+    public boolean addTeamCoach(TeamOwner townr, Role coach)
     {
         if(!teamOwners.contains(townr))
         {
             return false;
         }
-        if(coach.getType() == RegisteredTypes.COACH)
+        if(coach.getType() == RoleTypes.COACH)
         {
             return teamCoaches.add((Coach) coach);
         }
@@ -100,7 +91,7 @@ public class Team {
         {
             return false;
         }
-        if(teamManager.getType() == RegisteredTypes.TEAM_MANAGER)
+        if(teamManager.getType() == RoleTypes.TEAM_MANAGER)
         {
             return teamManagers.add((TeamManager) teamManager);
         }
@@ -272,5 +263,9 @@ public class Team {
             teamPlayersString.append("\n");
         }
         return teamPlayersString.toString();
+    }
+
+    public String getTeamName() {
+        return this.teamName;
     }
 }

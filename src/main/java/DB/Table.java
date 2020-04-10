@@ -197,6 +197,35 @@ public class Table {
         return null;
     }
 
+    public Table getRecords(String[] keyFields, String[] values) {
+        Table subTable = new Table();
+        subTable.setTitles(this.getTitles());
+
+
+        int[] keyFieldsIndexes = new int[keyFields.length];
+        for (int i = 0; i < keyFields.length; i++) {
+            for (int j = 0; j < this.titles.size(); j++) {
+                if (titles.get(j).equals(keyFields[i])) {
+                    keyFieldsIndexes[i] = j;
+                }
+            }
+        }
+
+        for (int i = 0; i < table.size(); i++) {
+            List<String> record = table.get(i);
+            boolean matchingValues=true;
+            for (int j = 0; j < keyFieldsIndexes.length; j++) {
+                if(!(record.get(keyFieldsIndexes[j]).equals(values[j]))){
+                    matchingValues = false;
+                }
+            }
+            if (matchingValues){
+                subTable.addRecord(record);
+            }
+        }
+        return subTable;
+    }
+
     public boolean updateRecord(int recordIndex,String colTitle,String valueToAdd){
         int indexTitle = titles.indexOf(colTitle);
         String record =table.get(recordIndex).get(indexTitle);

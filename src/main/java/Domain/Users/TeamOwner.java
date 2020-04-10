@@ -2,21 +2,29 @@ package Domain.Users;
 
 import Domain.Game.Team;
 
-public class TeamOwner extends Registered {
+import java.util.List;
 
-    private Team ownedTeam;
+public class TeamOwner extends Role {
 
-    public TeamOwner(String username, String pass, String name) {
-        super(RegisteredTypes.TEAM_OWNER, username, pass, name);
+    private List<Team> ownedTeams;
+
+    public TeamOwner(SystemUser systemUser) {
+        //TODO:
+        super(RoleTypes.TEAM_OWNER,systemUser);
     }
 
-    public boolean addPplToTeam(Registered regUser)
+
+    public List<Team> getOwnedTeams() {
+        return ownedTeams;
+    }
+
+    public boolean addPplToTeam(Role regUser)
     {
         if(regUser != null)
         {
             switch (regUser.type){
                 case PLAYER:
-                    ownedTeam.addTeamPlayer(this,regUser);
+                    ownedTeams.addTeamPlayer(this,regUser);
                     break;
                 case COACH:
                     ownedTeam.addTeamCoach(this,regUser);

@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.Objects;
 
 
-public class Player extends Registered {
+public class Player extends Role {
 
     private PlayerFieldJobs fieldJob;
     private Team playerTeam;
@@ -14,7 +14,7 @@ public class Player extends Registered {
 
     public Player(String username, String pass, String name,
                   PlayerFieldJobs fieldJob, Date brthDay) {
-        super(RegisteredTypes.PLAYER, username, pass, name);
+        super(RoleTypes.PLAYER, username, pass, name);
         this.fieldJob = fieldJob;
         bday = brthDay;
     }
