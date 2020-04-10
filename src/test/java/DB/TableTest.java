@@ -1,18 +1,21 @@
 package DB;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.Test;
+import org.junit.*;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-class TableTest {
+//import static org.junit.jupiter.api.Assertions.*;
+
+public class TableTest {
     private Table table;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         table = new Table();
         ArrayList<String> titles = new ArrayList<>();
         titles.add("col1");
@@ -21,7 +24,7 @@ class TableTest {
     }
 
     @Test
-    void addRecord() {
+    public void addRecord() {
         assertTrue(table.size() == 0);
         table = initTestTable(table);
         assertTrue(table.size() == 10);
@@ -44,19 +47,19 @@ class TableTest {
     }
 
     @Test
-    void size() {
+    public void size() {
         assertTrue(table.size() == 0);
     }
 
     @Test
-    void getRecordValue() {
+    public void getRecordValue() {
         assertTrue(table.size() == 0);
         table = initTestTable(table);
         assertTrue((table.getRecordValue(0,"col1")).equals("rec1-0"));
     }
 
     @Test
-    void getRecord() {
+    public void getRecord() {
         assertTrue(table.size() == 0);
         table = initTestTable(table);
         assertTrue(table.size() == 10);
@@ -76,7 +79,7 @@ class TableTest {
     }
 
     @Test
-    void addValueToRecord() {
+    public void addValueToRecord() {
         assertEquals(0, table.size());
         table = initTestTable(table);
         assertEquals(10, table.size());
@@ -90,7 +93,7 @@ class TableTest {
     }
 
     @Test
-    void RemoveValueFromRecord() {
+    public void RemoveValueFromRecord() {
         assertEquals(0, table.size());
         table = initTestTable(table);
         assertEquals(10, table.size());

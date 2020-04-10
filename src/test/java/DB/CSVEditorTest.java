@@ -1,8 +1,7 @@
 package DB;
 
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,16 +11,16 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 
-class CSVEditorTest {
+public class CSVEditorTest {
 
     @Test
-    void readTableFromCSV() {
+    public void readTableFromCSV() {
         Table table = CSVEditor.readTableFromCSV("resources/Tables/SystemUsers.csv");
         System.out.println(table);
     }
 
     @Test
-    void writeTableToCSV() {
+    public void writeTableToCSV() {
         Table table = new Table();
         ArrayList<String> titles = new ArrayList<>();
         titles.add("col1");
