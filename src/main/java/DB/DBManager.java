@@ -14,6 +14,7 @@ public class DBManager {
 
     private Table systemUsers;
     private Table team;
+    private Table teamManager;
     private Table teamOwner;
     private Table fan;
     private Table player;

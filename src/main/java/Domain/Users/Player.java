@@ -14,7 +14,7 @@ public class Player extends Role {
 
     public Player(String username, String pass, String name,
                   PlayerFieldJobs fieldJob, Date brthDay) {
-        super(RoleTypes.PLAYER, username, pass, name);
+        super(RoleTypes.PLAYER, );
         this.fieldJob = fieldJob;
         bday = brthDay;
     }

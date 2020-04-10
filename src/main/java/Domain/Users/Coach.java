@@ -2,7 +2,7 @@ package Domain.Users;
 
 import Domain.Game.Team;
 
-public class Coach extends Registered {
+public class Coach extends Role {
     public enum CoachQualification {
             MAIN_COACH,SECOND_COACH,JUNIOR_COACH;
     }
@@ -12,9 +12,8 @@ public class Coach extends Registered {
     private String teamJob;
 
 
-    public Coach(String type, String username, String pass, String name,
-                 CoachQualification qlf, Team teamToCoach, String jobTitle) {
-        super(RoleTypes.COACH, username, pass, name);
+    public Coach(SystemUser su) {
+        super(RoleTypes.COACH,su);
         qualification = qlf;
         coachedTeam = teamToCoach;
         teamJob = jobTitle;

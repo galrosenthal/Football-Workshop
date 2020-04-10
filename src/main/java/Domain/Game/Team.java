@@ -85,7 +85,7 @@ public class Team {
     }
 
 
-    public boolean addTeamManager(TeamOwner townr,Registered teamManager)
+    public boolean addTeamManager(TeamOwner townr,Role teamManager)
     {
         if(!teamOwners.contains(townr))
         {
