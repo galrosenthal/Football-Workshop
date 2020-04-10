@@ -4,7 +4,6 @@ import Domain.Users.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This Class is representing a Football Team
@@ -22,7 +21,7 @@ public class Team {
     }
 
     public Team() {
-        this.teamOwners = new ArrayList<>();;
+        this.teamOwners = new ArrayList<>();
         teamPlayers = new ArrayList<>();
         teamCoaches = new ArrayList<>();
         teamManagers = new ArrayList<>();
@@ -213,5 +212,65 @@ public class Team {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Team{" +
+                "teamPlayers=" + teamPlayersToString() +
+                ", teamCoaches=" + teamCoachesToString() +
+                ", teamManagers=" + teamManagersToString() +
+                ", teamOwners=" + teamOwnersToString() +
+                '}';
+    }
 
+    private String teamOwnersToString() {
+        StringBuilder teamOwnersString = new StringBuilder();
+        teamOwnersString.append("Owners: \n");
+
+        for (int i = 0; i < teamOwners.size(); i++)
+        {
+            teamOwnersString.append(i+1).append(". ");
+            teamOwnersString.append(teamOwners.get(i).getName());
+            teamOwnersString.append("\n");
+        }
+        return teamOwnersString.toString();
+    }
+
+    private String teamManagersToString() {
+        StringBuilder teamManagersString = new StringBuilder();
+        teamManagersString.append("Managers: \n");
+
+        for (int i = 0; i < teamManagers.size(); i++)
+        {
+            teamManagersString.append(i+1).append(". ");
+            teamManagersString.append(teamManagers.get(i).getName());
+            teamManagersString.append("\n");
+        }
+        return teamManagersString.toString();
+    }
+
+    private String teamCoachesToString() {
+        StringBuilder teamCoachesString = new StringBuilder();
+        teamCoachesString.append("Coaches: \n");
+
+        for (int i = 0; i < teamCoaches.size(); i++)
+        {
+            teamCoachesString.append(i+1).append(". ");
+            teamCoachesString.append(teamCoaches.get(i).getName());
+            teamCoachesString.append("\n");
+        }
+        return teamCoachesString.toString();
+    }
+
+    private String teamPlayersToString() {
+        StringBuilder teamPlayersString = new StringBuilder();
+        teamPlayersString.append("Players: \n");
+
+        for (int i = 0; i < teamPlayers.size(); i++)
+        {
+            teamPlayersString.append(i+1).append(". ");
+            teamPlayersString.append(teamPlayers.get(i).getName());
+            teamPlayersString.append("\n");
+        }
+        return teamPlayersString.toString();
+    }
 }

@@ -1,18 +1,21 @@
 package DB;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.Test;
+import org.junit.*;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-class TableTest {
+//import static org.junit.jupiter.api.Assertions.*;
+
+public class TableTest {
     private Table table;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         table = new Table();
         ArrayList<String> titles = new ArrayList<>();
         titles.add("col1");
@@ -21,7 +24,7 @@ class TableTest {
     }
 
     @Test
-    void addRecord() {
+    public void addRecord() {
         assertTrue(table.size() == 0);
         table = initTestTable(table);
         assertTrue(table.size() == 10);
@@ -44,19 +47,19 @@ class TableTest {
     }
 
     @Test
-    void size() {
+    public void size() {
         assertTrue(table.size() == 0);
     }
 
     @Test
-    void getRecordValue() {
+    public void getRecordValue() {
         assertTrue(table.size() == 0);
         table = initTestTable(table);
         assertTrue((table.getRecordValue(0,"col1")).equals("rec1-0"));
     }
 
     @Test
-    void getRecord() {
+    public void getRecord() {
         assertTrue(table.size() == 0);
         table = initTestTable(table);
         assertTrue(table.size() == 10);
@@ -73,6 +76,41 @@ class TableTest {
         assertTrue(record.get(1).equals("rec2-1"));
         record = table.getRecord(new String[]{"col1"},new String[]{"WRONG"});
         assertNull(record);
+    }
+
+    @Test
+    public void addValueToRecord() {
+        assertEquals(0, table.size());
+        table = initTestTable(table);
+        assertEquals(10, table.size());
+        System.out.println(table);
+
+        assertFalse(table.addValueToRecordInSpecificCol(0,"COL1","12345"));
+
+        assertTrue(table.addValueToRecordInSpecificCol(0,"col1","12345"));
+        assertEquals("rec1-0;12345",table.getTable().get(0).get(0));
+
+    }
+
+    @Test
+    public void RemoveValueFromRecord() {
+        assertEquals(0, table.size());
+        table = initTestTable(table);
+        assertEquals(10, table.size());
+
+
+        assertTrue(table.addValueToRecordInSpecificCol(0,"col1","12345"));
+        assertEquals("rec1-0;12345",table.getTable().get(0).get(0));
+
+        assertFalse(table.removeValueFromRecordInSpecificCol(0,"COL1","12345"));
+        assertTrue(table.removeValueFromRecordInSpecificCol(0,"col1","12345"));
+        assertEquals("rec1-0",table.getTable().get(0).get(0));
+
+        assertTrue(table.addValueToRecordInSpecificCol(0,"col1","123"));
+        assertTrue(table.addValueToRecordInSpecificCol(0,"col1","456"));
+        assertTrue(table.removeValueFromRecordInSpecificCol(0,"col1","123"));
+        assertEquals("rec1-0;456",table.getTable().get(0).get(0));
+
     }
 
 }

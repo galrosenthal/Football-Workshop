@@ -1,23 +1,22 @@
 package DB;
 
-import org.junit.jupiter.api.Test;
-
+import org.junit.*;
+import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-class DBManagerTest {
+public class DBManagerTest {
 
     @Test
-    void getInstance() {
+    public void getInstance() {
         Table users = DBManager.getInstance().getSystemUsers();
         assertTrue(users!=null);
         assertTrue(users.getRecord(0).get(0).equals("yiftachs"));
     }
 
     @Test
-    void close() {
+    public void close() {
         Table users = DBManager.getInstance().getSystemUsers();
         /*List<String> newUser = new ArrayList<>();
         newUser.add("testUser");
@@ -28,6 +27,6 @@ class DBManagerTest {
     }
 
     @Test
-    void getUser() {
+    public void getUser() {
     }
 }

@@ -31,7 +31,7 @@ public class DBManager {
                     this.systemUsers = CSVEditor.readTableFromCSV(path);
                     //this.initSystemUsers(path);
                     break;
-                case "team":
+                case "TeamManagement":
                     path = tablesDetails.getRecordValue(i, "path");
                     this.teamManage = CSVEditor.readTableFromCSV(path);
                     break;

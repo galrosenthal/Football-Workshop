@@ -31,7 +31,76 @@ public class Table {
     public Table() {
         this.titles = new ArrayList<>();
         this.table = new ArrayList<>();
+
     }
+
+    /**
+     * Adds a value to a specific record in a specific column
+     * @param recIndex the index of the record to change
+     * @param colTitle  the title of the column to change
+     * @param valueToAdd the value to add
+     * @return true if the insertion succeeded
+     */
+    public boolean addValueToRecordInSpecificCol(int recIndex, String colTitle, String valueToAdd)
+    {
+        int titleIndex = titles.indexOf(colTitle);
+        if(titleIndex < 0)
+        {
+            return false;
+        }
+        List<String> recordDetails = table.get(recIndex);
+        String record = recordDetails.get(titleIndex);
+
+        recordDetails.remove(titleIndex);
+        table.get(recIndex).add(titleIndex,record+";"+valueToAdd);
+
+
+        return true;
+
+    }
+
+    /**
+     * Removes a value from a specific record in a specific column
+     * @param recIndex the index of the record to change
+     * @param colTitle  the title of the column to change
+     * @param valueToRemove the value to add
+     * @return true if the removal succeeded
+     */
+    public boolean removeValueFromRecordInSpecificCol(int recIndex, String colTitle, String valueToRemove)
+    {
+        int titleIndex = titles.indexOf(colTitle);
+        if(titleIndex < 0)
+        {
+            return false;
+        }
+        List<String> recordDetails = table.get(recIndex);
+        String record = recordDetails.get(titleIndex);
+
+        String[] splittedRecord = record.split(";");
+        StringBuilder newValue = new StringBuilder();
+
+        boolean isValueAdded = false;
+        for(String value : splittedRecord)
+        {
+            if(!value.equalsIgnoreCase(valueToRemove))
+            {
+                if(newValue.length() != 0)
+                {
+                    newValue.append(";");
+                }
+                newValue.append(value);
+            }
+
+        }
+
+        recordDetails.remove(titleIndex);
+        table.get(recIndex).add(titleIndex,newValue.toString());
+
+
+        return true;
+
+    }
+
 
     /**
      * Getter for the titles list

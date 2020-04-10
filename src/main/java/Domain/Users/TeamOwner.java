@@ -75,4 +75,8 @@ public class TeamOwner extends Registered {
         return ownedTeam.equals(teamOwner.ownedTeam);
     }
 
+    @Override
+    public String toString() {
+        return "TeamOwner{"+ this.getName() +" }";
+    }
 }
