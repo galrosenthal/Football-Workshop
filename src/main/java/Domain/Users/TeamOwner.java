@@ -18,38 +18,38 @@ public class TeamOwner extends Role {
         return ownedTeams;
     }
 
-    public boolean addPplToTeam(Role regUser)
-    {
-        if(regUser != null)
-        {
-            switch (regUser.type){
-                case PLAYER:
-                    ownedTeams.addTeamPlayer(this,regUser);
-                    break;
-                case COACH:
-                    ownedTeam.addTeamCoach(this,regUser);
-                    break;
-                case TEAM_MANAGER:
-                    ownedTeam.addTeamManager(this,regUser);
-                    break;
-            }
-        }
-
-        return false;
-    }
+//    public boolean addPplToTeam(Role regUser)
+//    {
+//        if(regUser != null)
+//        {
+//            switch (regUser.type){
+//                case PLAYER:
+//                    ownedTeams.addTeamPlayer(this,regUser);
+//                    break;
+//                case COACH:
+//                    ownedTeam.addTeamCoach(this,regUser);
+//                    break;
+//                case TEAM_MANAGER:
+//                    ownedTeam.addTeamManager(this,regUser);
+//                    break;
+//            }
+//        }
+//
+//        return false;
+//    }
 
     public boolean addTeamToOwn(Team teamToOwn)
     {
         if(!isOwnTeam())
         {
-            ownedTeam = teamToOwn;
+            ownedTeams.add(teamToOwn);
             return true;
         }
         return false;
     }
 
     public boolean isOwnTeam(){
-        if (this.ownedTeam == null){
+        if (this.ownedTeams == null){
             return false;
         }
 
@@ -80,11 +80,11 @@ public class TeamOwner extends Role {
         if (this == o) return true;
         if (!(o instanceof TeamOwner)) return false;
         TeamOwner teamOwner = (TeamOwner) o;
-        return ownedTeam.equals(teamOwner.ownedTeam);
+        return ownedTeams.equals(teamOwner.ownedTeams);
     }
 
     @Override
     public String toString() {
-        return "TeamOwner{"+ this.getName() +" }";
+        return "TeamOwner{"+ this.getSystemUser().getName() +" }";
     }
 }

@@ -12,7 +12,7 @@ public class TeamManager extends Role {
         if (this == o) return true;
         if (!(o instanceof Team)) return false;
         TeamManager teamManager = (TeamManager) o;
-        return this.getName().equals(teamManager.getName()) &&
-                this.getUsername().equals(teamManager.getUsername());
+        return this.getSystemUser().getName().equals(teamManager.getSystemUser().getName()) &&
+                this.getSystemUser().getUsername().equals(teamManager.getSystemUser().getUsername());
     }
 }

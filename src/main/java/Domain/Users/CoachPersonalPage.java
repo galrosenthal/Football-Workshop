@@ -7,7 +7,7 @@ public class CoachPersonalPage extends PersonalPage {
 
     public CoachPersonalPage(Coach coachPage) {
         this.coachPage = coachPage;
-        this.pageName = coachPage.getName();
+        this.pageName = coachPage.getSystemUser().getName();
     }
 
 }
