@@ -3,8 +3,8 @@ package Domain.Users;
 import Domain.Game.Team;
 
 public class TeamManager extends Role {
-    public TeamManager(String username, String pass, String name) {
-        super(RoleTypes.TEAM_MANAGER, username, pass, name);
+    public TeamManager(SystemUser systemUser) {
+        super(RoleTypes.TEAM_MANAGER, systemUser);
     }
 
     @Override
