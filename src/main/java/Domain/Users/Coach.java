@@ -12,7 +12,7 @@ public class Coach extends Role {
     private String teamJob;
 
 
-    public Coach(SystemUser su) {
+    public Coach(SystemUser su , CoachQualification qlf, Team teamToCoach , String jobTitle) {
         super(RoleTypes.COACH,su);
         qualification = qlf;
         coachedTeam = teamToCoach;
