@@ -5,12 +5,12 @@ import Domain.Game.Team;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Fan extends Registered {
+public class Fan extends Role {
     protected List<Team> fanTeams = new ArrayList<Team>();
     protected List<PersonalPage> followedPages = new ArrayList<PersonalPage>();
 
-    public Fan(String username, String pass, String name) {
-        super(RoleTypes.FAN,username,pass,name);
+    public Fan(SystemUser systemUser) {
+        super(RoleTypes.FAN,systemUser);
     }
 
     public List<Team> getFanTeams() {
