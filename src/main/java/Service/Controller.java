@@ -1,7 +1,7 @@
 package Service;
 
 import Domain.Controllers.TeamController;
-import Domain.EntityManager;
+import Domain.Controllers.TopDomainController;
 import Domain.Game.Team;
 import Domain.Users.Role;
 import Domain.Users.RoleTypes;
@@ -9,22 +9,20 @@ import Domain.Users.SystemUser;
 import Domain.Users.TeamOwner;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class Controller {
-    private static UIController currentUICtrlr = new UIController();
 
-    private static TeamController tc = new TeamController();
+    TopServiceController currentServiceController = TopServiceController.getInstance();
 
-    public static void setTc(TeamController newTC) {
-        tc = newTC;
+    TopDomainController currentDomainController = TopDomainController.getInstance();
+
+
+    private static volatile Controller mInstance;
+
+    private Controller() {
     }
 
-    public static void setCurrentUICtrlr(UIController anotherUICtrlr) {
-        currentUICtrlr = anotherUICtrlr;
-    }
-
-    public static boolean addTeamOwner(SystemUser systemUser)
+    public boolean addTeamOwner(SystemUser systemUser)
     {
         if(!systemUser.isType(RoleTypes.TEAM_OWNER))
         {
@@ -41,7 +39,7 @@ public class Controller {
         String newTeamOwnerUsername = getUsernameFromUser("Team Owner");
 
         try{
-            tc.addTeamOwner(newTeamOwnerUsername,chosenTeam,myTeamOwner);
+            currentDomainController.getTeamController().addTeamOwner(newTeamOwnerUsername,chosenTeam,myTeamOwner);
         }
         catch (Exception e)
         {
@@ -52,26 +50,38 @@ public class Controller {
 
     }
 
-    private static String getUsernameFromUser(String msg) {
-        currentUICtrlr.printMessage("Enter new "+ msg +" Username:");
+    private String getUsernameFromUser(String msg) {
+        currentServiceController.getUiController().printMessage("Enter new "+ msg +" Username:");
 
-        String username = currentUICtrlr.receiveString();
+        String username = currentServiceController.getUiController().receiveString();
         return username;
 
     }
 
-    private static Team getTeamByChoice(TeamOwner myTeamOwner) {
+    private Team getTeamByChoice(TeamOwner myTeamOwner) {
         List<Team> myTeams = myTeamOwner.getOwnedTeams();
-        currentUICtrlr.printMessage("Choose a Team Number");
+        currentServiceController.getUiController().printMessage("Choose a Team Number");
         for (int i = 0; i < myTeams.size() ; i++) {
-            currentUICtrlr.printMessage(i + ". " + myTeams.get(i).getTeamName());
+            currentServiceController.getUiController().printMessage(i + ". " + myTeams.get(i).getTeamName());
         }
         int teamIndex;
 
         do{
-            teamIndex = currentUICtrlr.receiveInt();
+            teamIndex = currentServiceController.getUiController().receiveInt();
         }while (!(teamIndex >= 0 && teamIndex < myTeams.size()));
 
         return myTeams.get(teamIndex);
+    }
+
+
+    public static Controller getInstance() {
+        if (mInstance == null) {
+            synchronized (Controller.class) {
+                if (mInstance == null) {
+                    mInstance = new Controller();
+                }
+            }
+        }
+        return mInstance;
     }
 }

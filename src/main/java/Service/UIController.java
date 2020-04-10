@@ -5,13 +5,14 @@ import java.util.Scanner;
 public class UIController {
 
 
-    public static void printMessage(String msg)
+
+    public void printMessage(String msg)
     {
         System.out.println(msg);
     }
 
 
-    public static String receiveString()
+    public String receiveString()
     {
         Scanner sc = new Scanner(System.in);
 
@@ -20,7 +21,7 @@ public class UIController {
         return line;
     }
 
-    public static int receiveInt()
+    public int receiveInt()
     {
         Scanner sc = new Scanner(System.in);
 

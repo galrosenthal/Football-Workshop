@@ -268,4 +268,8 @@ public class Team {
     public String getTeamName() {
         return this.teamName;
     }
+
+    public void setTeamName(String testName) {
+        this.teamName = testName;
+    }
 }

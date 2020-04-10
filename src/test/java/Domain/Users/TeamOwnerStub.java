@@ -15,6 +15,7 @@ public class TeamOwnerStub extends TeamOwner {
     public List<Team> getOwnedTeams() {
         List<Team> test = new ArrayList<>();
         test.add(new Team());
+        test.get(0).setTeamName("testName");
         return test;
     }
 }

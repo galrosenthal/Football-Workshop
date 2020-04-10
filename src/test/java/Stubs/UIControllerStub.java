@@ -9,11 +9,11 @@ public class UIControllerStub extends UIController {
 
     private static int selector;
 
-    public static void setSelector(int selector) {
+    public void setSelector(int selector) {
         UIControllerStub.selector = selector;
     }
 
-    public static String receiveString()
+    public String receiveString()
     {
         if(selector == 0)
         {
@@ -23,7 +23,11 @@ public class UIControllerStub extends UIController {
         return "";
     }
 
-    public static int receiveInt()
+
+
+
+
+    public int receiveInt()
     {
         if(selector == 0)
         {

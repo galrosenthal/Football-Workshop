@@ -7,13 +7,14 @@ public class TeamControllerStub extends TeamController{
 
     private static int selector;
 
-    public static void setSelector(int selector) {
+
+    public void setSelector(int selector) {
         TeamControllerStub.selector = selector;
     }
 
 
 
-    public static boolean addTeamOwner(String username, Team teamToOwn, TeamOwner owner)
+    public boolean addTeamOwner(String username, Team teamToOwn, TeamOwner owner)
             throws Exception{
         if(selector == 0)
         {
