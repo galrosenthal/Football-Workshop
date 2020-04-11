@@ -2,7 +2,7 @@ package Domain.Users;
 
 import Domain.Game.Team;
 
-public class Coach extends Registered {
+public class Coach extends Role {
     public enum CoachQualification {
             MAIN_COACH,SECOND_COACH,JUNIOR_COACH;
     }
@@ -12,11 +12,20 @@ public class Coach extends Registered {
     private String teamJob;
 
 
-    public Coach(String type, String username, String pass, String name,
-                 CoachQualification qlf, Team teamToCoach, String jobTitle) {
-        super(RegisteredTypes.COACH, username, pass, name);
+    public Coach(SystemUser su , CoachQualification qlf, Team teamToCoach , String jobTitle) {
+        super(RoleTypes.COACH,su);
         qualification = qlf;
         coachedTeam = teamToCoach;
         teamJob = jobTitle;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Coach)) return false;
+        Coach coach = (Coach) o;
+        return qualification == coach.qualification &&
+                teamJob.equals(coach.teamJob);
+    }
+
 }

@@ -7,6 +7,14 @@ import java.util.List;
  * Represents a DB table
  */
 public class Table {
+    // Just setting the Table columns names so we will never miss a letter
+    public final static String USERNAME = "username";
+    public final static String PASSWORD = "password";
+    public final static String NAME = "name";
+    public final static String ROLE = "role";
+
+
+
     /**
      * The columns names
      */
@@ -23,7 +31,76 @@ public class Table {
     public Table() {
         this.titles = new ArrayList<>();
         this.table = new ArrayList<>();
+
     }
+
+    /**
+     * Adds a value to a specific record in a specific column
+     * @param recIndex the index of the record to change
+     * @param colTitle  the title of the column to change
+     * @param valueToAdd the value to add
+     * @return true if the insertion succeeded
+     */
+    public boolean addValueToRecordInSpecificCol(int recIndex, String colTitle, String valueToAdd)
+    {
+        int titleIndex = titles.indexOf(colTitle);
+        if(titleIndex < 0)
+        {
+            return false;
+        }
+        List<String> recordDetails = table.get(recIndex);
+        String record = recordDetails.get(titleIndex);
+
+        recordDetails.remove(titleIndex);
+        table.get(recIndex).add(titleIndex,record+";"+valueToAdd);
+
+
+        return true;
+
+    }
+
+    /**
+     * Removes a value from a specific record in a specific column
+     * @param recIndex the index of the record to change
+     * @param colTitle  the title of the column to change
+     * @param valueToRemove the value to add
+     * @return true if the removal succeeded
+     */
+    public boolean removeValueFromRecordInSpecificCol(int recIndex, String colTitle, String valueToRemove)
+    {
+        int titleIndex = titles.indexOf(colTitle);
+        if(titleIndex < 0)
+        {
+            return false;
+        }
+        List<String> recordDetails = table.get(recIndex);
+        String record = recordDetails.get(titleIndex);
+
+        String[] splittedRecord = record.split(";");
+        StringBuilder newValue = new StringBuilder();
+
+        boolean isValueAdded = false;
+        for(String value : splittedRecord)
+        {
+            if(!value.equalsIgnoreCase(valueToRemove))
+            {
+                if(newValue.length() != 0)
+                {
+                    newValue.append(";");
+                }
+                newValue.append(value);
+            }
+
+        }
+
+        recordDetails.remove(titleIndex);
+        table.get(recIndex).add(titleIndex,newValue.toString());
+
+
+        return true;
+
+    }
+
 
     /**
      * Getter for the titles list
@@ -120,6 +197,42 @@ public class Table {
         return null;
     }
 
+    public Table getRecords(String[] keyFields, String[] values) {
+        Table subTable = new Table();
+        subTable.setTitles(this.getTitles());
+
+
+        int[] keyFieldsIndexes = new int[keyFields.length];
+        for (int i = 0; i < keyFields.length; i++) {
+            for (int j = 0; j < this.titles.size(); j++) {
+                if (titles.get(j).equals(keyFields[i])) {
+                    keyFieldsIndexes[i] = j;
+                }
+            }
+        }
+
+        for (int i = 0; i < table.size(); i++) {
+            List<String> record = table.get(i);
+            boolean matchingValues=true;
+            for (int j = 0; j < keyFieldsIndexes.length; j++) {
+                if(!(record.get(keyFieldsIndexes[j]).equals(values[j]))){
+                    matchingValues = false;
+                }
+            }
+            if (matchingValues){
+                subTable.addRecord(record);
+            }
+        }
+        return subTable;
+    }
+
+    public boolean updateRecord(int recordIndex,String colTitle,String valueToAdd){
+        int indexTitle = titles.indexOf(colTitle);
+        String record =table.get(recordIndex).get(indexTitle);
+        record += +';'+ valueToAdd;
+        //table.get(recordIndex).get(indexTitle) = record;
+        return  false;
+    }
 
     /**
      * Receives a record index and a column name and returns the record's value of that column.
@@ -148,7 +261,7 @@ public class Table {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Table:\n");
         for (String columnName : titles) {
-            stringBuilder.append(columnName + " ");
+            stringBuilder.append(columnName + "|");
         }
         stringBuilder.append("\n");
 
@@ -156,7 +269,7 @@ public class Table {
         for (int recordIndex = 0; recordIndex < table.size(); recordIndex++) {
             List<String> currentRecord = table.get(recordIndex);
             for (int columnIndex = 0; columnIndex < tableLength; columnIndex++) {
-                stringBuilder.append(currentRecord.get(columnIndex) + " ");
+                stringBuilder.append(currentRecord.get(columnIndex) + "|");
             }
             stringBuilder.append("\n");
         }

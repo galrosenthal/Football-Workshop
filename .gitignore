@@ -1,4 +1,5 @@
 target/classes/*/*.class
+target/**/*.class
 target/test-classes/*/*.class
 *.xml
 target/**/*.html
@@ -9,3 +10,4 @@ target/**/*.txt
 target/**/*.js
 target/**/*.css
 target/**/*.properties
+/target/classes/META-INF/Football-Workshop.kotlin_module

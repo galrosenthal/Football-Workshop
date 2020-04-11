@@ -1,7 +1,7 @@
 package Domain.Users;
 
-public class Refree extends Registered {
-    public Refree(String username, String pass, String name) {
-        super(RegisteredTypes.REFEREE, username, pass, name);
+public class Refree extends Role {
+    public Refree(String username, SystemUser systemUser) {
+        super(RoleTypes.REFEREE, systemUser);
     }
 }

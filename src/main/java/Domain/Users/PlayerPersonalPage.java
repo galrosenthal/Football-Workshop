@@ -7,7 +7,7 @@ public class PlayerPersonalPage extends PersonalPage {
 
     public PlayerPersonalPage(Player pagePlayer) {
         this.pagePlayer = pagePlayer;
-        this.pageName = pagePlayer.getName();
+        this.pageName = pagePlayer.getSystemUser().getName();
     }
 
 

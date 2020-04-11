@@ -1,6 +1,8 @@
 package DB;
 
 
+import Domain.Users.RoleTypes;
+
 import java.util.List;
 
 public class DBManager {
@@ -11,6 +13,15 @@ public class DBManager {
     private Table tablesDetails;
 
     private Table systemUsers;
+    private Table team;
+    private Table teamManager;
+    private Table teamOwner;
+    private Table fan;
+    private Table player;
+    private Table coach;
+    private Table associationRepresentative;
+    private Table referee;
+    private Table systemAdmin;
     //TODO: add fields for different tables
 
     /**
@@ -18,17 +29,21 @@ public class DBManager {
      */
     private DBManager() {
         //read tables details from csv, init
+        //TODO: Maybe we should change this, and implemet Strategey Design Pattern here?
+        
         tablesDetails = CSVEditor.readTableFromCSV(tablesDetailsPath);
         //init lists
+        String path = "";
         for (int i = 0; i < tablesDetails.size(); i++) {
             switch (tablesDetails.getRecordValue(i, "name")) {
                 case "SystemUsers":
-                    String path = tablesDetails.getRecordValue(i, "path");
+                     path = tablesDetails.getRecordValue(i, "path");
                     this.systemUsers = CSVEditor.readTableFromCSV(path);
                     //this.initSystemUsers(path);
                     break;
-                case "players":
-
+                case "Team":
+                    path = tablesDetails.getRecordValue(i, "path");
+                    this.team = CSVEditor.readTableFromCSV(path);
                     break;
                 case "coaches":
 
@@ -38,16 +53,7 @@ public class DBManager {
         }
     }
 
-   /*
-    private void initSystemUsers(String path) {
-        for (int i = 0; i < systemUsers.size(); i++) {
-            String username = systemUsers.getRecordValue(i,"username");
-            String password = systemUsers.getRecordValue(i,"password");
-            String name = systemUsers.getRecordValue(i,"name");
-            //TODO: Decide if holding a list of objects or just a table.
-        }
-    }
-*/
+
 
 
     /**
@@ -92,5 +98,29 @@ public class DBManager {
             }
         }
         return null;
+    }
+
+    public Table getRelevantRecords(String username, RoleTypes roleType) throws Exception {
+        switch (roleType) {
+            case FAN:
+                return fan.getRecords(new String[]{"username"}, new String[]{username});
+            case PLAYER:
+                return player.getRecords(new String[]{"username"}, new String[]{username});
+            case COACH:
+                return coach.getRecords(new String[]{"username"}, new String[]{username});
+            case TEAM_MANAGER:
+                return teamManager.getRecords(new String[]{"username"}, new String[]{username});
+            case TEAM_OWNER:
+                return teamOwner.getRecords(new String[]{"username"}, new String[]{username});
+            case SYSTEM_ADMIN:
+                return systemAdmin.getRecords(new String[]{"username"}, new String[]{username});
+            case REFEREE:
+                return referee.getRecords(new String[]{"username"}, new String[]{username});
+            case ASSOCIATION_REPRESENTATIVE:
+                return associationRepresentative.getRecords(new String[]{"username"}, new String[]{username});
+            default:
+                throw new Exception("Error in Role type in the DB");
+        }
+
     }
 }
