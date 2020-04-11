@@ -20,6 +20,7 @@ public class EntityManager {
 
     /**
      * Returns an instance of dbManager. part of the Singleton design
+     *
      * @return - DBManager - an instance of dbManager
      */
     public static EntityManager getInstance() {
@@ -29,14 +30,11 @@ public class EntityManager {
     }
 
 
-
-    public SystemUser login(String usrNm, String pswrd) throws Exception{
-        for(SystemUser su: allUsers)
-        {
-            if(su.getUsername().equalsIgnoreCase(usrNm))
-            {
+    public SystemUser login(String usrNm, String pswrd) throws Exception {
+        for (SystemUser su : allUsers) {
+            if (su.getUsername().equalsIgnoreCase(usrNm)) {
                 List<String> userDetails = DBManager.getInstance().getSystemUsers().getRecord(new String[]{"username"}, new String[]{usrNm});
-                if(userDetails.get(2).equals(pswrd)){
+                if (userDetails.get(2).equals(pswrd)) {
                     return su;
                 }
 
@@ -46,17 +44,16 @@ public class EntityManager {
 
     }
 
-    private void initSystem() throws Exception{
+    private void initSystem() throws Exception {
         Table systemUsersTable = DBManager.getInstance().getSystemUsers();
         for (int i = 0; i < systemUsersTable.size(); i++) {
-            String username = systemUsersTable.getRecordValue(i,"username");
-            String name = systemUsersTable.getRecordValue(i,"name");
-            String[] roles = systemUsersTable.getRecordValue(i,"role").split(";");
+            String username = systemUsersTable.getRecordValue(i, "username");
+            String name = systemUsersTable.getRecordValue(i, "name");
+            String[] roles = systemUsersTable.getRecordValue(i, "role").split(";");
 
-            SystemUser newUser = new SystemUser(username,name);
-            for(String role : roles)
-            {
-                switch (role){
+            SystemUser newUser = new SystemUser(username, name);
+            for (String role : roles) {
+                switch (role) {
                     case "fan":
                         newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.FAN));
                         break;
@@ -91,15 +88,12 @@ public class EntityManager {
         }
     }
 
-    private Role recreateRoleFromDB(String username, RoleTypes roleType)
-    {
+    private Role recreateRoleFromDB(String username, RoleTypes roleType) {
         Role newRole;
 
         try {
-            Table roleRecords = DBManager.getInstance().getRelevantRecords(username,roleType);
-        }
-        catch (Exception e)
-        {
+            Table roleRecords = DBManager.getInstance().getRelevantRecords(username, roleType);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -107,13 +101,18 @@ public class EntityManager {
     }
 
     public SystemUser getUser(String username) {
-        for (SystemUser su: allUsers)
-        {
-            if(su.getUsername().equals(username))
-            {
+        for (SystemUser su : allUsers) {
+            if (su.getUsername().equals(username)) {
                 return su;
             }
         }
         return null;
+    }
+
+    public boolean addUser(SystemUser systemUser) {
+        if (!(this.allUsers.contains(systemUser))) {
+            this.allUsers.add(systemUser);
+        }
+        return true;
     }
 }

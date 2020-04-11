@@ -1,10 +1,8 @@
 package Service;
 
-import Domain.Controllers.TeamController;
-import Domain.Controllers.TeamControllerStub;
+import Domain.EntityManager;
 import Domain.Users.SystemUserStub;
 import Domain.Users.TeamOwnerStub;
-import Stubs.UIControllerStub;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +10,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ControllerTest {
-
 
 
     @Before
@@ -25,27 +22,38 @@ public class ControllerTest {
 
     @Test
     public void addTeamOwner() {
-        System.out.println("First");
-        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal","gal",0)));
-        System.out.println("Second");
-        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal","gal",1)));
+        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 0)));
+        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 1)));
 
-
-
-
-
-
-        System.out.println("Third");
-        assertTrue(Controller.addTeamOwner(new SystemUserStub("rosengal","gal",2)));
+        UIController.setIsTest(true);
+        UIController.setSelector(0);
+        //false because of wrong username from user
+        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
 
 //
 //        System.out.println("-------------------------");
 //        System.out.println("|   4 PRINTS EXCEPTION  |");
 //        System.out.println("-------------------------");
 //        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal","gal",2)));
-
-
-
-
     }
+
+    @Test
+    public void addTeamOwnerTest4() {
+        UIController.setIsTest(true);
+        UIController.setSelector(1);
+        TeamOwnerStub.setSelector(0);
+        //false because of wrong username from user
+        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
+    }
+
+    @Test
+    public void addTeamOwnerTest5() {
+        UIController.setIsTest(true);
+        TeamOwnerStub.setSelector(1);
+        new SystemUserStub("newTOUsername", "newTO", 3);
+        UIController.setSelector(1);
+        //false because of wrong username from user
+        assertTrue(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
+    }
+
 }

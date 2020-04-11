@@ -36,9 +36,15 @@ public class UIController {
             {
                 return "Not a username";
             }
-            else
+            else if(selector == 1)
             {
                 return "rosengal";
+            }else if(selector == 2)
+            {
+                return "newTOUsername";
+            }
+            else {
+                return null;
             }
         }
     }
@@ -54,9 +60,9 @@ public class UIController {
         }
         else
         {
-            if(selector == 0)
+            if(selector == 0 || selector == 1 || selector == 2)
             {
-                return -1;
+                return 0;
             }
             else
             {

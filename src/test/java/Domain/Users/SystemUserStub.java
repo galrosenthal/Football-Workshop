@@ -1,5 +1,7 @@
 package Domain.Users;
 
+import Domain.EntityManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,7 @@ public class SystemUserStub extends SystemUser{
     {
         super(username,name);
         this.selector = selector;
-
+        EntityManager.getInstance().addUser(this);
     }
 
 //
@@ -47,7 +49,11 @@ public class SystemUserStub extends SystemUser{
         if(selector == 1)
         {
             return null;
+        } else if( selector == 2){
+            return new TeamOwnerStub(this);
+        } else if( selector == 3){
+            return null;
         }
-        return new TeamOwnerStub(this);
+        return null;
     }
 }
