@@ -21,7 +21,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void addTeamOwner() {
+    public void addTeamOwnerUTest() {
         assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 0)));
         assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 1)));
 
@@ -30,15 +30,10 @@ public class ControllerTest {
         //false because of wrong username from user
         assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
 
-//
-//        System.out.println("-------------------------");
-//        System.out.println("|   4 PRINTS EXCEPTION  |");
-//        System.out.println("-------------------------");
-//        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal","gal",2)));
     }
 
     @Test
-    public void addTeamOwnerTest4() {
+    public void addTeamOwnerITest() {
         UIController.setIsTest(true);
         UIController.setSelector(1);
         TeamOwnerStub.setSelector(0);
@@ -47,11 +42,11 @@ public class ControllerTest {
     }
 
     @Test
-    public void addTeamOwnerTest5() {
+    public void addTeamOwner2ITest() {
         UIController.setIsTest(true);
-        TeamOwnerStub.setSelector(1);
+        TeamOwnerStub.setSelector(0);
         new SystemUserStub("newTOUsername", "newTO", 3);
-        UIController.setSelector(1);
+        UIController.setSelector(2);
         //false because of wrong username from user
         assertTrue(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
     }

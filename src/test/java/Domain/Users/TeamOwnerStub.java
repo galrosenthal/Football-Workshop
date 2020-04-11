@@ -21,7 +21,7 @@ public class TeamOwnerStub extends TeamOwner {
     @Override
     public List<Team> getOwnedTeams() {
         List<Team> test = new ArrayList<>();
-        if (selector == 0) {
+        if (selector == 0 ) {
             TeamStub teamStub = new TeamStub(0);
             test.add(teamStub);
             teamStub.addTeamOwner(this);

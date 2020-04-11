@@ -2,6 +2,7 @@ package Domain.Users;
 
 import Domain.Game.Team;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TeamOwner extends Role {
@@ -11,6 +12,7 @@ public class TeamOwner extends Role {
     public TeamOwner(SystemUser systemUser) {
         //TODO:
         super(RoleTypes.TEAM_OWNER,systemUser);
+        ownedTeams = new ArrayList<>();
     }
 
 
