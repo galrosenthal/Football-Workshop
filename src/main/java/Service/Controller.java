@@ -1,7 +1,6 @@
 package Service;
 
 import Domain.Controllers.TeamController;
-import Domain.Controllers.TopDomainController;
 import Domain.Game.Team;
 import Domain.Users.Role;
 import Domain.Users.RoleTypes;
@@ -12,17 +11,8 @@ import java.util.List;
 
 public class Controller {
 
-    TopServiceController currentServiceController = TopServiceController.getInstance();
 
-    TopDomainController currentDomainController = TopDomainController.getInstance();
-
-
-    private static volatile Controller mInstance;
-
-    private Controller() {
-    }
-
-    public boolean addTeamOwner(SystemUser systemUser)
+    public static boolean addTeamOwner(SystemUser systemUser)
     {
         if(!systemUser.isType(RoleTypes.TEAM_OWNER))
         {
@@ -39,7 +29,7 @@ public class Controller {
         String newTeamOwnerUsername = getUsernameFromUser("Team Owner");
 
         try{
-            currentDomainController.getTeamController().addTeamOwner(newTeamOwnerUsername,chosenTeam,myTeamOwner);
+            TeamController.addTeamOwner(newTeamOwnerUsername,chosenTeam,myTeamOwner);
         }
         catch (Exception e)
         {
@@ -50,38 +40,28 @@ public class Controller {
 
     }
 
-    private String getUsernameFromUser(String msg) {
-        currentServiceController.getUiController().printMessage("Enter new "+ msg +" Username:");
+    private static String getUsernameFromUser(String msg) {
+        UIController.printMessage("Enter new "+ msg +" Username:");
 
-        String username = currentServiceController.getUiController().receiveString();
+        String username = UIController.receiveString();
         return username;
 
     }
 
-    private Team getTeamByChoice(TeamOwner myTeamOwner) {
+    private static Team getTeamByChoice(TeamOwner myTeamOwner) {
         List<Team> myTeams = myTeamOwner.getOwnedTeams();
-        currentServiceController.getUiController().printMessage("Choose a Team Number");
+        UIController.printMessage("Choose a Team Number");
         for (int i = 0; i < myTeams.size() ; i++) {
-            currentServiceController.getUiController().printMessage(i + ". " + myTeams.get(i).getTeamName());
+            UIController.printMessage(i + ". " + myTeams.get(i).getTeamName());
         }
         int teamIndex;
 
         do{
-            teamIndex = currentServiceController.getUiController().receiveInt();
+            teamIndex = UIController.receiveInt();
         }while (!(teamIndex >= 0 && teamIndex < myTeams.size()));
 
         return myTeams.get(teamIndex);
     }
 
 
-    public static Controller getInstance() {
-        if (mInstance == null) {
-            synchronized (Controller.class) {
-                if (mInstance == null) {
-                    mInstance = new Controller();
-                }
-            }
-        }
-        return mInstance;
-    }
 }

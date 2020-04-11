@@ -10,7 +10,7 @@ import java.util.List;
 public class TeamController {
 
 
-    public boolean addTeamOwner(String username, Team teamToOwn, TeamOwner owner)
+    public static boolean addTeamOwner(String username, Team teamToOwn, TeamOwner owner)
     throws Exception{
 
         List<TeamOwner> teamOwners = teamToOwn.getTeamOwners();
