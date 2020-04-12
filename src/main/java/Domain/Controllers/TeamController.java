@@ -7,6 +7,7 @@ import Domain.Exceptions.*;
 import Service.UIController;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -72,7 +73,8 @@ public class TeamController {
         Player playerRole;
         if(getRoleForPlayer == null)
         {
-            PlayerFieldJobs filedJob = getPlayerFieldJob();
+            int fieldJobIndex = getEnumByRoleType("FiledJob for player", RoleTypes.PLAYER);
+            PlayerFieldJobs filedJob = PlayerFieldJobs.values()[fieldJobIndex];
             Date bday = getPlayerBirthDate();
             playerRole = new Player(playerUser,filedJob,bday);
         }
@@ -114,22 +116,71 @@ public class TeamController {
      * @return the field job chosen for the suer
      * @see PlayerFieldJobs
      */
-    private static PlayerFieldJobs getPlayerFieldJob() {
-        UIController.printMessage("Please Choose FiledJob for player");
-        for (int i = 0; i < PlayerFieldJobs.values().length; i++) {
-            UIController.printMessage(i + ". " + PlayerFieldJobs.values()[i]);
+    private static int getEnumByRoleType(String msg, RoleTypes rt) {
+        UIController.printMessage("Please Choose" + msg);
+        List<Object> values = new ArrayList<>();
+        if(rt == RoleTypes.PLAYER)
+        {
+
+            for (int i = 0; i < PlayerFieldJobs.values().length; i++) {
+                values.add(PlayerFieldJobs.values()[i]);
+            }
+
         }
-        int jobIndex;
+        else if(rt == RoleTypes.COACH)
+        {
+            for (int i = 0; i < Coach.CoachQualification.values().length; i++) {
+                values.add(Coach.CoachQualification.values()[i]);
+            }
+        }
+        else
+        {
+            return -1;
+        }
+
+        for (int i = 0; i < values.size(); i++) {
+            UIController.printMessage(i + ". " + values.get(i));
+        }
+
+        int index;
 
         do{
-            jobIndex = UIController.receiveInt();
-        }while (!(jobIndex >= 0 && jobIndex < PlayerFieldJobs.values().length));
+            index = UIController.receiveInt();
+        }while (!(index >= 0 && index < PlayerFieldJobs.values().length));
 
-        return PlayerFieldJobs.values()[jobIndex];
+        return index;
     }
 
-    public static boolean addCoach(String coachName, Team teamToAddCoach, TeamOwner teamOwner) throws Exception {
-        return false;
+    public static boolean addCoach(String coachUsername, Team teamToAddCoach, TeamOwner teamOwner) throws Exception {
+        SystemUser coachUser = EntityManager.getInstance().getUser(coachUsername);
+        if(coachUser == null)
+        {
+            throw new UserNotFoundException("Could not find a user by the given username" + coachUsername);
+        }
+
+        Role getRoleForUser = coachUser.getRole(RoleTypes.COACH);
+        Coach coachRole;
+        if(getRoleForUser == null)
+        {
+            int index = getEnumByRoleType("qualification for coach", RoleTypes.COACH);
+            Coach.CoachQualification qlf = Coach.CoachQualification.values()[index];
+
+            UIController.printMessage("what is the Coach JobTitle?");
+            String jobTitle = UIController.receiveString();
+
+            coachRole = new Coach(coachUser, qlf, teamToAddCoach, jobTitle);
+
+        }
+        else
+        {
+            coachRole = (Coach) getRoleForUser;
+            if(teamToAddCoach.getTeamCoaches().contains(coachRole))
+            {
+                throw new CoachIsAlreadyInThisTeamException("Coach is already in this team");
+            }
+        }
+
+        return teamToAddCoach.addTeamCoach(teamOwner,coachRole);
     }
 
     public static boolean addTeamManager(String managerName, Team teamToAddManager, TeamOwner teamOwner) throws Exception {

@@ -79,7 +79,15 @@ public class Team {
         }
         if(coach.getType() == RoleTypes.COACH)
         {
-            return teamCoaches.add((Coach) coach);
+            boolean addedCoach = teamCoaches.add((Coach)coach);
+            if(addedCoach) {
+                if (((Coach) coach).addTeam(this)) {
+                    return true;
+                } else {
+                    teamCoaches.remove((Coach) coach);
+                    return false;
+                }
+            }
         }
         return false;
     }
