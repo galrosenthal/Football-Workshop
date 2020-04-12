@@ -156,11 +156,6 @@ public class Controller {
                 return false;
         }
 
-
-
-
-
-
         return true;
     }
 
@@ -180,5 +175,37 @@ public class Controller {
 
         return TeamAsset.values()[assetIndex];
     }
+
+    /**
+     * Team Owner Asks to edit an asset to the Team
+     * @param systemUser - the System User of the Team Owner
+     * @return true if the asset was edit successfully, false otherwise.
+     */
+    public static boolean modifyTeamAssetDetails(SystemUser systemUser) throws Exception
+    {
+        TeamOwner myTeamOwner = getUserIfIsTeamOwner(systemUser);
+        if(myTeamOwner == null)
+        {
+            return false;
+        }
+        Team chosenTeam = getTeamByChoice(myTeamOwner);
+
+        if(chosenTeam == null)
+        {
+            throw new NoTeamExistsException("There was no Team found");
+        }
+        TeamController.chooseAssetToModify(chosenTeam);
+
+
+
+
+        return true;
+    }
+
+
+
+
+
+
 
 }

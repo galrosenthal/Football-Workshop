@@ -1,12 +1,16 @@
 package Domain.Controllers;
 
 import Domain.EntityManager;
+import Domain.Game.Stadium;
 import Domain.Game.Team;
+import Domain.Game.TeamAsset;
 import Domain.Users.*;
 import Domain.Exceptions.*;
 import Service.UIController;
+import com.sun.corba.se.spi.ior.ObjectKey;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -139,4 +143,247 @@ public class TeamController {
     public static boolean addStadium(String stadiumName, Team teamToAddStadium, TeamOwner teamOwner) throws Exception {
         return false;
     }
+
+
+    //FIXME!!!!!!!!!!!!!!!!!!!!!!
+
+    public static void chooseAssetToModify(Team chosenTeam) {
+
+        List<TeamAsset> assetsCanBeModify = TeamController.getAssetTypeFromUser(chosenTeam); //Get which asset to display
+        TeamAsset assetTypeToModify = assetTypeToModify(assetsCanBeModify);
+        String[] properties = null;
+        switch (assetTypeToModify){
+            case PLAYER :
+                try{
+                    Player playerToModify = getPlayerByChoice(chosenTeam);
+                    UIController.printMessage(playerToModify.toString());
+                    properties = Player.getProperties();
+                    int propertyIndexToModify = choosePropertiesToModify(properties);
+                    UIController.printMessage("Enter new property value "+properties[propertyIndexToModify]);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                break;
+            case COACH:
+                try {
+                    Coach coachToModify = getCoachByChoice(chosenTeam);
+                    UIController.printMessage(coachToModify.toString());
+                    properties = Coach.getProperties();
+                    int propertyIndexToModify = choosePropertiesToModify(properties);
+                    UIController.printMessage("Enter new property value "+properties[propertyIndexToModify]);
+
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                break;
+            case TEAM_MANAGER:
+                try {
+                    TeamManager teamManagerToModify= getTeamManagerByChoice(chosenTeam);
+                    UIController.printMessage(teamManagerToModify.toString());
+                    properties = TeamManager.getProperties();
+                    int propertyIndexToModify = choosePropertiesToModify(properties);
+                    UIController.printMessage("Enter new property value "+properties[propertyIndexToModify]);
+
+
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                break;
+            case STADIUM:
+                try {
+                    Stadium stadium = getStadiumByChoice(chosenTeam);
+                    UIController.printMessage(stadium.toString());
+                    properties = Stadium.getProperties();
+                    int propertyIndexToModify = choosePropertiesToModify(properties);
+                    UIController.printMessage("Enter new property value "+properties[propertyIndexToModify]);
+
+
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+        }
+
+
+
+
+
+    }
+
+
+
+    /**
+     *
+     * @param chosenTeam
+     * @return List<TeamAsset> - all the assets that the team has.
+     */
+
+    private static List<TeamAsset> getAssetTypeFromUser(Team chosenTeam) {
+        List<TeamAsset> teamAssets = new ArrayList<>();
+
+        if(chosenTeam.getStadiums().size()>0)
+        {
+            teamAssets.add(TeamAsset.STADIUM);
+        }
+        if(chosenTeam.getTeamCoaches().size()>0)
+        {
+            teamAssets.add(TeamAsset.COACH);
+        }
+        if(chosenTeam.getTeamPlayers().size()>0)
+        {
+            teamAssets.add(TeamAsset.PLAYER);
+        }
+        if(chosenTeam.getTeamManagers().size()>0)
+        {
+            teamAssets.add(TeamAsset.TEAM_MANAGER);
+        }
+        return teamAssets;
+
+    }
+
+
+    /**
+     *
+     * @param assetsCanBeModify
+     * @return TeamAsset - asset Type that user system want to modify
+     */
+    //todo: check TeamAsset.values()[i]);
+    private static TeamAsset assetTypeToModify(List<TeamAsset> assetsCanBeModify)
+    {
+        UIController.printMessage("Choose Asset Type: ");
+        for (int i = 0; i < assetsCanBeModify.size(); i++) {
+            UIController.printMessage(i + ". " + TeamAsset.values()[i]);
+        }
+        int assetIndex;
+        do{
+            assetIndex = UIController.receiveInt();
+        }while (!(assetIndex >= 0 && assetIndex < TeamAsset.values().length));
+
+        return TeamAsset.values()[assetIndex];
+    }
+
+
+    //todo: all the next function maybe should be in Team class - public.
+
+    /**
+     *
+     * @param chosenTeam
+     * @return Player - from chosenTeam who had been chosen by system user
+     */
+    private static Player getPlayerByChoice(Team chosenTeam) {
+        List<Player> myPlayers = chosenTeam.getTeamPlayers();
+        if(myPlayers == null)
+        {
+            return null;
+        }
+        UIController.printMessage("Choose a Player Number");
+        for (int i = 0; i < myPlayers.size() ; i++) {
+            UIController.printMessage(i + ". " + myPlayers.get(i).getSystemUser().getName());
+        }
+        int playerIndex;
+
+        do{
+            playerIndex = UIController.receiveInt();
+        }while (!(playerIndex >= 0 && playerIndex < myPlayers.size()));
+
+        return myPlayers.get(playerIndex);
+    }
+
+
+
+    /**
+     *
+     * @param chosenTeam
+     * @return Coach - from chosenTeam who had been chosen by system user
+     */
+    private static Coach getCoachByChoice(Team chosenTeam) {
+        List<Coach> myCoaches = chosenTeam.getTeamCoaches();
+        if(myCoaches == null)
+        {
+            return null;
+        }
+        UIController.printMessage("Choose a Coach Number");
+        for (int i = 0; i < myCoaches.size() ; i++) {
+            UIController.printMessage(i + ". " + myCoaches.get(i).getSystemUser().getName());
+        }
+        int coachIndex;
+
+        do{
+            coachIndex = UIController.receiveInt();
+        }while (!(coachIndex >= 0 && coachIndex < myCoaches.size()));
+
+        return myCoaches.get(coachIndex);
+    }
+
+    /**
+     *
+     * @param chosenTeam
+     * @return TeamManager - from chosenTeam who had been chosen by system user
+     */
+    private static TeamManager getTeamManagerByChoice(Team chosenTeam) {
+        List<TeamManager> myTeamManagers = chosenTeam.getTeamManagers();
+        if(myTeamManagers == null)
+        {
+            return null;
+        }
+        UIController.printMessage("Choose a Team Manager Number");
+        for (int i = 0; i < myTeamManagers.size() ; i++) {
+            UIController.printMessage(i + ". " + myTeamManagers.get(i).getSystemUser().getName());
+        }
+        int teamManagerIndex;
+
+        do{
+            teamManagerIndex = UIController.receiveInt();
+        }while (!(teamManagerIndex >= 0 && teamManagerIndex < myTeamManagers.size()));
+
+        return myTeamManagers.get(teamManagerIndex);
+    }
+
+    /**
+     *
+     * @param chosenTeam
+     * @return stadium - from chosenTeam who had been chosen by system user
+     */
+    private static Stadium getStadiumByChoice(Team chosenTeam) {
+        List<Stadium> myStadiums = chosenTeam.getStadiums();
+        if(myStadiums == null)
+        {
+            return null;
+        }
+        UIController.printMessage("Choose Stadium Number");
+        for (int i = 0; i < myStadiums.size() ; i++) {
+            UIController.printMessage(i + ". " + myStadiums.get(i).getStadName());
+        }
+        int stadiumIndex;
+
+        do{
+            stadiumIndex = UIController.receiveInt();
+        }while (!(stadiumIndex >= 0 && stadiumIndex < myStadiums.size()));
+
+        return myStadiums.get(stadiumIndex);
+    }
+
+    private static int choosePropertiesToModify(String [] properties)
+    {
+        UIController.printMessage("Choose Property Number to modify");
+        for (int i = 0; i < properties.length; i++) {
+            UIController.printMessage(i+". "+properties[i]);
+        }
+        int propertyIndex;
+        do{
+            propertyIndex = UIController.receiveInt();
+        }while (!(propertyIndex >= 0 && propertyIndex < properties.length));
+
+        return propertyIndex;
+    }
+
+
+
+
 }

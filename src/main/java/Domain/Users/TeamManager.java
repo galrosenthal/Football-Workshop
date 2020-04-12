@@ -7,6 +7,11 @@ public class TeamManager extends Role {
         super(RoleTypes.TEAM_MANAGER, systemUser);
     }
 
+
+    public static String[] getProperties() {
+        String [] properties = new String[3];
+        return properties;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

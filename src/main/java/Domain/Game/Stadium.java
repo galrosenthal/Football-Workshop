@@ -12,6 +12,13 @@ public class Stadium {
         this.stadLocation = stadLocation;
     }
 
+    public static String[] getProperties() {
+        String [] properties = new String[3];
+        properties[0] = "Name";
+        properties[1] = "Location";
+        return properties;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

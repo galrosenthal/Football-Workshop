@@ -18,7 +18,6 @@ public class Player extends Role {
         bday = brthDay;
     }
 
-
     public boolean addTeam(Team playTeam)
     {
         if(playerTeam == null)
@@ -29,6 +28,13 @@ public class Player extends Role {
         return false;
     }
 
+    public static String[] getProperties() {
+        String [] properties = new String[3];
+        properties[0] = "Field Job";
+        properties[1] = "Team";
+        properties[2] = "Birthday";
+        return properties;
+    }
 
     @Override
     public boolean equals(Object o) {
