@@ -12,11 +12,16 @@ public class Stadium {
         this.stadLocation = stadLocation;
     }
 
-    public static String[] getProperties() {
+    public String[] getProperties() {
         String [] properties = new String[3];
         properties[0] = "Name";
         properties[1] = "Location";
         return properties;
+    }
+
+    public boolean changeProperty(String property)
+    {
+        return false;
     }
 
     @Override

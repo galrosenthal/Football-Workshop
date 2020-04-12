@@ -21,12 +21,18 @@ public class Coach extends Role {
         teamJob = jobTitle;
     }
 
-    public static String[] getProperties() {
+    @Override
+    public String[] getProperties() {
         String [] properties = new String[3];
         properties[0] = "Qualification";
         properties[1] = "Team";
         properties[2] = "Team job";
         return properties;
+    }
+    @Override
+    public boolean changeProperty(String property)
+    {
+        return false;
     }
 
     @Override

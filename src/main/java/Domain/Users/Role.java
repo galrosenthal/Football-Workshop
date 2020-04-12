@@ -24,4 +24,14 @@ public abstract class Role {
     }
 
 
+    public String[] getProperties() {
+        return null;
+    }
+
+    public boolean changeProperty(String property)
+    {
+        return false;
+    }
+
+
 }

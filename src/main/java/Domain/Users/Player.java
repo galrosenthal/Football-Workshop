@@ -28,13 +28,22 @@ public class Player extends Role {
         return false;
     }
 
-    public static String[] getProperties() {
+    @Override
+    public String[] getProperties() {
         String [] properties = new String[3];
         properties[0] = "Field Job";
         properties[1] = "Team";
         properties[2] = "Birthday";
         return properties;
     }
+
+    @Override
+    public boolean changeProperty(String property)
+    {
+        return false;
+    }
+
+
 
     @Override
     public boolean equals(Object o) {

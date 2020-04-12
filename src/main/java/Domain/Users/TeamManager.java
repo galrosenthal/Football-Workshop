@@ -7,10 +7,15 @@ public class TeamManager extends Role {
         super(RoleTypes.TEAM_MANAGER, systemUser);
     }
 
-
-    public static String[] getProperties() {
+    @Override
+    public String[] getProperties() {
         String [] properties = new String[3];
         return properties;
+    }
+    @Override
+    public boolean changeProperty(String property)
+    {
+        return false;
     }
     @Override
     public boolean equals(Object o) {

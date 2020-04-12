@@ -157,7 +157,7 @@ public class TeamController {
                 try{
                     Player playerToModify = getPlayerByChoice(chosenTeam);
                     UIController.printMessage(playerToModify.toString());
-                    properties = Player.getProperties();
+                    properties = playerToModify.getProperties();
                     int propertyIndexToModify = choosePropertiesToModify(properties);
                     UIController.printMessage("Enter new property value "+properties[propertyIndexToModify]);
                 }
@@ -170,7 +170,7 @@ public class TeamController {
                 try {
                     Coach coachToModify = getCoachByChoice(chosenTeam);
                     UIController.printMessage(coachToModify.toString());
-                    properties = Coach.getProperties();
+                    properties = coachToModify.getProperties();
                     int propertyIndexToModify = choosePropertiesToModify(properties);
                     UIController.printMessage("Enter new property value "+properties[propertyIndexToModify]);
 
@@ -183,7 +183,7 @@ public class TeamController {
                 try {
                     TeamManager teamManagerToModify= getTeamManagerByChoice(chosenTeam);
                     UIController.printMessage(teamManagerToModify.toString());
-                    properties = TeamManager.getProperties();
+                    properties = teamManagerToModify.getProperties();
                     int propertyIndexToModify = choosePropertiesToModify(properties);
                     UIController.printMessage("Enter new property value "+properties[propertyIndexToModify]);
 
@@ -197,7 +197,7 @@ public class TeamController {
                 try {
                     Stadium stadium = getStadiumByChoice(chosenTeam);
                     UIController.printMessage(stadium.toString());
-                    properties = Stadium.getProperties();
+                    properties = stadium.getProperties();
                     int propertyIndexToModify = choosePropertiesToModify(properties);
                     UIController.printMessage("Enter new property value "+properties[propertyIndexToModify]);
 
@@ -216,14 +216,14 @@ public class TeamController {
     public static void chooseAssetToModify(Team chosenTeam) {
 
         List<TeamAsset> assetsCanBeModify = TeamController.getAssetTypeFromUserG(chosenTeam); //Get which asset to display
-        TeamAsset assetTypeToModify = assetTypeToModify(assetsCanBeModify);
+        TeamAsset assetTypeToModify = assetTypeToModify();
         String[] properties = null;
         //todo: check
         if(assetTypeToModify == TeamAsset.STADIUM)
         {
             Stadium stadium = getStadiumByChoice(chosenTeam);
             UIController.printMessage(stadium.toString());
-            properties = Stadium.getProperties();
+            properties = stadium.getProperties();
             int propertyIndexToModify = choosePropertiesToModify(properties);
             UIController.printMessage("Enter new property value "+properties[propertyIndexToModify]);
         }
@@ -231,6 +231,9 @@ public class TeamController {
         {
             Role roleToModify= getRoleByChoice(chosenTeam);
             UIController.printMessage(roleToModify.toString());
+            properties = roleToModify.getProperties();
+            int propertyIndexToModify = choosePropertiesToModify(properties);
+
             /*Properties!!!!!!!!!*/
         }
     }
@@ -289,22 +292,26 @@ public class TeamController {
 
     /**
      *
-     * @param assetsCanBeModify
      * @return TeamAsset - asset Type that user system want to modify
      */
     //todo: check TeamAsset.values()[i]);
-    private static TeamAsset assetTypeToModifyG(List<TeamAsset> assetsCanBeModify)
+    private static TeamAsset assetTypeToModify()
     {
         UIController.printMessage("Choose Asset Type: ");
-        for (int i = 0; i < assetsCanBeModify.size(); i++) {
-            UIController.printMessage(i + ". " + TeamAsset.values()[i]);
-        }
+        UIController.printMessage(0 + ". Role");
+        UIController.printMessage(1 + ". Stadium");
         int assetIndex;
         do{
             assetIndex = UIController.receiveInt();
-        }while (!(assetIndex >= 0 && assetIndex < TeamAsset.values().length));
-
-        return TeamAsset.values()[assetIndex];
+        }while (!(assetIndex >= 0 && assetIndex < 2));
+        if(assetIndex == 1)
+        {
+            return TeamAsset.STADIUM;
+        }
+        else
+        {
+            return TeamAsset.PLAYER;
+        }
     }
 
 
