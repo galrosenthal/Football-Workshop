@@ -318,5 +318,15 @@ public class Team {
             return true;
         }
     }
-    
+
+    public List<Role> getAllRoles() {
+
+        List<Role> allTeamRoles = new ArrayList<>();
+        allTeamRoles.addAll(this.teamPlayers);
+        allTeamRoles.addAll(this.teamCoaches);
+        allTeamRoles.addAll(this.teamManagers);
+        return  allTeamRoles;
+    }
+
+
 }

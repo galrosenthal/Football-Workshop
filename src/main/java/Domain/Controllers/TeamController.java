@@ -144,7 +144,7 @@ public class TeamController {
         return false;
     }
 
-
+/*
     //FIXME!!!!!!!!!!!!!!!!!!!!!!
 
     public static void chooseAssetToModify(Team chosenTeam) {
@@ -209,13 +209,53 @@ public class TeamController {
                 break;
             default:
         }
-
-
-
-
-
     }
 
+ */
+
+    public static void chooseAssetToModify(Team chosenTeam) {
+
+        List<TeamAsset> assetsCanBeModify = TeamController.getAssetTypeFromUserG(chosenTeam); //Get which asset to display
+        TeamAsset assetTypeToModify = assetTypeToModify(assetsCanBeModify);
+        String[] properties = null;
+        //todo: check
+        if(assetTypeToModify == TeamAsset.STADIUM)
+        {
+            Stadium stadium = getStadiumByChoice(chosenTeam);
+            UIController.printMessage(stadium.toString());
+            properties = Stadium.getProperties();
+            int propertyIndexToModify = choosePropertiesToModify(properties);
+            UIController.printMessage("Enter new property value "+properties[propertyIndexToModify]);
+        }
+        else
+        {
+            Role roleToModify= getRoleByChoice(chosenTeam);
+            UIController.printMessage(roleToModify.toString());
+            /*Properties!!!!!!!!!*/
+        }
+    }
+
+
+    /**
+     *
+     * @param chosenTeam
+     * @return List<TeamAsset> - all the assets that the team has.
+     */
+
+    private static List<TeamAsset> getAssetTypeFromUserG(Team chosenTeam) {
+        List<TeamAsset> teamAssets = new ArrayList<>();
+
+        if(chosenTeam.getStadiums().size()>0)
+        {
+            teamAssets.add(TeamAsset.STADIUM);
+        }
+        if(chosenTeam.getAllRoles().size()>0)
+        {
+            teamAssets.add(TeamAsset.TEAM_MANAGER);
+        }
+        return teamAssets;
+
+    }
 
 
     /**
@@ -247,6 +287,26 @@ public class TeamController {
 
     }
 
+    /**
+     *
+     * @param assetsCanBeModify
+     * @return TeamAsset - asset Type that user system want to modify
+     */
+    //todo: check TeamAsset.values()[i]);
+    private static TeamAsset assetTypeToModifyG(List<TeamAsset> assetsCanBeModify)
+    {
+        UIController.printMessage("Choose Asset Type: ");
+        for (int i = 0; i < assetsCanBeModify.size(); i++) {
+            UIController.printMessage(i + ". " + TeamAsset.values()[i]);
+        }
+        int assetIndex;
+        do{
+            assetIndex = UIController.receiveInt();
+        }while (!(assetIndex >= 0 && assetIndex < TeamAsset.values().length));
+
+        return TeamAsset.values()[assetIndex];
+    }
+
 
     /**
      *
@@ -269,7 +329,32 @@ public class TeamController {
     }
 
 
+    /**
+     *
+     * @param chosenTeam
+     * @return role - from chosenTeam who had been chosen by system user
+     */
+    private static Role getRoleByChoice(Team chosenTeam) {
+        List<Role> myRoles = chosenTeam.getAllRoles();
+        if(myRoles == null)
+        {
+            return null;
+        }
+        UIController.printMessage("Choose an Asset Role Number");
+        for (int i = 0; i < myRoles.size() ; i++) {
+            UIController.printMessage(i + ". " + myRoles.get(i).getSystemUser().getName());
+        }
+        int roleIndex;
+
+        do{
+            roleIndex = UIController.receiveInt();
+        }while (!(roleIndex >= 0 && roleIndex < myRoles.size()));
+
+        return myRoles.get(roleIndex);
+    }
+
     //todo: all the next function maybe should be in Team class - public.
+
 
     /**
      *
@@ -294,6 +379,8 @@ public class TeamController {
 
         return myPlayers.get(playerIndex);
     }
+
+
 
 
 
