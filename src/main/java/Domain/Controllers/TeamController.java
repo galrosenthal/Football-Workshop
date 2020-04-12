@@ -216,26 +216,31 @@ public class TeamController {
     public static void chooseAssetToModify(Team chosenTeam) {
 
         List<TeamAsset> assetsCanBeModify = TeamController.getAssetTypeFromUserG(chosenTeam); //Get which asset to display
-        TeamAsset assetTypeToModify = assetTypeToModify();
+        TeamAsset assetTypeToModify = TeamAsset.PLAYER;
         String[] properties = null;
+        if(assetsCanBeModify.size() > 1)
+        {
+            assetTypeToModify = assetTypeToModify();
+
+        }
         //todo: check
         if(assetTypeToModify == TeamAsset.STADIUM)
         {
             Stadium stadium = getStadiumByChoice(chosenTeam);
             UIController.printMessage(stadium.toString());
             properties = stadium.getProperties();
-            int propertyIndexToModify = choosePropertiesToModify(properties);
-            UIController.printMessage("Enter new property value "+properties[propertyIndexToModify]);
+            /*Properties!!!!!!!!!*/
+
         }
         else
         {
             Role roleToModify= getRoleByChoice(chosenTeam);
             UIController.printMessage(roleToModify.toString());
             properties = roleToModify.getProperties();
-            int propertyIndexToModify = choosePropertiesToModify(properties);
 
             /*Properties!!!!!!!!!*/
         }
+        int propertyIndexToModify = choosePropertiesToModify(properties);
     }
 
 
