@@ -2,6 +2,7 @@ package Domain;
 
 import DB.DBManager;
 import DB.Table;
+import Domain.Game.Stadium;
 import Domain.Users.Role;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
@@ -13,6 +14,7 @@ public class EntityManager {
     private static EntityManager entityManagerInstance = null;
 
     List<SystemUser> allUsers;
+    List<Stadium> allStadiums;
 
     private EntityManager() {
         allUsers = new ArrayList<>();
@@ -108,10 +110,27 @@ public class EntityManager {
         }
         return null;
     }
+    public Stadium getStadium(String stadiumName) {
+        for (Stadium std: allStadiums) {
+            if (std.getStadName().equals(stadiumName)) {
+                return std;
+            }
+        }
+        return null;
+    }
 
     public boolean addUser(SystemUser systemUser) {
         if (!(this.allUsers.contains(systemUser))) {
             this.allUsers.add(systemUser);
+        }
+        return true;
+    }
+
+    public boolean addStadium(Stadium newStadium)
+    {
+        if(!this.allStadiums.contains(newStadium))
+        {
+            this.allStadiums.add(newStadium);
         }
         return true;
     }

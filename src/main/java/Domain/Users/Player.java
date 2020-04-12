@@ -12,8 +12,7 @@ public class Player extends Role {
     private Team playerTeam;
     private Date bday;
 
-    public Player(SystemUser systemUser,
-                  PlayerFieldJobs fieldJob, Date brthDay) {
+    public Player(SystemUser systemUser, PlayerFieldJobs fieldJob, Date brthDay) {
         super(RoleTypes.PLAYER, systemUser);
         this.fieldJob = fieldJob;
         bday = brthDay;

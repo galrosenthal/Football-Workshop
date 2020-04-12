@@ -1,6 +1,7 @@
 package Service;
 
-import Domain.EntityManager;
+import Domain.Exceptions.alreadyTeamOwnerException;
+import Domain.Exceptions.UserNotFoundException;
 import Domain.Users.SystemUserStub;
 import Domain.Users.TeamOwnerStub;
 import org.junit.After;
@@ -20,8 +21,8 @@ public class ControllerTest {
     public void tearDown() throws Exception {
     }
 
-    @Test
-    public void addTeamOwnerUTest() {
+    @Test(expected = UserNotFoundException.class)
+    public void addTeamOwnerUTest() throws Exception {
         assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 0)));
         assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 1)));
 
@@ -32,8 +33,8 @@ public class ControllerTest {
 
     }
 
-    @Test
-    public void addTeamOwnerITest() {
+    @Test(expected = alreadyTeamOwnerException.class)
+    public void addTeamOwnerITest() throws Exception {
         UIController.setIsTest(true);
         UIController.setSelector(1);
         TeamOwnerStub.setSelector(0);
@@ -42,7 +43,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void addTeamOwner2ITest() {
+    public void addTeamOwner2ITest() throws Exception{
         UIController.setIsTest(true);
         TeamOwnerStub.setSelector(0);
         new SystemUserStub("newTOUsername", "newTO", 3);
