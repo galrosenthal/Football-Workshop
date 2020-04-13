@@ -19,14 +19,12 @@ public class Unregistered {
             throw new Exception("Username or Password was incorrect!!!!!");
 
         //User name exists, checking password.
-        List<String> userDetails = DBManager.getInstance().getSystemUsers().getRecord(new String[]{"username"}, new String[]{usrNm});
-        if (userDetails.get(1).equals(pswrd)) {
-            UIController.printMessage("Successful login. Welcome back, "+ usrNm);
+        //List<String> userDetails = DBManager.getInstance().getSystemUsers().getRecord(new String[]{"username"}, new String[]{usrNm});
+        if (userWithUsrNm.getPassword().equals(pswrd)) {
             this.systemUser = userWithUsrNm;
             return userWithUsrNm;
         }
         throw new Exception("Username or Password was incorrect!!!!!");
-
     }
 
     public SystemUser signUp(String name, String usrNm, String pswrd) throws Exception {
@@ -39,7 +37,7 @@ public class Unregistered {
         }
 
         SystemUser newUser = new SystemUser(usrNm, name);
-        Fan newFan = new Fan(newUser);
+        Fan newFan = new Fan(newUser); //add the role "fan" to the new user
         entManager.addUser(newUser);
 
         //Adding user to system-users table
