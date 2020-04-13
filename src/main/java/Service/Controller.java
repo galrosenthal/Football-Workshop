@@ -112,56 +112,44 @@ public class Controller {
             case PLAYER :
                 name = getUsernameFromUser("Player");
                 try{
-                    TeamController.addPlayer(name,chosenTeam,myTeamOwner);
+                    return TeamController.addPlayer(name,chosenTeam,myTeamOwner);
                 }
                 catch (Exception e)
                 {
                     e.printStackTrace();
+                    return false;
                 }
-
-                break;
             case COACH:
                 name = getUsernameFromUser("Coach");
                 try {
-                    TeamController.addCoach(name,chosenTeam,myTeamOwner);
+                    return TeamController.addCoach(name,chosenTeam,myTeamOwner);
                 }catch (Exception e)
                 {
                     e.printStackTrace();
+                    return false;
                 }
-
-                break;
             case TEAM_MANAGER:
                 name = getUsernameFromUser("Team Manager");
                 try {
-                    TeamController.addTeamManager(name,chosenTeam,myTeamOwner);
+                    return TeamController.addTeamManager(name,chosenTeam,myTeamOwner);
                 }catch (Exception e)
                 {
                     e.printStackTrace();
+                    return false;
                 }
-
-
-                break;
             case STADIUM:
                 UIController.printMessage("Enter Stadium Username:");
                 name = UIController.receiveString();
                 try {
-                    TeamController.addStadium(name,chosenTeam,myTeamOwner);
+                    return TeamController.addStadium(name,chosenTeam,myTeamOwner);
                 }catch (Exception e)
                 {
                     e.printStackTrace();
+                    return false;
                 }
-
-                break;
             default:
                 return false;
         }
-
-
-
-
-
-
-        return true;
     }
 
 

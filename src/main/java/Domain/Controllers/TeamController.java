@@ -183,7 +183,21 @@ public class TeamController {
         return teamToAddCoach.addTeamCoach(teamOwner,coachRole);
     }
 
-    public static boolean addTeamManager(String managerName, Team teamToAddManager, TeamOwner teamOwner) throws Exception {
+    public static boolean addTeamManager(String managerUsername, Team teamToAddManager, TeamOwner teamOwner) throws Exception {
+        SystemUser managerUser = EntityManager.getInstance().getUser(managerUsername);
+        if(managerUser == null)
+        {
+            throw new UserNotFoundException("Could not find a user by the given username" + managerUsername);
+        }
+
+        Role getRoleForUser = managerUser.getRole(RoleTypes.COACH);
+        TeamManager managerRole;
+        if(getRoleForUser == null)
+        {
+
+
+            managerRole = new TeamManager(managerUser);
+        }
         return false;
     }
 
