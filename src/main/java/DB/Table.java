@@ -14,7 +14,6 @@ public class Table {
     public final static String ROLE = "role";
 
 
-
     /**
      * The columns names
      */
@@ -36,23 +35,22 @@ public class Table {
 
     /**
      * Adds a value to a specific record in a specific column
-     * @param recIndex the index of the record to change
-     * @param colTitle  the title of the column to change
+     *
+     * @param recIndex   the index of the record to change
+     * @param colTitle   the title of the column to change
      * @param valueToAdd the value to add
      * @return true if the insertion succeeded
      */
-    public boolean addValueToRecordInSpecificCol(int recIndex, String colTitle, String valueToAdd)
-    {
+    public boolean addValueToRecordInSpecificCol(int recIndex, String colTitle, String valueToAdd) {
         int titleIndex = titles.indexOf(colTitle);
-        if(titleIndex < 0)
-        {
+        if (titleIndex < 0) {
             return false;
         }
         List<String> recordDetails = table.get(recIndex);
         String record = recordDetails.get(titleIndex);
 
         recordDetails.remove(titleIndex);
-        table.get(recIndex).add(titleIndex,record+";"+valueToAdd);
+        table.get(recIndex).add(titleIndex, record + ";" + valueToAdd);
 
 
         return true;
@@ -61,16 +59,15 @@ public class Table {
 
     /**
      * Removes a value from a specific record in a specific column
-     * @param recIndex the index of the record to change
-     * @param colTitle  the title of the column to change
+     *
+     * @param recIndex      the index of the record to change
+     * @param colTitle      the title of the column to change
      * @param valueToRemove the value to add
      * @return true if the removal succeeded
      */
-    public boolean removeValueFromRecordInSpecificCol(int recIndex, String colTitle, String valueToRemove)
-    {
+    public boolean removeValueFromRecordInSpecificCol(int recIndex, String colTitle, String valueToRemove) {
         int titleIndex = titles.indexOf(colTitle);
-        if(titleIndex < 0)
-        {
+        if (titleIndex < 0) {
             return false;
         }
         List<String> recordDetails = table.get(recIndex);
@@ -80,12 +77,9 @@ public class Table {
         StringBuilder newValue = new StringBuilder();
 
         boolean isValueAdded = false;
-        for(String value : splittedRecord)
-        {
-            if(!value.equalsIgnoreCase(valueToRemove))
-            {
-                if(newValue.length() != 0)
-                {
+        for (String value : splittedRecord) {
+            if (!value.equalsIgnoreCase(valueToRemove)) {
+                if (newValue.length() != 0) {
                     newValue.append(";");
                 }
                 newValue.append(value);
@@ -94,7 +88,7 @@ public class Table {
         }
 
         recordDetails.remove(titleIndex);
-        table.get(recIndex).add(titleIndex,newValue.toString());
+        table.get(recIndex).add(titleIndex, newValue.toString());
 
 
         return true;
@@ -168,70 +162,94 @@ public class Table {
 
     /**
      * Receives an array of key fields and an array of their values and return the FIRST record with those values.
+     *
      * @param keyFields - String[] - an array of key fields names
-     * @param values - String[] - an array of key fields values
+     * @param values    - String[] - an array of key fields values
      * @return - List<String> - a record with values matching the values given, null if no record was found
      */
     public List<String> getRecord(String[] keyFields, String[] values) {
-        int[] keyFieldsIndexes = new int[keyFields.length];
-        for (int i = 0; i < keyFields.length; i++) {
-            for (int j = 0; j < this.titles.size(); j++) {
-                if (titles.get(j).equals(keyFields[i])) {
-                    keyFieldsIndexes[i] = j;
-                }
-            }
+        int[] keyFieldsIndexes = getFieldsIndexes(keyFields);
+        if (keyFieldsIndexes == null) {
+            return null;
         }
-
         for (int i = 0; i < table.size(); i++) {
             List<String> record = table.get(i);
-            boolean matchingValues=true;
+            boolean matchingValues = true;
             for (int j = 0; j < keyFieldsIndexes.length; j++) {
-                if(!(record.get(keyFieldsIndexes[j]).equals(values[j]))){
+                if (!(record.get(keyFieldsIndexes[j]).equals(values[j]))) {
                     matchingValues = false;
                 }
             }
-            if (matchingValues){
+            if (matchingValues) {
                 return record;
             }
         }
         return null;
     }
 
+    /**
+     * Receives an array of key fields and an array of their values and return a sub-table
+     * with all the records in the table with those values.
+     *
+     * @param keyFields - String[] - an array of key fields names
+     * @param values    - String[] - an array of key fields values
+     * @return - a Table with records with matching values to those given, empty table if no record was found
+     */
     public Table getRecords(String[] keyFields, String[] values) {
         Table subTable = new Table();
         subTable.setTitles(this.getTitles());
 
-
-        int[] keyFieldsIndexes = new int[keyFields.length];
-        for (int i = 0; i < keyFields.length; i++) {
-            for (int j = 0; j < this.titles.size(); j++) {
-                if (titles.get(j).equals(keyFields[i])) {
-                    keyFieldsIndexes[i] = j;
-                }
-            }
+        int[] keyFieldsIndexes = getFieldsIndexes(keyFields);
+        if (keyFieldsIndexes == null) {
+            return null;
         }
 
         for (int i = 0; i < table.size(); i++) {
             List<String> record = table.get(i);
-            boolean matchingValues=true;
+            boolean matchingValues = true;
             for (int j = 0; j < keyFieldsIndexes.length; j++) {
-                if(!(record.get(keyFieldsIndexes[j]).equals(values[j]))){
+                if (!(record.get(keyFieldsIndexes[j]).equals(values[j]))) {
                     matchingValues = false;
                 }
             }
-            if (matchingValues){
+            if (matchingValues) {
                 subTable.addRecord(record);
             }
         }
         return subTable;
     }
 
-    public boolean updateRecord(int recordIndex,String colTitle,String valueToAdd){
+    /**
+     * Returns an array of the indexes of the given columns names
+     *
+     * @param fields - String[] - Column names, elements in titles
+     * @return - int[] - An array of the indexes matching the given columns names
+     */
+    private int[] getFieldsIndexes(String[] fields) {
+        int[] keyFieldsIndexes = new int[fields.length];
+        for (int i = 0; i < fields.length; i++) {
+            boolean found = false;
+            for (int j = 0; j < this.titles.size(); j++) {
+                if (titles.get(j).equals(fields[i])) {
+                    keyFieldsIndexes[i] = j;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return null;
+            }
+        }
+        return keyFieldsIndexes;
+    }
+
+    //FIXME: Whoever wrote this method should fix it and make sure she does as the name suggests. A) I'm pretty sure it doesn't work. B)The name is "update" and the method doesn't updates, but rather adds. PLEASE FIX!
+    public boolean updateRecord(int recordIndex, String colTitle, String valueToAdd) {
         int indexTitle = titles.indexOf(colTitle);
-        String record =table.get(recordIndex).get(indexTitle);
-        record += +';'+ valueToAdd;
+        String record = table.get(recordIndex).get(indexTitle);
+        record += +';' + valueToAdd;
         //table.get(recordIndex).get(indexTitle) = record;
-        return  false;
+        return false;
     }
 
     /**
@@ -240,7 +258,7 @@ public class Table {
      * example: table.getRecordValue(<recordIndex>,<title>)
      *
      * @param recordIndex - int - the index of the desired record
-     * @param title       - column name of the desired value.
+     * @param title       - String - column name of the desired value.
      * @return - String - record's value
      */
     public String getRecordValue(int recordIndex, String title) {
@@ -255,13 +273,33 @@ public class Table {
         return null;
     }
 
+    /**
+     * Receives an array of key fields, an array of their values and a desired value title.
+     * Returns the desired value of the FIRST record in the table
+     * with values in the key fields matching the given fields values.
+     *
+     * @param keyFields    - String[] - an array of key fields names
+     * @param fieldsValues - String[] - an array of key fields values
+     * @param valueTitle   - String - column name of the desired value.
+     * @return - String - record's value if found, else null
+     */
+    public String getRecordValue(String[] keyFields, String[] fieldsValues, String valueTitle) {
+        List<String> record = this.getRecord(keyFields, fieldsValues);
+        int[] fieldsIndexes = getFieldsIndexes(new String[]{valueTitle});
+        if (record != null && fieldsIndexes != null) {
+            int fieldIndex = fieldsIndexes[0];
+            return record.get(fieldIndex);
+        }
+        return null;
+    }
+
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Table:\n");
         for (String columnName : titles) {
-            stringBuilder.append(columnName + "|");
+            stringBuilder.append(columnName + "\\/");
         }
         stringBuilder.append("\n");
 
