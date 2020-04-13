@@ -28,13 +28,23 @@ public class Unregistered {
     }
 
     public SystemUser signUp(String name, String usrNm, String pswrd) throws Exception {
-        //TODO: Check if password is according to security requirements (what are them?)
-
         //Checking if user name is already exists
         EntityManager entManager = EntityManager.getInstance();
         if(entManager.getUser(usrNm) != null){
             throw new Exception("Username already exists");
         }
+
+        //Checking if the password meets the security requirements
+        // at least 8 characters
+        // at least 1 number
+        // at least 1 upper case letter
+        // at least 1 lower case letter
+        // must not contain any spaces
+        String pswrdRegEx = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$";
+        if(!pswrd.matches(pswrdRegEx)){
+            throw new Exception("Password does not meet the requirements");
+        }
+
 
         SystemUser newUser = new SystemUser(usrNm, name);
         Fan newFan = new Fan(newUser); //add the role "fan" to the new user

@@ -1,17 +1,26 @@
 import DB.*;
+import Domain.EntityManager;
+import Domain.Users.SystemUser;
+import Domain.Users.Unregistered;
 
 import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) throws Exception {
         System.out.println("System is Loading...");
-        initSystem();
+        EntityManager.getInstance().initSystem();
+        Unregistered unreg = new Unregistered();
+        unreg.signUp("Nir", "nir", "b12A345678");
+       // unreg.login("rosengal", "12345678");
+
+
+        //initSystem();
     }
 
     private static void initSystem()
     {
+
         System.out.println("Please Insert System Admin credentials.");
 
 
@@ -69,6 +78,7 @@ public class Main {
         return false;
     }
 
+    //TODO: Table.ROLE returns the entire role segment with ; and stuff. Fix It!!!!
     private static boolean isSystemAdmin(Table users, int getUserIndex) {
         String role = users.getRecordValue(getUserIndex, Table.ROLE);
         return "System Admin".equals(role);

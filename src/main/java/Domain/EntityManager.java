@@ -2,9 +2,7 @@ package Domain;
 
 import DB.DBManager;
 import DB.Table;
-import Domain.Users.Role;
-import Domain.Users.RoleTypes;
-import Domain.Users.SystemUser;
+import Domain.Users.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +22,16 @@ public class EntityManager {
      * @return - DBManager - an instance of dbManager
      */
     public static EntityManager getInstance() {
-        if (entityManagerInstance == null)
+        if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
+        }
         return entityManagerInstance;
     }
 
 
-    public SystemUser login(String usrNm, String pswrd) throws Exception {
+    //login function moved to Unregistered
+
+   /* public SystemUser login(String usrNm, String pswrd) throws Exception {
         for (SystemUser su : allUsers) {
             if (su.getUsername().equalsIgnoreCase(usrNm)) {
                 List<String> userDetails = DBManager.getInstance().getSystemUsers().getRecord(new String[]{"username"}, new String[]{usrNm});
@@ -42,9 +43,9 @@ public class EntityManager {
         }
         throw new Exception("Username or Password was incorrect!!!!!");
 
-    }
+    }*/
 
-    private void initSystem() throws Exception {
+    public void initSystem() throws Exception {
         Table systemUsersTable = DBManager.getInstance().getSystemUsers();
         for (int i = 0; i < systemUsersTable.size(); i++) {
             String username = systemUsersTable.getRecordValue(i, "username");
@@ -55,7 +56,8 @@ public class EntityManager {
             for (String role : roles) {
                 switch (role) {
                     case "fan":
-                        newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.FAN));
+                       // newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.FAN));
+                        new Fan(newUser);
                         break;
                     case "player":
                         newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.PLAYER));
@@ -67,10 +69,12 @@ public class EntityManager {
                         newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.TEAM_MANAGER));
                         break;
                     case "team owner":
-                        newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.TEAM_OWNER));
+                       // newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.TEAM_OWNER));
+                        new TeamOwner(newUser);
                         break;
                     case "system admin":
-                        newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.SYSTEM_ADMIN));
+                      //  newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.SYSTEM_ADMIN));
+                        new SystemAdmin(newUser);
                         break;
                     case "referee":
                         newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.REFEREE));
@@ -93,6 +97,7 @@ public class EntityManager {
 
         try {
             Table roleRecords = DBManager.getInstance().getRelevantRecords(username, roleType);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -2,15 +2,43 @@ package Service;
 
 import Domain.Controllers.TeamController;
 import Domain.Game.Team;
-import Domain.Users.Role;
-import Domain.Users.RoleTypes;
-import Domain.Users.SystemUser;
-import Domain.Users.TeamOwner;
+import Domain.Users.*;
 
 import java.util.List;
 
 public class Controller {
 
+    public static boolean systemBoot(){
+        //Establishing connections to external DBMS
+        //access DB
+        //extract system admins
+
+        UIController.printMessage("Please enter a system administrator username: ");
+        String username = UIController.receiveString();
+        UIController.printMessage("Please enter your password: ");
+        String password = UIController.receiveString();
+
+        //Retrieve system user
+        SystemUser admin = null;
+        try {
+            admin =  new Unregistered().login(username, password);
+        } catch (Exception e) {
+            UIController.printMessage("Username or Password was incorrect!!!!!");
+            e.printStackTrace();
+        }
+        UIController.printMessage("Successful login. Welcome back, "+ admin.getName());
+        //system boot choice
+        boolean choice = UIController.receiveChoice("Would you like to boot the system? y/n");
+        if (!choice){
+            return false;
+        }
+
+        //Establishing connections to external financial system
+
+        //Establishing connections to external tax system
+        UIController.printMessage("The system was booted successfully");
+        return true;
+    }
 
     public static boolean addTeamOwner(SystemUser systemUser)
     {
