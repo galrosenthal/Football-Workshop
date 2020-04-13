@@ -2,9 +2,11 @@ package DB;
 
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
+
 import com.sun.org.apache.xalan.internal.xsltc.dom.SimpleResultTreeImpl;
 import javafx.scene.control.Tab;
 import org.junit.*;
+
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -28,8 +30,8 @@ public class TableTest {
     protected static Table initTestTable(Table table) {
         for (int i = 0; i < 10; i++) {
             ArrayList<String> record = new ArrayList<>();
-            record.add("rec1-"+i);
-            record.add("rec2-"+i);
+            record.add("rec1-" + i);
+            record.add("rec2-" + i);
             table.addRecord(record);
         }
         return table;
@@ -79,15 +81,16 @@ public class TableTest {
     public void getRecordValueUTestUTest() {
         assertTrue(table.size() == 0);
         table = initTestTable(table);
-        assertTrue((table.getRecordValue(0,"col1")).equals("rec1-0"));
+        assertTrue((table.getRecordValue(0, "col1")).equals("rec1-0"));
     }
+
     @Test
     public void getRecordValue2UTestUTest() {
         table = initTestTable(table);
         //The given recordIndex is bigger then table.size()
-        assertTrue((table.getRecordValue(10,"col1")) == null);
+        assertTrue((table.getRecordValue(10, "col1")) == null);
         //The given column title doesn't exists
-        assertTrue((table.getRecordValue(9,"not a title")) == null);
+        assertTrue((table.getRecordValue(9, "not a title")) == null);
     }
 
     @Test
@@ -96,26 +99,27 @@ public class TableTest {
         table = initTestTable(table);
         assertTrue(table.size() == 10);
 
-        List<String> record = table.getRecord(new String[]{"col1"},new String[]{"rec1-0"});
+        List<String> record = table.getRecord(new String[]{"col1"}, new String[]{"rec1-0"});
         assertTrue(record.get(1).equals("rec2-0"));
-        record = table.getRecord(new String[]{"col2"},new String[]{"rec2-0"});
+        record = table.getRecord(new String[]{"col2"}, new String[]{"rec2-0"});
         assertTrue(record.get(1).equals("rec2-0"));
-        record = table.getRecord(new String[]{"col1","col2"},new String[]{"rec1-0","rec2-0"});
+        record = table.getRecord(new String[]{"col1", "col2"}, new String[]{"rec1-0", "rec2-0"});
         assertTrue(record.get(1).equals("rec2-0"));
-        record = table.getRecord(new String[]{"col2","col1"},new String[]{"rec2-0","rec1-0"});
+        record = table.getRecord(new String[]{"col2", "col1"}, new String[]{"rec2-0", "rec1-0"});
         assertTrue(record.get(1).equals("rec2-0"));
-        record = table.getRecord(new String[]{"col2","col1"},new String[]{"rec2-1","rec1-1"});
+        record = table.getRecord(new String[]{"col2", "col1"}, new String[]{"rec2-1", "rec1-1"});
         assertTrue(record.get(1).equals("rec2-1"));
-        record = table.getRecord(new String[]{"col1"},new String[]{"WRONG"});
+        record = table.getRecord(new String[]{"col1"}, new String[]{"WRONG"});
         assertNull(record);
     }
 
     @Test
     public void getRecordsUTest() {
         table = initTestTable(table);
-        Table subTable = table.getRecords(new String[]{"col1"},new String[]{"rec1-0"});
+        Table subTable = table.getRecords(new String[]{"col1"}, new String[]{"rec1-0"});
         //subTable should have a single entry
         assertTrue(subTable.size() == 1);
+        assertTrue(subTable.getTitles().equals(table.getTitles()));
         assertTrue(subTable.getRecord(0).get(1).equals("rec2-0"));
         //adding a new matching record
         ArrayList<String> record = new ArrayList<>();
@@ -123,7 +127,7 @@ public class TableTest {
         record.add("newRec-col2");
         table.addRecord(record);
         //subTable should have two entries
-        subTable = table.getRecords(new String[]{"col1"},new String[]{"rec1-0"});
+        subTable = table.getRecords(new String[]{"col1"}, new String[]{"rec1-0"});
         assertTrue(subTable.size() == 2);
         assertTrue(subTable.getRecord(0).get(1).equals("rec2-0"));
         assertTrue(subTable.getRecord(1).get(1).equals("newRec-col2"));
@@ -133,10 +137,11 @@ public class TableTest {
     @Test
     public void getRecords2UTest() {
         table = initTestTable(table);
-        Table subTable = table.getRecords(new String[]{"not a col"},new String[]{"rec1-0"});
+        Table subTable = table.getRecords(new String[]{"not a col"}, new String[]{"rec1-0"});
         //subTable should have a single entry
         assertTrue(subTable == null);
     }
+
     @Test
     public void getRecordValue3UTest() {
         table = initTestTable(table);
@@ -148,6 +153,7 @@ public class TableTest {
         assertTrue(recordValue == null);
 
     }
+
     @Test
     public void getRecordValue4UTest() {
         table = initTestTable(table);
@@ -160,12 +166,11 @@ public class TableTest {
         assertEquals(0, table.size());
         table = initTestTable(table);
         assertEquals(10, table.size());
-        System.out.println(table);
 
-        assertFalse(table.addValueToRecordInSpecificCol(0,"COL1","12345"));
+        assertFalse(table.addValueToRecordInSpecificCol(0, "COL1", "12345"));
 
-        assertTrue(table.addValueToRecordInSpecificCol(0,"col1","12345"));
-        assertEquals("rec1-0;12345",table.getTable().get(0).get(0));
+        assertTrue(table.addValueToRecordInSpecificCol(0, "col1", "12345"));
+        assertEquals("rec1-0;12345", table.getTable().get(0).get(0));
 
     }
 
@@ -175,18 +180,26 @@ public class TableTest {
         table = initTestTable(table);
         assertEquals(10, table.size());
 
+        assertTrue(table.addValueToRecordInSpecificCol(0, "col1", "12345"));
+        assertEquals("rec1-0;12345", table.getTable().get(0).get(0));
 
-        assertTrue(table.addValueToRecordInSpecificCol(0,"col1","12345"));
-        assertEquals("rec1-0;12345",table.getTable().get(0).get(0));
+        assertFalse(table.removeValueFromRecordInSpecificCol(0, "COL1", "12345"));
+        assertTrue(table.removeValueFromRecordInSpecificCol(0, "col1", "12345"));
+        assertEquals("rec1-0", table.getTable().get(0).get(0));
 
-        assertFalse(table.removeValueFromRecordInSpecificCol(0,"COL1","12345"));
-        assertTrue(table.removeValueFromRecordInSpecificCol(0,"col1","12345"));
-        assertEquals("rec1-0",table.getTable().get(0).get(0));
+        assertTrue(table.addValueToRecordInSpecificCol(0, "col1", "123"));
+        assertTrue(table.addValueToRecordInSpecificCol(0, "col1", "456"));
+        assertTrue(table.removeValueFromRecordInSpecificCol(0, "col1", "123"));
+        assertEquals("rec1-0;456", table.getTable().get(0).get(0));
 
-        assertTrue(table.addValueToRecordInSpecificCol(0,"col1","123"));
-        assertTrue(table.addValueToRecordInSpecificCol(0,"col1","456"));
-        assertTrue(table.removeValueFromRecordInSpecificCol(0,"col1","123"));
-        assertEquals("rec1-0;456",table.getTable().get(0).get(0));
+    }
 
+    @Test
+    public void toStringUTest() {
+        assertFalse(table.toString().isEmpty());
+        System.out.println(table);
+
+        table = initTestTable(table);
+        assertTrue(table.toString().contains("|"));
     }
 }

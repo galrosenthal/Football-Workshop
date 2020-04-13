@@ -169,7 +169,7 @@ public class Table {
      */
     public List<String> getRecord(String[] keyFields, String[] values) {
         int[] keyFieldsIndexes = getFieldsIndexes(keyFields);
-        if(keyFieldsIndexes == null){
+        if (keyFieldsIndexes == null) {
             return null;
         }
         for (int i = 0; i < table.size(); i++) {
@@ -200,7 +200,7 @@ public class Table {
         subTable.setTitles(this.getTitles());
 
         int[] keyFieldsIndexes = getFieldsIndexes(keyFields);
-        if(keyFieldsIndexes == null){
+        if (keyFieldsIndexes == null) {
             return null;
         }
 
@@ -236,7 +236,7 @@ public class Table {
                     break;
                 }
             }
-            if (!found){
+            if (!found) {
                 return null;
             }
         }
@@ -299,7 +299,7 @@ public class Table {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Table:\n");
         for (String columnName : titles) {
-            stringBuilder.append(columnName + "|");
+            stringBuilder.append(columnName + "\\/");
         }
         stringBuilder.append("\n");
 
