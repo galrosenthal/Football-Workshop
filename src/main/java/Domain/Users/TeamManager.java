@@ -18,11 +18,13 @@ public class TeamManager extends Role implements Asset {
         List<String> properties = new ArrayList<>();
         return properties;
     }
+
     @Override
     public boolean changeProperty(String property)
     {
         return false;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
