@@ -218,7 +218,7 @@ public class Controller {
         }
 
         boolean isSuccess = TeamController.editAssets(chosenTeam);
-        
+
         return true;
     }
 
