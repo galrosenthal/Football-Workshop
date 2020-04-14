@@ -4,6 +4,7 @@ import Domain.Controllers.TeamController;
 import Domain.Exceptions.NoTeamExistsException;
 import Domain.Exceptions.alreadyTeamOwnerException;
 import Domain.Exceptions.UserNotFoundException;
+import Domain.Game.Asset;
 import Domain.Game.Team;
 import Domain.Game.TeamAsset;
 import Domain.Users.*;
@@ -215,11 +216,9 @@ public class Controller {
         {
             throw new NoTeamExistsException("There was no Team found");
         }
-        TeamController.chooseAssetToModify(chosenTeam);
 
-
-
-
+        boolean isSuccess = TeamController.editAssets(chosenTeam);
+        
         return true;
     }
 

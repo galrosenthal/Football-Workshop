@@ -39,11 +39,59 @@ public class Player extends Role implements Asset {
     }
 
     @Override
-    public boolean changeProperty(String property)
+    public boolean changeProperty(String property, String toChange)
     {
+        if(property.equals("Field Job"))
+        {
+            this.fieldJob = PlayerFieldJobs.valueOf(toChange);
+            return true;
+        }
         return false;
     }
 
+    @Override
+    public boolean isListProperty(String property) {
+        return false;
+    }
+
+    @Override
+    public boolean isStringProperty(String property) {
+        return false;
+    }
+
+    @Override
+    public boolean isEnumProperty(String property) {
+        if(property.equals("Field Job"))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void addProperty() {
+
+    }
+
+    @Override
+    public void removeProperty() {
+
+    }
+
+    @Override
+    public List<Enum> getAllValues(String property) {
+        List<Enum> allEnumValues = new ArrayList<>();
+        if(property.equals("Qualification"))
+        {
+            PlayerFieldJobs[] playerFieldJobs = PlayerFieldJobs.values();
+            for (int i = 0; i < playerFieldJobs.length; i++) {
+                //todo: check!
+                allEnumValues.add(playerFieldJobs[i]);
+            }
+            return allEnumValues;
+        }
+        return allEnumValues;
+    }
 
 
     @Override

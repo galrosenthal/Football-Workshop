@@ -20,9 +20,39 @@ public class TeamManager extends Role implements Asset {
     }
 
     @Override
-    public boolean changeProperty(String property)
+    public boolean changeProperty(String toChange, String property)
     {
         return false;
+    }
+
+    @Override
+    public boolean isListProperty(String property) {
+        return true;
+    }
+
+    @Override
+    public boolean isStringProperty(String property) {
+        return false;
+    }
+
+    @Override
+    public boolean isEnumProperty(String property) {
+        return false;
+    }
+
+    @Override
+    public void addProperty() {
+
+    }
+
+    @Override
+    public void removeProperty() {
+
+    }
+
+    @Override
+    public List<Enum> getAllValues(String property) {
+        return null;
     }
 
     @Override
