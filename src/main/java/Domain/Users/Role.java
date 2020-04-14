@@ -8,7 +8,7 @@ public abstract class Role {
     public Role(RoleTypes type, SystemUser systemUser) {
         this.type = type;
         this.systemUser = systemUser;
-        systemUser.addNewRole(this);
+        //systemUser.addNewRole(this);
     }
 
     public SystemUser getSystemUser() {

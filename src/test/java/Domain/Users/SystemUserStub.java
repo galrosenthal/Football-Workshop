@@ -29,11 +29,11 @@ public class SystemUserStub extends SystemUser{
 
     public void addNewRole(Role role)
     {
-        roles.add(role);
+        getRoles().add(role);
     }
 
     public List<Role> getRoles() {
-        return roles;
+        return getRoles();
     }
 
     public boolean isType(RoleTypes roleType) {

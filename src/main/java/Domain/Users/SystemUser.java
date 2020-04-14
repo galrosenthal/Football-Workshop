@@ -7,15 +7,15 @@ import java.util.List;
 
 public class SystemUser {
 
-    List<Role> roles;
+    private List<Role> roles;
 
     protected String username;
-//    private String pass;
+    private String password;
     private String name;
 
-    public SystemUser(String username,String pass, String name) {
+    public SystemUser(String username,String password, String name) {
         this(username,name);
-
+        this.password = password;
         //TODO: Add to database?????
     }
 
@@ -27,6 +27,10 @@ public class SystemUser {
     }
 
 //
+
+    public String getPassword() {
+        return password;
+    }
 
     public String getName() {
         return name;
