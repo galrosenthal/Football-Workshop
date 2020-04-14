@@ -6,10 +6,7 @@ import Domain.Exceptions.alreadyTeamOwnerException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.Team;
 import Domain.Game.TeamAsset;
-import Domain.Users.Role;
-import Domain.Users.RoleTypes;
-import Domain.Users.SystemUser;
-import Domain.Users.TeamOwner;
+import Domain.Users.*;
 
 import java.util.List;
 

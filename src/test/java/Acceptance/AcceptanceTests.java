@@ -26,7 +26,7 @@ public class AcceptanceTests {
     }
 
     @Test
-    public void addTeamOwnerATest() {
+    public void addTeamOwnerATest() throws Exception {
         UIController.setIsTest(true);
         Controller.addTeamOwner(new SystemUser("rosengal","Gal"));
     }
