@@ -210,20 +210,51 @@ public class TeamController {
     public static boolean editAssets(Team chosenTeam)
     {
         List<Asset> allAssetsTeam = chosenTeam.getAllAssets();
+        if(allAssetsTeam.size()==0)
+        {
+            try {
+                throw new AssetsNotExistsException("There is not assets to team");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         int assetIndex =TeamController.chooseAssetToModify(allAssetsTeam);
         List<String> properties = allAssetsTeam.get(assetIndex).getProperties();
+        if(properties.size() == 0)
+        {
+            try {
+                throw new AssetCantBeModifiedException("Nothing can be modify in this asset");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         int propertyIndexToModify = choosePropertiesToModify(properties);
-        allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify), properties.get(propertyIndexToModify));
         if( allAssetsTeam.get(assetIndex).isListProperty(properties.get(propertyIndexToModify)))
         {
             int action = actionToDo();
+            //FIXME!!
             if(action == 0)
             {
-                allAssetsTeam.get(assetIndex).addProperty();
+                boolean isAdded = addProperty(allAssetsTeam.get(assetIndex) , properties.get(propertyIndexToModify));
+                if(isAdded)
+                {
+                    try {
+                        throw new AssetCantBeModifiedException("Can not modify asset");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             else
             {
-                allAssetsTeam.get(assetIndex).removeProperty();
+                boolean isRemoved = removeProperty(allAssetsTeam.get(assetIndex) , properties.get(propertyIndexToModify));
+                if(!isRemoved) {
+                    try {
+                        throw new AssetCantBeModifiedException("Can not modify asset");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         else if(allAssetsTeam.get(assetIndex).isEnumProperty(properties.get(propertyIndexToModify)))
@@ -236,10 +267,22 @@ public class TeamController {
         {
             UIController.printMessage("Enter new value: ");
             String newValue = UIController.receiveString();
+            //todo: check string?
             allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify) , newValue);
         }
         return true;
     }
+
+    //Fixme! need to see how to handel with list of property!  - in teamManger permissions
+    private static boolean addProperty(Asset asset, String s) {
+        return false;
+    }
+
+    private static boolean removeProperty(Asset asset, String s) {
+
+        return false;
+    }
+
     /**
      *
      * @param allAssetsTeam - List<Asset>

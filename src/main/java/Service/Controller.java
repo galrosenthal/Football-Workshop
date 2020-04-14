@@ -219,7 +219,9 @@ public class Controller {
 
         boolean isSuccess = TeamController.editAssets(chosenTeam);
 
-        return true;
+        UIController.printMessage("The action completed successfully");
+
+        return isSuccess;
     }
 
 

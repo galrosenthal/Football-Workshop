@@ -8,7 +8,6 @@ public interface Asset {
 
     boolean changeProperty(String propertyToChange, String newValue);
 
-    //boolean allValidProperty(String property);
     boolean isListProperty(String property);
 
     boolean isStringProperty(String property);
