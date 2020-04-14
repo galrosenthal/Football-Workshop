@@ -46,5 +46,14 @@ public class Coach extends Role implements Asset {
                 teamJob.equals(coach.teamJob);
     }
 
+    public boolean addTeam(Team teamToAdd)
+    {
+        if(teamToAdd != null)
+        {
+            this.coachedTeam = teamToAdd;
+            return true;
+        }
+        return false;
+    }
 
 }
