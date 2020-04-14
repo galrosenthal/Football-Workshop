@@ -1,12 +1,15 @@
 package Domain.Users;
 
+import Domain.Game.Asset;
 import Domain.Game.Team;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 
-public class Player extends Role {
+public class Player extends Role implements Asset {
 
     private PlayerFieldJobs fieldJob;
     private Team playerTeam;
@@ -29,11 +32,9 @@ public class Player extends Role {
     }
 
     @Override
-    public String[] getProperties() {
-        String [] properties = new String[3];
-        properties[0] = "Field Job";
-        properties[1] = "Team";
-        properties[2] = "Birthday";
+    public List<String> getProperties() {
+        List<String>properties = new ArrayList<>();
+        properties.add("Field Job");
         return properties;
     }
 

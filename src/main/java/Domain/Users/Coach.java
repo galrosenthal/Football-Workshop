@@ -1,8 +1,12 @@
 package Domain.Users;
 
+import Domain.Game.Asset;
 import Domain.Game.Team;
 
-public class Coach extends Role {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Coach extends Role implements Asset {
 
 
     public enum CoachQualification {
@@ -22,11 +26,9 @@ public class Coach extends Role {
     }
 
     @Override
-    public String[] getProperties() {
-        String [] properties = new String[3];
-        properties[0] = "Qualification";
-        properties[1] = "Team";
-        properties[2] = "Team job";
+    public List<String> getProperties() {
+        List<String> properties = new ArrayList<>();
+        properties.add("Team job");
         return properties;
     }
     @Override

@@ -1,15 +1,21 @@
 package Domain.Users;
 
+import Domain.Game.Asset;
 import Domain.Game.Team;
 
-public class TeamManager extends Role {
+import java.util.ArrayList;
+import java.util.List;
+
+public class TeamManager extends Role implements Asset {
     public TeamManager(SystemUser systemUser) {
         super(RoleTypes.TEAM_MANAGER, systemUser);
     }
 
+
+    //todo: add permissions!
     @Override
-    public String[] getProperties() {
-        String [] properties = new String[3];
+    public List<String> getProperties() {
+        List<String> properties = new ArrayList<>();
         return properties;
     }
     @Override

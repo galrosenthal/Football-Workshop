@@ -319,13 +319,14 @@ public class Team {
         }
     }
 
-    public List<Role> getAllRoles() {
+    public List<Asset> getAllAssets() {
 
-        List<Role> allTeamRoles = new ArrayList<>();
-        allTeamRoles.addAll(this.teamPlayers);
-        allTeamRoles.addAll(this.teamCoaches);
-        allTeamRoles.addAll(this.teamManagers);
-        return  allTeamRoles;
+        List<Asset> allTeamAssets = new ArrayList<>();
+        allTeamAssets.addAll(this.teamPlayers);
+        allTeamAssets.addAll(this.teamCoaches);
+        allTeamAssets.addAll(this.teamManagers);
+        allTeamAssets.addAll(this.stadiums);
+        return allTeamAssets;
     }
 
 

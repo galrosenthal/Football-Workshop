@@ -1,8 +1,10 @@
 package Domain.Game;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class Stadium {
+public class Stadium implements Asset{
 
     String stadName;
     String stadLocation;
@@ -12,13 +14,14 @@ public class Stadium {
         this.stadLocation = stadLocation;
     }
 
-    public String[] getProperties() {
-        String [] properties = new String[3];
-        properties[0] = "Name";
-        properties[1] = "Location";
+    @Override
+    public List<String> getProperties() {
+        List<String> properties = new ArrayList<>();
+        properties.add("Name");
         return properties;
     }
 
+    @Override
     public boolean changeProperty(String property)
     {
         return false;
