@@ -61,6 +61,7 @@ public class AcceptanceTests {
             Assert.fail();
         }
         catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -74,6 +75,7 @@ public class AcceptanceTests {
             Assert.fail();
         }
         catch (Exception e){
+            e.printStackTrace();
         }
 
     }
@@ -98,6 +100,7 @@ public class AcceptanceTests {
             Assert.fail();
         }
         catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -111,6 +114,7 @@ public class AcceptanceTests {
             Assert.fail();
         }
         catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

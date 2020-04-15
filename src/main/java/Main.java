@@ -10,12 +10,6 @@ public class Main {
     public static void main(String[] args) throws Exception {
         System.out.println("System is Loading...");
         EntityManager.getInstance().initSystem();
-        Unregistered unreg = new Unregistered();
-        unreg.signUp("Nir", "nir", "b12A345678");
-       // unreg.login("rosengal", "12345678");
-
-
-        //initSystem();
     }
 
     private static void initSystem()

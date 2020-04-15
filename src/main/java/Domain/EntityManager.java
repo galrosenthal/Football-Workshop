@@ -29,22 +29,6 @@ public class EntityManager {
     }
 
 
-    //login function moved to Unregistered
-
-   /* public SystemUser login(String usrNm, String pswrd) throws Exception {
-        for (SystemUser su : allUsers) {
-            if (su.getUsername().equalsIgnoreCase(usrNm)) {
-                List<String> userDetails = DBManager.getInstance().getSystemUsers().getRecord(new String[]{"username"}, new String[]{usrNm});
-                if (userDetails.get(2).equals(pswrd)) {
-                    return su;
-                }
-
-            }
-        }
-        throw new Exception("Username or Password was incorrect!!!!!");
-
-    }*/
-
     public void initSystem() throws Exception {
         Table systemUsersTable = DBManager.getInstance().getSystemUsers();
         for (int i = 0; i < systemUsersTable.size(); i++) {
@@ -56,8 +40,7 @@ public class EntityManager {
             for (String role : roles) {
                 switch (role) {
                     case "fan":
-                       // newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.FAN));
-                        new Fan(newUser);
+                        newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.FAN));
                         break;
                     case "player":
                         newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.PLAYER));
@@ -69,12 +52,10 @@ public class EntityManager {
                         newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.TEAM_MANAGER));
                         break;
                     case "team owner":
-                       // newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.TEAM_OWNER));
-                        new TeamOwner(newUser);
+                        newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.TEAM_OWNER));
                         break;
                     case "system admin":
-                      //  newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.SYSTEM_ADMIN));
-                        new SystemAdmin(newUser);
+                        newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.SYSTEM_ADMIN));
                         break;
                     case "referee":
                         newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.REFEREE));
@@ -122,9 +103,7 @@ public class EntityManager {
     }
 
     public boolean removeUserByReference(SystemUser systemUser) {
-        if (this.allUsers.contains(systemUser)) {
-            this.allUsers.remove(systemUser);
-        }
+        this.allUsers.remove(systemUser);
         return true;
     }
 }

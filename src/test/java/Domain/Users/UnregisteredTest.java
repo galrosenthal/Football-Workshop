@@ -32,7 +32,7 @@ public class UnregisteredTest {
             Assert.fail();
         }
         catch(Exception e) {
-
+            e.printStackTrace();
         }
 
         //working good
@@ -50,16 +50,14 @@ public class UnregisteredTest {
             Assert.fail();
         }
         catch(Exception e) {
+            e.printStackTrace();
         }
         EntityManager.getInstance().removeUserByReference(systemUser);
     }
 
     @Test
     public void signUpUTest() throws Exception {
-       // SystemUser result = unregistered.signUp("name", "usrNm", "pswrd");
-       // Assert.assertEquals(new SystemUser("username", null, "name"), result);
-
-        //working good
+        //success
         SystemUser newUser = unregistered.signUp("Avi", "avi", "1234cB57");
         Assert.assertEquals("avi", newUser.getUsername());
         Assert.assertEquals("Avi", newUser.getName());
@@ -74,7 +72,7 @@ public class UnregisteredTest {
 
         }
         catch(Exception e) {
-
+            e.printStackTrace();
         }
 
         try {
@@ -83,7 +81,7 @@ public class UnregisteredTest {
             Assert.fail();
         }
         catch(Exception e) {
-
+            e.printStackTrace();
         }
 
         try {
@@ -92,6 +90,7 @@ public class UnregisteredTest {
             Assert.fail();
         }
         catch(Exception e) {
+            e.printStackTrace();
         }
 
         EntityManager.getInstance().removeUserByReference(systemUser);
