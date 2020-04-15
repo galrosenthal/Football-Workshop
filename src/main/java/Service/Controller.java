@@ -4,6 +4,7 @@ import Domain.Controllers.TeamController;
 import Domain.Exceptions.NoTeamExistsException;
 import Domain.Exceptions.alreadyTeamOwnerException;
 import Domain.Exceptions.UserNotFoundException;
+import Domain.Game.Asset;
 import Domain.Game.Team;
 import Domain.Game.TeamAsset;
 import Domain.Users.*;
@@ -196,5 +197,37 @@ public class Controller {
 
         return TeamAsset.values()[assetIndex];
     }
+
+    /**
+     * Team Owner Asks to edit an asset to the Team
+     * @param systemUser - the System User of the Team Owner
+     * @return true if the asset was edit successfully, false otherwise.
+     */
+    public static boolean modifyTeamAssetDetails(SystemUser systemUser) throws Exception
+    {
+        TeamOwner myTeamOwner = getUserIfIsTeamOwner(systemUser);
+        if(myTeamOwner == null)
+        {
+            return false;
+        }
+        Team chosenTeam = getTeamByChoice(myTeamOwner);
+
+        if(chosenTeam == null)
+        {
+            throw new NoTeamExistsException("There was no Team found");
+        }
+
+        boolean isSuccess = TeamController.editAssets(chosenTeam);
+
+        UIController.printMessage("The action completed successfully");
+
+        return isSuccess;
+    }
+
+
+
+
+
+
 
 }

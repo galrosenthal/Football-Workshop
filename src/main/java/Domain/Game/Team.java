@@ -15,6 +15,8 @@ public class Team {
     private List<Coach> teamCoaches;
     private List<TeamManager> teamManagers;
     private List<TeamOwner> teamOwners;
+    private List<Stadium> stadiums;
+
 
     public List<TeamOwner> getTeamOwners() {
         return teamOwners;
@@ -280,4 +282,60 @@ public class Team {
     public void setTeamName(String testName) {
         this.teamName = testName;
     }
+
+    /**
+     *Getter Stadiums
+     * @return list of Stadiums
+     */
+    public List<Stadium> getStadiums() {
+        return stadiums;
+    }
+
+    /**
+     *
+     * @param stadium
+     * add stadium to team
+     * @return true if stadium added successfully!
+     */
+    public boolean addStadiums(Stadium stadium) {
+        if(this.stadiums.contains(stadiums))
+        {
+            return false;
+        }
+        else
+        {
+            this.stadiums.add(stadium);
+            return true;
+        }
+    }
+
+    /**
+     *
+     * @param stadium
+     * remove stadium to team
+     * @return true if stadium removed successfully!
+     */
+    public boolean removeStadiums(Stadium stadium) {
+        if(!this.stadiums.contains(stadiums))
+        {
+            return false;
+        }
+        else
+        {
+            this.stadiums.remove(stadium);
+            return true;
+        }
+    }
+
+    public List<Asset> getAllAssets() {
+
+        List<Asset> allTeamAssets = new ArrayList<>();
+        allTeamAssets.addAll(this.teamPlayers);
+        allTeamAssets.addAll(this.teamCoaches);
+        allTeamAssets.addAll(this.teamManagers);
+        allTeamAssets.addAll(this.stadiums);
+        return allTeamAssets;
+    }
+
+
 }

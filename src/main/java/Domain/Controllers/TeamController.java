@@ -1,6 +1,7 @@
 package Domain.Controllers;
 
 import Domain.EntityManager;
+import Domain.Game.Asset;
 import Domain.Game.Team;
 import Domain.Users.*;
 import Domain.Exceptions.*;
@@ -16,7 +17,7 @@ public class TeamController {
 
 
     public static boolean addTeamOwner(String username, Team teamToOwn, TeamOwner owner)
-    throws Exception{
+            throws Exception {
 
         List<TeamOwner> teamOwners = teamToOwn.getTeamOwners();
 
@@ -129,8 +130,8 @@ public class TeamController {
         }
         else if(rt == RoleTypes.COACH)
         {
-            for (int i = 0; i < Coach.CoachQualification.values().length; i++) {
-                values.add(Coach.CoachQualification.values()[i]);
+            for (int i = 0; i < CoachQualification.values().length; i++) {
+                values.add(CoachQualification.values()[i]);
             }
         }
         else
@@ -163,7 +164,7 @@ public class TeamController {
         if(getRoleForUser == null)
         {
             int index = getEnumByRoleType("qualification for coach", RoleTypes.COACH);
-            Coach.CoachQualification qlf = Coach.CoachQualification.values()[index];
+            CoachQualification qlf = CoachQualification.values()[index];
 
             UIController.printMessage("what is the Coach JobTitle?");
             String jobTitle = UIController.receiveString();
@@ -204,4 +205,160 @@ public class TeamController {
     public static boolean addStadium(String stadiumName, Team teamToAddStadium, TeamOwner teamOwner) throws Exception {
         return false;
     }
+
+
+    public static boolean editAssets(Team chosenTeam)
+    {
+        List<Asset> allAssetsTeam = chosenTeam.getAllAssets();
+        if(allAssetsTeam.size()==0)
+        {
+            try {
+                throw new AssetsNotExistsException("There is not assets to team");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        int assetIndex =TeamController.chooseAssetToModify(allAssetsTeam);
+        List<String> properties = allAssetsTeam.get(assetIndex).getProperties();
+        if(properties.size() == 0)
+        {
+            try {
+                throw new AssetCantBeModifiedException("Nothing can be modify in this asset");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        int propertyIndexToModify = choosePropertiesToModify(properties);
+        if( allAssetsTeam.get(assetIndex).isListProperty(properties.get(propertyIndexToModify)))
+        {
+            int action = actionToDo();
+            //FIXME!!
+            if(action == 0)
+            {
+                boolean isAdded = addProperty(allAssetsTeam.get(assetIndex) , properties.get(propertyIndexToModify));
+                if(isAdded)
+                {
+                    try {
+                        throw new AssetCantBeModifiedException("Can not modify asset");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            else
+            {
+                boolean isRemoved = removeProperty(allAssetsTeam.get(assetIndex) , properties.get(propertyIndexToModify));
+                if(!isRemoved) {
+                    try {
+                        throw new AssetCantBeModifiedException("Can not modify asset");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        else if(allAssetsTeam.get(assetIndex).isEnumProperty(properties.get(propertyIndexToModify)))
+        {
+            List<Enum> allEnumValues = allAssetsTeam.get(assetIndex).getAllValues(properties.get(propertyIndexToModify));
+            int propertyNewValueIndex = changePropertyValue(allEnumValues);
+            allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify) ,  allEnumValues.get(propertyNewValueIndex).toString());
+        }
+        else if(allAssetsTeam.get(assetIndex).isStringProperty(properties.get(propertyIndexToModify)))
+        {
+            UIController.printMessage("Enter new value: ");
+            String newValue = UIController.receiveString();
+            //todo: check string?
+            allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify) , newValue);
+        }
+        return true;
+    }
+
+    //Fixme! need to see how to handel with list of property!  - in teamManger permissions
+    private static boolean addProperty(Asset asset, String s) {
+        return false;
+    }
+
+    private static boolean removeProperty(Asset asset, String s) {
+
+        return false;
+    }
+
+    /**
+     *
+     * @param allAssetsTeam - List<Asset>
+     */
+    private static int chooseAssetToModify(List<Asset> allAssetsTeam) {
+
+        UIController.printMessage("Choose Asset to modify: ");
+        for (int i = 0; i < allAssetsTeam.size(); i++) {
+            UIController.printMessage(i+1 + ". " + allAssetsTeam.get(i));
+        }
+        int assetIndex;
+        do {
+            assetIndex = UIController.receiveInt();
+        } while (!(assetIndex >= 1 && assetIndex < allAssetsTeam.size()));
+        return assetIndex;
+
+
+    }
+
+
+
+
+    /**
+     * In case the user wants to modify EnumProperty - choose which new property he wants to change.
+     * @param allEnumValues
+     * @return
+     */
+    private static int changePropertyValue( List<Enum> allEnumValues) {
+        UIController.printMessage("Choose Property new value ");
+        for (int i = 0; i < allEnumValues.size(); i++) {
+            UIController.printMessage(i + ". " + allEnumValues.get(i).toString());
+
+        }
+        int propertyNewValueIndex;
+        do {
+            propertyNewValueIndex = UIController.receiveInt();
+        } while (!(propertyNewValueIndex >= 0 && propertyNewValueIndex < allEnumValues.size()));
+        return propertyNewValueIndex;
+
+    }
+
+    /**
+     *
+     * @param properties - list of all properties
+     * @return propertyIndex -int- the user wants to modify
+     */
+    private static int choosePropertiesToModify( List<String>properties) {
+        UIController.printMessage("Choose Property Number to modify");
+        for (int i = 0; i < properties.size(); i++) {
+            UIController.printMessage(i + ". " + properties.get(i));
+        }
+        int propertyIndex;
+        do {
+            propertyIndex = UIController.receiveInt();
+        } while (!(propertyIndex >= 0 && propertyIndex < properties.size()));
+
+        return propertyIndex;
+    }
+
+    /**
+     * In case the property ia a list - let the user to choose if he want to Add or Delete value to the list
+     * @return 0 - if to add value , 1 - if to remove value
+     */
+    private static int actionToDo()
+    {
+        UIController.printMessage("Choose which action: ");
+        UIController.printMessage("1. Add");
+        UIController.printMessage("2. Remove");
+        int propertyIndex;
+        do {
+            propertyIndex = UIController.receiveInt()-1;
+        } while (!(propertyIndex >= 0 && propertyIndex <=1));
+
+        return propertyIndex;
+    }
+
+
+
 }
