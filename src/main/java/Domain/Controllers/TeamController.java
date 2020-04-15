@@ -1,6 +1,7 @@
 package Domain.Controllers;
 
 import Domain.EntityManager;
+import Domain.Game.Season;
 import Domain.Game.Team;
 import Domain.Users.*;
 
@@ -17,7 +18,6 @@ public class TeamController {
 
         SystemUser newTeamOwnerUser = EntityManager.getInstance().getUser(username);
 
-        //TODO: check already owned another team in the league
         if(newTeamOwnerUser == null)
         {
             throw new Exception("Could not find a user by the given username");
@@ -33,6 +33,10 @@ public class TeamController {
         {
 
             teamOwner = (TeamOwner) newTeamOwnerRole;
+
+            if(isAlreadyOwnedAnotherTeamInLeague(teamToOwn,teamOwner)){
+                throw new Exception("This User is already a team owner of a different team in same league");
+            }
             if(teamOwners.contains(teamOwner))
             {
                 throw new Exception("This User is already a team owner");
@@ -42,9 +46,28 @@ public class TeamController {
         teamToOwn.addTeamOwner(owner,teamOwner);
 
 
-
         return true;
     }
 
+    /**
+     *Check if the new team owner already owned a team in the same league the team he should be owned exist
+     * @param teamToOwn the team he should be owned to
+     * @param ownerToCheck the new team owner
+     * @return true if the new team owner already owned a team in the same league
+     */
+    private static boolean isAlreadyOwnedAnotherTeamInLeague(Team teamToOwn,TeamOwner ownerToCheck){
+
+        Season currentSeason = teamToOwn.getCurrentSeason();
+        List<Team> teamsInSeason = currentSeason.getTeams();
+
+        for (Team team: teamsInSeason){
+            List<TeamOwner> teamOwners = team.getTeamOwners();
+
+            if(teamOwners.contains(ownerToCheck)){
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
