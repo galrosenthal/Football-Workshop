@@ -120,4 +120,11 @@ public class EntityManager {
         }
         return true;
     }
+
+    public boolean removeUserByReference(SystemUser systemUser) {
+        if (this.allUsers.contains(systemUser)) {
+            this.allUsers.remove(systemUser);
+        }
+        return true;
+    }
 }
