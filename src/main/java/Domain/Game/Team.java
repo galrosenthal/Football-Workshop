@@ -103,7 +103,18 @@ public class Team {
         }
         if(teamManager.getType() == RoleTypes.TEAM_MANAGER)
         {
-            return teamManagers.add((TeamManager) teamManager);
+            if( teamManagers.add((TeamManager) teamManager))
+            {
+                if(((TeamManager)teamManager).addTeam(this))
+                {
+                    return true;
+                }
+                else
+                {
+                    teamManagers.remove((TeamManager)teamManager);
+                    return false;
+                }
+            }
         }
         return false;
     }

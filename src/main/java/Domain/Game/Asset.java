@@ -14,9 +14,9 @@ public interface Asset {
 
     boolean isEnumProperty(String property);
 
-    void addProperty();
+    boolean addProperty(String property);
 
-    void removeProperty();
+    boolean removeProperty(String property);
 
     List<Enum> getAllValues(String property);
 }

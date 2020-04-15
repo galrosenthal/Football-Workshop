@@ -7,8 +7,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TeamManager extends Role implements Asset {
-    public TeamManager(SystemUser systemUser) {
+    private List<Team> managedTeams;
+    public TeamManager(SystemUser systemUser)
+    {
         super(RoleTypes.TEAM_MANAGER, systemUser);
+        managedTeams = new ArrayList<>();
+    }
+
+
+    public boolean addTeam(Team teamToMange)
+    {
+        if(teamToMange != null)
+        {
+            return managedTeams.add(teamToMange);
+        }
+        return false;
     }
 
 
