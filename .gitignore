@@ -11,3 +11,4 @@ target/**/*.js
 target/**/*.css
 target/**/*.properties
 /target/classes/META-INF/Football-Workshop.kotlin_module
+/target/maven-status/maven-compiler-plugin/compile/default-compile/*.lst
