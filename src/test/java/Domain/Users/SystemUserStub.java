@@ -17,6 +17,13 @@ public class SystemUserStub extends SystemUser{
         EntityManager.getInstance().addUser(this);
     }
 
+    public SystemUserStub(String username,String name,String password, int selector)
+    {
+        super(username,name,password);
+        this.selector = selector;
+        EntityManager.getInstance().addUser(this);
+    }
+
 //
 
     public String getName() {
@@ -29,11 +36,11 @@ public class SystemUserStub extends SystemUser{
 
     public void addNewRole(Role role)
     {
-        roles.add(role);
+        getRoles().add(role);
     }
 
     public List<Role> getRoles() {
-        return roles;
+        return getRoles();
     }
 
     public boolean isType(RoleTypes roleType) {
