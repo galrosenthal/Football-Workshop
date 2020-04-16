@@ -17,6 +17,7 @@ public class Team {
     private List<TeamOwner> teamOwners;
     private List<Stadium> stadiums;
 
+    private List<Season> seasons;
 
     public List<TeamOwner> getTeamOwners() {
         return teamOwners;
@@ -27,6 +28,7 @@ public class Team {
         teamPlayers = new ArrayList<>();
         teamCoaches = new ArrayList<>();
         teamManagers = new ArrayList<>();
+        seasons = new ArrayList<>();
     }
     /**
      * A method that returns a string containing all team information for display
@@ -281,6 +283,26 @@ public class Team {
 
     public void setTeamName(String testName) {
         this.teamName = testName;
+    }
+
+    /**
+     * Finds the season is now playing and returns it
+     * @return the current season
+     */
+    public Season getCurrentSeason(){
+        Season currentSeason;
+
+        if(seasons.size() == 0){
+            return null;
+        }
+        currentSeason = seasons.get(0);
+        for (Season s: seasons){
+            if(s.getYear()> currentSeason.getYear()){
+                currentSeason = s;
+            }
+        }
+
+        return  currentSeason;
     }
 
     /**
