@@ -100,12 +100,12 @@ public class Team {
         return false;
     }
 
-    public boolean addTeamOwner(TeamOwner townr,TeamOwner teamOwner)
+    public boolean addTeamOwner(/*TeamOwner townr,*/TeamOwner teamOwner)
     {
-        if(!teamOwners.contains(townr))
-        {
-            return false;
-        }
+//        if(!teamOwners.contains(townr))
+//        {
+//            return false;
+//        }
 
         return teamOwners.add(teamOwner);
     }

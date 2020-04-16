@@ -16,6 +16,9 @@ public class TeamController {
 
         List<TeamOwner> teamOwners = teamToOwn.getTeamOwners();
 
+        if(!teamOwners.contains(owner)){
+            throw new Exception("Only the owner of this team can add a new owner");
+        }
         SystemUser newTeamOwnerUser = EntityManager.getInstance().getUser(username);
 
         if(newTeamOwnerUser == null)
@@ -42,8 +45,9 @@ public class TeamController {
                 throw new Exception("This User is already a team owner");
             }
         }
+
         teamOwner.addTeamToOwn(teamToOwn);
-        teamToOwn.addTeamOwner(owner,teamOwner);
+        teamToOwn.addTeamOwner(teamOwner);
 
 
         return true;

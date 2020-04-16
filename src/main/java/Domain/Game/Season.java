@@ -7,6 +7,7 @@ public class Season {
     String name;
     int year;
     List<Team> teams;
+    League league;
 
     public Season(){
         teams = new ArrayList<>();
