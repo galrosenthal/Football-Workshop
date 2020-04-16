@@ -58,6 +58,10 @@ public class TeamOwner extends Role {
         return true;
     }
 
+    public boolean removeTeamOwned(Team team){
+        return this.ownedTeams.remove(team);
+    }
+
 //    /**
 ////     * Checks whether or not the user is part of the team asset or not,
 ////     * @param regUser

@@ -2,21 +2,24 @@ package Domain.Users;
 
 import Domain.Game.Team;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Coach extends Role {
     public enum CoachQualification {
             MAIN_COACH,SECOND_COACH,JUNIOR_COACH;
     }
 
     private CoachQualification qualification;
-    private Team coachedTeam;
+    private List<Team> coachedTeams;
     private String teamJob;
 
 
-    public Coach(SystemUser su , CoachQualification qlf, Team teamToCoach , String jobTitle) {
+    public Coach(SystemUser su , CoachQualification qlf,  String jobTitle) {
         super(RoleTypes.COACH,su);
         qualification = qlf;
-        coachedTeam = teamToCoach;
         teamJob = jobTitle;
+        coachedTeams = new ArrayList<>();
     }
 
     @Override
@@ -26,6 +29,18 @@ public class Coach extends Role {
         Coach coach = (Coach) o;
         return qualification == coach.qualification &&
                 teamJob.equals(coach.teamJob);
+    }
+
+    public boolean addTeamToCoach(Team playTeam){
+        if(!this.coachedTeams.contains(playTeam)) {
+            this.coachedTeams.add(playTeam);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeTeamToCoach(Team team){
+        return this.coachedTeams.remove(team);
     }
 
 }

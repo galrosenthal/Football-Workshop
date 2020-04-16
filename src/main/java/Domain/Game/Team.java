@@ -15,6 +15,9 @@ public class Team {
     private List<Coach> teamCoaches;
     private List<TeamManager> teamManagers;
     private List<TeamOwner> teamOwners;
+    private List<Stadium> stadiums;
+    private TeamStatus status;
+
 
     public List<TeamOwner> getTeamOwners() {
         return teamOwners;
@@ -25,6 +28,7 @@ public class Team {
         teamPlayers = new ArrayList<>();
         teamCoaches = new ArrayList<>();
         teamManagers = new ArrayList<>();
+        status = TeamStatus.OPEN;
     }
     /**
      * A method that returns a string containing all team information for display
@@ -48,7 +52,7 @@ public class Team {
      */
     public boolean addTeamPlayer(TeamOwner townr, Role teamPlayer)
     {
-        if(!teamOwners.contains(townr))
+        if(!teamOwners.contains(townr)|| status != TeamStatus.OPEN)
         {
             return false;
         }
@@ -73,7 +77,7 @@ public class Team {
 
     public boolean addTeamCoach(TeamOwner townr, Role coach)
     {
-        if(!teamOwners.contains(townr))
+        if(!teamOwners.contains(townr) || status != TeamStatus.OPEN)
         {
             return false;
         }
@@ -87,7 +91,7 @@ public class Team {
 
     public boolean addTeamManager(TeamOwner townr,Role teamManager)
     {
-        if(!teamOwners.contains(townr))
+        if(!teamOwners.contains(townr) || status != TeamStatus.OPEN)
         {
             return false;
         }
@@ -100,7 +104,7 @@ public class Team {
 
     public boolean addTeamOwner(TeamOwner townr,TeamOwner teamOwner)
     {
-        if(!teamOwners.contains(townr))
+        if(!teamOwners.contains(townr) || status != TeamStatus.OPEN)
         {
             return false;
         }
@@ -118,6 +122,10 @@ public class Team {
 
     public List<TeamManager> getTeamManagers() {
         return teamManagers;
+    }
+
+    public List<Stadium> getStadiums() {
+        return stadiums;
     }
 
     @Override
@@ -271,5 +279,13 @@ public class Team {
 
     public void setTeamName(String testName) {
         this.teamName = testName;
+    }
+
+    public TeamStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TeamStatus status) {
+        this.status = status;
     }
 }

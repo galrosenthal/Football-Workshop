@@ -2,14 +2,16 @@ package Domain.Users;
 
 import Domain.Game.Team;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 
 public class Player extends Role {
 
     private PlayerFieldJobs fieldJob;
-    private Team playerTeam;
+    private List<Team> playerTeams;
     private Date bday;
 
     public Player(SystemUser systemUser,
@@ -17,17 +19,20 @@ public class Player extends Role {
         super(RoleTypes.PLAYER, systemUser);
         this.fieldJob = fieldJob;
         bday = brthDay;
+        playerTeams= new ArrayList<>();
     }
 
 
-    public boolean addTeam(Team playTeam)
-    {
-        if(playerTeam == null)
-        {
-            playerTeam = playTeam;
+    public boolean addTeam(Team playTeam){
+        if(!this.playerTeams.contains(playTeam)) {
+            this.playerTeams.add(playTeam);
             return true;
         }
         return false;
+    }
+
+    public boolean removeTeam(Team team){
+        return this.playerTeams.remove(team);
     }
 
 
