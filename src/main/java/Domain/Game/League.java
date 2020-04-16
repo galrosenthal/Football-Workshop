@@ -4,6 +4,7 @@ import java.util.List;
 
 public class League {
     private String name;
+    private List<Season> seasons;
 
     /**
      * Constructor

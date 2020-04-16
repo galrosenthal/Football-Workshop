@@ -35,4 +35,8 @@ public class ARController {
         UIController.printMessage("The league was created successfully");
         return true;
     }
+
+    public static boolean addSeasonToLeague(SystemUser systemUser) {
+        return true;
+    }
 }
