@@ -1,9 +1,11 @@
 package Acceptance;
 
 import Domain.EntityManager;
+import Domain.Users.AssociationRepresentative;
 import Domain.Users.SystemAdmin;
 import Domain.Users.SystemUser;
 import Domain.Users.Unregistered;
+import Service.ARController;
 import Service.Controller;
 import Service.UIController;
 import org.junit.Assert;
@@ -116,5 +118,41 @@ public class AcceptanceTests {
         catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 9.1.a
+     */
+    @Test
+    public void addLeagueATest(){
+        SystemUser systemUser = new SystemUser("username", "name");
+        systemUser.addNewRole(new AssociationRepresentative(systemUser));
+        EntityManager.getInstance().addUser(systemUser);
+        UIController.setIsTest(true);
+        UIController.setSelector(6);
+        //First league creation
+        assertTrue(ARController.addLeague(systemUser));
+
+        //CleanUp
+        EntityManager.getInstance().removeLeagueByName("Premier League");
+        assertFalse(EntityManager.getInstance().doesLeagueExists("Premier League"));
+    }
+    /**
+     * 9.1.b
+     */
+    @Test
+    public void addLeague2ATest(){
+        SystemUser systemUser = new SystemUser("username", "name");
+        systemUser.addNewRole(new AssociationRepresentative(systemUser));
+        EntityManager.getInstance().addUser(systemUser);
+        EntityManager.getInstance().addLeague("Premier League");
+        UIController.setIsTest(true);
+        UIController.setSelector(6);
+        //Duplicated league creation
+        assertFalse(ARController.addLeague(systemUser));
+
+        //CleanUp
+        EntityManager.getInstance().removeLeagueByName("Premier League");
+        assertFalse(EntityManager.getInstance().doesLeagueExists("Premier League"));
     }
 }
