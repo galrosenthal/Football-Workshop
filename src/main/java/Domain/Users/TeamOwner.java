@@ -82,7 +82,8 @@ public class TeamOwner extends Role {
         if (this == o) return true;
         if (!(o instanceof TeamOwner)) return false;
         TeamOwner teamOwner = (TeamOwner) o;
-        return ownedTeams.equals(teamOwner.ownedTeams);
+        return ownedTeams.equals(teamOwner.ownedTeams) &&
+                this.getSystemUser().getName().equals(teamOwner.getSystemUser().getName());
     }
 
     @Override

@@ -100,16 +100,19 @@ public class Team {
         return false;
     }
 
-    public boolean addTeamOwner(/*TeamOwner townr,*/TeamOwner teamOwner)
+    public boolean addTeamOwner(TeamOwner teamOwner)
     {
-//        if(!teamOwners.contains(townr))
-//        {
-//            return false;
-//        }
 
         return teamOwners.add(teamOwner);
     }
 
+    public boolean removeTeamOwner(TeamOwner teamOwner){
+        if(!teamOwners.contains(teamOwner)){
+            return false;
+        }
+
+        return teamOwners.remove(teamOwner);
+    }
     public List<Player> getTeamPlayers() {
         return teamPlayers;
     }
@@ -293,5 +296,14 @@ public class Team {
         }
 
         return  currentSeason;
+    }
+
+    public  boolean addSeason(Season season){
+        if(!seasons.contains(season)){
+            seasons.add(season);
+            return true;
+        }
+
+        return false;
     }
 }

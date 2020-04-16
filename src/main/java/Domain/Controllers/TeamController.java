@@ -42,7 +42,7 @@ public class TeamController {
             }
             if(teamOwners.contains(teamOwner))
             {
-                throw new Exception("This User is already a team owner");
+                throw new Exception("This User is already a team owner of this team");
             }
         }
 
