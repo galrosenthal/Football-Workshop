@@ -1,5 +1,6 @@
 package Domain.Users;
 
+import Domain.EntityManager;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -14,12 +15,15 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void testAddLeagueITest() throws Exception {
-        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 0));
+        EntityManager.getInstance().removeLeagueByName("leagueName");
+        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5));
         assertTrue(aR.addLeague("leagueName"));
     }
 
+
     @Test(expected = Exception.class)
     public void testAddLeague2ITest() throws Exception {
+        EntityManager.getInstance().removeLeagueByName("leagueName");
         aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 0));
         aR.addLeague("leagueName");
         aR.addLeague("leagueName");
