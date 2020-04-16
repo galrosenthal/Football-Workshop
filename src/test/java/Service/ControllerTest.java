@@ -52,4 +52,14 @@ public class ControllerTest {
         assertTrue(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
     }
 
+    @Test
+    public void modifyTeamAssetDetails1Itest() throws Exception{
+        UIController.setIsTest(true);
+        TeamOwnerStub.setSelector(0);
+        new SystemUserStub("newTOUsername", "newTO", 3);
+        UIController.setSelector(2);
+        //false because of wrong username from user
+        assertTrue(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
+    }
+
 }

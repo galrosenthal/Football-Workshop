@@ -28,6 +28,7 @@ public class Team {
         teamPlayers = new ArrayList<>();
         teamCoaches = new ArrayList<>();
         teamManagers = new ArrayList<>();
+        stadiums = new ArrayList<>();
         seasons = new ArrayList<>();
     }
     /**

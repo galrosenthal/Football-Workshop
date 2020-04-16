@@ -24,32 +24,27 @@ public class TeamController {
 
         SystemUser newTeamOwnerUser = EntityManager.getInstance().getUser(username);
 
-        if(newTeamOwnerUser == null)
-        {
+        if (newTeamOwnerUser == null) {
             throw new UserNotFoundException("Could not find a user by the given username" + username);
         }
 
         Role newTeamOwnerRole = newTeamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
         TeamOwner teamOwner;
-        if(newTeamOwnerRole == null)
-        {
+        if (newTeamOwnerRole == null) {
             teamOwner = new TeamOwner(newTeamOwnerUser);
-        }
-        else
-        {
+        } else {
 
             teamOwner = (TeamOwner) newTeamOwnerRole;
 
-            if(isAlreadyOwnedAnotherTeamInLeague(teamToOwn,teamOwner)){
+            if (isAlreadyOwnedAnotherTeamInLeague(teamToOwn, teamOwner)) {
                 throw new Exception("This User is already a team owner of a different team in same league");
             }
-            if(teamOwners.contains(teamOwner))
-            {
+            if (teamOwners.contains(teamOwner)) {
                 throw new alreadyTeamOwnerException("This User is already a team owner");
             }
         }
         teamOwner.addTeamToOwn(teamToOwn);
-        teamToOwn.addTeamOwner(owner,teamOwner);
+        teamToOwn.addTeamOwner(owner, teamOwner);
 
 
         return true;
@@ -58,43 +53,40 @@ public class TeamController {
 
     /**
      * Add a player with playerUsername to the teamToAddPlayer by the teamOwner
-     * @param playerUsername is the Username of the player to add
+     *
+     * @param playerUsername  is the Username of the player to add
      * @param teamToAddPlayer is the Team to add the player to
-     * @param teamOwner is the Owner who asks to add the player
+     * @param teamOwner       is the Owner who asks to add the player
      * @return true if the player was added successfully
      * @throws UserNotFoundException
      * @throws PlayerIsAlreadyInThisTeamException
      */
-    public static boolean addPlayer(String playerUsername, Team teamToAddPlayer, TeamOwner teamOwner) throws Exception
-    {
+    public static boolean addPlayer(String playerUsername, Team teamToAddPlayer, TeamOwner teamOwner) throws Exception {
         SystemUser playerUser = EntityManager.getInstance().getUser(playerUsername);
-        if(playerUser == null)
-        {
+        if (playerUser == null) {
             throw new UserNotFoundException("Could not find a user by the given username" + playerUsername);
         }
 
         Role getRoleForPlayer = playerUser.getRole(RoleTypes.PLAYER);
         Player playerRole;
-        if(getRoleForPlayer == null)
-        {
+        if (getRoleForPlayer == null) {
             int fieldJobIndex = getEnumByRoleType("FiledJob for player", RoleTypes.PLAYER);
             PlayerFieldJobs filedJob = PlayerFieldJobs.values()[fieldJobIndex];
             Date bday = getPlayerBirthDate();
-            playerRole = new Player(playerUser,filedJob,bday);
-        }
-        else {
-            playerRole = (Player)getRoleForPlayer;
-            if(teamToAddPlayer.getTeamPlayers().contains(playerRole))
-            {
+            playerRole = new Player(playerUser, filedJob, bday);
+        } else {
+            playerRole = (Player) getRoleForPlayer;
+            if (teamToAddPlayer.getTeamPlayers().contains(playerRole)) {
                 throw new PlayerIsAlreadyInThisTeamException("Player is already part of this team");
             }
         }
 
-        return teamToAddPlayer.addTeamPlayer(teamOwner,playerRole);
+        return teamToAddPlayer.addTeamPlayer(teamOwner, playerRole);
     }
 
     /**
      * Get the player date of birth from the user
+     *
      * @return the birth date of the player as java.util.Date
      */
     private static Date getPlayerBirthDate() {
@@ -102,13 +94,11 @@ public class TeamController {
         String bDate;
         do {
             bDate = UIController.receiveString();
-        }while (!bDate.matches("^(3[01]|[12][0-9]|0[1-9])/(1[0-2]|0[1-9])/[0-9]{4}$"));
+        } while (!bDate.matches("^(3[01]|[12][0-9]|0[1-9])/(1[0-2]|0[1-9])/[0-9]{4}$"));
 
         try {
             return new SimpleDateFormat("dd/MM/yyyy").parse(bDate);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -117,28 +107,24 @@ public class TeamController {
 
     /**
      * Gets the player field job chosen by the user from the list of filed jobs
+     *
      * @return the field job chosen for the suer
      * @see PlayerFieldJobs
      */
     private static int getEnumByRoleType(String msg, RoleTypes rt) {
         UIController.printMessage("Please Choose" + msg);
         List<Object> values = new ArrayList<>();
-        if(rt == RoleTypes.PLAYER)
-        {
+        if (rt == RoleTypes.PLAYER) {
 
             for (int i = 0; i < PlayerFieldJobs.values().length; i++) {
                 values.add(PlayerFieldJobs.values()[i]);
             }
 
-        }
-        else if(rt == RoleTypes.COACH)
-        {
+        } else if (rt == RoleTypes.COACH) {
             for (int i = 0; i < CoachQualification.values().length; i++) {
                 values.add(CoachQualification.values()[i]);
             }
-        }
-        else
-        {
+        } else {
             return -1;
         }
 
@@ -148,24 +134,22 @@ public class TeamController {
 
         int index;
 
-        do{
+        do {
             index = UIController.receiveInt();
-        }while (!(index >= 0 && index < PlayerFieldJobs.values().length));
+        } while (!(index >= 0 && index < PlayerFieldJobs.values().length));
 
         return index;
     }
 
     public static boolean addCoach(String coachUsername, Team teamToAddCoach, TeamOwner teamOwner) throws Exception {
         SystemUser coachUser = EntityManager.getInstance().getUser(coachUsername);
-        if(coachUser == null)
-        {
+        if (coachUser == null) {
             throw new UserNotFoundException("Could not find a user by the given username" + coachUsername);
         }
 
         Role getRoleForUser = coachUser.getRole(RoleTypes.COACH);
         Coach coachRole;
-        if(getRoleForUser == null)
-        {
+        if (getRoleForUser == null) {
             int index = getEnumByRoleType("qualification for coach", RoleTypes.COACH);
             CoachQualification qlf = CoachQualification.values()[index];
 
@@ -174,30 +158,25 @@ public class TeamController {
 
             coachRole = new Coach(coachUser, qlf, teamToAddCoach, jobTitle);
 
-        }
-        else
-        {
+        } else {
             coachRole = (Coach) getRoleForUser;
-            if(teamToAddCoach.getTeamCoaches().contains(coachRole))
-            {
+            if (teamToAddCoach.getTeamCoaches().contains(coachRole)) {
                 throw new CoachIsAlreadyInThisTeamException("Coach is already in this team");
             }
         }
 
-        return teamToAddCoach.addTeamCoach(teamOwner,coachRole);
+        return teamToAddCoach.addTeamCoach(teamOwner, coachRole);
     }
 
     public static boolean addTeamManager(String managerUsername, Team teamToAddManager, TeamOwner teamOwner) throws Exception {
         SystemUser managerUser = EntityManager.getInstance().getUser(managerUsername);
-        if(managerUser == null)
-        {
+        if (managerUser == null) {
             throw new UserNotFoundException("Could not find a user by the given username" + managerUsername);
         }
 
         Role getRoleForUser = managerUser.getRole(RoleTypes.COACH);
         TeamManager managerRole;
-        if(getRoleForUser == null)
-        {
+        if (getRoleForUser == null) {
 
 
             managerRole = new TeamManager(managerUser);
@@ -210,68 +189,48 @@ public class TeamController {
     }
 
 
-    public static boolean editAssets(Team chosenTeam)
-    {
+    public static boolean editAssets(Team chosenTeam) throws Exception {
         List<Asset> allAssetsTeam = chosenTeam.getAllAssets();
-        if(allAssetsTeam.size()==0)
-        {
-            try {
-                throw new AssetsNotExistsException("There is not assets to team");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (allAssetsTeam.size() == 0) {
+
+            throw new AssetsNotExistsException("There is not assets to team");
+
         }
-        int assetIndex =TeamController.chooseAssetToModify(allAssetsTeam);
+        int assetIndex = TeamController.chooseAssetToModify(allAssetsTeam);
         List<String> properties = allAssetsTeam.get(assetIndex).getProperties();
-        if(properties.size() == 0)
-        {
-            try {
-                throw new AssetCantBeModifiedException("Nothing can be modify in this asset");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (properties.size() == 0) {
+
+            throw new AssetCantBeModifiedException("Nothing can be modify in this asset");
+
         }
         int propertyIndexToModify = choosePropertiesToModify(properties);
-        if( allAssetsTeam.get(assetIndex).isListProperty(properties.get(propertyIndexToModify)))
-        {
+        if (allAssetsTeam.get(assetIndex).isListProperty(properties.get(propertyIndexToModify))) {
             int action = actionToDo();
             //FIXME!!
-            if(action == 0)
-            {
-                boolean isAdded = addProperty(allAssetsTeam.get(assetIndex) , properties.get(propertyIndexToModify));
-                if(isAdded)
-                {
-                    try {
-                        throw new AssetCantBeModifiedException("Can not modify asset");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            if (action == 0) {
+                boolean isAdded = addProperty(allAssetsTeam.get(assetIndex), properties.get(propertyIndexToModify));
+                if (isAdded) {
+
+                    throw new AssetCantBeModifiedException("Can not modify asset");
+
+                }
+            } else {
+                boolean isRemoved = removeProperty(allAssetsTeam.get(assetIndex), properties.get(propertyIndexToModify));
+                if (!isRemoved) {
+
+                    throw new AssetCantBeModifiedException("Can not modify asset");
+
                 }
             }
-            else
-            {
-                boolean isRemoved = removeProperty(allAssetsTeam.get(assetIndex) , properties.get(propertyIndexToModify));
-                if(!isRemoved) {
-                    try {
-                        throw new AssetCantBeModifiedException("Can not modify asset");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        else if(allAssetsTeam.get(assetIndex).isEnumProperty(properties.get(propertyIndexToModify)))
-        {
+        } else if (allAssetsTeam.get(assetIndex).isEnumProperty(properties.get(propertyIndexToModify))) {
             List<Enum> allEnumValues = allAssetsTeam.get(assetIndex).getAllValues(properties.get(propertyIndexToModify));
             int propertyNewValueIndex = changePropertyValue(allEnumValues);
-            allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify) ,  allEnumValues.get(propertyNewValueIndex).toString());
-        }
-        else if(allAssetsTeam.get(assetIndex).isStringProperty(properties.get(propertyIndexToModify)))
-        {
+            allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify), allEnumValues.get(propertyNewValueIndex).toString());
+        } else if (allAssetsTeam.get(assetIndex).isStringProperty(properties.get(propertyIndexToModify))) {
             UIController.printMessage("Enter new value: ");
             String newValue = UIController.receiveString();
             //todo: check string?
-            allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify) , newValue);
+            allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify), newValue);
         }
         return true;
     }
@@ -288,14 +247,15 @@ public class TeamController {
 
     /**
      * User choose which asset he wants to modify
+     *
      * @param allAssetsTeam - List<Asset>
-     * @return  assetIndex -int-
+     * @return assetIndex -int-
      */
     private static int chooseAssetToModify(List<Asset> allAssetsTeam) {
 
         UIController.printMessage("Choose Asset to modify: ");
         for (int i = 0; i < allAssetsTeam.size(); i++) {
-            UIController.printMessage(i+1 + ". " + allAssetsTeam.get(i));
+            UIController.printMessage(i + 1 + ". " + allAssetsTeam.get(i));
         }
         int assetIndex;
         do {
@@ -307,14 +267,13 @@ public class TeamController {
     }
 
 
-
-
     /**
      * In case the user wants to modify EnumProperty - choose which new property he wants to change.
+     *
      * @param allEnumValues
-     * @return  propertyNewValueIndex -int-
+     * @return propertyNewValueIndex -int-
      */
-    private static int changePropertyValue( List<Enum> allEnumValues) {
+    private static int changePropertyValue(List<Enum> allEnumValues) {
         UIController.printMessage("Choose Property new value ");
         for (int i = 0; i < allEnumValues.size(); i++) {
             UIController.printMessage(i + ". " + allEnumValues.get(i).toString());
@@ -329,11 +288,10 @@ public class TeamController {
     }
 
     /**
-     *
      * @param properties - list of all properties
      * @return propertyIndex -int- the user wants to modify
      */
-    private static int choosePropertiesToModify( List<String>properties) {
+    private static int choosePropertiesToModify(List<String> properties) {
         UIController.printMessage("Choose Property Number to modify");
         for (int i = 0; i < properties.size(); i++) {
             UIController.printMessage(i + ". " + properties.get(i));
@@ -348,37 +306,38 @@ public class TeamController {
 
     /**
      * In case the property ia a list - let the user to choose if he want to Add or Delete value to the list
+     *
      * @return 0 - if to add value , 1 - if to remove value
      */
-    private static int actionToDo()
-    {
+    private static int actionToDo() {
         UIController.printMessage("Choose which action: ");
         UIController.printMessage("1. Add");
         UIController.printMessage("2. Remove");
         int propertyIndex;
         do {
-            propertyIndex = UIController.receiveInt()-1;
-        } while (!(propertyIndex >= 0 && propertyIndex <=1));
+            propertyIndex = UIController.receiveInt() - 1;
+        } while (!(propertyIndex >= 0 && propertyIndex <= 1));
 
         return propertyIndex;
     }
 
 
     /**
-     *Check if the new team owner already owned a team in the same league the team he should be owned exist
-     * @param teamToOwn the team he should be owned to
+     * Check if the new team owner already owned a team in the same league the team he should be owned exist
+     *
+     * @param teamToOwn    the team he should be owned to
      * @param ownerToCheck the new team owner
      * @return true if the new team owner already owned a team in the same league
      */
-    private static boolean isAlreadyOwnedAnotherTeamInLeague(Team teamToOwn,TeamOwner ownerToCheck){
+    private static boolean isAlreadyOwnedAnotherTeamInLeague(Team teamToOwn, TeamOwner ownerToCheck) {
 
         Season currentSeason = teamToOwn.getCurrentSeason();
         List<Team> teamsInSeason = currentSeason.getTeams();
 
-        for (Team team: teamsInSeason){
+        for (Team team : teamsInSeason) {
             List<TeamOwner> teamOwners = team.getTeamOwners();
 
-            if(teamOwners.contains(ownerToCheck)){
+            if (teamOwners.contains(ownerToCheck)) {
                 return true;
             }
         }
