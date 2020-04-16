@@ -284,8 +284,9 @@ public class TeamController {
     }
 
     /**
-     *
+     * User choose which asset he wants to modify
      * @param allAssetsTeam - List<Asset>
+     * @return  assetIndex -int-
      */
     private static int chooseAssetToModify(List<Asset> allAssetsTeam) {
 
@@ -308,7 +309,7 @@ public class TeamController {
     /**
      * In case the user wants to modify EnumProperty - choose which new property he wants to change.
      * @param allEnumValues
-     * @return
+     * @return  propertyNewValueIndex -int-
      */
     private static int changePropertyValue( List<Enum> allEnumValues) {
         UIController.printMessage("Choose Property new value ");
