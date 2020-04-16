@@ -1,19 +1,13 @@
 package DB;
 
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
 
 import com.sun.org.apache.xalan.internal.xsltc.dom.SimpleResultTreeImpl;
-import javafx.scene.control.Tab;
 import org.junit.*;
 
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
-//import static org.junit.jupiter.api.Assertions.*;
 
 public class TableTest {
     private Table table;

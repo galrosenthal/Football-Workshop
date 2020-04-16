@@ -2,9 +2,7 @@ package Domain;
 
 import DB.DBManager;
 import DB.Table;
-import Domain.Users.Role;
-import Domain.Users.RoleTypes;
-import Domain.Users.SystemUser;
+import Domain.Users.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,27 +22,14 @@ public class EntityManager {
      * @return - DBManager - an instance of dbManager
      */
     public static EntityManager getInstance() {
-        if (entityManagerInstance == null)
+        if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
+        }
         return entityManagerInstance;
     }
 
 
-    public SystemUser login(String usrNm, String pswrd) throws Exception {
-        for (SystemUser su : allUsers) {
-            if (su.getUsername().equalsIgnoreCase(usrNm)) {
-                List<String> userDetails = DBManager.getInstance().getSystemUsers().getRecord(new String[]{"username"}, new String[]{usrNm});
-                if (userDetails.get(2).equals(pswrd)) {
-                    return su;
-                }
-
-            }
-        }
-        throw new Exception("Username or Password was incorrect!!!!!");
-
-    }
-
-    private void initSystem() throws Exception {
+    public void initSystem() throws Exception {
         Table systemUsersTable = DBManager.getInstance().getSystemUsers();
         for (int i = 0; i < systemUsersTable.size(); i++) {
             String username = systemUsersTable.getRecordValue(i, "username");
@@ -93,6 +78,7 @@ public class EntityManager {
 
         try {
             Table roleRecords = DBManager.getInstance().getRelevantRecords(username, roleType);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -113,6 +99,11 @@ public class EntityManager {
         if (!(this.allUsers.contains(systemUser))) {
             this.allUsers.add(systemUser);
         }
+        return true;
+    }
+
+    public boolean removeUserByReference(SystemUser systemUser) {
+        this.allUsers.remove(systemUser);
         return true;
     }
 }
