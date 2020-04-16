@@ -76,8 +76,9 @@ public class Controller {
 
     }
 
-    private static Team     getTeamByChoice(TeamOwner myTeamOwner) {
+    private static Team getTeamByChoice(TeamOwner myTeamOwner) {
         List<Team> myTeams = myTeamOwner.getOwnedTeams();
+
         UIController.printMessage("Choose a Team Number");
         for (int i = 0; i < myTeams.size() ; i++) {
             UIController.printMessage(i + ". " + myTeams.get(i).getTeamName());
@@ -90,6 +91,4 @@ public class Controller {
 
         return myTeams.get(teamIndex);
     }
-
-
 }

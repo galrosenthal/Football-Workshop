@@ -37,13 +37,15 @@ public class TeamController {
 
             teamOwner = (TeamOwner) newTeamOwnerRole;
 
-            if(isAlreadyOwnedAnotherTeamInLeague(teamToOwn,teamOwner)){
-                throw new Exception("This User is already a team owner of a different team in same league");
-            }
             if(teamOwners.contains(teamOwner))
             {
                 throw new Exception("This User is already a team owner of this team");
             }
+
+            if(isAlreadyOwnedAnotherTeamInLeague(teamToOwn,teamOwner)){
+                throw new Exception("This User is already a team owner of a different team in same league");
+            }
+
         }
 
         teamOwner.addTeamToOwn(teamToOwn);
@@ -62,6 +64,7 @@ public class TeamController {
     private static boolean isAlreadyOwnedAnotherTeamInLeague(Team teamToOwn,TeamOwner ownerToCheck){
 
         Season currentSeason = teamToOwn.getCurrentSeason();
+
         List<Team> teamsInSeason = currentSeason.getTeams();
 
         for (Team team: teamsInSeason){

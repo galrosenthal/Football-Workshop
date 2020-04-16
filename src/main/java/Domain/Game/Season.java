@@ -1,24 +1,24 @@
 package Domain.Game;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Season {
-    String name;
-    int year;
+
+    private League league;
+    private String years; //name
     List<Team> teams;
-    League league;
 
-    public Season(){
-        teams = new ArrayList<>();
+    public Season(League league, String years) {
+        this.league = league;
+        this.teams = new ArrayList<>();
+        this.years = years;
     }
 
-    public Season(String name){
-        this();
-        this.name = name;
-    }
-    public int getYear() {
-        return year;
+    public Year getYear() {
+        int[] yearsInt = splitYearsInt(years);
+        return Year.parse(""+yearsInt[0]+yearsInt[2]);
     }
 
     public List<Team> getTeams() {
@@ -30,33 +30,21 @@ public class Season {
             teams.add(team);
             return true;
         }
-
         return false;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Season)) return false;
-        Season season = (Season) o;
-        return this.name.equals(season.name) &&
-                this.year == season.year &&
-                this.teams.size() == season.teams.size() &&
-                this.league.getName() == season.getLeague().getName() &&
-                checkTeamsEquals(season.getTeams(),this.teams);
+    private static String[] splitYearsString(String years){
+        String century = years.substring(0,2);
+        String firstYear = years.substring(2,4);
+        String secondYear = years.substring(5);
+        return new String[]{century,firstYear,secondYear};
     }
 
-    private boolean checkTeamsEquals(List<Team> teams1,List<Team> teams2) {
-        for (Team team : teams1){
-            if(!teams2.contains(team)){
-                return false;
-            }
-        }
-
-        return  true;
-    }
-
-    public League getLeague() {
-        return league;
+    private static int[] splitYearsInt(String years){
+        String[] splitYearsSt = splitYearsString(years);
+        int centuryInt = Integer.parseInt(splitYearsSt[0]);
+        int firstYearInt = Integer.parseInt(splitYearsSt[1]);
+        int secondYearInt = Integer.parseInt(splitYearsSt[2]);
+        return new int[]{centuryInt,firstYearInt,secondYearInt};
     }
 }

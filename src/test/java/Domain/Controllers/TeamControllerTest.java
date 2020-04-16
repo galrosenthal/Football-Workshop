@@ -1,11 +1,13 @@
 package Domain.Controllers;
 
 import Domain.EntityManager;
+import Domain.Game.League;
 import Domain.Game.Season;
 import Domain.Game.Team;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
 import Domain.Users.TeamOwner;
+import Service.Controller;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
@@ -18,7 +20,7 @@ public class TeamControllerTest {
     SystemUser teamOwnerToAdd = new SystemUser("oranSh", "Oran2802", "name");
     Team hapoelBash = new Team();
     //TeamOwner originalOwner = new TeamOwner(teamOwnerUser);
-
+    League league = new League("Premier League");
     @Before
     public void runBeforeTests(){
         teamOwnerUser.addNewRole(new TeamOwner(teamOwnerUser));
@@ -44,11 +46,10 @@ public class TeamControllerTest {
         EntityManager.getInstance().addUser(teamOwnerToAdd);
         try{
             TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-            thrown.expectMessage("Only the owner of this team can add a new owner");
         }
         catch (Exception e){
             e.printStackTrace();
-
+            Assert.assertEquals("Only the owner of this team can add a new owner",e.getMessage());
         }
 
 
@@ -73,11 +74,10 @@ public class TeamControllerTest {
         hapoelBash.addTeamOwner((TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         try{
             TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-            thrown.expectMessage("Could not find a user by the given username");
-
         }
         catch (Exception e){
             e.printStackTrace();
+            Assert.assertEquals("Could not find a user by the given username",e.getMessage());
         }
 
         //Add the user to the system' expected to succeed
@@ -110,15 +110,15 @@ public class TeamControllerTest {
 
         try{
             TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-            thrown.expectMessage("This User is already a team owner of a different team in same league");
         }
         catch (Exception e){
             e.printStackTrace();
+            Assert.assertEquals("This User is already a team owner of a different team in same league",e.getMessage());
         }
 
 
         hapoelTa.removeTeamOwner((TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
-        //Assert.assertTrue(TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER)));
+        Assert.assertTrue(TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER)));
     }
 
     /**
@@ -131,12 +131,27 @@ public class TeamControllerTest {
         EntityManager.getInstance().addUser(teamOwnerUser);
         EntityManager.getInstance().addUser(teamOwnerToAdd);
 
+
         try{
             TeamController.addTeamOwner("oranShich", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-            thrown.expectMessage("This User is already a team owner of this team");
+            //thrown.expectMessage("This User is already a team owner of this team");
+
         }
         catch (Exception e){
             e.printStackTrace();
+            Assert.assertEquals("This User is already a team owner of this team",e.getMessage());
+        }
+
+        Season season = new Season("2019/20");
+        season.addTeam(hapoelBash);
+        hapoelBash.addSeason(season);
+
+        try{
+            TeamController.addTeamOwner("oranShich", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Assert.assertEquals("This User is already a team owner of this team",e.getMessage());
         }
     }
 }
