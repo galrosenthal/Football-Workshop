@@ -97,7 +97,7 @@ public class TeamControllerTest {
         Team hapoelTa = new Team();
         hapoelBash.addTeamOwner((TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         hapoelTa.addTeamOwner((TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
-        Season season = new Season("2019/20");
+        Season season = new Season(league,"2019/20");
 
         season.addTeam(hapoelBash);
         season.addTeam(hapoelTa);
@@ -142,7 +142,7 @@ public class TeamControllerTest {
             Assert.assertEquals("This User is already a team owner of this team",e.getMessage());
         }
 
-        Season season = new Season("2019/20");
+        Season season = new Season(league,"2019/20");
         season.addTeam(hapoelBash);
         hapoelBash.addSeason(season);
 

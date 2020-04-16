@@ -290,7 +290,7 @@ public class Team {
         }
         currentSeason = seasons.get(0);
         for (Season s: seasons){
-            if(s.getYear()> currentSeason.getYear()){
+            if(s.getYear().isAfter(currentSeason.getYear())){
                 currentSeason = s;
             }
         }
