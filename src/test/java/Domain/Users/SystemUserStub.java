@@ -17,6 +17,13 @@ public class SystemUserStub extends SystemUser{
         EntityManager.getInstance().addUser(this);
     }
 
+    public SystemUserStub(String username,String name,String password, int selector)
+    {
+        super(username,name,password);
+        this.selector = selector;
+        EntityManager.getInstance().addUser(this);
+    }
+
 //
 
     public String getName() {
