@@ -22,4 +22,20 @@ public class League {
     public void setName(String name) {
         this.name = name;
     }
+
+    
+    public boolean doesSeasonExists(String seasonYears) {
+        for (Season currSeason : seasons) {
+            String currSeasonYears = currSeason.getYears();
+            if (currSeasonYears.equals(seasonYears)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean addSeason(String seasonYears) {
+        Season season = new Season(this, seasonYears);
+        return this.seasons.add(season);
+    }
 }

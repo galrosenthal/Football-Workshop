@@ -90,6 +90,10 @@ public class EntityManager {
 
     }
 
+    public List<League> getLeagues() {
+        return new ArrayList<League>(allLeagues);
+    }
+
     public SystemUser getUser(String username) {
         for (SystemUser su : allUsers) {
             if (su.getUsername().equals(username)) {
