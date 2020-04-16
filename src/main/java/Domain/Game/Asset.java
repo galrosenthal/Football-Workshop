@@ -1,10 +1,14 @@
 package Domain.Game;
 
+import Domain.Users.TeamOwner;
+
 import java.util.List;
 
 public interface Asset {
 
     List<String> getProperties();
+
+    boolean addTeam(Team team, TeamOwner teamOwner);
 
     boolean changeProperty(String propertyToChange, String newValue);
 
@@ -15,6 +19,8 @@ public interface Asset {
     boolean isEnumProperty(String property);
 
     boolean addProperty(String property);
+
+    boolean addAllProperties();
 
     boolean removeProperty(String property);
 

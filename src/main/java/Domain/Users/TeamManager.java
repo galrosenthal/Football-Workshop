@@ -15,11 +15,12 @@ public class TeamManager extends Role implements Asset {
     }
 
 
-    public boolean addTeam(Team teamToMange)
+    public boolean addTeam(Team teamToMange, TeamOwner teamOwner)
     {
-        if(teamToMange != null)
+        if(teamToMange != null && teamToMange.isTeamOwner(teamOwner))
         {
-            return managedTeams.add(teamToMange);
+            managedTeams.add(teamToMange);
+            return teamToMange.addTeamManager(teamOwner,this);
         }
         return false;
     }
@@ -53,14 +54,21 @@ public class TeamManager extends Role implements Asset {
         return false;
     }
 
+
     @Override
-    public void addProperty() {
+    public boolean addAllProperties() {
+        return false;
+    }
+
+    @Override
+    public boolean addProperty(String property) {
+        return false;
 
     }
 
     @Override
-    public void removeProperty() {
-
+    public boolean removeProperty(String property) {
+        return false;
     }
 
     @Override

@@ -23,12 +23,13 @@ public class Player extends Role implements Asset {
         bday = birthDate;
     }
 
-    public boolean addTeam(Team playTeam)
+    public boolean addTeam(Team playTeam,TeamOwner teamOwner)
     {
-        if(playerTeam == null)
+        if(playTeam != null)
         {
             playerTeam = playTeam;
-            return true;
+            return playerTeam.addTeamPlayer(teamOwner,this);
+
         }
         return false;
     }
@@ -68,6 +69,14 @@ public class Player extends Role implements Asset {
             return true;
         }
         return false;
+    }
+
+
+
+
+    @Override
+    public boolean addAllProperties() {
+        return addProperty(fieldJobString);
     }
 
     @Override

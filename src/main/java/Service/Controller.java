@@ -114,6 +114,8 @@ public class Controller {
 
 
 
+
+
     /**
      * Team Owner Asks to add a new asset to the Team
      * @param systemUser - the System User of the Team Owner
@@ -135,52 +137,16 @@ public class Controller {
         }
 
         TeamAsset ass = getAssetTypeFromUser();
+        String name = getNameFromUser("What is the asset name/username?");
 
-        String name = "";
-        switch (ass){
-            case PLAYER :
-                name = getUsernameFromUser("Player");
-                try{
-                    return TeamController.addPlayer(name,chosenTeam,myTeamOwner);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                    return false;
-                }
-            case COACH:
-                name = getUsernameFromUser("Coach");
-                try {
-                    return TeamController.addCoach(name,chosenTeam,myTeamOwner);
-                }catch (Exception e)
-                {
-                    e.printStackTrace();
-                    return false;
-                }
-            case TEAM_MANAGER:
-                name = getUsernameFromUser("Team Manager");
-                try {
-                    return TeamController.addTeamManager(name,chosenTeam,myTeamOwner);
-                }catch (Exception e)
-                {
-                    e.printStackTrace();
-                    return false;
-                }
-            case STADIUM:
-                UIController.printMessage("Enter Stadium Username:");
-                name = UIController.receiveString();
-                try {
-                    return TeamController.addStadium(name,chosenTeam,myTeamOwner);
-                }catch (Exception e)
-                {
-                    e.printStackTrace();
-                    return false;
-                }
-            default:
-                return false;
-        }
+        return TeamController.addAssetToTeam(name,chosenTeam,myTeamOwner,ass);
     }
 
+    private static String getNameFromUser(String msg) {
+        UIController.printMessage(msg);
+        String username = UIController.receiveString();
+        return username;
+    }
 
 
     private static TeamAsset getAssetTypeFromUser() {

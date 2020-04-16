@@ -1,8 +1,15 @@
 package Domain.Game;
 
+import Domain.Controllers.TeamController;
+import Domain.EntityManager;
+import Domain.Exceptions.*;
 import Domain.Users.*;
+import Service.UIController;
 
+import javax.management.relation.RoleNotFoundException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,22 +30,11 @@ public class Team {
     }
 
     public Team() {
-        this.teamOwners = new ArrayList<>();
+        teamOwners = new ArrayList<>();
         teamPlayers = new ArrayList<>();
         teamCoaches = new ArrayList<>();
         teamManagers = new ArrayList<>();
-    }
-    /**
-     * A method that returns a string containing all team information for display
-     * @return string containing all team information.
-     */
-    public String DisplayTeam(){
-        String output = "Team Name:" + teamName + "\n" +
-                        "Team Coaches:";
-
-
-
-        return output;
+        stadiums = new ArrayList<>();
     }
 
 
@@ -56,19 +52,7 @@ public class Team {
         }
         if(teamPlayer.getType() == RoleTypes.PLAYER)
         {
-            boolean addedPlayer = teamPlayers.add((Player)teamPlayer);
-            if(addedPlayer)
-            {
-                if( ((Player) teamPlayer).addTeam(this))
-                {
-                    return true;
-                }
-                else
-                {
-                    teamPlayers.remove((Player)teamPlayer);
-                    return false;
-                }
-            }
+            return teamPlayers.add((Player)teamPlayer);
         }
         return false;
     }
@@ -81,15 +65,7 @@ public class Team {
         }
         if(coach.getType() == RoleTypes.COACH)
         {
-            boolean addedCoach = teamCoaches.add((Coach)coach);
-            if(addedCoach) {
-                if (((Coach) coach).addTeam(this)) {
-                    return true;
-                } else {
-                    teamCoaches.remove((Coach) coach);
-                    return false;
-                }
-            }
+            return teamCoaches.add((Coach)coach);
         }
         return false;
     }
@@ -103,25 +79,14 @@ public class Team {
         }
         if(teamManager.getType() == RoleTypes.TEAM_MANAGER)
         {
-            if( teamManagers.add((TeamManager) teamManager))
-            {
-                if(((TeamManager)teamManager).addTeam(this))
-                {
-                    return true;
-                }
-                else
-                {
-                    teamManagers.remove((TeamManager)teamManager);
-                    return false;
-                }
-            }
+            return teamManagers.add((TeamManager) teamManager);
         }
         return false;
     }
 
-    public boolean addTeamOwner(TeamOwner townr,TeamOwner teamOwner)
+    public boolean addTeamOwner(TeamOwner townr, TeamOwner teamOwner)
     {
-        if(!teamOwners.contains(townr))
+        if(teamOwners.contains(townr))
         {
             return false;
         }
@@ -227,11 +192,25 @@ public class Team {
     @Override
     public String toString() {
         return "Team{" +
-                "teamPlayers=" + teamPlayersToString() +
+                " teamPlayers=" + teamPlayersToString() +
                 ", teamCoaches=" + teamCoachesToString() +
                 ", teamManagers=" + teamManagersToString() +
                 ", teamOwners=" + teamOwnersToString() +
+                ", teamStadiums=" + stadiumsToString() +
                 '}';
+    }
+
+    private String stadiumsToString() {
+        StringBuilder stadiumString = new StringBuilder();
+        stadiumString.append("Stadiums: \n");
+
+        for (int i = 0; i < stadiums.size(); i++)
+        {
+            stadiumString.append(i+1).append(". ");
+            stadiumString.append(stadiums.get(i).getName());
+            stadiumString.append("\n");
+        }
+        return stadiumString.toString();
     }
 
     private String teamOwnersToString() {
@@ -308,16 +287,11 @@ public class Team {
      * add stadium to team
      * @return true if stadium added successfully!
      */
-    public boolean addStadiums(Stadium stadium) {
-        if(this.stadiums.contains(stadiums))
-        {
-            return false;
-        }
-        else
-        {
+    public boolean addStadium(Stadium stadium) {
+        if (!this.stadiums.contains(stadium)) {
             this.stadiums.add(stadium);
-            return true;
         }
+        return true;
     }
 
     /**
@@ -326,16 +300,13 @@ public class Team {
      * remove stadium to team
      * @return true if stadium removed successfully!
      */
-    public boolean removeStadiums(Stadium stadium) {
-        if(!this.stadiums.contains(stadiums))
-        {
-            return false;
-        }
-        else
+    public boolean removeStadium(Stadium stadium) {
+        if(this.stadiums.contains(stadium))
         {
             this.stadiums.remove(stadium);
             return true;
         }
+        return false;
     }
 
     public List<Asset> getAllAssets() {
@@ -346,6 +317,192 @@ public class Team {
         allTeamAssets.addAll(this.teamManagers);
         allTeamAssets.addAll(this.stadiums);
         return allTeamAssets;
+    }
+
+
+    public boolean isTeamOwner(TeamOwner teamOwner) {
+        if(teamOwner != null && teamOwners.contains(teamOwner))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean addAsset(String assetName, TeamOwner teamOwner, TeamAsset assetType)
+            throws UserNotFoundException,NoSuchTeamAssetException,StadiumNotFoundException {
+
+        Asset teamAsset;
+        SystemUser assetUser;
+        if(!assetType.equals(TeamAsset.STADIUM)) {
+            assetUser = EntityManager.getInstance().getUser(assetName);
+            if (assetUser == null) {
+                throw new UserNotFoundException("Could not find user " + assetName);
+            }
+        }
+        else
+        {
+            //Suppose to add a stadium as an asset
+            assetUser = null;
+        }
+
+        if(assetType.equals(TeamAsset.PLAYER))
+        {
+            teamAsset = (Player)assetUser.getRole(RoleTypes.PLAYER);
+            if(teamAsset == null)
+            {
+                Date playerBDate = getPlayerBirthDate();
+                teamAsset = new Player(assetUser,playerBDate);
+            }
+        }
+        else if(assetType.equals(TeamAsset.COACH))
+        {
+            teamAsset = (Coach)assetUser.getRole(RoleTypes.COACH);
+            if(teamAsset == null)
+            {
+                teamAsset = new Coach(assetUser);
+            }
+        }
+        else if(assetType.equals(TeamAsset.TEAM_MANAGER))
+        {
+            teamAsset = (TeamManager)assetUser.getRole(RoleTypes.TEAM_MANAGER);
+            if(teamAsset == null)
+            {
+                teamAsset = new TeamManager(assetUser);
+            }
+        }
+        else if(assetType.equals(TeamAsset.STADIUM))
+        {
+            teamAsset = EntityManager.getInstance().getStadium(assetName);
+            if(teamAsset == null)
+            {
+                throw new StadiumNotFoundException("Could not find a stadium by the given name" + assetName);
+            }
+        }
+        else
+        {
+            throw new NoSuchTeamAssetException("There is no Team Asset named " + assetType);
+        }
+
+        teamAsset.addAllProperties();
+
+        return teamAsset.addTeam(this,teamOwner);
+
+
+
+
+
+        /*if(!assetType.equals(TeamAsset.STADIUM)) {
+            SystemUser assetUser = EntityManager.getInstance().getUser(assetName);
+            if (assetUser == null) {
+                throw new UserNotFoundException("Could not find a user by the given username" + assetName);
+            }
+
+            Role getRoleForUser;
+            if(assetType.equals(TeamAsset.PLAYER))
+            {
+                getRoleForUser = assetUser.getRole(RoleTypes.PLAYER);
+                Player playerRole;
+                if(getRoleForUser == null)
+                {
+                    Date bday = getPlayerBirthDate();
+                    playerRole = new Player(assetUser,bday);
+                    if(!playerRole.addProperty(playerRole.fieldJobString)){
+                        throw new PropertyAdditionException("Something went wrong trying to add a property");
+                    }
+                }
+                else {
+                    playerRole = (Player)getRoleForPlayer;
+                    if(teamToAddPlayer.getTeamPlayers().contains(playerRole))
+                    {
+                        throw new PlayerIsAlreadyInThisTeamException("Player is already part of this team");
+                    }
+                }
+
+            }
+            else if(assetType.equals(TeamAsset.COACH))
+            {
+                getRoleForUser = assetUser.getRole(RoleTypes.COACH);
+                Coach coachRole;
+                if(getRoleForUser == null)
+                {
+                    coachRole = new Coach(assetUser);
+                    if(coachRole.addProperty(coachRole.teamJobString))
+                    {
+                        throw new PropertyAdditionException("Something went wrong trying to add a property");
+                    }
+                    if(coachRole.addProperty(coachRole.qualificationString))
+                    {
+                        throw new PropertyAdditionException("Something went wrong trying to add a property");
+                    }
+
+                }
+                else
+                {
+                    coachRole = (Coach) getRoleForUser;
+                    if(teamToAddCoach.getTeamCoaches().contains(coachRole))
+                    {
+                        throw new CoachIsAlreadyInThisTeamException("Coach is already in this team");
+                    }
+                }
+            }
+            else if(assetType.equals(TeamAsset.TEAM_MANAGER))
+            {
+                getRoleForUser = assetUser.getRole(RoleTypes.TEAM_MANAGER);
+                TeamManager managerRole;
+                if(getRoleForUser == null)
+                {
+                    managerRole = new TeamManager(managerUser);
+                }
+                else {
+                    managerRole = (TeamManager) getRoleForUser;
+                    if(teamToAddManager.getTeamManagers().contains(managerRole))
+                    {
+                        throw new ManagerIsAlreadyInThisTeamException("This Manager is already a manager in this team");
+                    }
+                }
+            }
+            else
+            {
+                throw new NoSuchTeamAssetException("There is no such team asset type");
+            }
+
+
+        }
+        else
+        {
+            Stadium stadiumAsset = EntityManager.getInstance().getStadium(assetName);
+            if (stadiumAsset == null) {
+                throw new StadiumNotFoundException("Could not find a stadium by the given name" + assetName);
+            }
+        }*/
+    }
+
+    private String getStadiumLocation() {
+        UIController.printMessage("Please insert stadium locaion");
+        return UIController.receiveString();
+    }
+
+
+    /**
+     * Get the player date of birth from the user
+     * @return the birth date of the player as java.util.Date
+     */
+    private static Date getPlayerBirthDate() {
+        UIController.printMessage("Please insert Player Birth Date in format dd/MM/yyyy");
+        String bDate;
+        do {
+            bDate = UIController.receiveString();
+        }while (!bDate.matches("^(3[01]|[12][0-9]|0[1-9])/(1[0-2]|0[1-9])/[0-9]{4}$"));
+
+        try {
+            return new SimpleDateFormat("dd/MM/yyyy").parse(bDate);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+
     }
 
 

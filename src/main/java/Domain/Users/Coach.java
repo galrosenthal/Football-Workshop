@@ -77,6 +77,21 @@ public class Coach extends Role implements Asset {
     }
 
     @Override
+    public boolean addAllProperties() {
+        if(!addProperty(teamJobString))
+        {
+            return false;
+        }
+
+        if(!addProperty(qualificationString))
+        {
+            removeProperty(teamJobString);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public boolean addProperty(String property)
     {
         String valueOfProperty = "";
@@ -148,12 +163,12 @@ public class Coach extends Role implements Asset {
                 teamJob.equals(coach.teamJob);
     }
 
-    public boolean addTeam(Team teamToAdd)
+    public boolean addTeam(Team teamToAdd, TeamOwner teamOwner)
     {
-        if(teamToAdd != null)
+        if(teamToAdd != null && teamToAdd.isTeamOwner(teamOwner))
         {
             this.coachedTeam = teamToAdd;
-            return true;
+            return coachedTeam.addTeamCoach(teamOwner,this);
         }
         return false;
     }

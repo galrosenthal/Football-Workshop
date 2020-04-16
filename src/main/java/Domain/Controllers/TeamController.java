@@ -54,279 +54,43 @@ public class TeamController {
         return true;
     }
 
-    public static boolean addAssetToTeam(String assetName, Team teamToAddAsset, TeamOwner teamOwner, TeamAsset assetType)
-            throws UserNotFoundException,PlayerIsAlreadyInThisTeamException,StadiumNotFoundException,
-            PropertyAdditionException,NoSuchTeamAssetException,CoachIsAlreadyInThisTeamException,ManagerIsAlreadyInThisTeamException
-    {
-        if(!assetType.equals(TeamAsset.STADIUM)) {
-            SystemUser assetUser = EntityManager.getInstance().getUser(assetName);
-            if (assetUser == null) {
-                throw new UserNotFoundException("Could not find a user by the given username" + assetName);
-            }
-
-            Role getRoleForUser;
-            if(assetType.equals(TeamAsset.PLAYER))
-            {
-                getRoleForUser = assetUser.getRole(RoleTypes.PLAYER);
-                Player playerRole;
-                if(getRoleForUser == null)
-                {
-                    Date bday = getPlayerBirthDate();
-                    playerRole = new Player(assetUser,bday);
-                    if(!playerRole.addProperty(playerRole.fieldJobString)){
-                        throw new PropertyAdditionException("Something went wrong trying to add a property");
-                    }
-                }
-                else {
-                    playerRole = (Player)getRoleForPlayer;
-                    if(teamToAddPlayer.getTeamPlayers().contains(playerRole))
-                    {
-                        throw new PlayerIsAlreadyInThisTeamException("Player is already part of this team");
-                    }
-                }
-
-            }
-            else if(assetType.equals(TeamAsset.COACH))
-            {
-                getRoleForUser = assetUser.getRole(RoleTypes.COACH);
-                Coach coachRole;
-                if(getRoleForUser == null)
-                {
-                    coachRole = new Coach(assetUser);
-                    if(coachRole.addProperty(coachRole.teamJobString))
-                    {
-                        throw new PropertyAdditionException("Something went wrong trying to add a property");
-                    }
-                    if(coachRole.addProperty(coachRole.qualificationString))
-                    {
-                        throw new PropertyAdditionException("Something went wrong trying to add a property");
-                    }
-
-                }
-                else
-                {
-                    coachRole = (Coach) getRoleForUser;
-                    if(teamToAddCoach.getTeamCoaches().contains(coachRole))
-                    {
-                        throw new CoachIsAlreadyInThisTeamException("Coach is already in this team");
-                    }
-                }
-            }
-            else if(assetType.equals(TeamAsset.TEAM_MANAGER))
-            {
-                getRoleForUser = assetUser.getRole(RoleTypes.TEAM_MANAGER);
-                TeamManager managerRole;
-                if(getRoleForUser == null)
-                {
-                    managerRole = new TeamManager(managerUser);
-                }
-                else {
-                    managerRole = (TeamManager) getRoleForUser;
-                    if(teamToAddManager.getTeamManagers().contains(managerRole))
-                    {
-                        throw new ManagerIsAlreadyInThisTeamException("This Manager is already a manager in this team");
-                    }
-                }
-            }
-            else
-            {
-                throw new NoSuchTeamAssetException("There is no such team asset type");
-            }
-
-
-        }
-        else
-        {
-            Stadium stadiumAsset = EntityManager.getInstance().getStadium(assetName);
-            if (stadiumAsset == null) {
-                throw new StadiumNotFoundException("Could not find a stadium by the given name" + assetName);
-            }
-        }
-    }
-
     /**
-     * Add a {@link Player} with playerUsername to the teamToAddPlayer by the teamOwner
-     * @param playerUsername is the Username of the player to add
-     * @param teamToAddPlayer is the Team to add the player to
-     * @param teamOwner is the Owner who asks to add the player
+     * Adds asset with assetName and assetType to the teamToAddAsset by the teamOwner
+     * asset can be one of the following:
+     * <p>{@link Player}</p>
+     * <p>{@link Coach}</p>
+     * <p>{@link TeamManager}</p>
+     * <p>{@link Stadium}</p>
+     * @param assetName is the Name or Username of the asset to add
+     * @param teamToAddAsset is the Team to add the asset to
+     * @param teamOwner is the Owner who asks to add the asset
+     * @param assetType is the type of the asset to add {@link TeamAsset}
      * @return true if the player was added successfully
+     * @throws NoTeamExistsException
+     * @throws NotATeamOwner
+     * @throws NoSuchTeamAssetException
      * @throws UserNotFoundException
-     * @throws PlayerIsAlreadyInThisTeamException
+     * @throws StadiumNotFoundException
      */
-    public static boolean addPlayer(String playerUsername, Team teamToAddPlayer, TeamOwner teamOwner)
-            throws UserNotFoundException,PlayerIsAlreadyInThisTeamException
+    public static boolean addAssetToTeam(String assetName, Team teamToAddAsset, TeamOwner teamOwner, TeamAsset assetType)
+            throws NoTeamExistsException,NotATeamOwner,NoSuchTeamAssetException,UserNotFoundException
+            ,StadiumNotFoundException
     {
-        SystemUser playerUser = EntityManager.getInstance().getUser(playerUsername);
-        if(playerUser == null)
+        if(teamToAddAsset == null)
         {
-            throw new UserNotFoundException("Could not find a user by the given username" + playerUsername);
+            throw new NoTeamExistsException("No Team was given");
+        }
+        if(assetType == null)
+        {
+            throw  new NoSuchTeamAssetException("No Asset Type was given");
+        }
+        if(!teamToAddAsset.isTeamOwner(teamOwner))
+        {
+            throw new NotATeamOwner("Not One of the Team Owners");
         }
 
-        Role getRoleForPlayer = playerUser.getRole(RoleTypes.PLAYER);
-        Player playerRole;
-        if(getRoleForPlayer == null)
-        {
-            int fieldJobIndex = getEnumByRoleType("FiledJob for player", RoleTypes.PLAYER);
-            PlayerFieldJobs filedJob = PlayerFieldJobs.values()[fieldJobIndex];
-            Date bday = getPlayerBirthDate();
-            playerRole = new Player(playerUser,filedJob,bday);
-        }
-        else {
-            playerRole = (Player)getRoleForPlayer;
-            if(teamToAddPlayer.getTeamPlayers().contains(playerRole))
-            {
-                throw new PlayerIsAlreadyInThisTeamException("Player is already part of this team");
-            }
-        }
-
-        return teamToAddPlayer.addTeamPlayer(teamOwner,playerRole);
+        return teamToAddAsset.addAsset(assetName,teamOwner,assetType);
     }
-
-
-
-    /**
-     * Get the player date of birth from the user
-     * @return the birth date of the player as java.util.Date
-     */
-    private static Date getPlayerBirthDate() {
-        UIController.printMessage("Please insert Player Birth Date in format dd/MM/yyyy");
-        String bDate;
-        do {
-            bDate = UIController.receiveString();
-        }while (!bDate.matches("^(3[01]|[12][0-9]|0[1-9])/(1[0-2]|0[1-9])/[0-9]{4}$"));
-
-        try {
-            return new SimpleDateFormat("dd/MM/yyyy").parse(bDate);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return null;
-
-    }
-
-    /**
-     * Gets the player field job ({@link PlayerFieldJobs}) chosen by the user from the list of filed jobs
-     * @return the field job chosen for the user
-     */
-    private static int getEnumByRoleType(String msg, RoleTypes rt) {
-        UIController.printMessage("Please Choose" + msg);
-        List<Object> values = new ArrayList<>();
-        if(rt == RoleTypes.PLAYER)
-        {
-
-            for (int i = 0; i < PlayerFieldJobs.values().length; i++) {
-                values.add(PlayerFieldJobs.values()[i]);
-            }
-
-        }
-        else if(rt == RoleTypes.COACH)
-        {
-            for (int i = 0; i < CoachQualification.values().length; i++) {
-                values.add(CoachQualification.values()[i]);
-            }
-        }
-        else
-        {
-            return -1;
-        }
-
-        for (int i = 0; i < values.size(); i++) {
-            UIController.printMessage(i + ". " + values.get(i));
-        }
-
-        int index;
-
-        do{
-            index = UIController.receiveInt();
-        }while (!(index >= 0 && index < PlayerFieldJobs.values().length));
-
-        return index;
-    }
-
-    /**
-     * Add a {@link Coach} with coachUsername to the teamToAddCoach by the teamOwner
-     * @param coachUsername is the Username of the coach to add
-     * @param teamToAddCoach is the Team to add the coach to
-     * @param teamOwner is the Owner who asks to add the coach
-     * @return true if the coach was added successfully
-     * @throws UserNotFoundException
-     * @throws CoachIsAlreadyInThisTeamException
-     * @throws PropertyAdditionException
-     */
-    public static boolean addCoach(String coachUsername, Team teamToAddCoach, TeamOwner teamOwner)
-            throws UserNotFoundException,CoachIsAlreadyInThisTeamException,PropertyAdditionException {
-        SystemUser coachUser = EntityManager.getInstance().getUser(coachUsername);
-        if(coachUser == null)
-        {
-            throw new UserNotFoundException("Could not find a user by the given username" + coachUsername);
-        }
-
-        Role getRoleForUser = coachUser.getRole(RoleTypes.COACH);
-        Coach coachRole;
-        if(getRoleForUser == null)
-        {
-            coachRole = new Coach(coachUser);
-            if(coachRole.addProperty(coachRole.teamJobString))
-            {
-                throw new PropertyAdditionException("Something went wrong trying to add a property");
-            }
-            if(coachRole.addProperty(coachRole.qualificationString))
-            {
-                throw new PropertyAdditionException("Something went wrong trying to add a property");
-            }
-
-        }
-        else
-        {
-            coachRole = (Coach) getRoleForUser;
-            if(teamToAddCoach.getTeamCoaches().contains(coachRole))
-            {
-                throw new CoachIsAlreadyInThisTeamException("Coach is already in this team");
-            }
-        }
-
-        return teamToAddCoach.addTeamCoach(teamOwner,coachRole);
-    }
-
-    /**
-     * Add a {@link TeamManager} with managerUsername to the teamToAddManager by the teamOwner
-     * @param managerUsername is the Username of the manager to add
-     * @param teamToAddManager is the Team to add the manager to
-     * @param teamOwner is the Owner who asks to add the manager
-     * @return true if the manager was added successfully
-     * @throws UserNotFoundException
-     * @throws ManagerIsAlreadyInThisTeamException
-     */
-    public static boolean addTeamManager(String managerUsername, Team teamToAddManager, TeamOwner teamOwner)
-            throws UserNotFoundException,ManagerIsAlreadyInThisTeamException {
-        SystemUser managerUser = EntityManager.getInstance().getUser(managerUsername);
-        if(managerUser == null)
-        {
-            throw new UserNotFoundException("Could not find a user by the given username" + managerUsername);
-        }
-
-        Role getRoleForUser = managerUser.getRole(RoleTypes.COACH);
-        TeamManager managerRole;
-        if(getRoleForUser == null)
-        {
-            managerRole = new TeamManager(managerUser);
-        }
-        else {
-            managerRole = (TeamManager) getRoleForUser;
-            if(teamToAddManager.getTeamManagers().contains(managerRole))
-            {
-                throw new ManagerIsAlreadyInThisTeamException("This Manager is already a manager in this team");
-            }
-        }
-        return teamToAddManager.addTeamManager(teamOwner,managerRole);
-    }
-
-    public static boolean addStadium(String stadiumName, Team teamToAddStadium, TeamOwner teamOwner) throws Exception {
-        return false;
-    }
-
 
     public static boolean editAssets(Team chosenTeam)
     {

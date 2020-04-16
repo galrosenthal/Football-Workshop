@@ -98,7 +98,7 @@ public class EntityManager {
     }
     public Stadium getStadium(String stadiumName) {
         for (Stadium std: allStadiums) {
-            if (std.getStadName().equals(stadiumName)) {
+            if (std.getName().equals(stadiumName)) {
                 return std;
             }
         }
