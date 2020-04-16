@@ -2,20 +2,25 @@ package Domain;
 
 import DB.DBManager;
 import DB.Table;
+import Domain.Game.League;
 import Domain.Users.*;
 import Domain.Game.Stadium;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class EntityManager {
     private static EntityManager entityManagerInstance = null;
 
-    List<SystemUser> allUsers;
-    List<Stadium> allStadiums;
+    private List<Stadium> allStadiums;
+    private List<SystemUser> allUsers;
+    private HashSet<League> allLeagues;
 
     private EntityManager() {
         allUsers = new ArrayList<>();
+        allLeagues = new HashSet<>();
+        allStadiums = new ArrayList<>();
     }
 
     /**
@@ -105,6 +110,20 @@ public class EntityManager {
         return null;
     }
 
+    /**
+     * Checks if a league with a name that matches the given name already exists.
+     * @param name - String - name
+     * @return - boolean - True if a league with a name that matches the given name already exists, else false
+     */
+    public boolean doesLeagueExists(String name){
+        for (League league : allLeagues) {
+            if (league.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean addUser(SystemUser systemUser) {
         if (!(this.allUsers.contains(systemUser))) {
             this.allUsers.add(systemUser);
@@ -124,5 +143,32 @@ public class EntityManager {
             this.allStadiums.add(newStadium);
         }
         return true;
+    }
+
+    /**
+     * Removes a league by a given name
+     * @param leagueName - String - a name of the league to be removed
+     * @return - boolean - true if the league removed successfully, else false
+     */
+    public boolean removeLeagueByName(String leagueName) {
+        League leagueToRemove = null;
+        for (League league : allLeagues) {
+            if (league.getName().equals(leagueName)) {
+                leagueToRemove = league;
+            }
+        }
+        if(leagueToRemove==null){
+            return false;
+        }
+        return this.allLeagues.remove(leagueToRemove);
+    }
+
+    /**
+     * Adds a new league. Responsible only for creating and adding a new league, doesn't do any farther checks.
+     * @param leagueName - String - A unique leagueName
+     */
+    public void addLeague(String leagueName) {
+        League league = new League(leagueName);
+        allLeagues.add(league);
     }
 }

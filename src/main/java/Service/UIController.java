@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class UIController {
 
     private static boolean isTest = false;
-    private static int selector = 0; //latest = 4
+    private static int selector = 0; //latest = 6
 
     public static void setSelector(int selector) {
         UIController.selector = selector;
@@ -16,9 +16,10 @@ public class UIController {
     }
 
     public static void printMessage(String msg) {
+        //  if (!isTest) {
         System.out.println(msg);
+        //  }
     }
-
 
     public static String receiveString() {
         if (!isTest) {
@@ -39,6 +40,10 @@ public class UIController {
                 return "admin";
             } else if (selector == 4) {
                 return "12345678";
+            } else if (selector == 5) {
+                return "newLeagueName";
+            } else if (selector == 6) {
+                return "Premier League";
             } else
                 return null;
         }
@@ -73,9 +78,9 @@ public class UIController {
             return false;
         }
 
-        if(selector == 4){
+        if (selector == 4) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }

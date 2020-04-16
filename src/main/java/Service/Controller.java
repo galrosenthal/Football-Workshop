@@ -93,7 +93,7 @@ public class Controller {
 
     }
 
-    private static Team getTeamByChoice(TeamOwner myTeamOwner) {
+    private static Team     getTeamByChoice(TeamOwner myTeamOwner) {
         List<Team> myTeams = myTeamOwner.getOwnedTeams();
         if(myTeams == null)
         {
