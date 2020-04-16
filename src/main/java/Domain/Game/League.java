@@ -1,6 +1,5 @@
 package Domain.Game;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class League {
