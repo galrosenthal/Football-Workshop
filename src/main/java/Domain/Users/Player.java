@@ -14,6 +14,11 @@ public class Player extends Role {
     private List<Team> playerTeams;
     private Date bday;
 
+    public Player(SystemUser systemUser) {
+        super(RoleTypes.PLAYER, systemUser);
+        playerTeams= new ArrayList<>();
+    }
+
     public Player(SystemUser systemUser,
                   PlayerFieldJobs fieldJob, Date brthDay) {
         super(RoleTypes.PLAYER, systemUser);
@@ -45,4 +50,7 @@ public class Player extends Role {
                 Objects.equals(bday, player.bday);
     }
 
+    public List<Team> getPlayerTeams() {
+        return playerTeams;
+    }
 }

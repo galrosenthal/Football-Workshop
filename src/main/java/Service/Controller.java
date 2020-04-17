@@ -55,8 +55,10 @@ public class Controller {
         TeamOwner myTeamOwner = (TeamOwner)myTeamOwnerRole;
         Team chosenTeam = getTeamByChoice(myTeamOwner);
 
-        if(chosenTeam.getStatus() != TeamStatus.OPEN)
+        if(chosenTeam.getStatus() != TeamStatus.OPEN) {
+            UIController.printMessage("Cannot perform action on closed team.");
             return false; //cannot perform action on closed team.
+        }
 
         String newTeamOwnerUsername = getUsernameFromUser("Team Owner");
 

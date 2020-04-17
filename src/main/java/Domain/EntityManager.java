@@ -3,6 +3,7 @@ package Domain;
 import DB.DBManager;
 import DB.Table;
 import Domain.Game.League;
+import Domain.Game.Team;
 import Domain.Users.*;
 
 import java.util.ArrayList;
@@ -13,11 +14,13 @@ public class EntityManager {
     private static EntityManager entityManagerInstance = null;
 
     private List<SystemUser> allUsers;
+    private List<Team> allTeams;
     private HashSet<League> allLeagues;
 
     private EntityManager() {
         allUsers = new ArrayList<>();
         allLeagues = new HashSet<>();
+        allTeams = new ArrayList<>();
     }
 
     /**
@@ -116,13 +119,35 @@ public class EntityManager {
     public boolean addUser(SystemUser systemUser) {
         if (!(this.allUsers.contains(systemUser))) {
             this.allUsers.add(systemUser);
+            return true;
         }
-        return true;
+        return false;
     }
 
     public boolean removeUserByReference(SystemUser systemUser) {
-        this.allUsers.remove(systemUser);
-        return true;
+        return this.allUsers.remove(systemUser);
+    }
+
+    public boolean removeUserByName(String username) {
+        for (SystemUser su : allUsers) {
+            if (su.getUsername().equals(username)) {
+                this.allUsers.remove(su);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean addTeam(Team team) {
+        if (!(this.allTeams.contains(team))) {
+            this.allTeams.add(team);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeTeamByReference(Team team) {
+        return this.allTeams.remove(team);
     }
 
     /**

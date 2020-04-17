@@ -23,7 +23,7 @@ public class Unregistered {
         EntityManager entManager = EntityManager.getInstance();
         SystemUser userWithUsrNm = entManager.getUser(usrNm);
         if(userWithUsrNm == null) //User name does not exists.
-            throw new Exception("Username or Password was incorrect!!!!!");
+            throw new Exception("Username or Password was incorrect!");
 
         //User name exists, checking password.
         //List<String> userDetails = DBManager.getInstance().getSystemUsers().getRecord(new String[]{"username"}, new String[]{usrNm});
@@ -31,7 +31,7 @@ public class Unregistered {
             this.systemUser = userWithUsrNm;
             return userWithUsrNm;
         }
-        throw new Exception("Username or Password was incorrect!!!!!");
+        throw new Exception("Username or Password was incorrect!");
     }
 
     /**

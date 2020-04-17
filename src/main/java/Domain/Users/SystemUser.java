@@ -45,6 +45,11 @@ public class SystemUser {
         roles.add(role);
     }
 
+    //For tests. Not doing further removals from teams and etc.
+    public boolean removeRole(Role roleToRemove){
+        return roles.remove(roleToRemove);
+    }
+
     public List<Role> getRoles() {
         return roles;
     }
@@ -70,5 +75,14 @@ public class SystemUser {
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SystemUser)) return false;
+        SystemUser systemUser = (SystemUser) o;
+        return this.username.equals(systemUser.username) &&
+                this.name.equals(systemUser.name);
     }
 }

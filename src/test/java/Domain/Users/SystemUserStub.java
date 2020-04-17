@@ -44,7 +44,7 @@ public class SystemUserStub extends SystemUser{
     }
 
     public boolean isType(RoleTypes roleType) {
-        if(selector == 0 || selector == 4)
+        if(selector == 0 || selector == 4 || selector == 66141 || selector == 66161)
         {
             return false;
         }
@@ -53,10 +53,11 @@ public class SystemUserStub extends SystemUser{
 
     public Role getRole(RoleTypes roleType)
     {
-        if(selector == 1)
+        if(selector == 1 || selector == 66142 || selector == 66162)
         {
             return null;
-        } else if( selector == 2){
+        } else if( selector == 2 || selector == 66143 || selector == 66144 || selector == 66151 || selector == 66163
+                || selector == 66251 || selector == 66171 || selector == 661724 || selector == 662724){
             return new TeamOwnerStub(this);
         } else if( selector == 3){
             return null;
@@ -64,6 +65,13 @@ public class SystemUserStub extends SystemUser{
         else if( selector == 5){
             return new AssociationRepresentativeStub(this);
         }
+        else if (selector == 661721 ||selector == 662721)
+            return new PlayerStub(this);
+        else if (selector == 661722 || selector == 662722)
+            return new TeamManagerStub(this);
+        else if (selector == 661723 || selector == 662723)
+            return new CoachStub(this);
+
         return null;
     }
 }

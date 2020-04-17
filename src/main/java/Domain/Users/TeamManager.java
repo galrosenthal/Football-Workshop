@@ -33,4 +33,8 @@ public class TeamManager extends Role {
     public boolean removeTeam(Team team){
         return this.teamsManaged.remove(team);
     }
+
+    public List<Team> getTeamsManaged() {
+        return teamsManaged;
+    }
 }

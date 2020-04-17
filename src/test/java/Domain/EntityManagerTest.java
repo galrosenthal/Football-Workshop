@@ -32,8 +32,8 @@ public class EntityManagerTest {
         assertFalse(EntityManager.getInstance().removeLeagueByName("League Name2"));
     }
 
-    @Test
+    /*@Test
     public void addUserUTest() {
         assertTrue(EntityManager.getInstance().addUser(new SystemUserStub("this username definitely unique","ss",0)));
-    }
+    }*/
 }

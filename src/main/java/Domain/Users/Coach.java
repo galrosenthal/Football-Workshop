@@ -14,6 +14,10 @@ public class Coach extends Role {
     private List<Team> coachedTeams;
     private String teamJob;
 
+    public Coach(SystemUser systemUser) {
+        super(RoleTypes.COACH, systemUser);
+        coachedTeams = new ArrayList<>();
+    }
 
     public Coach(SystemUser su , CoachQualification qlf,  String jobTitle) {
         super(RoleTypes.COACH,su);
@@ -43,4 +47,11 @@ public class Coach extends Role {
         return this.coachedTeams.remove(team);
     }
 
+    public List<Team> getCoachedTeams() {
+        return coachedTeams;
+    }
+
+    public String getTeamJob() {
+        return teamJob;
+    }
 }

@@ -78,7 +78,7 @@ public class UIController {
             return false;
         }
 
-        if (selector == 4) {
+        if (selector == 6611 || selector == 6621 || selector == 6623 || selector == 4  || selector == 66151|| selector == 66251) {
             return true;
         } else {
             return false;
