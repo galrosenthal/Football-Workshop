@@ -31,7 +31,7 @@ public class TeamControllerTest {
         hapoelBash = new Team();
         EntityManager.getInstance().removeUserByReference(teamOwnerUser);
         EntityManager.getInstance().removeUserByReference(teamOwnerToAdd);
-        hapoelBash.removeTeamOwner((TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        hapoelBash.removeTeamOwner((TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
     }
 
     /**

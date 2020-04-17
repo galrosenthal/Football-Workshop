@@ -8,6 +8,7 @@ import java.util.List;
 public class TeamOwner extends Role {
 
     private List<Team> ownedTeams;
+    private SystemUser appointedOwner;
 
     public TeamOwner(SystemUser systemUser) {
         //TODO:
@@ -58,7 +59,16 @@ public class TeamOwner extends Role {
         return true;
     }
 
-//    /**
+
+    public SystemUser getAppointedOwner() {
+        return appointedOwner;
+    }
+
+    public void setAppointedOwner(SystemUser appointedOwner) {
+        this.appointedOwner = appointedOwner;
+    }
+
+    //    /**
 ////     * Checks whether or not the user is part of the team asset or not,
 ////     * @param regUser
 ////     * @return

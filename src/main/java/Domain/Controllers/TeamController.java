@@ -5,14 +5,24 @@ import Domain.Game.Season;
 import Domain.Game.Team;
 import Domain.Users.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class TeamController {
 
 
+    /**
+     * Adding new team owner to the relevant team. The method checks that the current team owner - owner is
+     * a owner in the team, the new owner has system user and he isn't a team owner of any the in the same season.
+     * @param username - the user we want to add as team owner to the team
+     * @param teamToOwn - the team we want to own her a new team owner
+     * @param owner - the current owner of the team
+     * @return true if the the operation succeed
+     * @throws Exception
+     */
     public static boolean addTeamOwner(String username, Team teamToOwn, TeamOwner owner)
-    throws Exception{
+            throws Exception{
 
         List<TeamOwner> teamOwners = teamToOwn.getTeamOwners();
 
@@ -49,7 +59,10 @@ public class TeamController {
         }
 
         teamOwner.addTeamToOwn(teamToOwn);
-        teamToOwn.addTeamOwner(teamOwner);
+
+        if(teamToOwn.addTeamOwner(teamOwner)){
+            teamOwner.setAppointedOwner(owner.getSystemUser());
+        }
 
 
         return true;
@@ -76,5 +89,68 @@ public class TeamController {
         }
         return false;
     }
+
+    /**
+     *
+     * @param
+     * @param
+     * @param
+     */
+    public static boolean removeTeamOwner(String username, Team team, TeamOwner owner) throws Exception {
+        List<TeamOwner> teamOwners = team.getTeamOwners();
+
+        if (!teamOwners.contains(owner)) {
+            throw new Exception("Only the owner of this team can remove owner");
+        }
+        SystemUser newTeamOwnerUser = EntityManager.getInstance().getUser(username);
+
+        if (newTeamOwnerUser == null) {
+            throw new Exception("Could not find a user by the given username");
+        }
+
+        Role TeamOwnerRole = newTeamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner teamOwner = (TeamOwner)TeamOwnerRole;
+
+        if(!teamOwners.contains(teamOwner)){
+            throw new Exception("The user is not a owner of this team");
+        }
+
+        List<TeamOwner> teamOwnersToRemove= allTeamOwnersToRemove(teamOwner,teamOwners);
+
+        //Remove the teamOwner and all the team owners his appointed
+        for (TeamOwner toRemove:
+                teamOwnersToRemove) {
+            team.removeTeamOwner(toRemove);
+        }
+
+        return true;
+    }
+
+    /**
+     * The method returns all the team owners we owned by the team owner the user want to remove
+     * @param teamOwner - the appointed owner
+     * @return list of all the owners the teamOwner appointed
+     */
+    private static List<TeamOwner> allTeamOwnersToRemove(TeamOwner teamOwner,List<TeamOwner> teamOwners) {
+        List<TeamOwner> teamOwnersToCheck = new ArrayList<>();
+        List<TeamOwner> teamOwnersToRemove = new ArrayList<>();
+
+        teamOwnersToCheck.add(teamOwner);
+        teamOwnersToRemove.add(teamOwner);
+
+        while(teamOwnersToCheck.size() != 0){
+            TeamOwner teamOwnerToCheck = teamOwnersToCheck.remove(0);
+
+            for (TeamOwner ownerOfTeam: teamOwners){
+                if(ownerOfTeam.getAppointedOwner().equals(teamOwnerToCheck.getSystemUser())){
+                    teamOwnersToCheck.add(ownerOfTeam);
+                    teamOwnersToRemove.add(ownerOfTeam);
+                }
+            }
+        }
+
+        return teamOwnersToRemove;
+    }
+
 
 }
