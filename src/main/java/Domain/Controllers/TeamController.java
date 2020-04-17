@@ -20,7 +20,7 @@ public class TeamController {
 
 
     public static boolean addTeamOwner(String username, Team teamToOwn, TeamOwner owner)
-    throws Exception{
+            throws Exception {
 
         List<TeamOwner> teamOwners = teamToOwn.getTeamOwners();
 
@@ -31,7 +31,7 @@ public class TeamController {
 
         if(newTeamOwnerUser == null)
         {
-            throw new Exception("Could not find a user by the given username");
+            throw new UserNotFoundException("Could not find a user by the given username" + username);
         }
 
         Role newTeamOwnerRole = newTeamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
@@ -44,10 +44,9 @@ public class TeamController {
         {
 
             teamOwner = (TeamOwner) newTeamOwnerRole;
-
             if(teamOwners.contains(teamOwner))
             {
-                throw new Exception("This User is already a team owner of this team");
+                throw new alreadyTeamOwnerException("This User is already a team owner");
             }
 
             if(isAlreadyOwnedAnotherTeamInSeason(teamToOwn,teamOwner)){
@@ -63,6 +62,43 @@ public class TeamController {
         return true;
     }
 
+    /**
+     * Adds asset with assetName and assetType to the teamToAddAsset by the teamOwner
+     * asset can be one of the following:
+     * <p>{@link Player}</p>
+     * <p>{@link Coach}</p>
+     * <p>{@link TeamManager}</p>
+     * <p>{@link Stadium}</p>
+     * @param assetName is the Name or Username of the asset to add
+     * @param teamToAddAsset is the Team to add the asset to
+     * @param teamOwner is the Owner who asks to add the asset
+     * @param assetType is the type of the asset to add {@link TeamAsset}
+     * @return true if the player was added successfully
+     * @throws NoTeamExistsException
+     * @throws NotATeamOwner
+     * @throws NullPointerException
+     * @throws UserNotFoundException
+     * @throws StadiumNotFoundException
+     */
+    public static boolean addAssetToTeam(String assetName, Team teamToAddAsset, TeamOwner teamOwner, TeamAsset assetType)
+            throws NoTeamExistsException,NotATeamOwner,NullPointerException,UserNotFoundException
+            ,StadiumNotFoundException
+    {
+        if(teamToAddAsset == null)
+        {
+            throw new NoTeamExistsException("No Team was given");
+        }
+        if(assetType == null)
+        {
+            throw  new NullPointerException("No Asset Type was given");
+        }
+        if(!teamToAddAsset.isTeamOwner(teamOwner))
+        {
+            throw new NotATeamOwner("Not One of the Team Owners");
+        }
+
+        return teamToAddAsset.addAsset(assetName,teamOwner,assetType);
+    }
 
     public static boolean editAssets(Team chosenTeam) throws Exception {
         List<Asset> allAssetsTeam = chosenTeam.getAllAssets();
@@ -117,7 +153,6 @@ public class TeamController {
 
     private static boolean removeProperty(Asset asset, String s) {
 
-
         return false;
     }
 
@@ -143,6 +178,8 @@ public class TeamController {
     }
 
 
+
+
     /**
      * In case the user wants to modify EnumProperty - choose which new property he wants to change.
      *
@@ -160,6 +197,7 @@ public class TeamController {
             propertyNewValueIndex = UIController.receiveInt()-1;
         } while (!(propertyNewValueIndex >= 0 && propertyNewValueIndex < allEnumValues.size()));
         return propertyNewValueIndex;
+
     }
 
     /**
@@ -181,7 +219,6 @@ public class TeamController {
 
     /**
      * In case the property ia a list - let the user to choose if he want to Add or Delete value to the list
-     *
      * @return 0 - if to add value , 1 - if to remove value
      */
     private static int actionToDo() {

@@ -4,6 +4,8 @@ import Domain.Users.Coach;
 import Domain.Users.Player;
 import Domain.Users.TeamManager;
 import Domain.Users.TeamOwner;
+import Domain.Exceptions.StadiumNotFoundException;
+import Domain.Exceptions.UserNotFoundException;
 import Domain.Users.*;
 
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ public class TeamStub extends Team{
 
 
     public boolean addTeamOwner(TeamOwner townr) {
-        return super.getTeamOwners().add(townr);
+        return true;
     }
 
     @Override
@@ -95,7 +97,7 @@ public class TeamStub extends Team{
 
     @Override
     public boolean addTeamOwner(Role teamOwner) {
-        return super.addTeamOwner(teamOwner);
+        return true;
     }
 
     @Override
@@ -111,5 +113,36 @@ public class TeamStub extends Team{
     @Override
     public List<TeamManager> getTeamManagers() {
         return super.getTeamManagers();
+    }
+
+
+    @Override
+    public boolean isTeamOwner(TeamOwner teamOwner) {
+        if(selector == 6110)
+        {
+            return true;
+        }
+        else if(selector == 6111)
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean addAsset(String assetName, TeamOwner teamOwner, TeamAsset assetType){
+        if(selector == 6110)
+        {
+            return true;
+        }
+        else if(selector == 6111)
+        {
+            return false;
+        }
+        else{
+            return false;
+        }
     }
 }

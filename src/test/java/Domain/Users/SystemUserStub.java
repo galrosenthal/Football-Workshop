@@ -72,25 +72,25 @@ public class SystemUserStub extends SystemUser{
         else if( selector == 5){
             return new AssociationRepresentativeStub(this);
         }
-        else if(selector == 6)
+        else if(selector == 6116)
         {
             PlayerStub p = new PlayerStub(this,null);
             p.setSelector(0);
             return p;
         }
-        else if(selector == 7)
+        else if(selector == 6117)
         {
             CoachStub c = new CoachStub(this);
             c.setSelector(0);
             return c;
         }
-        else if(selector == 8)
+        else if(selector == 6118)
         {
             TeamManagerStub tm = new TeamManagerStub(this);
             tm.setSelector(0);
             return tm;
         }
-        else if(selector == 9)
+        else if(selector == 6119)
         {
             return null;
         }

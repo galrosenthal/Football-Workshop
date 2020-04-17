@@ -76,18 +76,10 @@ public class Team {
         }
         if(teamPlayer.getType() == RoleTypes.PLAYER)
         {
-            boolean addedPlayer = teamPlayers.add((Player)teamPlayer);
-            if(addedPlayer)
+            boolean playerAdded = teamPlayers.add((Player)teamPlayer);
+            if(playerAdded)
             {
-                if( ((Player) teamPlayer).addTeam(this))
-                {
-                    return true;
-                }
-                else
-                {
-                    teamPlayers.remove((Player)teamPlayer);
-                    return false;
-                }
+                return true;
             }
         }
         return false;
@@ -101,13 +93,17 @@ public class Team {
         }
         if(coach.getType() == RoleTypes.COACH)
         {
-            return teamCoaches.add((Coach) coach);
+            boolean coachAdded = teamCoaches.add((Coach)coach);
+            if(coachAdded)
+            {
+                return true;
+            }
         }
         return false;
     }
 
 
-    public boolean addTeamManager(TeamOwner townr,Role teamManager)
+    public boolean addTeamManager(TeamOwner townr, Role teamManager)
     {
         if(!teamOwners.contains(townr))
         {
@@ -115,7 +111,11 @@ public class Team {
         }
         if(teamManager.getType() == RoleTypes.TEAM_MANAGER)
         {
-            return teamManagers.add((TeamManager) teamManager);
+            boolean managerAdded = teamManagers.add((TeamManager) teamManager);
+            if(managerAdded)
+            {
+                return true;
+            }
         }
         return false;
     }
@@ -164,7 +164,26 @@ public class Team {
                 checkPlayerListEquals(this.teamPlayers,team.teamPlayers) &&
                 checkCoachListEquals(this.teamCoaches,team.teamCoaches) &&
                 checkManagersListEquals(this.teamManagers,team.teamManagers) &&
-                checkTeamOwnersrListEquals(this.teamOwners,team.teamOwners);
+                checkTeamOwnerListEquals(this.teamOwners,team.teamOwners) &&
+                checkStadiumListEquals(this.stadiums,team.stadiums);
+    }
+
+    /**
+     * Iterate over all the stadiums and check if the other team has all of them.
+     * @param stadiums a list of this stadiums
+     * @param anotherStadiumsList a list of the other team stadiums
+     * @return true if the lists are equal
+     */
+    private boolean checkStadiumListEquals(List<Stadium> stadiums, List<Stadium> anotherStadiumsList) {
+
+        for (Stadium st : stadiums)
+        {
+            if(!anotherStadiumsList.contains(st))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -225,7 +244,7 @@ public class Team {
      * @param anotherTeamOwners a list of the other team owners
      * @return true if the lists are equal
      */
-    private boolean checkTeamOwnersrListEquals(List<TeamOwner> currentTeamOwners, List<TeamOwner> anotherTeamOwners) {
+    private boolean checkTeamOwnerListEquals(List<TeamOwner> currentTeamOwners, List<TeamOwner> anotherTeamOwners) {
         for(TeamOwner tw: currentTeamOwners)
         {
             if(!anotherTeamOwners.contains(tw))
@@ -238,12 +257,33 @@ public class Team {
 
     @Override
     public String toString() {
-        return "Team{" +
-                "teamPlayers=" + teamPlayersToString() +
-                ", teamCoaches=" + teamCoachesToString() +
-                ", teamManagers=" + teamManagersToString() +
-                ", teamOwners=" + teamOwnersToString() +
-                '}';
+        StringBuilder teamString = new StringBuilder();
+        teamString.append("Team {\n");
+        teamString.append(" teamPlayers=");
+        teamString.append(teamPlayersToString());
+        teamString.append(", teamCoaches=");
+        teamString.append(teamCoachesToString());
+        teamString.append(", teamManagers=");
+        teamString.append(teamManagersToString());
+        teamString.append(", teamOwners=");
+        teamString.append(teamOwnersToString());
+        teamString.append(", teamStadiums=");
+        teamString.append(stadiumsToString());
+        teamString.append('}');
+        return teamString.toString();
+    }
+
+    private String stadiumsToString() {
+        StringBuilder stadiumString = new StringBuilder();
+        stadiumString.append("Stadiums: \n");
+
+        for (int i = 0; i < stadiums.size(); i++)
+        {
+            stadiumString.append(i+1).append(". ");
+            stadiumString.append(stadiums.get(i).getName());
+            stadiumString.append("\n");
+        }
+        return stadiumString.toString();
     }
 
     private String teamOwnersToString() {
@@ -304,35 +344,6 @@ public class Team {
 
     public void setTeamName(String testName) {
         this.teamName = testName;
-    }
-
-    /**
-     * Finds the season is now playing and returns it
-     * @return the current season
-     */
-    public Season getCurrentSeason(){
-        Season currentSeason;
-
-        if(seasons.size() == 0){
-            return null;
-        }
-        currentSeason = seasons.get(0);
-        for (Season s: seasons){
-            if(s.getYear().isAfter(currentSeason.getYear())){
-                currentSeason = s;
-            }
-        }
-
-        return  currentSeason;
-    }
-
-    public  boolean addSeason(Season season){
-        if(!seasons.contains(season)){
-            seasons.add(season);
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -460,7 +471,7 @@ public class Team {
      * Get the player date of birth from the user
      * @return the birth date of the player as java.util.Date
      */
-    private static Date getPlayerBirthDate() {
+    private Date getPlayerBirthDate() {
         UIController.printMessage("Please insert Player Birth Date in format dd/MM/yyyy");
         String bDate;
         do {
@@ -480,4 +491,33 @@ public class Team {
     }
 
 
+
+    /**
+     * Finds the season is now playing and returns it
+     * @return the current season
+     */
+    public Season getCurrentSeason(){
+        Season currentSeason;
+
+        if(seasons.size() == 0){
+            return null;
+        }
+        currentSeason = seasons.get(0);
+        for (Season s: seasons){
+            if(s.getYear().isAfter(currentSeason.getYear())){
+                currentSeason = s;
+            }
+        }
+
+        return  currentSeason;
+    }
+
+    public  boolean addSeason(Season season){
+        if(!seasons.contains(season)){
+            seasons.add(season);
+            return true;
+        }
+
+        return false;
+    }
 }
