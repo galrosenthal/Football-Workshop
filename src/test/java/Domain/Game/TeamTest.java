@@ -48,6 +48,7 @@ public class TeamTest {
         assertEquals(0,copyTeam.getTeamCoaches().size());
         assertEquals(0,copyTeam.getStadiums().size());
 
+        //Test copy of players list
         copyTeam = null;
         SystemUser anotherUser = new SystemUserStub("test2","Test User2",0);
         Player p1 = new PlayerStub(anotherUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
@@ -58,6 +59,7 @@ public class TeamTest {
         team.getTeamPlayers().remove(p1);
         assertEquals(1,copyTeam.getTeamPlayers().size());
 
+        //Test copy of Coaches list
         copyTeam = null;
         anotherUser = new SystemUserStub("test3","Test User3",0);
         Coach c = new CoachStub(anotherUser);
@@ -68,6 +70,7 @@ public class TeamTest {
         team.getTeamCoaches().remove(c);
         assertEquals(1,copyTeam.getTeamCoaches().size());
 
+        //Test copy of Managers list
         copyTeam = null;
         anotherUser = new SystemUserStub("test4","Test User4",0);
         TeamManager tm = new TeamManagerStub(anotherUser);
@@ -78,6 +81,7 @@ public class TeamTest {
         team.getTeamManagers().remove(tm);
         assertEquals(1,copyTeam.getTeamManagers().size());
 
+        //Test copy of Owners list
         copyTeam = null;
         anotherUser = new SystemUserStub("test4","Test User4",0);
         TeamOwner to = new TeamOwnerStub(anotherUser);
@@ -88,6 +92,7 @@ public class TeamTest {
         team.getTeamOwners().remove(to);
         assertEquals(1,copyTeam.getTeamOwners().size());
 
+        //Test copy of Stadiums list
         copyTeam = null;
         Stadium s = new StadiumStub("BS","beer");
         team.getStadiums().add(s);
@@ -134,6 +139,10 @@ public class TeamTest {
         assertFalse(team.addTeamManager(localTeamOwner,differentUser));
     }
 
+    /**
+     * Testing team.equals() only on Players list
+     * @throws Exception
+     */
     @Test
     public void testPlayersListEqualsUTest() throws Exception
     {
@@ -149,6 +158,10 @@ public class TeamTest {
     }
 
 
+    /**
+     * Testing team.equals() only on Coaches list
+     * @throws Exception
+     */
     @Test
     public void testCoachesListEqualsUTest() throws Exception
     {
@@ -166,6 +179,10 @@ public class TeamTest {
         copyTeam.getTeamCoaches().remove(c1);
     }
 
+    /**
+     * Testing team.equals() only on Managers list
+     * @throws Exception
+     */
     @Test
     public void testManagersListEqualsUTest()
     {
@@ -182,6 +199,10 @@ public class TeamTest {
 
     }
 
+    /**
+     * Testing team.equals() only on Stadiums list
+     * @throws Exception
+     */
     @Test
     public void testStadiumsListEqualsUTest() throws Exception
     {
@@ -196,6 +217,10 @@ public class TeamTest {
         assertNotEquals(team,copyTeam);
     }
 
+    /**
+     * Testing team.equals() only on Owners list
+     * @throws Exception
+     */
     @Test
     public void testOwnersListEqualsUTest() throws Exception
     {
@@ -226,20 +251,20 @@ public class TeamTest {
         assertEquals(team,copyTeam);
     }
 
-    @Test
-    public void getBirthDateUTest() throws Exception
-    {
-        @Jailbreak Team anotherTeam = new Team();
-        UIController.setIsTest(true);
-        UIController.setSelector(61110);
-        Date testDate = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1199");
-        assertEquals(testDate, anotherTeam.getPlayerBirthDate());
-
-        UIController.setSelector(6117);
-        testDate = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1199");
-        assertEquals(testDate, anotherTeam.getPlayerBirthDate());
-
-    }
+//    @Test
+//    public void getBirthDateUTest() throws Exception
+//    {
+//        @Jailbreak Team anotherTeam = new Team();
+//        UIController.setIsTest(true);
+//        UIController.setSelector(61110);
+//        Date testDate = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1199");
+//        assertEquals(testDate, anotherTeam.getPlayerBirthDate());
+//
+//        UIController.setSelector(6117);
+//        testDate = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1199");
+//        assertEquals(testDate, anotherTeam.getPlayerBirthDate());
+//
+//    }
 
     @Test
     public void testGetTeamNameUTest()
@@ -261,6 +286,7 @@ public class TeamTest {
                 " teamStadiums=Stadiums: \n" +
                 "}", result);
 
+        // Add 1 asset of each kind
         TeamOwner to2 = new TeamOwnerStub(testUser);
         team.getTeamOwners().add(to2);
         Stadium st2 = new StadiumStub("test2Stadium", "bs2");
@@ -304,6 +330,7 @@ public class TeamTest {
         assertTrue(result);
     }
 
+
     @Test
     public void testRemoveStadiumsUTest(){
         team.addStadium(new Stadium("stadName", "stadLocation"));
@@ -315,6 +342,15 @@ public class TeamTest {
         Assert.assertFalse(result);
     }
 
+    /**
+     * This Test is testing getAllAssets()
+     * using assets stubs
+     * <p>{@link PlayerStub}</p>
+     * <p>{@link TeamManagerStub}</p>
+     * <p>{@link CoachStub}</p>
+     * @see TeamAsset
+     * @throws Exception
+     */
     @Test
     public void testGetAllAssetsUTest() throws Exception {
         List<Asset> result = team.getAllAssets();
@@ -333,6 +369,11 @@ public class TeamTest {
         assertEquals(3,result.size());
     }
 
+    /**
+     * This Test is testing the isTeamOwner() function
+     * using stubs
+     * @throws Exception
+     */
     @Test
     public void testIsTeamOwnerUTest() throws Exception {
 
@@ -344,6 +385,11 @@ public class TeamTest {
         assertTrue(result);
     }
 
+    /**
+     * This Test is testing the addTeamPlayer() function
+     * using stubs
+     * @throws Exception
+     */
     @Test
     public void testAddTeamPlayerUTest() throws Exception {
         Player p1 = new PlayerStub(testUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
@@ -364,6 +410,16 @@ public class TeamTest {
     }
 
 
+    /**
+     * This Test is testing the team addAsset() function,
+     * on GetRole() function inside addAsset()
+     * this test is using stubs for the team assets
+     * <p>{@link PlayerStub}</p>
+     * <p>{@link TeamManagerStub}</p>
+     * <p>{@link CoachStub}</p>
+     * @see TeamAsset
+     * @throws Exception
+     */
     @Test
     public void testAddAssetNotStadiumTrivialUTest() throws Exception
     {
@@ -397,9 +453,20 @@ public class TeamTest {
 
     }
 
+    /**
+     * This Test is testing the team addAsset() function,
+     * just this test is sending null on GetRole() function inside addAsset()
+     * therefor this test is not using stubs for the team assets
+     * <p>{@link PlayerStub}</p>
+     * <p>{@link TeamManagerStub}</p>
+     * <p>{@link CoachStub}</p>
+     * @see TeamAsset
+     * @throws Exception
+     */
     @Test
-    public void testAddAssetNotStadiumNotTrivialUTest() throws Exception
+    public void testAddAssetNotStadiumNotTrivialITest() throws Exception
     {
+
         ((SystemUserStub)testUser).setSelector(6119);
         UIController.setIsTest(true);
         UIController.setSelector(6117);

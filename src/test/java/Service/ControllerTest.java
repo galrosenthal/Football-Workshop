@@ -22,23 +22,22 @@ public class ControllerTest {
     public void tearDown() throws Exception {
     }
 
-//    @Test(expected = UserNotFoundException.class)
-//    public void addTeamOwnerUTest() throws Exception {
-//        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 0)));
-//        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 1)));
-//
-//        UIController.setIsTest(true);
-//        UIController.setSelector(0);
-//        //false because of wrong username from user
-//        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
-//
-//    }
+    @Test(expected = UserNotFoundException.class)
+    public void addTeamOwnerUTest() throws Exception {
+        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 0)));
+        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 1)));
+
+        UIController.setIsTest(true);
+        UIController.setSelector(0);
+        //false because of wrong username from user
+        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
+
+    }
 
 //    @Test(expected = alreadyTeamOwnerException.class)
 //    public void addTeamOwnerITest() throws Exception {
 //        UIController.setIsTest(true);
 //        UIController.setSelector(1);
-//        TeamOwnerStub.setSelector(0);
 //        //false because of wrong username from user
 //        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
 //    }
