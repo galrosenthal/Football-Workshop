@@ -10,7 +10,6 @@ public class TeamOwner extends Role {
     private List<Team> ownedTeams;
 
     public TeamOwner(SystemUser systemUser) {
-        //TODO:
         super(RoleTypes.TEAM_OWNER,systemUser);
         ownedTeams = new ArrayList<>();
     }
@@ -42,7 +41,7 @@ public class TeamOwner extends Role {
 
     public boolean addTeamToOwn(Team teamToOwn)
     {
-        if(!isOwnTeam())
+        if(!ownedTeams.contains(teamToOwn))
         {
             ownedTeams.add(teamToOwn);
             return true;
@@ -50,13 +49,13 @@ public class TeamOwner extends Role {
         return false;
     }
 
-    public boolean isOwnTeam(){
-        if (this.ownedTeams == null){
-            return false;
-        }
-
-        return true;
-    }
+//    public boolean isOwnTeam(){
+//        if (this.ownedTeams == null){
+//            return false;
+//        }
+//
+//        return true;
+//    }
 
 //    /**
 ////     * Checks whether or not the user is part of the team asset or not,

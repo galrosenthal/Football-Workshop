@@ -371,6 +371,10 @@ public class Team {
         return false;
     }
 
+    /**
+     * Each team has a lot of Assets {@link TeamAsset},
+     * @return a list of all the team assets
+     */
     public List<Asset> getAllAssets() {
 
         List<Asset> allTeamAssets = new ArrayList<>();
@@ -381,7 +385,11 @@ public class Team {
         return allTeamAssets;
     }
 
-
+    /**
+     * Checks whether or not the teamOwner is owner if this team
+     * @param teamOwner the team owner to validate with
+     * @return true if teamOwner is this team wner.
+     */
     public boolean isTeamOwner(TeamOwner teamOwner) {
         if(teamOwner != null && teamOwners.contains(teamOwner))
         {
@@ -391,10 +399,12 @@ public class Team {
     }
 
     /**
-     * @param assetName
-     * @param teamOwner
-     * @param assetType
-     * @return
+     * General Function to add an asset to the team,
+     * receives an assetName a teamOwner and an AssetType
+     * @param assetName the assetName suppose to be the Username of the {@link SystemUser} or the name of the {@link Stadium}
+     * @param teamOwner the {@link TeamOwner} of this team
+     * @param assetType the {@link TeamAsset} of the user to add to the team
+     * @return true if the asset was added successfully
      * @throws UserNotFoundException
      * @throws StadiumNotFoundException
      */
@@ -442,6 +452,9 @@ public class Team {
         }
         else
         {
+            /**
+             * assetType Should be TeamAsset.STADIUM
+             */
             teamAsset = EntityManager.getInstance().getStadium(assetName);
             if(teamAsset == null)
             {

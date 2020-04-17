@@ -5,7 +5,6 @@ import Domain.Exceptions.StadiumNotFoundException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Users.*;
 import Service.UIController;
-import manifold.ext.api.Jailbreak;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

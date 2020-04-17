@@ -55,7 +55,19 @@ public class UIController {
                 return "StadiumName";
             } else if(selector == 61113){
                 return "test";
-            }else
+            }else if(selector == 61114){
+                return "anotherUser";
+            }else if (selector == 61116) {
+                setSelector(61117);
+                return "anotherUser";
+            } else if (selector == 61117) {
+                return "01/11/1199";
+            }else if(selector == 61118){
+                setSelector(61119);
+                return "elevy";
+            } else if(selector == 61119){
+                return "01/11/1199";
+            } else
                 return null;
         }
     }
@@ -78,8 +90,22 @@ public class UIController {
             }else if(selector == 61113){
                 setSelector(61112);
                 return 1000;
-            }else {
+            }else if(selector == 61114){
                 return 0;
+            }else if(selector == 61115){
+                setSelector(61116);
+                return 0;
+            }else if(selector == 61116){
+                return 0;
+            }else if(selector == 61117){
+                return 0;
+            }else if(selector == 61118){
+                return 0;
+            }else if(selector == 61119){
+                return 0;
+            }else {
+                //random number to crash test that were not checked
+                return 123812;
             }
         }
     }

@@ -18,8 +18,11 @@ public class SystemUser {
     private String name;
 
     public SystemUser(String username,String password, String name) {
-        this(username,name);
+        this.roles = new ArrayList<>();
+        this.username = username;
+        this.name = name;
         this.password = password;
+        EntityManager.getInstance().addUser(this);
     }
 
     public SystemUser(String username,String name)

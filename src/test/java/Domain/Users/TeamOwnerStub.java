@@ -19,7 +19,7 @@ public class TeamOwnerStub extends TeamOwner {
 
 
 
-    public static void setSelector(int select) {
+    public void setSelector(int select) {
         selector = select;
     }
 
@@ -37,6 +37,11 @@ public class TeamOwnerStub extends TeamOwner {
         }else if(selector == 6112)
         {
             TeamStub teamStub = new TeamStub(6112);
+            test.add(teamStub);
+            teamStub.addTeamOwner(this);
+        }else if(selector == 6113)
+        {
+            TeamStub teamStub = new TeamStub(6113);
             test.add(teamStub);
             teamStub.addTeamOwner(this);
         }

@@ -101,6 +101,9 @@ public class TeamStub extends Team{
         else if(selector == 6112)
         {
             return true;
+        }else if(selector == 6113)
+        {
+            return true;
         }
         else{
             return false;
@@ -116,10 +119,13 @@ public class TeamStub extends Team{
         else if(selector == 6111)
         {
             return false;
-        }
-        else if(selector == 6112)
+        }else if(selector == 6112)
         {
             return true;
+        }
+        else if(selector == 6113)
+        {
+            return false;
         }
         else{
             return false;
