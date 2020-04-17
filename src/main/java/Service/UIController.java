@@ -72,7 +72,7 @@ public class UIController {
 
             return integer;
         } else {
-            if (selector == 0 || selector == 1 || selector == 2 || selector == 7 || selector == 8 ) {
+            if (selector == 0 || selector == 1 || selector == 2 || selector == 6117 || selector == 6118 ) {
                 return 0;
             }
             else if (selector == 6132 || selector == 6133 ||selector == 6134 || selector == 61341 || selector == 6135 || selector == 6136 || selector == 6137){
