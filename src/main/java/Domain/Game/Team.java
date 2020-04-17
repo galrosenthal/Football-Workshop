@@ -28,8 +28,21 @@ public class Team {
         teamPlayers = new ArrayList<>();
         teamCoaches = new ArrayList<>();
         teamManagers = new ArrayList<>();
+        stadiums = new ArrayList<>();
         status = TeamStatus.OPEN;
     }
+
+    public Team(String teamName, TeamOwner to) {
+        this.teamOwners = new ArrayList<>();
+        teamOwners.add(to);
+        teamPlayers = new ArrayList<>();
+        teamCoaches = new ArrayList<>();
+        teamManagers = new ArrayList<>();
+        stadiums = new ArrayList<>();
+        status = TeamStatus.OPEN;
+        this.teamName = teamName;
+    }
+
     /**
      * A method that returns a string containing all team information for display
      * @return string containing all team information.

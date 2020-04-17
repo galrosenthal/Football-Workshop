@@ -42,12 +42,10 @@ public class TeamOwner extends Role {
 
     public boolean addTeamToOwn(Team teamToOwn)
     {
-        if(!isOwnTeam())
-        {
-            ownedTeams.add(teamToOwn);
-            return true;
-        }
-        return false;
+        if(ownedTeams.contains(teamToOwn))
+            return false;
+
+        return  ownedTeams.add(teamToOwn);
     }
 
     public boolean isOwnTeam(){

@@ -1,12 +1,11 @@
 package Acceptance;
 
 import Domain.EntityManager;
-import Domain.Users.AssociationRepresentative;
-import Domain.Users.SystemAdmin;
-import Domain.Users.SystemUser;
-import Domain.Users.Unregistered;
+import Domain.Game.Team;
+import Domain.Users.*;
 import Service.ARController;
 import Service.Controller;
+import Service.TOController;
 import Service.UIController;
 import org.junit.Assert;
 import org.junit.Before;
@@ -154,5 +153,36 @@ public class AcceptanceTests {
         //CleanUp
         EntityManager.getInstance().removeLeagueByName("Premier League");
         assertFalse(EntityManager.getInstance().doesLeagueExists("Premier League"));
+    }
+
+
+    /**
+     * 6.6.1.a
+     */
+    @Test
+    public void closeTeamATest(){
+        //setups
+        existingUser.addNewRole(new TeamOwner(existingUser));
+        TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
+        Team team = new Team("Hapoel Beit Shan", teamOwner);
+        teamOwner.addTeamToOwn(team);
+        //add team owner
+        SystemUser aviCohenSu = new SystemUser("avicohen", "123Ab456", "Avi Cohen");
+        aviCohenSu.addNewRole(new TeamOwner(aviCohenSu));
+        TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
+        team.addTeamOwner(teamOwner, aviTo);
+        aviTo.addTeamToOwn(team);
+        //add team manager
+        SystemUser managerSu = new SystemUser("manager", "123Ab456", "manager");
+        managerSu.addNewRole(new TeamManager(managerSu));
+        TeamManager tmanager = (TeamManager)managerSu.getRole(RoleTypes.TEAM_MANAGER);
+        team.addTeamManager(teamOwner, tmanager);
+        tmanager.addTeam(team);
+
+        //success
+        UIController.setIsTest(true);
+        UIController.setSelector(4);
+        TOController.closeTeam(existingUser);
+
     }
 }

@@ -71,34 +71,47 @@ public class TeamController {
 
     public static boolean reopenTeam(Team teamToReOpen) {
         //Trying to add back the team's managers, coaches, players, stadiums
+        //Check that the team's assets still exists
 
         for(Stadium st : teamToReOpen.getStadiums()){
             if(st != null) //Check in the db that the stadium still exists
                 st.addTeam(teamToReOpen);
         }
 
-        for(Player p : teamToReOpen.getTeamPlayers()){
-            if(p != null &&
-                    p.getSystemUser().getRole(RoleTypes.PLAYER) instanceof Player) //Check in the db that the player still exists
+        for(Role playerRole : teamToReOpen.getTeamPlayers()){
+            if(playerRole != null &&
+                    playerRole.getSystemUser() != null &&
+                    playerRole.getSystemUser().getRole(RoleTypes.PLAYER) instanceof Player) { //Check in the db that the player still exists
+
+                Player p = (Player)playerRole;
                 p.addTeam(teamToReOpen);
+            }
         }
 
-        for(Coach coach : teamToReOpen.getTeamCoaches()){
-            if(coach != null &&
-                    coach.getSystemUser().getRole(RoleTypes.COACH) instanceof Coach) //Check in the db that the coach still exists
-                coach.addTeamToCoach(teamToReOpen);
+        for(Role coachRole : teamToReOpen.getTeamCoaches()){
+            if(coachRole != null &&
+                    coachRole.getSystemUser() != null &&
+                    coachRole.getSystemUser().getRole(RoleTypes.COACH) instanceof Coach) { //Check in the db that the coach still exists
+
+                Coach c = (Coach) coachRole;
+                c.addTeamToCoach(teamToReOpen);
+            }
         }
 
-        for(TeamManager tm : teamToReOpen.getTeamManagers()){
-            if(tm != null &&
-                    tm.getSystemUser().getRole(RoleTypes.TEAM_MANAGER) instanceof TeamManager) //Check in the db that the tm still exists
-            tm.addTeam(teamToReOpen);
+        for(Role tmRole : teamToReOpen.getTeamManagers()){
+            if(tmRole != null &&
+                    tmRole.getSystemUser() != null &&
+                    tmRole.getSystemUser().getRole(RoleTypes.TEAM_MANAGER) instanceof TeamManager){//Check in the db that the tm still exists
+
+                TeamManager tm = (TeamManager)tmRole;
+                tm.addTeam(teamToReOpen);
+            }
             else {
-                if(tm == null)
+                if(tmRole == null || tmRole.getSystemUser() == null)
                      UIController.printMessage("Could not restore permissions of lost team manager");
                 else
                     UIController.printMessage("Could not restore permissions of the team manager: "+
-                            tm.getSystemUser().getName());
+                            tmRole.getSystemUser().getName());
             }
         }
 
