@@ -27,7 +27,15 @@ public class TeamManager extends Role implements Asset {
         if(teamToMange != null && teamToMange.isTeamOwner(teamOwner))
         {
             managedTeams.add(teamToMange);
-            return teamToMange.addTeamManager(teamOwner,this);
+            if(teamToMange.addTeamManager(teamOwner,this))
+            {
+                List<TeamManagerPermissions> permissions = new ArrayList<>();
+                this.permissionsPerTeam.put(teamToMange , permissions);
+            }
+            else
+            {
+                return false;
+            }
         }
         return false;
     }
@@ -68,7 +76,12 @@ public class TeamManager extends Role implements Asset {
 
     @Override
     public boolean isListProperty(String property) {
-        return true;
+        if(property.equals(this.permissionsString))
+        {
+            return true;
+        }
+        return false;
+
     }
 
     @Override
@@ -106,22 +119,24 @@ public class TeamManager extends Role implements Asset {
         {
             TeamManagerPermissions[] teamManagerPermissions = TeamManagerPermissions.values();
             for (int i = 0; i < teamManagerPermissions.length; i++) {
-                //todo: check!
                 allEnumValues.add(teamManagerPermissions[i]);
             }
             return allEnumValues;
         }
-        return allEnumValues;
+        return null;
     }
 
     @Override
     public List<Enum> getAllPropertyList(Team team, String propertyName) {
-        List<TeamManagerPermissions> permissions = this.allPermissionsPerTeam(team);
-        List<Enum> enumList = new ArrayList<>();
-        for (int i = 0; i < permissions.size(); i++) {
-            enumList.add(permissions.get(i));
+        if(propertyName.equals(this.permissionsString)) {
+            List<TeamManagerPermissions> permissions = this.allPermissionsPerTeam(team);
+            List<Enum> enumList = new ArrayList<>();
+            for (int i = 0; i < permissions.size(); i++) {
+                enumList.add(permissions.get(i));
+            }
+            return enumList;
         }
-        return enumList;
+        return null;
     }
 
     @Override
@@ -129,9 +144,13 @@ public class TeamManager extends Role implements Asset {
         if(propertyName.equals(this.permissionsString))
         {
             List<TeamManagerPermissions> permissions = this.allPermissionsPerTeam(team);
-            permissions.add((TeamManagerPermissions) anEnum);
-            this.permissionsPerTeam.put(team, permissions);
-            return true;
+            if(!(permissions.contains(anEnum)))
+            {
+                permissions.add((TeamManagerPermissions) anEnum);
+                this.permissionsPerTeam.put(team, permissions);
+                return true;
+            }
+
         }
         return  false;
     }
@@ -141,9 +160,13 @@ public class TeamManager extends Role implements Asset {
         if(propertyName.equals(this.permissionsString))
         {
             List<TeamManagerPermissions> permissions = this.allPermissionsPerTeam(team);
-            permissions.remove(anEnum);
-            this.permissionsPerTeam.put(team, permissions);
-            return true;
+            if(permissions.contains(anEnum))
+            {
+                permissions.remove(anEnum);
+                this.permissionsPerTeam.put(team, permissions);
+                return true;
+            }
+
         }
         return  false;
     }
