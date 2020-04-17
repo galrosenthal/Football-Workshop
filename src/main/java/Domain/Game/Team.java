@@ -106,10 +106,10 @@ public class Team {
             return false;
         }
         if(teamOwner.getType() == RoleTypes.TEAM_OWNER){
-            return false;
+            return teamOwners.add((TeamOwner)teamOwner);
         }
-        
-        return teamOwners.add((TeamOwner)teamOwner);
+
+        return false;
     }
 
     public boolean removeTeamOwner(TeamOwner teamOwner){
