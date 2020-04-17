@@ -209,7 +209,7 @@ public class TeamController {
             //FIXME!!
             if (action == 0) {
                 boolean isAdded = addProperty(allAssetsTeam.get(assetIndex), properties.get(propertyIndexToModify));
-                if (isAdded) {
+                if (!isAdded) {
 
                     throw new AssetCantBeModifiedException("Can not modify asset");
 
@@ -225,12 +225,12 @@ public class TeamController {
         } else if (allAssetsTeam.get(assetIndex).isEnumProperty(properties.get(propertyIndexToModify))) {
             List<Enum> allEnumValues = allAssetsTeam.get(assetIndex).getAllValues(properties.get(propertyIndexToModify));
             int propertyNewValueIndex = changePropertyValue(allEnumValues);
-            allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify), allEnumValues.get(propertyNewValueIndex).toString());
+            return allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify), allEnumValues.get(propertyNewValueIndex).toString());
         } else if (allAssetsTeam.get(assetIndex).isStringProperty(properties.get(propertyIndexToModify))) {
             UIController.printMessage("Enter new value: ");
             String newValue = UIController.receiveString();
             //todo: check string?
-            allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify), newValue);
+            return allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify), newValue);
         }
         return true;
     }
@@ -241,6 +241,7 @@ public class TeamController {
     }
 
     private static boolean removeProperty(Asset asset, String s) {
+
 
         return false;
     }
@@ -260,8 +261,8 @@ public class TeamController {
         int assetIndex;
         do {
             assetIndex = UIController.receiveInt();
-        } while (!(assetIndex >= 1 && assetIndex < allAssetsTeam.size()));
-        return assetIndex;
+        } while (!(assetIndex >= 1 && assetIndex <= allAssetsTeam.size()));
+        return assetIndex-1;
 
 
     }
@@ -276,15 +277,14 @@ public class TeamController {
     private static int changePropertyValue(List<Enum> allEnumValues) {
         UIController.printMessage("Choose Property new value ");
         for (int i = 0; i < allEnumValues.size(); i++) {
-            UIController.printMessage(i + ". " + allEnumValues.get(i).toString());
+            UIController.printMessage(i + 1 + ". " + allEnumValues.get(i).toString());
 
         }
         int propertyNewValueIndex;
         do {
-            propertyNewValueIndex = UIController.receiveInt();
+            propertyNewValueIndex = UIController.receiveInt()-1;
         } while (!(propertyNewValueIndex >= 0 && propertyNewValueIndex < allEnumValues.size()));
         return propertyNewValueIndex;
-
     }
 
     /**
@@ -294,11 +294,11 @@ public class TeamController {
     private static int choosePropertiesToModify(List<String> properties) {
         UIController.printMessage("Choose Property Number to modify");
         for (int i = 0; i < properties.size(); i++) {
-            UIController.printMessage(i + ". " + properties.get(i));
+            UIController.printMessage(i+1 + ". " + properties.get(i));
         }
         int propertyIndex;
         do {
-            propertyIndex = UIController.receiveInt();
+            propertyIndex = UIController.receiveInt()-1;
         } while (!(propertyIndex >= 0 && propertyIndex < properties.size()));
 
         return propertyIndex;

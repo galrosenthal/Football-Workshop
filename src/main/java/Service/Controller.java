@@ -93,9 +93,9 @@ public class Controller {
 
     }
 
-    private static Team     getTeamByChoice(TeamOwner myTeamOwner) {
+    private static Team getTeamByChoice(TeamOwner myTeamOwner) {
         List<Team> myTeams = myTeamOwner.getOwnedTeams();
-        if(myTeams == null)
+        if(myTeams == null || myTeams.size() == 0)
         {
             return null;
         }

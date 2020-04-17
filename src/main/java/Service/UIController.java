@@ -44,7 +44,10 @@ public class UIController {
                 return "newLeagueName";
             } else if (selector == 6) {
                 return "Premier League";
-            } else
+            }
+            else if (selector == 6136 ||selector == 6137) {
+                return "Test ";
+            }else
                 return null;
         }
     }
@@ -58,7 +61,22 @@ public class UIController {
         } else {
             if (selector == 0 || selector == 1 || selector == 2) {
                 return 0;
-            } else {
+            }
+            else if (selector == 6132 || selector == 6133 ||selector == 6134 || selector == 61341 || selector == 6135 || selector == 6136 || selector == 6137){
+                if(selector == 6134)
+                {
+                    selector = 61341;
+                }
+                else if(selector == 61341)
+                {
+                    selector = 61342;
+                }
+                return 1;
+            }
+            else if (selector == 61342){
+                return 2;
+            }
+            else {
                 return 0;
             }
         }

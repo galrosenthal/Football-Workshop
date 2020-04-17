@@ -64,6 +64,12 @@ public class SystemUserStub extends SystemUser{
         else if( selector == 5){
             return new AssociationRepresentativeStub(this);
         }
+        else if( selector == 6131){
+
+            TeamOwnerStub teamOwner =  new TeamOwnerStub(this);
+            teamOwner.setSelector(6131);
+            return teamOwner;
+        }
         return null;
     }
 }

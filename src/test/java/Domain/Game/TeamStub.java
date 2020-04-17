@@ -12,11 +12,13 @@ public class TeamStub extends Team{
 
 
     private List<TeamOwner> teamOwners;
+    private List<Asset> assetStubs;
     private int selector;
 
     public TeamStub(int selector) {
         this.teamOwners = new ArrayList<>();
         this.selector = selector;
+        this.assetStubs = new ArrayList<>();
 
     }
 
@@ -47,11 +49,18 @@ public class TeamStub extends Team{
     @Override
     public List<Asset> getAllAssets() {
 
-        if(selector == 6131)
+        if(this.selector == 6131)
         {
             List<Asset> allTeamAssets = new ArrayList<>();
             return allTeamAssets;
         }
+        if(this.selector == 6132 || this.selector == 6133 || this.selector == 6134 || this.selector == 6135 ||this.selector == 6136 ||this.selector == 6137 )
+        {
+            List<Asset> allTeamAssets = new ArrayList<>();
+            allTeamAssets.add(new AssetStub(this.selector));
+            return allTeamAssets;
+        }
+
         return null;
 
     }

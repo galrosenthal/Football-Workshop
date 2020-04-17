@@ -1,5 +1,6 @@
 package Service;
 
+import Domain.Exceptions.NoTeamExistsException;
 import Domain.Exceptions.alreadyTeamOwnerException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Users.SystemUserStub;
@@ -61,5 +62,18 @@ public class ControllerTest {
         //false because of wrong username from user
         assertTrue(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
     }
+
+
+    @Test
+    public void modifyTeamAssetDetailsUTest1() throws Exception {
+        assertFalse(Controller.modifyTeamAssetDetails(new SystemUserStub("rosengal", "gal", 0)));
+
+    }
+
+    @Test(expected = NoTeamExistsException.class)
+    public void modifyTeamAssetDetailsUTest2() throws Exception {
+       Controller.modifyTeamAssetDetails(new SystemUserStub("rosengal", "gal", 6131));
+    }
+
 
 }

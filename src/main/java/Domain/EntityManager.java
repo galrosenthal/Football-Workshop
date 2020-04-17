@@ -16,8 +16,7 @@ import java.util.List;
 public class EntityManager {
     private static EntityManager entityManagerInstance = null;
 
-    List<SystemUser> allUsers;
-    List<Stadium> allStadiums;
+    private List<Stadium> allStadiums;
     private List<SystemUser> allUsers;
     private HashSet<League> allLeagues;
 
