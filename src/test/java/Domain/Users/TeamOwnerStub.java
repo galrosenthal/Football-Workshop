@@ -7,17 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TeamOwnerStub extends TeamOwner {
+    private static int selector;
 
     /**
-     * Selector latest number: 0
+     * Selector latest number: 1
      */
     public TeamOwnerStub(SystemUser systemUser) {
         super(systemUser);
+        setSelector(0);
     }
 
 
 
-    private static int selector = 0;
 
     public static void setSelector(int select) {
         selector = select;
@@ -41,6 +42,9 @@ public class TeamOwnerStub extends TeamOwner {
         }
         if (selector == 0){
             return true;
+        }else if(selector == 1)
+        {
+            return false;
         }else{
             return false;
         }

@@ -39,6 +39,7 @@ public class Coach extends Role implements Asset {
         else if(property.equals(qualificationString))
         {
             this.qualification = CoachQualification.valueOf(toChange);
+            return true;
         }
         return false;
     }
@@ -160,7 +161,8 @@ public class Coach extends Role implements Asset {
         if (!(o instanceof Coach)) return false;
         Coach coach = (Coach) o;
         return qualification == coach.qualification &&
-                teamJob.equals(coach.teamJob);
+                teamJob.equals(coach.teamJob) &&
+                super.systemUser.equals(coach.systemUser);
     }
 
     public boolean addTeam(Team teamToAdd, TeamOwner teamOwner)

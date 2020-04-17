@@ -24,6 +24,7 @@ public class EntityManager {
     private EntityManager() {
         allUsers = new ArrayList<>();
         allLeagues = new HashSet<>();
+        allStadiums = new ArrayList<>();
     }
 
     /**
@@ -140,7 +141,6 @@ public class EntityManager {
     }
 
 
-
     /**
      * Removes a league by a given name
      * @param leagueName - String - a name of the league to be removed
@@ -175,5 +175,12 @@ public class EntityManager {
             this.allStadiums.add(newStadium);
         }
         return true;
+    }
+
+    public void clearAll() {
+        allStadiums = new ArrayList<>();
+        allLeagues = new HashSet<>();
+        allUsers = new ArrayList<>();
+
     }
 }

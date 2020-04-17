@@ -11,7 +11,7 @@ public class SystemUserStub extends SystemUser{
 
 
     /**
-     * Selector latest number: 3
+     * Selector latest number: 9
      */
     public SystemUserStub(String username,String name,int selector)
     {
@@ -37,13 +37,18 @@ public class SystemUserStub extends SystemUser{
         return username;
     }
 
-    public void addNewRole(Role role)
+    public boolean addNewRole(Role role)
     {
-        getRoles().add(role);
+        if(role != null)
+        {
+            getRoles().add(role);
+            return true;
+        }
+        return false;
     }
 
     public List<Role> getRoles() {
-        return getRoles();
+        return super.getRoles();
     }
 
     public boolean isType(RoleTypes roleType) {
@@ -67,6 +72,29 @@ public class SystemUserStub extends SystemUser{
         else if( selector == 5){
             return new AssociationRepresentativeStub(this);
         }
+        else if(selector == 6)
+        {
+            PlayerStub p = new PlayerStub(this,null);
+            p.setSelector(0);
+            return p;
+        }
+        else if(selector == 7)
+        {
+            CoachStub c = new CoachStub(this);
+            c.setSelector(0);
+            return c;
+        }
+        else if(selector == 8)
+        {
+            TeamManagerStub tm = new TeamManagerStub(this);
+            tm.setSelector(0);
+            return tm;
+        }
+        else if(selector == 9)
+        {
+            return null;
+        }
+
         else if( selector == 6131){
 
             TeamOwnerStub teamOwner =  new TeamOwnerStub(this);
@@ -74,5 +102,18 @@ public class SystemUserStub extends SystemUser{
             return teamOwner;
         }
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(selector == 0 || selector == 1)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public void setSelector(int i) {
+        selector = i;
     }
 }
