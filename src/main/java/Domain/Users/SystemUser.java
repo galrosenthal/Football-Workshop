@@ -103,4 +103,13 @@ public class SystemUser {
     public int hashCode() {
         return Objects.hash(getUsername(), getPassword(), getName());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SystemUser)) return false;
+        SystemUser systemUser = (SystemUser) o;
+        return this.username.equals(systemUser.username) &&
+                this.name.equals(systemUser.name);
+    }
 }
