@@ -19,6 +19,7 @@ public class TeamOwnerStub extends TeamOwner {
 
 
 
+
     public static void setSelector(int select) {
         selector = select;
     }
@@ -48,4 +49,5 @@ public class TeamOwnerStub extends TeamOwner {
             return false;
         }
     }
+
 }

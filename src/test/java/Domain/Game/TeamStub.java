@@ -66,6 +66,10 @@ public class TeamStub extends Team{
 
     @Override
     public boolean addTeamManager(TeamOwner townr, Role teamManager) {
+        if(this.selector == 6131)
+        {
+            return true;
+        }
         return super.addTeamManager(townr, teamManager);
     }
 
@@ -97,6 +101,10 @@ public class TeamStub extends Team{
             return true;
         }
         else if(selector == 6111)
+        {
+            return true;
+        }
+        else if(selector == 6131)
         {
             return true;
         }

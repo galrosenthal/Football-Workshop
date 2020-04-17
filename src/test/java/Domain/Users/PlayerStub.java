@@ -74,4 +74,12 @@ public class PlayerStub extends Player{
 
         return true;
     }
+
+
+    @Override
+    public List<Enum> getAllPropertyList(Team team, String propertyName)
+    {
+        return null;
+    }
+
 }

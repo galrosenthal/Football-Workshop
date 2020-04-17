@@ -2,6 +2,8 @@ package Domain.Users;
 
 import Domain.Game.Team;
 
+import java.util.List;
+
 public class CoachStub extends Coach {
 
     int selector;
@@ -25,5 +27,11 @@ public class CoachStub extends Coach {
     @Override
     public boolean addAllProperties() {
         return true;
+    }
+
+    @Override
+    public List<Enum> getAllPropertyList(Team team, String propertyName)
+    {
+        return null;
     }
 }

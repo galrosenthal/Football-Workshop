@@ -33,73 +33,72 @@ public class TeamTest {
         team = new Team();
         team.setTeamName("testTeam");
         testUser = new SystemUserStub("test", "testUser", 0);
-        localTeamOwner = new TeamOwnerStub(new SystemUserStub("username", "name",0));
+        localTeamOwner = new TeamOwnerStub(new SystemUserStub("username", "name", 0));
     }
 
     @Test
-    public void copyTeamToAnotherUTest() throws Exception
-    {
+    public void copyTeamToAnotherUTest() throws Exception {
 //        Player p2 = new PlayerStub(anotherUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
         Team copyTeam = new Team(team);
-        assertEquals(0,copyTeam.getTeamPlayers().size());
-        assertEquals(0,copyTeam.getTeamOwners().size());
-        assertEquals(0,copyTeam.getTeamManagers().size());
-        assertEquals(0,copyTeam.getTeamCoaches().size());
-        assertEquals(0,copyTeam.getStadiums().size());
+        assertEquals(0, copyTeam.getTeamPlayers().size());
+        assertEquals(0, copyTeam.getTeamOwners().size());
+        assertEquals(0, copyTeam.getTeamManagers().size());
+        assertEquals(0, copyTeam.getTeamCoaches().size());
+        assertEquals(0, copyTeam.getStadiums().size());
 
         //Test copy of players list
         copyTeam = null;
-        SystemUser anotherUser = new SystemUserStub("test2","Test User2",0);
+        SystemUser anotherUser = new SystemUserStub("test2", "Test User2", 0);
         Player p1 = new PlayerStub(anotherUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
         team.getTeamPlayers().add(p1);
-        assertEquals(1,team.getTeamPlayers().size());
+        assertEquals(1, team.getTeamPlayers().size());
         copyTeam = new Team(team);
-        assertEquals(1,copyTeam.getTeamPlayers().size());
+        assertEquals(1, copyTeam.getTeamPlayers().size());
         team.getTeamPlayers().remove(p1);
-        assertEquals(1,copyTeam.getTeamPlayers().size());
+        assertEquals(1, copyTeam.getTeamPlayers().size());
 
         //Test copy of Coaches list
         copyTeam = null;
-        anotherUser = new SystemUserStub("test3","Test User3",0);
+        anotherUser = new SystemUserStub("test3", "Test User3", 0);
         Coach c = new CoachStub(anotherUser);
         team.getTeamCoaches().add(c);
-        assertEquals(1,team.getTeamCoaches().size());
+        assertEquals(1, team.getTeamCoaches().size());
         copyTeam = new Team(team);
-        assertEquals(1,copyTeam.getTeamCoaches().size());
+        assertEquals(1, copyTeam.getTeamCoaches().size());
         team.getTeamCoaches().remove(c);
-        assertEquals(1,copyTeam.getTeamCoaches().size());
+        assertEquals(1, copyTeam.getTeamCoaches().size());
 
         //Test copy of Managers list
         copyTeam = null;
-        anotherUser = new SystemUserStub("test4","Test User4",0);
+        anotherUser = new SystemUserStub("test4", "Test User4", 0);
         TeamManager tm = new TeamManagerStub(anotherUser);
         team.getTeamManagers().add(tm);
-        assertEquals(1,team.getTeamManagers().size());
+        assertEquals(1, team.getTeamManagers().size());
         copyTeam = new Team(team);
-        assertEquals(1,copyTeam.getTeamManagers().size());
+        assertEquals(1, copyTeam.getTeamManagers().size());
         team.getTeamManagers().remove(tm);
-        assertEquals(1,copyTeam.getTeamManagers().size());
+        assertEquals(1, copyTeam.getTeamManagers().size());
 
         //Test copy of Owners list
         copyTeam = null;
-        anotherUser = new SystemUserStub("test4","Test User4",0);
+        anotherUser = new SystemUserStub("test4", "Test User4", 0);
         TeamOwner to = new TeamOwnerStub(anotherUser);
         team.getTeamOwners().add(to);
-        assertEquals(1,team.getTeamOwners().size());
+        assertEquals(1, team.getTeamOwners().size());
         copyTeam = new Team(team);
-        assertEquals(1,copyTeam.getTeamOwners().size());
+        assertEquals(1, copyTeam.getTeamOwners().size());
         team.getTeamOwners().remove(to);
-        assertEquals(1,copyTeam.getTeamOwners().size());
+        assertEquals(1, copyTeam.getTeamOwners().size());
 
         //Test copy of Stadiums list
         copyTeam = null;
-        Stadium s = new StadiumStub("BS","beer");
+        Stadium s = new StadiumStub("BS", "beer");
         team.getStadiums().add(s);
-        assertEquals(1,team.getStadiums().size());
+        assertEquals(1, team.getStadiums().size());
         copyTeam = new Team(team);
-        assertEquals(1,copyTeam.getStadiums().size());
+        assertEquals(1, copyTeam.getStadiums().size());
         team.getStadiums().remove(s);
-        assertEquals(1,copyTeam.getStadiums().size());
+        assertEquals(1, copyTeam.getStadiums().size());
 
 
     }
@@ -109,16 +108,16 @@ public class TeamTest {
         Coach c1 = new CoachStub(testUser);
         boolean result;
         //No Team Owners
-        result = team.addTeamCoach(localTeamOwner,c1);
+        result = team.addTeamCoach(localTeamOwner, c1);
         assertFalse(result);
 
         team.getTeamOwners().add(localTeamOwner);
-        result = team.addTeamCoach(localTeamOwner,c1);
+        result = team.addTeamCoach(localTeamOwner, c1);
         assertTrue(result);
 
-        SystemUser anotherUser = new SystemUserStub("test2","userTest2", 0);
+        SystemUser anotherUser = new SystemUserStub("test2", "userTest2", 0);
         TeamManager differentUser = new TeamManagerStub(anotherUser);
-        assertFalse(team.addTeamCoach(localTeamOwner,differentUser));
+        assertFalse(team.addTeamCoach(localTeamOwner, differentUser));
     }
 
     @Test
@@ -126,26 +125,26 @@ public class TeamTest {
         TeamManager tm = new TeamManagerStub(testUser);
         boolean result;
         //No Team Owners
-        result = team.addTeamManager(localTeamOwner,tm);
+        result = team.addTeamManager(localTeamOwner, tm);
         assertFalse(result);
 
         team.getTeamOwners().add(localTeamOwner);
-        result = team.addTeamManager(localTeamOwner,tm);
+        result = team.addTeamManager(localTeamOwner, tm);
         assertTrue(result);
 
-        SystemUser anotherUser = new SystemUserStub("test2","userTest2", 0);
+        SystemUser anotherUser = new SystemUserStub("test2", "userTest2", 0);
         Coach differentUser = new Coach(anotherUser);
-        assertFalse(team.addTeamManager(localTeamOwner,differentUser));
+        assertFalse(team.addTeamManager(localTeamOwner, differentUser));
     }
 
     /**
      * Testing team.equals() only on Players list
+     *
      * @throws Exception
      */
     @Test
-    public void testPlayersListEqualsUTest() throws Exception
-    {
-        SystemUser anotherUser = new SystemUserStub("test2","UserTest2",0);
+    public void testPlayersListEqualsUTest() throws Exception {
+        SystemUser anotherUser = new SystemUserStub("test2", "UserTest2", 0);
         Team copyTeam = new Team(team);
         Player p1 = new PlayerStub(testUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
         copyTeam.getTeamPlayers().add(p1);
@@ -159,40 +158,40 @@ public class TeamTest {
 
     /**
      * Testing team.equals() only on Coaches list
+     *
      * @throws Exception
      */
     @Test
-    public void testCoachesListEqualsUTest() throws Exception
-    {
+    public void testCoachesListEqualsUTest() throws Exception {
         Team copyTeam = new Team(team);
-        SystemUser anotherUser = new SystemUserStub("test2","UserTest2",0);
+        SystemUser anotherUser = new SystemUserStub("test2", "UserTest2", 0);
         Coach c1 = new CoachStub(testUser);
         copyTeam.getTeamCoaches().add(c1);
-        assertNotEquals(team,copyTeam);
+        assertNotEquals(team, copyTeam);
         UIController.setIsTest(true);
         UIController.setSelector(6118);
         Coach c2 = new Coach(anotherUser);
         c2.addAllProperties();
         team.getTeamCoaches().add(c2);
-        assertNotEquals(team,copyTeam);
+        assertNotEquals(team, copyTeam);
         copyTeam.getTeamCoaches().remove(c1);
     }
 
     /**
      * Testing team.equals() only on Managers list
+     *
      * @throws Exception
      */
     @Test
-    public void testManagersListEqualsUTest()
-    {
-        SystemUser anotherUser = new SystemUserStub("test2","UserTest2",0);
+    public void testManagersListEqualsUTest() {
+        SystemUser anotherUser = new SystemUserStub("test2", "UserTest2", 0);
         Team copyTeam = new Team(team);
         TeamManager tm = new TeamManagerStub(testUser);
         copyTeam.getTeamManagers().add(tm);
-        assertNotEquals(team,copyTeam);
+        assertNotEquals(team, copyTeam);
         TeamManager tm2 = new TeamManagerStub(anotherUser);
         team.getTeamManagers().add(tm2);
-        assertNotEquals(team,copyTeam);
+        assertNotEquals(team, copyTeam);
         copyTeam.getTeamManagers().remove(tm);
         copyTeam.getTeamManagers().remove(tm2);
 
@@ -200,39 +199,39 @@ public class TeamTest {
 
     /**
      * Testing team.equals() only on Stadiums list
+     *
      * @throws Exception
      */
     @Test
-    public void testStadiumsListEqualsUTest() throws Exception
-    {
+    public void testStadiumsListEqualsUTest() throws Exception {
         Team copyTeam = new Team(team);
-        StadiumStub st = new StadiumStub("testStadium","bs");
+        StadiumStub st = new StadiumStub("testStadium", "bs");
         st.setSelector(1);
         copyTeam.getStadiums().add(st);
-        assertNotEquals(team,copyTeam);
+        assertNotEquals(team, copyTeam);
         StadiumStub st2 = new StadiumStub("test2Stadium", "bs2");
         st2.setSelector(1);
         team.getStadiums().add(st2);
-        assertNotEquals(team,copyTeam);
+        assertNotEquals(team, copyTeam);
     }
 
     /**
      * Testing team.equals() only on Owners list
+     *
      * @throws Exception
      */
     @Test
-    public void testOwnersListEqualsUTest() throws Exception
-    {
-        SystemUser anotherUser = new SystemUserStub("test2","UserTest2",0);
+    public void testOwnersListEqualsUTest() throws Exception {
+        SystemUser anotherUser = new SystemUserStub("test2", "UserTest2", 0);
         Team copyTeam = new Team(team);
         TeamOwnerStub to = new TeamOwnerStub(testUser);
         to.setSelector(1);
         copyTeam.getTeamOwners().add(to);
-        assertNotEquals(team,copyTeam);
+        assertNotEquals(team, copyTeam);
         TeamOwnerStub to2 = new TeamOwnerStub(anotherUser);
         to2.setSelector(1);
         team.getTeamOwners().add(to2);
-        assertNotEquals(team,copyTeam);
+        assertNotEquals(team, copyTeam);
         copyTeam.getTeamOwners().remove(to);
         team.getTeamOwners().remove(to2);
     }
@@ -245,9 +244,9 @@ public class TeamTest {
 
         assertEquals(team, team);
 
-        SystemUser anotherUser = new SystemUserStub("test2","UserTest2",0);
+        SystemUser anotherUser = new SystemUserStub("test2", "UserTest2", 0);
         Team copyTeam = new Team(team);
-        assertEquals(team,copyTeam);
+        assertEquals(team, copyTeam);
     }
 
 //    @Test
@@ -266,12 +265,11 @@ public class TeamTest {
 //    }
 
     @Test
-    public void testGetTeamNameUTest()
-    {
+    public void testGetTeamNameUTest() {
         team.setTeamName("testTeamName");
-        assertEquals("testTeamName",team.getTeamName());
+        assertEquals("testTeamName", team.getTeamName());
 
-        assertNotEquals("notName",team.getTeamName());
+        assertNotEquals("notName", team.getTeamName());
     }
 
     @Test
@@ -316,9 +314,9 @@ public class TeamTest {
     }
 
 
-    @Test (expected = UserNotFoundException.class)
+    @Test(expected = UserNotFoundException.class)
     public void testAddAssetUserNotFoundUTest() throws Exception {
-        team.addAsset("NotAnExistingUserName", localTeamOwner,TeamAsset.PLAYER);
+        team.addAsset("NotAnExistingUserName", localTeamOwner, TeamAsset.PLAYER);
     }
 
     @Test
@@ -331,7 +329,7 @@ public class TeamTest {
 
 
     @Test
-    public void testRemoveStadiumsUTest(){
+    public void testRemoveStadiumsUTest() {
         team.addStadium(new Stadium("stadName", "stadLocation"));
         boolean result = team.removeStadium(new Stadium("stadName", "stadLocation"));
         assertTrue(result);
@@ -347,30 +345,32 @@ public class TeamTest {
      * <p>{@link PlayerStub}</p>
      * <p>{@link TeamManagerStub}</p>
      * <p>{@link CoachStub}</p>
-     * @see TeamAsset
+     *
      * @throws Exception
+     * @see TeamAsset
      */
     @Test
     public void testGetAllAssetsUTest() throws Exception {
         List<Asset> result = team.getAllAssets();
-        assertEquals(0,result.size());
+        assertEquals(0, result.size());
 
         Player p1 = new PlayerStub(testUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
-        ((PlayerStub)p1).setSelector(0);
+        ((PlayerStub) p1).setSelector(0);
         team.getTeamPlayers().add(p1);
         result = team.getAllAssets();
-        assertEquals(1,result.size());
+        assertEquals(1, result.size());
         team.getTeamCoaches().add(new CoachStub(testUser));
         result = team.getAllAssets();
-        assertEquals(2,result.size());
+        assertEquals(2, result.size());
         team.getTeamManagers().add(new TeamManagerStub(testUser));
         result = team.getAllAssets();
-        assertEquals(3,result.size());
+        assertEquals(3, result.size());
     }
 
     /**
      * This Test is testing the isTeamOwner() function
      * using stubs
+     *
      * @throws Exception
      */
     @Test
@@ -387,25 +387,26 @@ public class TeamTest {
     /**
      * This Test is testing the addTeamPlayer() function
      * using stubs
+     *
      * @throws Exception
      */
     @Test
     public void testAddTeamPlayerUTest() throws Exception {
         Player p1 = new PlayerStub(testUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
-        ((PlayerStub)p1).setSelector(0);
+        ((PlayerStub) p1).setSelector(0);
 
         boolean result;
         //No Team Owners
-        result = team.addTeamPlayer(localTeamOwner,p1);
+        result = team.addTeamPlayer(localTeamOwner, p1);
         assertFalse(result);
 
         team.getTeamOwners().add(localTeamOwner);
-        result = team.addTeamPlayer(localTeamOwner,p1);
+        result = team.addTeamPlayer(localTeamOwner, p1);
         assertTrue(result);
 
-        SystemUser anotherUser = new SystemUserStub("test2","userTest2", 0);
+        SystemUser anotherUser = new SystemUserStub("test2", "userTest2", 0);
         Coach differentThenPlayer = new Coach(anotherUser);
-        assertFalse(team.addTeamPlayer(localTeamOwner,differentThenPlayer));
+        assertFalse(team.addTeamPlayer(localTeamOwner, differentThenPlayer));
     }
 
 
@@ -416,38 +417,38 @@ public class TeamTest {
      * <p>{@link PlayerStub}</p>
      * <p>{@link TeamManagerStub}</p>
      * <p>{@link CoachStub}</p>
-     * @see TeamAsset
+     *
      * @throws Exception
+     * @see TeamAsset
      */
     @Test
-    public void testAddAssetNotStadiumTrivialUTest() throws Exception
-    {
+    public void testAddAssetNotStadiumTrivialUTest() throws Exception {
         UIController.setIsTest(true);
         UIController.printMessage("Started Testing AddAsset");
         //TeamOwner is not an Owner
-        ((SystemUserStub)testUser).setSelector(6116);
+        ((SystemUserStub) testUser).setSelector(6116);
         UIController.setSelector(6117);
         UIController.printMessage("Started Testing Player False");
-        assertFalse(team.addAsset("test",localTeamOwner,TeamAsset.PLAYER));
+        assertFalse(team.addAsset("test", localTeamOwner, TeamAsset.PLAYER));
         team.getTeamOwners().add(localTeamOwner);
         UIController.printMessage("Started Testing Player True");
-        assertTrue(team.addAsset("test",localTeamOwner,TeamAsset.PLAYER));
+        assertTrue(team.addAsset("test", localTeamOwner, TeamAsset.PLAYER));
 
         team.getTeamOwners().remove(localTeamOwner);
-        ((SystemUserStub)testUser).setSelector(6117);
+        ((SystemUserStub) testUser).setSelector(6117);
         UIController.printMessage("Started Testing Coach False");
-        assertFalse(team.addAsset("test",localTeamOwner,TeamAsset.COACH));
+        assertFalse(team.addAsset("test", localTeamOwner, TeamAsset.COACH));
         team.getTeamOwners().add(localTeamOwner);
         UIController.printMessage("Started Testing Coach True");
-        assertTrue(team.addAsset("test",localTeamOwner,TeamAsset.COACH));
+        assertTrue(team.addAsset("test", localTeamOwner, TeamAsset.COACH));
 
         team.getTeamOwners().remove(localTeamOwner);
-        ((SystemUserStub)testUser).setSelector(6118);
+        ((SystemUserStub) testUser).setSelector(6118);
         UIController.printMessage("Started Testing Manager False");
-        assertFalse(team.addAsset("test",localTeamOwner,TeamAsset.TEAM_MANAGER));
+        assertFalse(team.addAsset("test", localTeamOwner, TeamAsset.TEAM_MANAGER));
         team.getTeamOwners().add(localTeamOwner);
         UIController.printMessage("Started Testing Manager True");
-        assertTrue(team.addAsset("test",localTeamOwner,TeamAsset.TEAM_MANAGER));
+        assertTrue(team.addAsset("test", localTeamOwner, TeamAsset.TEAM_MANAGER));
 
 
     }
@@ -459,61 +460,311 @@ public class TeamTest {
      * <p>{@link PlayerStub}</p>
      * <p>{@link TeamManagerStub}</p>
      * <p>{@link CoachStub}</p>
-     * @see TeamAsset
+     *
      * @throws Exception
+     * @see TeamAsset
      */
     @Test
-    public void testAddAssetNotStadiumNotTrivialITest() throws Exception
-    {
+    public void testAddAssetNotStadiumNotTrivialITest() throws Exception {
 
-        ((SystemUserStub)testUser).setSelector(6119);
+        ((SystemUserStub) testUser).setSelector(6119);
         UIController.setIsTest(true);
         UIController.setSelector(6117);
-        assertFalse(team.addAsset("test",localTeamOwner,TeamAsset.PLAYER));
+        assertFalse(team.addAsset("test", localTeamOwner, TeamAsset.PLAYER));
         UIController.setSelector(6117);
         team.getTeamOwners().add(localTeamOwner);
-        assertTrue(team.addAsset("test",localTeamOwner,TeamAsset.PLAYER));
+        assertTrue(team.addAsset("test", localTeamOwner, TeamAsset.PLAYER));
 
         team.getTeamOwners().remove(localTeamOwner);
         UIController.setSelector(6118);
-        assertFalse(team.addAsset("test",localTeamOwner,TeamAsset.COACH));
+        assertFalse(team.addAsset("test", localTeamOwner, TeamAsset.COACH));
         UIController.setSelector(6118);
         team.getTeamOwners().add(localTeamOwner);
-        assertTrue(team.addAsset("test",localTeamOwner,TeamAsset.COACH));
+        assertTrue(team.addAsset("test", localTeamOwner, TeamAsset.COACH));
 
         team.getTeamOwners().remove(localTeamOwner);
-        assertFalse(team.addAsset("test",localTeamOwner,TeamAsset.TEAM_MANAGER));
+        assertFalse(team.addAsset("test", localTeamOwner, TeamAsset.TEAM_MANAGER));
         team.getTeamOwners().add(localTeamOwner);
-        assertTrue(team.addAsset("test",localTeamOwner,TeamAsset.TEAM_MANAGER));
+        assertTrue(team.addAsset("test", localTeamOwner, TeamAsset.TEAM_MANAGER));
 
     }
 
 
-    @Test (expected = StadiumNotFoundException.class)
-    public void testAddAssetStadiumNotFoundUTest() throws Exception
-    {
-        team.addAsset("NotAnExistingStadiumName", localTeamOwner,TeamAsset.STADIUM);
-    }
-
-    @Test
-    public void testAddAssetStadiumUTest() throws Exception
-    {
-        StadiumStub stadiumStub = new StadiumStub("vas","BS");
-        assertTrue(team.addAsset("vas", localTeamOwner,TeamAsset.STADIUM));
+    @Test(expected = StadiumNotFoundException.class)
+    public void testAddAssetStadiumNotFoundUTest() throws Exception {
+        team.addAsset("NotAnExistingStadiumName", localTeamOwner, TeamAsset.STADIUM);
     }
 
     @Test
-    public void testAddAssetStadiumNotTrivialUTest() throws Exception
-    {
-        Stadium stadiumStub = new Stadium("vas","BS");
+    public void testAddAssetStadiumUTest() throws Exception {
+        StadiumStub stadiumStub = new StadiumStub("vas", "BS");
+        assertTrue(team.addAsset("vas", localTeamOwner, TeamAsset.STADIUM));
+    }
+
+    @Test
+    public void testAddAssetStadiumNotTrivialUTest() throws Exception {
+        Stadium stadiumStub = new Stadium("vas", "BS");
         UIController.setIsTest(true);
         UIController.setSelector(6119);
         //No Team Owner
-        assertFalse(team.addAsset("vas", localTeamOwner,TeamAsset.STADIUM));
+        assertFalse(team.addAsset("vas", localTeamOwner, TeamAsset.STADIUM));
 
         team.getTeamOwners().add(localTeamOwner);
-        stadiumStub.changeProperty("name","vas");
-        assertTrue(team.addAsset("vas", localTeamOwner,TeamAsset.STADIUM));
+        stadiumStub.changeProperty("name", "vas");
+        assertTrue(team.addAsset("vas", localTeamOwner, TeamAsset.STADIUM));
+    }
+
+
+    @Test
+    public void getAllAssetsUTest() {
+        Team team = new Team();
+        assertTrue(team.getAllAssets().size() == 0);
+        Stadium stadium = new StadiumStub("vas", "BS");
+        team.addStadium(stadium);
+        assertTrue(team.getAllAssets().size() == 1);
+        Player player = new PlayerStub(new SystemUserStub("teamTest1", "gal", 6131), new Date(), 6131);
+        TeamOwner teamOwner = new TeamOwnerStub(new SystemUserStub("teamTest2", "gal", 6131));
+        team.addTeamOwner(teamOwner);
+        team.addTeamPlayer(teamOwner, player);
+        assertTrue(team.getAllAssets().size() == 2);
+        Coach coach = new CoachStub(new SystemUserStub("teamTest3", "gal", 6131));
+        team.addTeamCoach(teamOwner, coach);
+        assertTrue(team.getAllAssets().size() == 3);
+        Coach secondCoach = new CoachStub(new SystemUserStub("teamTest4", "gal", 6131));
+        team.addTeamCoach(teamOwner, secondCoach);
+        assertTrue(team.getAllAssets().size() == 4);
+        TeamManager teamManager = new TeamManagerStub(new SystemUserStub("teamTest5", "gal", 6131));
+        team.addTeamManager(teamOwner, teamManager);
+        assertTrue(team.getAllAssets().size() == 5);
+
+
+
+    }
+
+    @Test
+    public void getAllPropertyUTest() {
+        Team team = new Team();
+        Asset asset = new AssetStub(6131);
+        List<Enum> enumList = asset.getAllPropertyList(team, "Test");
+        assertNull(enumList);
+        asset = new AssetStub(6132);
+        enumList = team.getAllProperty(asset, "Test");
+        assertEquals( 0  , enumList.size());
+    }
+
+
+    /*User System*/
+    @Test
+    public void getAllAssetsITest_0() {
+        Team team = new Team();
+        assertTrue(team.getAllAssets().size() == 0);
+        Stadium stadium = new Stadium("vas", "BS");
+        team.addStadium(stadium);
+        assertTrue(team.getAllAssets().size() == 1);
+        Player player = new PlayerStub(new SystemUser("teamTest1", "gal"), new Date(), 6131);
+        TeamOwner teamOwner = new TeamOwnerStub(new SystemUser("teamTest2", "gal"));
+        team.addTeamOwner(teamOwner);
+        team.addTeamPlayer(teamOwner, player);
+        assertTrue(team.getAllAssets().size() == 2);
+        Coach coach = new CoachStub(new SystemUser("teamTest3", "gal"));
+        team.addTeamCoach(teamOwner, coach);
+        assertTrue(team.getAllAssets().size() == 3);
+        Coach secondCoach = new CoachStub(new SystemUser("teamTest4", "gal"));
+        team.addTeamCoach(teamOwner, coach);
+        assertTrue(team.getAllAssets().size() == 4);
+    }
+    /*Stadium*/
+    @Test
+    public void getAllAssetsITest_1() {
+        Team team = new Team();
+        assertTrue(team.getAllAssets().size() == 0);
+        Stadium stadium = new Stadium("vas", "BS");
+        team.addStadium(stadium);
+        assertTrue(team.getAllAssets().size() == 1);
+        Player player = new PlayerStub(new SystemUser("teamTest1", "gal"), new Date(), 6131);
+        TeamOwner teamOwner = new TeamOwnerStub(new SystemUser("teamTest2", "gal"));
+        team.addTeamOwner(teamOwner);
+        team.addTeamPlayer(teamOwner, player);
+        assertTrue(team.getAllAssets().size() == 2);
+        Coach coach = new CoachStub(new SystemUser("teamTest3", "gal"));
+        team.addTeamCoach(teamOwner, coach);
+        assertTrue(team.getAllAssets().size() == 3);
+        Coach secondCoach = new CoachStub(new SystemUser("teamTest4", "gal"));
+        team.addTeamCoach(teamOwner, secondCoach);
+        assertTrue(team.getAllAssets().size() == 4);
+    }
+
+    /*Stadium , Player*/
+    @Test
+    public void getAllAssetsITest_2() {
+        Team team = new Team();
+        assertTrue(team.getAllAssets().size() == 0);
+        Stadium stadium = new Stadium("vas", "BS");
+        team.addStadium(stadium);
+        assertTrue(team.getAllAssets().size() == 1);
+        Player player = new Player(new SystemUser("teamTest1", "gal"), new Date());
+        TeamOwner teamOwner = new TeamOwnerStub( new SystemUser("teamTest2", "gal"));
+        team.addTeamOwner(teamOwner);
+        team.addTeamPlayer(teamOwner, player);
+        assertTrue(team.getAllAssets().size() == 2);
+        Coach coach = new CoachStub(new SystemUser("teamTest3", "gal"));
+        team.addTeamCoach(teamOwner, coach);
+        assertTrue(team.getAllAssets().size() == 3);
+        Coach secondCoach = new CoachStub(new SystemUser("teamTest4", "gal"));
+        team.addTeamCoach(teamOwner, secondCoach);
+        assertTrue(team.getAllAssets().size() == 4);
+    }
+
+    /*Stadium , Player , Coach*/
+    @Test
+    public void getAllAssetsITest_3() {
+        Team team = new Team();
+        assertTrue(team.getAllAssets().size() == 0);
+        Stadium stadium = new Stadium("vas", "BS");
+        team.addStadium(stadium);
+        assertTrue(team.getAllAssets().size() == 1);
+        Player player = new Player(new SystemUser("teamTest1", "gal"), new Date());
+        TeamOwner teamOwner = new TeamOwnerStub( new SystemUser("teamTest2", "gal"));
+        team.addTeamOwner(teamOwner);
+        team.addTeamPlayer(teamOwner, player);
+        assertTrue(team.getAllAssets().size() == 2);
+        Coach coach = new Coach(new SystemUser("teamTest3", "gal"));
+        team.addTeamCoach(teamOwner, coach);
+        assertTrue(team.getAllAssets().size() == 3);
+        Coach secondCoach = new Coach(new SystemUser("teamTest4", "gal"));
+        team.addTeamCoach(teamOwner, secondCoach);
+        assertTrue(team.getAllAssets().size() == 4);
+    }
+
+    /*Stadium , Player , Coach , TeamManager*/
+    @Test
+    public void getAllAssetsITest_4() {
+        Team team = new Team();
+        assertTrue(team.getAllAssets().size() == 0);
+        Stadium stadium = new Stadium("vas", "BS");
+        team.addStadium(stadium);
+        assertTrue(team.getAllAssets().size() == 1);
+        Player player = new Player(new SystemUser("teamTest1", "gal"), new Date());
+        TeamOwner teamOwner = new TeamOwnerStub( new SystemUser("teamTest2", "gal"));
+        team.addTeamOwner(teamOwner);
+        team.addTeamPlayer(teamOwner, player);
+        assertTrue(team.getAllAssets().size() == 2);
+        Coach coach = new Coach(new SystemUser("teamTest3", "gal"));
+        team.addTeamCoach(teamOwner, coach);
+        assertTrue(team.getAllAssets().size() == 3);
+        Coach secondCoach = new Coach(new SystemUser("teamTest4", "gal"));
+        team.addTeamCoach(teamOwner, secondCoach);
+        assertTrue(team.getAllAssets().size() == 4);
+        TeamManager teamManager = new TeamManager(new SystemUser("teamTest5", "gal"));
+        team.addTeamManager(teamOwner, teamManager);
+        assertTrue(team.getAllAssets().size() == 5);
+    }
+
+    /*Stadium , Player , Coach , TeamManager , TeamOwner*/
+    @Test
+    public void getAllAssetsITest_5() {
+        Team team = new Team();
+        assertTrue(team.getAllAssets().size() == 0);
+        Stadium stadium = new Stadium("vas", "BS");
+        team.addStadium(stadium);
+        assertTrue(team.getAllAssets().size() == 1);
+        Player player = new Player(new SystemUser("teamTest1", "gal"), new Date());
+        TeamOwner teamOwner = new TeamOwner( new SystemUser("teamTest2", "gal"));
+        team.addTeamOwner(teamOwner);
+        team.addTeamPlayer(teamOwner, player);
+        assertTrue(team.getAllAssets().size() == 2);
+        Coach coach = new Coach(new SystemUser("teamTest3", "gal"));
+        team.addTeamCoach(teamOwner, coach);
+        assertTrue(team.getAllAssets().size() == 3);
+        Coach secondCoach = new Coach(new SystemUser("teamTest4", "gal"));
+        team.addTeamCoach(teamOwner, secondCoach);
+        assertTrue(team.getAllAssets().size() == 4);
+        TeamManager teamManager = new TeamManager(new SystemUser("teamTest5", "gal"));
+        team.addTeamManager(teamOwner, teamManager);
+        assertTrue(team.getAllAssets().size() == 5);
+    }
+
+
+    /*Stadium*/
+    @Test
+    public void getAllPropertyITest_1() {
+        Team team = new Team();
+        Stadium stadium = new Stadium("vas", "BS");
+        team.addStadium( stadium);
+        List<Enum> enumList = team.getAllProperty(stadium , stadium.namePropertyString);
+        assertNull(enumList);
+    }
+
+    /*Player*/
+    @Test
+    public void getAllPropertyITest_2() {
+        Team team = new Team();
+        Player player = new Player(new SystemUser("teamTest1", "gal"), new Date());
+        TeamOwner teamOwner = new TeamOwnerStub( new SystemUser("teamTest2", "gal"));
+        team.addTeamOwner(teamOwner);
+        team.addTeamPlayer( teamOwner , player);
+        List<Enum> enumList = team.getAllProperty(player , player.fieldJobString);
+        assertNull(enumList);
+    }
+
+    /*Coach*/
+    @Test
+    public void getAllPropertyITest_3() {
+        Team team = new Team();
+        Coach coach = new Coach(new SystemUser("teamTest3", "gal"));
+        TeamOwner teamOwner = new TeamOwnerStub( new SystemUser("teamTest2", "gal"));
+        team.addTeamOwner(teamOwner);
+        team.addTeamCoach(teamOwner,coach);
+        List<Enum> enumList = team.getAllProperty(coach , coach.qualificationString);
+        assertNull(enumList);
+    }
+
+    /*TeamManger*/
+    @Test
+    public void getAllPropertyITest_4() {
+        Team team = new Team();
+        TeamManager teamManager = new TeamManager(new SystemUser("teamTest3", "gal"));
+        TeamOwner teamOwner = new TeamOwnerStub( new SystemUser("teamTest2", "gal"));
+        team.addTeamOwner(teamOwner);
+        team.addTeamManager(teamOwner , teamManager);
+        List<Enum> enumList = team.getAllProperty(teamManager , "Test");
+        assertNull(enumList);
+        enumList = team.getAllProperty(teamManager , teamManager.permissionsString);
+        assertEquals(0 , enumList.size());
+        assertTrue(teamManager.addProperty(teamManager.permissionsString , TeamManagerPermissions.ADD_COACH , team));
+        assertFalse(teamManager.addProperty(teamManager.permissionsString , TeamManagerPermissions.ADD_COACH , team));
+        enumList = team.getAllProperty(teamManager , teamManager.permissionsString);
+        assertEquals(1 , enumList.size());
+        assertTrue(teamManager.removeProperty(teamManager.permissionsString , TeamManagerPermissions.ADD_COACH , team));
+        assertFalse(teamManager.removeProperty(teamManager.permissionsString , TeamManagerPermissions.ADD_COACH , team));
+        enumList = team.getAllProperty(teamManager , teamManager.permissionsString);
+        assertEquals(0 , enumList.size());
+    }
+
+    /*TeamOwner*/
+    @Test
+    public void getAllPropertyITest_5() {
+        Team team = new Team();
+        TeamManager teamManager = new TeamManager(new SystemUser("teamTest1", "gal"));
+        TeamOwner teamOwner = new TeamOwner( new SystemUser("teamTest2", "gal"));
+        team.addTeamOwner(teamOwner);
+        team.addTeamManager(teamOwner , teamManager);
+        List<Enum> enumList = team.getAllProperty(teamManager , "Test");
+        assertNull(enumList);
+        enumList = team.getAllProperty(teamManager , teamManager.permissionsString);
+        assertEquals(0 , enumList.size());
+        assertTrue(teamManager.addProperty(teamManager.permissionsString , TeamManagerPermissions.ADD_COACH , team));
+        assertFalse(teamManager.addProperty(teamManager.permissionsString , TeamManagerPermissions.ADD_COACH , team));
+        enumList = team.getAllProperty(teamManager , teamManager.permissionsString);
+        assertEquals(1 , enumList.size());
+        assertTrue(teamManager.removeProperty(teamManager.permissionsString , TeamManagerPermissions.ADD_COACH , team));
+        assertFalse(teamManager.removeProperty(teamManager.permissionsString , TeamManagerPermissions.ADD_COACH , team));
+        enumList = team.getAllProperty(teamManager , teamManager.permissionsString);
+        assertEquals(0 , enumList.size());
+        Coach coach = new Coach(new SystemUser("teamTest3", "gal"));
+        enumList = team.getAllProperty(coach , coach.qualificationString);
+        assertNull(enumList);
+
     }
 
 
@@ -525,4 +776,6 @@ public class TeamTest {
         UIController.setIsTest(false);
         EntityManager.getInstance().clearAll();
     }
+
+
 }

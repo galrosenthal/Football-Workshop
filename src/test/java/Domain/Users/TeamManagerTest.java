@@ -97,6 +97,8 @@ public class TeamManagerTest {
 
     }
 
+
+
     @Test
     public void getPropertiesITest() {
         TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest" , "gal" ));
@@ -182,9 +184,5 @@ public class TeamManagerTest {
         assertTrue(teamManager.removeProperty(teamManager.permissionsString ,TeamManagerPermissions.ADD_COACH ,team));
 
     }
-
-
-
-
 
 }

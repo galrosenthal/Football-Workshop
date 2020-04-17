@@ -102,6 +102,11 @@ public class AssetStub implements Asset {
 
     @Override
     public List<Enum> getAllPropertyList(Team team, String propertyName) {
+        if(this.selector == 6132)
+        {
+            List<Enum> enumList = new ArrayList<>();
+            return enumList;
+        }
         return null;
     }
 
