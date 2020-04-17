@@ -21,7 +21,7 @@ public class AssetStub implements Asset {
             List<String> properties = new ArrayList<>();
             return properties;
         }
-        else if(this.selector == 6133 || this.selector == 6134 ||this.selector == 6135 ||this.selector == 6136 || this.selector == 6137)
+        else if(this.selector == 6133 || this.selector == 6134 ||this.selector == 6135 ||this.selector == 6136 || this.selector == 6137 || this.selector == 6138)
         {
             List<String> properties = new ArrayList<>();
             properties.add("Property Test");
@@ -47,7 +47,7 @@ public class AssetStub implements Asset {
 
     @Override
     public boolean isListProperty(String property) {
-        if(this.selector == 6133 || this.selector == 6134)
+        if(this.selector == 6133 || this.selector == 6134 || this.selector == 6135 || this.selector == 6138)
         {
             return true;
         }
@@ -56,7 +56,7 @@ public class AssetStub implements Asset {
 
     @Override
     public boolean isStringProperty(String property) {
-        if(this.selector == 6136 || this.selector == 6137)
+        if(this.selector == 6137)
         {
             return true;
         }
@@ -65,7 +65,7 @@ public class AssetStub implements Asset {
 
     @Override
     public boolean isEnumProperty(String property) {
-        if(this.selector == 6135)
+        if(this.selector == 6136)
         {
             return true;
         }
@@ -102,9 +102,15 @@ public class AssetStub implements Asset {
 
     @Override
     public List<Enum> getAllPropertyList(Team team, String propertyName) {
-        if(this.selector == 6132)
+        if(this.selector == 6132 || this.selector ==6135)
         {
             List<Enum> enumList = new ArrayList<>();
+            return enumList;
+        }
+        else if(this.selector == 6138)
+        {
+            List<Enum> enumList = new ArrayList<>();
+            enumList.add(PlayerFieldJobs.DEFENSE);
             return enumList;
         }
         return null;
@@ -112,11 +118,19 @@ public class AssetStub implements Asset {
 
     @Override
     public boolean addProperty(String propertyName, Enum anEnum , Team team) {
+        if(this.selector == 6135)
+        {
+            return true;
+        }
         return false;
     }
 
     @Override
     public boolean removeProperty(String propertyName, Enum anEnum, Team team) {
+        if(this.selector == 6138)
+        {
+            return true;
+        }
         return false;
     }
 }

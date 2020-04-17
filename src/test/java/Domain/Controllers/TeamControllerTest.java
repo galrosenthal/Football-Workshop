@@ -2,6 +2,7 @@ package Domain.Controllers;
 
 import Domain.Exceptions.AssetCantBeModifiedException;
 import Domain.Exceptions.AssetsNotExistsException;
+import Domain.Game.Stadium;
 import Domain.Game.Team;
 import Domain.Game.TeamAsset;
 import Domain.Game.TeamStub;
@@ -31,11 +32,8 @@ public class TeamControllerTest {
     @Test (expected = AssetCantBeModifiedException.class)
     public void editAssetsTest2UTest() throws Exception {
         Team team = new TeamStub(6132);
-
-
         UIController.setIsTest(true);
         UIController.setSelector(6132);
-
         TeamController.editAssets(team);
     }
 
@@ -44,10 +42,8 @@ public class TeamControllerTest {
     @Test (expected = AssetCantBeModifiedException.class)
     public void editAssetsTest3UTest() throws Exception {
         Team team = new TeamStub(6133);
-
         UIController.setIsTest(true);
         UIController.setSelector(6133);
-
         TeamController.editAssets(team);
     }
 
@@ -62,9 +58,20 @@ public class TeamControllerTest {
         TeamController.editAssets(team);
     }
 
-    /*success add property list*/
+    /*success remove property list*/
     @Test
     public void editAssetsTest5UTest() throws Exception {
+        Team team = new TeamStub(6138);
+
+        UIController.setIsTest(true);
+        UIController.setSelector(6138);
+
+        assertTrue(TeamController.editAssets(team));
+
+    }
+    /*success add property list*/
+    @Test
+    public void editAssetsTest8UTest() throws Exception {
         Team team = new TeamStub(6135);
 
         UIController.setIsTest(true);
@@ -124,31 +131,64 @@ public class TeamControllerTest {
     @Test (expected = AssetCantBeModifiedException.class)
     public void editAssetsTest3ITest() throws Exception {
         Team team = new Team();
+        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest" , "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest" , "gal"));
+        team.addTeamOwner(teamOwner);
+        team.addTeamManager(teamOwner,teamManager);
         UIController.setIsTest(true);
-        UIController.setSelector(6133);
-        TeamOwnerStub teamOwnerStub = new TeamOwnerStub(new SystemUserStub("teamOwnerStub" , "gal" , 6133));
-        PlayerStub playerStub = new PlayerStub(new  SystemUserStub("playerStub" , "gal" , 6133), new Date(),6132);
-        team.addTeamOwner(teamOwnerStub);
-        team.addTeamPlayer(teamOwnerStub,playerStub);
+        UIController.setSelector(6135);
         TeamController.editAssets(team);
+        TeamController.editAssets(team);
+        TeamController.editAssets(team);
+        TeamController.editAssets(team);
+        TeamController.editAssets(team);
+        TeamController.editAssets(team);
+        TeamController.editAssets(team);
+
+
     }
 
     /*can not modified asset - remove property value*/
     @Test (expected = AssetCantBeModifiedException.class)
     public void editAssetsTest4ITest() throws Exception {
-        Team team = new TeamStub(6134);
-
+        Team team = new Team();
+        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest" , "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest" , "gal"));
+        team.addTeamOwner(teamOwner);
+        team.addTeamManager(teamOwner,teamManager);
         UIController.setIsTest(true);
         UIController.setSelector(6134);
 
         TeamController.editAssets(team);
     }
 
-    /*success add property list*/
+    /*success remove property list*/
     @Test
     public void editAssetsTest5ITest() throws Exception {
-        Team team = new TeamStub(6135);
 
+        Team team = new Team();
+        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest" , "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest" , "gal"));
+        team.addTeamOwner(teamOwner);
+        team.addTeamManager(teamOwner,teamManager);
+        UIController.setIsTest(true);
+        UIController.setSelector(6135);
+        Assert.assertTrue(TeamController.editAssets(team));
+
+        UIController.setIsTest(true);
+        UIController.setSelector(6138);
+
+        assertTrue(TeamController.editAssets(team));
+
+    }
+    /*success add property list*/
+    @Test
+    public void editAssetsTest8ITest() throws Exception {
+        Team team = new Team();
+        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest" , "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest" , "gal"));
+        team.addTeamOwner(teamOwner);
+        team.addTeamManager(teamOwner,teamManager);
         UIController.setIsTest(true);
         UIController.setSelector(6135);
         Assert.assertTrue(TeamController.editAssets(team));
@@ -158,8 +198,11 @@ public class TeamControllerTest {
     /*success change property enum value*/
     @Test
     public void editAssetsTest6ITest() throws Exception {
-        Team team = new TeamStub(6136);
-
+        Team team = new Team();
+        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest1" , "gal"));
+        team.addTeamOwner(teamOwner);
+        Player player = new Player(new SystemUser("teamOwnerTest2" , "gal") , new Date());
+        team.addTeamPlayer(teamOwner , player);
         UIController.setIsTest(true);
         UIController.setSelector(6136);
         Assert.assertTrue(TeamController.editAssets(team));
@@ -169,11 +212,15 @@ public class TeamControllerTest {
     /*success change property string value*/
     @Test
     public void editAssetsTest7ITest() throws Exception {
-        Team team = new TeamStub(6137);
-
+        Team team = new Team();
+        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest1" , "gal"));
+        team.addTeamOwner(teamOwner);
+        Stadium stadium = new Stadium("testStadium", "bs");
+        team.addStadium(stadium);
         UIController.setIsTest(true);
         UIController.setSelector(6137);
-        Assert.assertFalse(TeamController.editAssets(team));
+        assertTrue(TeamController.editAssets(team));
 
     }
+
 }

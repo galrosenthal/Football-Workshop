@@ -24,32 +24,27 @@ public class TeamController {
 
         List<TeamOwner> teamOwners = teamToOwn.getTeamOwners();
 
-        if(!teamOwners.contains(owner)){
+        if (!teamOwners.contains(owner)) {
             throw new Exception("Only the owner of this team can add a new owner");
         }
         SystemUser newTeamOwnerUser = EntityManager.getInstance().getUser(username);
 
-        if(newTeamOwnerUser == null)
-        {
+        if (newTeamOwnerUser == null) {
             throw new UserNotFoundException("Could not find a user by the given username");
         }
 
         Role newTeamOwnerRole = newTeamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
         TeamOwner teamOwner;
-        if(newTeamOwnerRole == null)
-        {
+        if (newTeamOwnerRole == null) {
             teamOwner = new TeamOwner(newTeamOwnerUser);
-        }
-        else
-        {
+        } else {
 
             teamOwner = (TeamOwner) newTeamOwnerRole;
-            if(teamOwners.contains(teamOwner))
-            {
+            if (teamOwners.contains(teamOwner)) {
                 throw new alreadyTeamOwnerException("This User is already a team owner of this team");
             }
 
-            if(isAlreadyOwnedAnotherTeamInSeason(teamToOwn,teamOwner)){
+            if (isAlreadyOwnedAnotherTeamInSeason(teamToOwn, teamOwner)) {
                 throw new Exception("This User is already a team owner of a different team in same league");
             }
 
@@ -69,10 +64,11 @@ public class TeamController {
      * <p>{@link Coach}</p>
      * <p>{@link TeamManager}</p>
      * <p>{@link Stadium}</p>
-     * @param assetName is the Name or Username of the asset to add
+     *
+     * @param assetName      is the Name or Username of the asset to add
      * @param teamToAddAsset is the Team to add the asset to
-     * @param teamOwner is the Owner who asks to add the asset
-     * @param assetType is the type of the asset to add {@link TeamAsset}
+     * @param teamOwner      is the Owner who asks to add the asset
+     * @param assetType      is the type of the asset to add {@link TeamAsset}
      * @return true if the player was added successfully
      * @throws NoTeamExistsException
      * @throws NotATeamOwner
@@ -81,23 +77,19 @@ public class TeamController {
      * @throws StadiumNotFoundException
      */
     public static boolean addAssetToTeam(String assetName, Team teamToAddAsset, TeamOwner teamOwner, TeamAsset assetType)
-            throws NoTeamExistsException,NotATeamOwner,NullPointerException,UserNotFoundException
-            ,StadiumNotFoundException
-    {
-        if(teamToAddAsset == null)
-        {
+            throws NoTeamExistsException, NotATeamOwner, NullPointerException, UserNotFoundException
+            , StadiumNotFoundException {
+        if (teamToAddAsset == null) {
             throw new NoTeamExistsException("No Team was given");
         }
-        if(assetType == null)
-        {
-            throw  new NullPointerException("No Asset Type was given");
+        if (assetType == null) {
+            throw new NullPointerException("No Asset Type was given");
         }
-        if(!teamToAddAsset.isTeamOwner(teamOwner))
-        {
+        if (!teamToAddAsset.isTeamOwner(teamOwner)) {
             throw new NotATeamOwner("Not One of the Team Owners");
         }
 
-        return teamToAddAsset.addAsset(assetName,teamOwner,assetType);
+        return teamToAddAsset.addAsset(assetName, teamOwner, assetType);
     }
 
     public static boolean editAssets(Team chosenTeam) throws Exception {
@@ -117,20 +109,23 @@ public class TeamController {
         int propertyIndexToModify = choosePropertiesToModify(properties);
         if (allAssetsTeam.get(assetIndex).isListProperty(properties.get(propertyIndexToModify))) {
             int action = actionToDo();
-            //FIXME!!
             if (action == 0) {
-                boolean isAdded = addProperty(allAssetsTeam.get(assetIndex), properties.get(propertyIndexToModify) , chosenTeam);
+                boolean isAdded = addProperty(allAssetsTeam.get(assetIndex), properties.get(propertyIndexToModify), chosenTeam);
                 if (!isAdded) {
 
                     throw new AssetCantBeModifiedException("Can not modify asset");
 
+                } else {
+                    return true;
                 }
             } else {
-                boolean isRemoved = removeProperty(allAssetsTeam.get(assetIndex), properties.get(propertyIndexToModify) , chosenTeam);
+                boolean isRemoved = removeProperty(allAssetsTeam.get(assetIndex), properties.get(propertyIndexToModify), chosenTeam);
                 if (!isRemoved) {
 
                     throw new AssetCantBeModifiedException("Can not modify asset");
 
+                } else {
+                    return true;
                 }
             }
         } else if (allAssetsTeam.get(assetIndex).isEnumProperty(properties.get(propertyIndexToModify))) {
@@ -146,21 +141,24 @@ public class TeamController {
         return false;
     }
 
-    private static boolean addProperty(Asset asset, String propertyName , Team team) {
-        List<Enum> enumList = team.getAllProperty(asset,propertyName);
+    private static boolean addProperty(Asset asset, String propertyName, Team team) {
+        List<Enum> enumList = team.getAllProperty(asset, propertyName);
+        if (enumList == null) {
+            return false;
+        }
         List<Enum> allValue = asset.getAllValues(propertyName);
         allValue.removeAll(enumList);
-        if(allValue.size() == 0)
-        {
+        if (allValue.size() == 0) {
             return false;
         }
         int indexToAdd = addPropertyToListProperty(allValue);
-        return asset.addProperty(propertyName , allValue.get(indexToAdd) , team);
+        return asset.addProperty(propertyName, allValue.get(indexToAdd), team);
     }
 
     /**
      * In case the user wants to add Property to property list- choose which new property he wants to change.
      * - assumption- list of Enums property
+     *
      * @param allEnumValues
      * @return propertyNewValueIndex -int-
      */
@@ -172,37 +170,37 @@ public class TeamController {
         }
         int propertyValueIndex;
         do {
-            propertyValueIndex = UIController.receiveInt()-1;
+            propertyValueIndex = UIController.receiveInt() - 1;
         } while (!(propertyValueIndex >= 0 && propertyValueIndex < allEnumValues.size()));
         return propertyValueIndex;
 
     }
 
-    private static boolean removeProperty(Asset asset, String propertyName , Team team) {
-        List<Enum> enumList = team.getAllProperty(asset,propertyName);
-        if(enumList.size() == 0)
-        {
+    private static boolean removeProperty(Asset asset, String propertyName, Team team) {
+        List<Enum> enumList = team.getAllProperty(asset, propertyName);
+        if (enumList == null || enumList.size() == 0) {
             return false;
         }
-        int indexToAdd = addPropertyToListProperty(enumList);
-        return asset.removeProperty(propertyName , enumList.get(indexToAdd) , team);
+        int indexToAdd = removePropertyToListProperty(enumList);
+        return asset.removeProperty(propertyName, enumList.get(indexToAdd), team);
     }
 
     /**
      * In case the user wants to remove Property to property list- choose which new property he wants to change.
      * - assumption- list of Enums property
+     *
      * @param allEnumValues
      * @return propertyNewValueIndex -int-
      */
     private static int removePropertyToListProperty(List<Enum> allEnumValues) {
-        UIController.printMessage("Choose Property to add ");
+        UIController.printMessage("Choose Property to remove ");
         for (int i = 0; i < allEnumValues.size(); i++) {
             UIController.printMessage(i + 1 + ". " + allEnumValues.get(i).toString());
 
         }
         int propertyValueIndex;
         do {
-            propertyValueIndex = UIController.receiveInt()-1;
+            propertyValueIndex = UIController.receiveInt() - 1;
         } while (!(propertyValueIndex >= 0 && propertyValueIndex < allEnumValues.size()));
         return propertyValueIndex;
 
@@ -224,10 +222,8 @@ public class TeamController {
         do {
             assetIndex = UIController.receiveInt();
         } while (!(assetIndex >= 1 && assetIndex <= allAssetsTeam.size()));
-        return assetIndex-1;
+        return assetIndex - 1;
     }
-
-
 
 
     /**
@@ -244,7 +240,7 @@ public class TeamController {
         }
         int propertyNewValueIndex;
         do {
-            propertyNewValueIndex = UIController.receiveInt()-1;
+            propertyNewValueIndex = UIController.receiveInt() - 1;
         } while (!(propertyNewValueIndex >= 0 && propertyNewValueIndex < allEnumValues.size()));
         return propertyNewValueIndex;
 
@@ -257,11 +253,11 @@ public class TeamController {
     private static int choosePropertiesToModify(List<String> properties) {
         UIController.printMessage("Choose Property Number to modify");
         for (int i = 0; i < properties.size(); i++) {
-            UIController.printMessage(i+1 + ". " + properties.get(i));
+            UIController.printMessage(i + 1 + ". " + properties.get(i));
         }
         int propertyIndex;
         do {
-            propertyIndex = UIController.receiveInt()-1;
+            propertyIndex = UIController.receiveInt() - 1;
         } while (!(propertyIndex >= 0 && propertyIndex < properties.size()));
 
         return propertyIndex;
@@ -269,6 +265,7 @@ public class TeamController {
 
     /**
      * In case the property ia a list - let the user to choose if he want to Add or Delete value to the list
+     *
      * @return 0 - if to add value , 1 - if to remove value
      */
     private static int actionToDo() {
@@ -285,27 +282,26 @@ public class TeamController {
 
 
     /**
-     *Check if the new team owner already owned a team in the same season (which is the same league)
-     * @param teamToOwn the team he should be owned to
+     * Check if the new team owner already owned a team in the same season (which is the same league)
+     *
+     * @param teamToOwn    the team he should be owned to
      * @param ownerToCheck the new team owner
      * @return true if the new team owner already owned a team in the same season
      */
-    private static boolean isAlreadyOwnedAnotherTeamInSeason(Team teamToOwn, TeamOwner ownerToCheck){
+    private static boolean isAlreadyOwnedAnotherTeamInSeason(Team teamToOwn, TeamOwner ownerToCheck) {
 
         Season currentSeason = teamToOwn.getCurrentSeason();
-        if(currentSeason == null)
-        {
+        if (currentSeason == null) {
             return false;
         }
         List<Team> teamsInSeason = currentSeason.getTeams();
-        if(teamsInSeason.size() == 0)
-        {
+        if (teamsInSeason.size() == 0) {
             return false;
         }
-        for (Team team: teamsInSeason){
+        for (Team team : teamsInSeason) {
             List<TeamOwner> teamOwners = team.getTeamOwners();
 
-            if(teamOwners.contains(ownerToCheck)){
+            if (teamOwners.contains(ownerToCheck)) {
                 return true;
             }
         }

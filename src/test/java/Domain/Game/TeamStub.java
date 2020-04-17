@@ -141,4 +141,70 @@ public class TeamStub extends Team{
             return false;
         }
     }
+
+    /**
+     * Each team has a lot of Assets {@link TeamAsset},
+     * @return a list of all the team assets
+     */
+    public List<Asset> getAllAssets() {
+
+        if(this.selector == 6132)
+        {
+            List<Asset> allTeamAssets = new ArrayList<>();
+            allTeamAssets.add(new AssetStub(6132));
+            return allTeamAssets;
+
+        }
+        else if(this.selector == 6133)
+        {
+            List<Asset> allTeamAssets = new ArrayList<>();
+            allTeamAssets.add(new AssetStub(6133));
+            return allTeamAssets;
+
+        }
+        else if(this.selector == 6134)
+        {
+            List<Asset> allTeamAssets = new ArrayList<>();
+            allTeamAssets.add(new AssetStub(6134));
+            return allTeamAssets;
+
+        }
+        else if(this.selector == 6135)
+        {
+            List<Asset> allTeamAssets = new ArrayList<>();
+            allTeamAssets.add(new AssetStub(6135));
+            return allTeamAssets;
+
+        }
+        else if(this.selector == 6136)
+        {
+            List<Asset> allTeamAssets = new ArrayList<>();
+            allTeamAssets.add(new AssetStub(6136));
+            return allTeamAssets;
+
+        }
+        else if(this.selector == 6137)
+        {
+            List<Asset> allTeamAssets = new ArrayList<>();
+            allTeamAssets.add(new AssetStub(6137));
+            return allTeamAssets;
+
+        }
+        else if(this.selector == 6138)
+        {
+            List<Asset> allTeamAssets = new ArrayList<>();
+            allTeamAssets.add(new AssetStub(6138));
+            return allTeamAssets;
+
+        }
+        List<Asset> allTeamAssets = new ArrayList<>();
+        return allTeamAssets;
+
+    }
+
+    @Override
+    public List<Enum> getAllProperty(Asset asset, String propertyName) {
+        List<Enum> enumList = asset.getAllPropertyList(this , propertyName);
+        return enumList;
+    }
 }

@@ -128,9 +128,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void modifyTeamAssetDetails1Itest() throws Exception{
+    public void modifyTeamAssetDetails1ITest() throws Exception{
         UIController.setIsTest(true);
-        TeamOwnerStub.setSelector(0);
         new SystemUserStub("newTOUsername", "newTO", 3);
         UIController.setSelector(2);
         //false because of wrong username from user
