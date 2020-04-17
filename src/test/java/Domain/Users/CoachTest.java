@@ -16,7 +16,6 @@ public class CoachTest {
         Assert.assertTrue(allProperties.size() == 2);
         Assert.assertTrue(allProperties.contains(coach.teamJobString));
         Assert.assertTrue(allProperties.contains(coach.qualificationString));
-
     }
 
     @Test
@@ -57,6 +56,8 @@ public class CoachTest {
         Assert.assertTrue(enumList.contains(CoachQualification.MAIN_COACH));
         Assert.assertTrue(enumList.contains(CoachQualification.JUNIOR_COACH));
         Assert.assertTrue(enumList.contains(CoachQualification.SECOND_COACH));
+        enumList = coach.getAllValues("Test");
+        Assert.assertNull(enumList);
     }
 
     @Test
@@ -146,13 +147,6 @@ public class CoachTest {
         Coach coach = new Coach(new SystemUser("coachTest" , "gal"));
         Assert.assertFalse(coach.removeProperty(coach.teamJobString ,CoachQualification.MAIN_COACH ,new TeamStub(6131)));
     }
-
-
-
-
-
-
-
 
 
 

@@ -151,7 +151,7 @@ public class Coach extends Role implements Asset {
             }
             return allEnumValues;
         }
-        return allEnumValues;
+        return null;
     }
 
     @Override

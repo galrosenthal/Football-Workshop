@@ -132,12 +132,11 @@ public class Player extends Role implements Asset {
         {
             PlayerFieldJobs[] playerFieldJobs = PlayerFieldJobs.values();
             for (int i = 0; i < playerFieldJobs.length; i++) {
-                //todo: check!
                 allEnumValues.add(playerFieldJobs[i]);
             }
             return allEnumValues;
         }
-        return allEnumValues;
+        return null;
     }
 
     @Override
