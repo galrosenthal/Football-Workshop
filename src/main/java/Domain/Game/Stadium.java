@@ -34,7 +34,7 @@ public class Stadium implements Asset{
     @Override
     public List<String> getProperties() {
         List<String> properties = new ArrayList<>();
-        properties.add("Name");
+        properties.add(namePropertyString);
         return properties;
     }
 

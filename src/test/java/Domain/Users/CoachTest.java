@@ -1,13 +1,11 @@
 package Domain.Users;
 
-import Domain.Game.Asset;
 import Domain.Game.TeamStub;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
 
 public class CoachTest {
 
@@ -18,6 +16,7 @@ public class CoachTest {
         Assert.assertTrue(allProperties.size() == 2);
         Assert.assertTrue(allProperties.contains(coach.teamJobString));
         Assert.assertTrue(allProperties.contains(coach.qualificationString));
+
     }
 
     @Test
@@ -25,6 +24,8 @@ public class CoachTest {
         Coach coach = new Coach(new SystemUserStub("coachTest" , "gal" , 6131));
         Assert.assertTrue(coach.changeProperty(coach.teamJobString , "Test"));
         Assert.assertTrue(coach.changeProperty(coach.qualificationString , CoachQualification.MAIN_COACH.toString()));
+        Assert.assertFalse(coach.changeProperty("test" , CoachQualification.MAIN_COACH.toString()));
+
     }
 
     @Test
@@ -61,7 +62,6 @@ public class CoachTest {
     @Test
     public void getAllPropertyListUTest() {
         Coach coach = new Coach(new SystemUserStub("coachTest" , "gal" , 6131));
-        List<Enum> enumList = coach.getAllValues(coach.qualificationString);
         Assert.assertNull(coach.getAllPropertyList(new TeamStub(6131) , coach.teamJobString));
         Assert.assertNull(coach.getAllPropertyList(new TeamStub(6131) , coach.qualificationString));
     }
@@ -69,14 +69,12 @@ public class CoachTest {
     @Test
     public void addPropertyUTest() {
         Coach coach = new Coach(new SystemUserStub("coachTest" , "gal" , 6131));
-        List<Enum> enumList = coach.getAllValues(coach.qualificationString);
         Assert.assertFalse(coach.addProperty(coach.teamJobString ,CoachQualification.MAIN_COACH ,new TeamStub(6131)));
     }
 
     @Test
     public void removePropertyUTest() {
         Coach coach = new Coach(new SystemUserStub("coachTest" , "gal" , 6131));
-        List<Enum> enumList = coach.getAllValues(coach.qualificationString);
         Assert.assertFalse(coach.removeProperty(coach.teamJobString ,CoachQualification.MAIN_COACH ,new TeamStub(6131)));
     }
 
@@ -95,6 +93,8 @@ public class CoachTest {
         Coach coach = new Coach(new SystemUser("coachTest" , "gal"));
         Assert.assertTrue(coach.changeProperty(coach.teamJobString , "Test"));
         Assert.assertTrue(coach.changeProperty(coach.qualificationString , CoachQualification.MAIN_COACH.toString()));
+        Assert.assertFalse(coach.changeProperty("test" , CoachQualification.MAIN_COACH.toString()));
+
     }
 
     @Test
@@ -131,7 +131,6 @@ public class CoachTest {
     @Test
     public void getAllPropertyListITest() {
         Coach coach = new Coach(new SystemUser("coachTest" , "gal"));
-        List<Enum> enumList = coach.getAllValues(coach.qualificationString);
         Assert.assertNull(coach.getAllPropertyList(new TeamStub(6131) , coach.teamJobString));
         Assert.assertNull(coach.getAllPropertyList(new TeamStub(6131) , coach.qualificationString));
     }
@@ -139,14 +138,12 @@ public class CoachTest {
     @Test
     public void addPropertyITest() {
         Coach coach = new Coach(new SystemUser("coachTest" , "gal"));
-        List<Enum> enumList = coach.getAllValues(coach.qualificationString);
         Assert.assertFalse(coach.addProperty(coach.teamJobString ,CoachQualification.MAIN_COACH ,new TeamStub(6131)));
     }
 
     @Test
     public void removePropertyITest() {
         Coach coach = new Coach(new SystemUser("coachTest" , "gal"));
-        List<Enum> enumList = coach.getAllValues(coach.qualificationString);
         Assert.assertFalse(coach.removeProperty(coach.teamJobString ,CoachQualification.MAIN_COACH ,new TeamStub(6131)));
     }
 
