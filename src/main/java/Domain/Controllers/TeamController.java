@@ -56,10 +56,10 @@ public class TeamController {
     }
 
     /**
-     *Check if the new team owner already owned a team in the same league the team he should be owned exist
+     *Check if the new team owner already owned a team in the same season (which is the same league)
      * @param teamToOwn the team he should be owned to
      * @param ownerToCheck the new team owner
-     * @return true if the new team owner already owned a team in the same league
+     * @return true if the new team owner already owned a team in the same season
      */
     private static boolean isAlreadyOwnedAnotherTeamInLeague(Team teamToOwn,TeamOwner ownerToCheck){
 

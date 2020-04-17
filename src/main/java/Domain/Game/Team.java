@@ -100,10 +100,16 @@ public class Team {
         return false;
     }
 
-    public boolean addTeamOwner(TeamOwner teamOwner)
+    public boolean addTeamOwner(Role teamOwner)
     {
-
-        return teamOwners.add(teamOwner);
+        if(teamOwner == null){
+            return false;
+        }
+        if(teamOwner.getType() == RoleTypes.TEAM_OWNER){
+            return false;
+        }
+        
+        return teamOwners.add((TeamOwner)teamOwner);
     }
 
     public boolean removeTeamOwner(TeamOwner teamOwner){

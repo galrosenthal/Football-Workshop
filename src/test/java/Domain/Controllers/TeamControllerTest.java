@@ -55,7 +55,7 @@ public class TeamControllerTest {
 
         // Adding the original owner to the team. Expected to succeed
         try{
-            hapoelBash.addTeamOwner((TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+            hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
             boolean result = TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
             Assert.assertTrue(result);
         }
@@ -71,7 +71,7 @@ public class TeamControllerTest {
     @Test
     public void AddTeamOwner2UTest() throws Exception{
         EntityManager.getInstance().addUser(teamOwnerUser);
-        hapoelBash.addTeamOwner((TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         try{
             TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         }
@@ -95,8 +95,8 @@ public class TeamControllerTest {
     public void AddTeamOwner3UTest() throws Exception {
         this.teamOwnerToAdd.addNewRole(new TeamOwner(teamOwnerToAdd));
         Team hapoelTa = new Team();
-        hapoelBash.addTeamOwner((TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-        hapoelTa.addTeamOwner((TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
+        hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        hapoelTa.addTeamOwner(teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
         Season season = new Season(league,"2019/20");
 
         season.addTeam(hapoelBash);
@@ -127,7 +127,7 @@ public class TeamControllerTest {
      */
     @Test
     public void AddTeamOwner4UTest() throws Exception {
-        hapoelBash.addTeamOwner((TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         EntityManager.getInstance().addUser(teamOwnerUser);
         EntityManager.getInstance().addUser(teamOwnerToAdd);
 
