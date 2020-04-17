@@ -83,6 +83,7 @@ public class ARController {
         }
 
         chosenLeague.addSeason(seasonYears);
+        UIController.printMessage("The season was created successfully");
         return true;
 //        }
 //        UIController.printMessage("The season creation failed");
