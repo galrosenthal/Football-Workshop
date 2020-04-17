@@ -113,7 +113,7 @@ public class ControllerTest {
     public void addAssetSystemUserNoStubITest() throws Exception
     {
         SystemUser test = new SystemUser("test","test User");
-        SystemUser anotherUser = new SystemUser("anotherUser","another test User");
+        new SystemUser("anotherUser","another test User");
         TeamOwner to = new TeamOwner(test);
         Team team = new Team();
         team.getTeamOwners().add(to);
