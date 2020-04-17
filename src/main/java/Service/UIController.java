@@ -44,13 +44,16 @@ public class UIController {
                 return "newLeagueName";
             } else if (selector == 6) {
                 return "Premier League";
-            } else if (selector == 7) {
+            } else if (selector == 6117) {
                 return "01/11/1199";
-            } else if (selector == 8) {
+            } else if (selector == 6118) {
                 return "CoachJob";
-            } else if (selector == 9) {
+            } else if (selector == 6119) {
                 return "StadiumName";
-            }  else
+            } else if (selector == 61110) {
+                setSelector(6117);
+                return "StadiumName";
+            } else
                 return null;
         }
     }

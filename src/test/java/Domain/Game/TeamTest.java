@@ -5,6 +5,7 @@ import Domain.Exceptions.StadiumNotFoundException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Users.*;
 import Service.UIController;
+import manifold.ext.api.Jailbreak;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -156,7 +158,7 @@ public class TeamTest {
         copyTeam.getTeamCoaches().add(c1);
         assertNotEquals(team,copyTeam);
         UIController.setIsTest(true);
-        UIController.setSelector(8);
+        UIController.setSelector(6118);
         Coach c2 = new Coach(anotherUser);
         c2.addAllProperties();
         team.getTeamCoaches().add(c2);
@@ -225,6 +227,21 @@ public class TeamTest {
     }
 
     @Test
+    public void getBirthDateUTest() throws Exception
+    {
+        @Jailbreak Team anotherTeam = new Team();
+        UIController.setIsTest(true);
+        UIController.setSelector(61110);
+        Date testDate = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1199");
+        assertEquals(testDate, anotherTeam.getPlayerBirthDate());
+
+        UIController.setSelector(6117);
+        testDate = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1199");
+        assertEquals(testDate, anotherTeam.getPlayerBirthDate());
+
+    }
+
+    @Test
     public void testGetTeamNameUTest()
     {
         team.setTeamName("testTeamName");
@@ -251,7 +268,7 @@ public class TeamTest {
         TeamManager tm2 = new TeamManagerStub(testUser);
         team.getTeamManagers().add(tm2);
         UIController.setIsTest(true);
-        UIController.setSelector(8);
+        UIController.setSelector(6118);
         Coach c2 = new Coach(testUser);
         c2.addAllProperties();
         team.getTeamCoaches().add(c2);
@@ -353,8 +370,8 @@ public class TeamTest {
         UIController.setIsTest(true);
         UIController.printMessage("Started Testing AddAsset");
         //TeamOwner is not an Owner
-        ((SystemUserStub)testUser).setSelector(6);
-        UIController.setSelector(7);
+        ((SystemUserStub)testUser).setSelector(6116);
+        UIController.setSelector(6117);
         UIController.printMessage("Started Testing Player False");
         assertFalse(team.addAsset("test",localTeamOwner,TeamAsset.PLAYER));
         team.getTeamOwners().add(localTeamOwner);
@@ -362,7 +379,7 @@ public class TeamTest {
         assertTrue(team.addAsset("test",localTeamOwner,TeamAsset.PLAYER));
 
         team.getTeamOwners().remove(localTeamOwner);
-        ((SystemUserStub)testUser).setSelector(7);
+        ((SystemUserStub)testUser).setSelector(6117);
         UIController.printMessage("Started Testing Coach False");
         assertFalse(team.addAsset("test",localTeamOwner,TeamAsset.COACH));
         team.getTeamOwners().add(localTeamOwner);
@@ -370,7 +387,7 @@ public class TeamTest {
         assertTrue(team.addAsset("test",localTeamOwner,TeamAsset.COACH));
 
         team.getTeamOwners().remove(localTeamOwner);
-        ((SystemUserStub)testUser).setSelector(8);
+        ((SystemUserStub)testUser).setSelector(6118);
         UIController.printMessage("Started Testing Manager False");
         assertFalse(team.addAsset("test",localTeamOwner,TeamAsset.TEAM_MANAGER));
         team.getTeamOwners().add(localTeamOwner);
@@ -383,18 +400,18 @@ public class TeamTest {
     @Test
     public void testAddAssetNotStadiumNotTrivialUTest() throws Exception
     {
-        ((SystemUserStub)testUser).setSelector(9);
+        ((SystemUserStub)testUser).setSelector(6119);
         UIController.setIsTest(true);
-        UIController.setSelector(7);
+        UIController.setSelector(6117);
         assertFalse(team.addAsset("test",localTeamOwner,TeamAsset.PLAYER));
-        UIController.setSelector(7);
+        UIController.setSelector(6117);
         team.getTeamOwners().add(localTeamOwner);
         assertTrue(team.addAsset("test",localTeamOwner,TeamAsset.PLAYER));
 
         team.getTeamOwners().remove(localTeamOwner);
-        UIController.setSelector(8);
+        UIController.setSelector(6118);
         assertFalse(team.addAsset("test",localTeamOwner,TeamAsset.COACH));
-        UIController.setSelector(8);
+        UIController.setSelector(6118);
         team.getTeamOwners().add(localTeamOwner);
         assertTrue(team.addAsset("test",localTeamOwner,TeamAsset.COACH));
 
@@ -424,7 +441,7 @@ public class TeamTest {
     {
         Stadium stadiumStub = new Stadium("vas","BS");
         UIController.setIsTest(true);
-        UIController.setSelector(9);
+        UIController.setSelector(6119);
         //No Team Owner
         assertFalse(team.addAsset("vas", localTeamOwner,TeamAsset.STADIUM));
 

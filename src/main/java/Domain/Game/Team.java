@@ -448,7 +448,7 @@ public class Team {
      * Get the player date of birth from the user
      * @return the birth date of the player as java.util.Date
      */
-    private static Date getPlayerBirthDate() {
+    private Date getPlayerBirthDate() {
         UIController.printMessage("Please insert Player Birth Date in format dd/MM/yyyy");
         String bDate;
         do {
