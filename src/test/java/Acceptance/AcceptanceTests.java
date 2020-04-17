@@ -166,7 +166,7 @@ public class AcceptanceTests {
         Team beitShean = new Team();
 
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");;
+        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
@@ -192,7 +192,7 @@ public class AcceptanceTests {
         Team beitShean = new Team();
 
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");;
+        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);

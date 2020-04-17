@@ -34,14 +34,14 @@ public class ControllerTest {
 
     }
 
-    @Test
-    public void addTeamOwnerITest() {
-        UIController.setIsTest(true);
-        UIController.setSelector(1);
-//        TeamOwnerStub.setSelector(0);
-        //false because of wrong username from user
-        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
-    }
+//    @Test
+//    public void addTeamOwnerITest() {
+//        UIController.setIsTest(true);
+//        UIController.setSelector(1);
+////        TeamOwnerStub.setSelector(0);
+//        //false because of wrong username from user
+//        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
+//    }
 
     @Test
     public void addTeamOwner2ITest() {

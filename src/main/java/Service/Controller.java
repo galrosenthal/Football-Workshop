@@ -60,7 +60,7 @@ public class Controller {
         Team chosenTeam = getTeamByChoice(myTeamOwner);
 
         String newTeamOwnerUsername = getUsernameFromUser("Team Owner");
-
+        UIController.printMessage(newTeamOwnerUsername);
         try{
             TeamController.addTeamOwner(newTeamOwnerUsername,chosenTeam,myTeamOwner);
         }
