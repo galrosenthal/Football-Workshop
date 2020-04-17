@@ -99,7 +99,6 @@ public class SystemUser {
         SystemUser that = (SystemUser) o;
         return getRoles().size() == that.getRoles().size() &&
                 getUsername().equals(that.getUsername()) &&
-                getPassword().equals(that.getPassword()) &&
                 getName().equals(that.getName());
     }
 
