@@ -8,7 +8,6 @@ import java.util.List;
 
 public class TeamStub extends Team{
 
-    private List<TeamOwner> teamOwners;
     private int selector;
 
     /**
@@ -17,12 +16,11 @@ public class TeamStub extends Team{
     public TeamStub(int selector) {
         super();
         this.selector = selector;
-        this.teamOwners = new ArrayList<>();
     }
 
     @Override
     public List<TeamOwner> getTeamOwners() {
-        return this.teamOwners;
+        return super.getTeamOwners();
     }
 
     public void setSelector(int selector) {
@@ -32,7 +30,7 @@ public class TeamStub extends Team{
 
 
     public boolean addTeamOwner(TeamOwner townr) {
-        return this.teamOwners.add(townr);
+        return super.getTeamOwners().add(townr);
     }
 
     @Override
@@ -100,6 +98,10 @@ public class TeamStub extends Team{
         {
             return true;
         }
+        else if(selector == 6112)
+        {
+            return true;
+        }
         else{
             return false;
         }
@@ -114,6 +116,10 @@ public class TeamStub extends Team{
         else if(selector == 6111)
         {
             return false;
+        }
+        else if(selector == 6112)
+        {
+            return true;
         }
         else{
             return false;

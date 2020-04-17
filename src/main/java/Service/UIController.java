@@ -53,7 +53,9 @@ public class UIController {
             } else if (selector == 61110) {
                 setSelector(6117);
                 return "StadiumName";
-            } else
+            } else if(selector == 61113){
+                return "test";
+            }else
                 return null;
         }
     }
@@ -67,7 +69,16 @@ public class UIController {
         } else {
             if (selector == 0 || selector == 1 || selector == 2 || selector == 6117 || selector == 6118 ) {
                 return 0;
-            } else {
+            } else if(selector == 61111){
+                setSelector(61112);
+                return 1000;
+            }else if(selector == 61112){
+                setSelector(61113);
+                return 0;
+            }else if(selector == 61113){
+                setSelector(61112);
+                return 1000;
+            }else {
                 return 0;
             }
         }

@@ -71,6 +71,9 @@ public class SystemUserStub extends SystemUser{
         }
         else if( selector == 5){
             return new AssociationRepresentativeStub(this);
+        }else if(selector == 6111)
+        {
+            return getRoles().get(0);
         }
         else if(selector == 6116)
         {

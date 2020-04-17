@@ -31,6 +31,15 @@ public class TeamOwnerStub extends TeamOwner {
             test.add(teamStub);
             teamStub.addTeamOwner(this);
         }
+        else if(selector == 6111)
+        {
+            return null;
+        }else if(selector == 6112)
+        {
+            TeamStub teamStub = new TeamStub(6112);
+            test.add(teamStub);
+            teamStub.addTeamOwner(this);
+        }
         return test;
     }
 
