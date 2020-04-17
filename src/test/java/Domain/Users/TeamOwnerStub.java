@@ -19,8 +19,7 @@ public class TeamOwnerStub extends TeamOwner {
 
 
 
-
-    public static void setSelector(int select) {
+    public void setSelector(int select) {
         selector = select;
     }
 
@@ -29,6 +28,20 @@ public class TeamOwnerStub extends TeamOwner {
         List<Team> test = new ArrayList<>();
         if (selector == 0 ) {
             TeamStub teamStub = new TeamStub(0);
+            test.add(teamStub);
+            teamStub.addTeamOwner(this);
+        }
+        else if(selector == 6111)
+        {
+            return null;
+        }else if(selector == 6112)
+        {
+            TeamStub teamStub = new TeamStub(6112);
+            test.add(teamStub);
+            teamStub.addTeamOwner(this);
+        }else if(selector == 6113)
+        {
+            TeamStub teamStub = new TeamStub(6113);
             test.add(teamStub);
             teamStub.addTeamOwner(this);
         }
@@ -49,5 +62,4 @@ public class TeamOwnerStub extends TeamOwner {
             return false;
         }
     }
-
 }

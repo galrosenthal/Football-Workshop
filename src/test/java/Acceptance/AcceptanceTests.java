@@ -1,10 +1,9 @@
 package Acceptance;
 
 import Domain.EntityManager;
-import Domain.Users.AssociationRepresentative;
-import Domain.Users.SystemAdmin;
-import Domain.Users.SystemUser;
-import Domain.Users.Unregistered;
+import Domain.Exceptions.UserNotFoundException;
+import Domain.Game.Team;
+import Domain.Users.*;
 import Service.ARController;
 import Service.Controller;
 import Service.UIController;
@@ -20,6 +19,7 @@ public class AcceptanceTests {
     @BeforeClass
     public static void setUp() { //Will be called only once
         existingUser = new SystemUser("abc", "aBc12345", "abc");
+        UIController.setIsTest(true);
     }
 
     @Test
@@ -155,4 +155,64 @@ public class AcceptanceTests {
         EntityManager.getInstance().removeLeagueByName("Premier League");
         assertFalse(EntityManager.getInstance().doesLeagueExists("Premier League"));
     }
+
+    /**
+     * 6.1.1.a
+     * User for Elisha Levy exists
+     */
+    @Test
+    public void addAsset1ATest() throws Exception
+    {
+        Team beitShean = new Team();
+
+        beitShean.setTeamName("Beit Shean");
+        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
+        TeamOwner abcOwner = new TeamOwner(abcCreate);
+        abcOwner.addTeamToOwn(beitShean);
+        beitShean.getTeamOwners().add(abcOwner);
+        SystemUser elisha = new SystemUser("elevy","Elisha Levy");
+
+        Unregistered abcUnreg = new Unregistered();
+        SystemUser abc = abcUnreg.login("abc1","abc12345");
+        assertEquals(abc,abcCreate);
+
+        UIController.setSelector(61118);
+        assertTrue(Controller.addAsset(abc));
+
+
+    }
+
+    /**
+     * 6.1.1.b
+     * User for Elisha Levy does not exists
+     */
+    @Test
+    public void addAsset2ATest() throws Exception
+    {
+        Team beitShean = new Team();
+
+        beitShean.setTeamName("Beit Shean");
+        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
+        TeamOwner abcOwner = new TeamOwner(abcCreate);
+        abcOwner.addTeamToOwn(beitShean);
+        beitShean.getTeamOwners().add(abcOwner);
+
+        Unregistered abcUnreg = new Unregistered();
+        SystemUser abc = abcUnreg.login("abc1","abc12345");
+        assertEquals(abc,abcCreate);
+
+        UIController.setSelector(61118);
+        try{
+            Controller.addAsset(abc);
+            fail();
+        }
+        catch (UserNotFoundException e)
+        {
+            UIController.printMessage(e.getMessage());
+            assertEquals("Could not find user elevy",e.getMessage());
+        }
+
+
+    }
+
 }

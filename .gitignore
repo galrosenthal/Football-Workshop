@@ -15,3 +15,4 @@ target/**/*.properties
 /target/test-classes/META-INF/Football-Workshop.kotlin_module
 /target/classes/Tables/testTable.csv
 **/*.lst
+**/*.csv

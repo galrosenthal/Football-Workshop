@@ -22,7 +22,7 @@ public class TeamStub extends Team{
 
     @Override
     public List<TeamOwner> getTeamOwners() {
-        return this.teamOwners;
+        return super.getTeamOwners();
     }
 
     public void setSelector(int selector) {
@@ -32,7 +32,7 @@ public class TeamStub extends Team{
 
 
     public boolean addTeamOwner(TeamOwner townr) {
-        return this.teamOwners.add(townr);
+        return super.getTeamOwners().add(townr);
     }
 
     @Override
@@ -104,6 +104,13 @@ public class TeamStub extends Team{
         {
             return true;
         }
+        else if(selector == 6112)
+        {
+            return true;
+        }else if(selector == 6113)
+        {
+            return true;
+        }
         else if(selector == 6131)
         {
             return true;
@@ -122,10 +129,16 @@ public class TeamStub extends Team{
         else if(selector == 6111)
         {
             return false;
+        }else if(selector == 6112)
+        {
+            return true;
+        }
+        else if(selector == 6113)
+        {
+            return false;
         }
         else{
             return false;
         }
     }
-
 }

@@ -2,7 +2,6 @@ package Domain.Users;
 
 
 import Domain.EntityManager;
-import com.sun.javafx.stage.StageHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +17,11 @@ public class SystemUser {
     private String name;
 
     public SystemUser(String username,String password, String name) {
-        this(username,name);
+        this.roles = new ArrayList<>();
+        this.username = username;
+        this.name = name;
         this.password = password;
+        EntityManager.getInstance().addUser(this);
     }
 
     public SystemUser(String username,String name)
@@ -97,7 +99,6 @@ public class SystemUser {
         SystemUser that = (SystemUser) o;
         return getRoles().size() == that.getRoles().size() &&
                 getUsername().equals(that.getUsername()) &&
-                getPassword().equals(that.getPassword()) &&
                 getName().equals(that.getName());
     }
 

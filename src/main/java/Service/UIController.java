@@ -59,8 +59,21 @@ public class UIController {
             }
             else if (selector == 6132) {
                 return "11/11/2011";
-            }
-            else
+            } else if(selector == 61113){
+                return "test";
+            }else if(selector == 61114){
+                return "anotherUser";
+            }else if (selector == 61116) {
+                setSelector(61117);
+                return "anotherUser";
+            } else if (selector == 61117) {
+                return "01/11/1199";
+            }else if(selector == 61118){
+                setSelector(61119);
+                return "elevy";
+            } else if(selector == 61119){
+                return "01/11/1199";
+            } else
                 return null;
         }
     }
@@ -74,6 +87,27 @@ public class UIController {
         } else {
             if (selector == 0 || selector == 1 || selector == 2 || selector == 6117 || selector == 6118 ) {
                 return 0;
+            } else if(selector == 61111){
+                setSelector(61112);
+                return 1000;
+            }else if(selector == 61112){
+                setSelector(61113);
+                return 0;
+            }else if(selector == 61113){
+                setSelector(61112);
+                return 1000;
+            }else if(selector == 61114){
+                return 0;
+            }else if(selector == 61115){
+                setSelector(61116);
+                return 0;
+            }else if(selector == 61116){
+                return 0;
+            }else if(selector == 61117){
+                return 0;
+            }else if(selector == 61118){
+                return 0;
+            }else if(selector == 61119){
             }
             else if (selector == 6132 || selector == 6133 ||selector == 6134 || selector == 61341 || selector == 6135 || selector == 6136 || selector == 6137){
                 if(selector == 6134)
@@ -88,9 +122,10 @@ public class UIController {
             }
             else if (selector == 61342){
                 return 2;
-            }
-            else {
-                return 0;
+            /*TODO CHECK!*/
+            }else {
+                //random number to crash test that were not checked
+                return 123812;
             }
         }
     }

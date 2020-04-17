@@ -293,9 +293,15 @@ public class TeamController {
     private static boolean isAlreadyOwnedAnotherTeamInSeason(Team teamToOwn, TeamOwner ownerToCheck){
 
         Season currentSeason = teamToOwn.getCurrentSeason();
-
+        if(currentSeason == null)
+        {
+            return false;
+        }
         List<Team> teamsInSeason = currentSeason.getTeams();
-
+        if(teamsInSeason.size() == 0)
+        {
+            return false;
+        }
         for (Team team: teamsInSeason){
             List<TeamOwner> teamOwners = team.getTeamOwners();
 
