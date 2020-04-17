@@ -45,28 +45,29 @@ public class Controller {
         return true;
     }
 
-    public static boolean addTeamOwner(SystemUser systemUser) throws Exception {
-        TeamOwner myTeamOwner = getUserIfIsTeamOwner(systemUser);
-        if(myTeamOwner == null)
+    public static boolean addTeamOwner(SystemUser systemUser)
+    {
+        if(!systemUser.isType(RoleTypes.TEAM_OWNER))
         {
             return false;
         }
-
-        Team chosenTeam = getTeamByChoice(myTeamOwner);
-        if(chosenTeam == null)
+        Role myTeamOwnerRole = systemUser.getRole(RoleTypes.TEAM_OWNER);
+        if(!(myTeamOwnerRole instanceof TeamOwner))
         {
-            throw new NoTeamExistsException("There was no Team found");
+            return false;
         }
+        TeamOwner myTeamOwner = (TeamOwner)myTeamOwnerRole;
+        Team chosenTeam = getTeamByChoice(myTeamOwner);
 
         String newTeamOwnerUsername = getUsernameFromUser("Team Owner");
 
         try{
             TeamController.addTeamOwner(newTeamOwnerUsername,chosenTeam,myTeamOwner);
         }
-        catch (alreadyTeamOwnerException | UserNotFoundException e)
+        catch (Exception e)
         {
-//            e.printStackTrace();
-            throw e;
+            e.printStackTrace();
+            return false;
         }
         return true;
 
@@ -93,7 +94,7 @@ public class Controller {
 
     }
 
-    private static Team     getTeamByChoice(TeamOwner myTeamOwner) {
+    private static Team getTeamByChoice(TeamOwner myTeamOwner) {
         List<Team> myTeams = myTeamOwner.getOwnedTeams();
         if(myTeams == null)
         {
