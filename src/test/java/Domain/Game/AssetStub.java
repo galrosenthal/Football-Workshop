@@ -1,6 +1,7 @@
 package Domain.Game;
 
 import Domain.Users.PlayerFieldJobs;
+import Domain.Users.TeamOwner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,11 @@ public class AssetStub implements Asset {
             return properties;
         }
         return null;
+    }
+
+    @Override
+    public boolean addTeam(Team team, TeamOwner teamOwner) {
+        return false;
     }
 
     @Override
@@ -67,15 +73,20 @@ public class AssetStub implements Asset {
     }
 
     @Override
-    public void addProperty() {
-
-
+    public boolean addProperty(String property) {
+        return false;
     }
 
     @Override
-    public void removeProperty() {
-
+    public boolean addAllProperties() {
+        return false;
     }
+
+    @Override
+    public boolean removeProperty(String property) {
+        return false;
+    }
+
 
     @Override
     public List<Enum> getAllValues(String property) {

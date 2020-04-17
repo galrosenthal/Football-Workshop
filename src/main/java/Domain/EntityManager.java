@@ -139,10 +139,7 @@ public class EntityManager {
         return true;
     }
 
-    public boolean removeUserByReference(SystemUser systemUser) {
-        this.allUsers.remove(systemUser);
-        return true;
-    }
+
 
     /**
      * Removes a league by a given name

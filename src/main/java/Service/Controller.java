@@ -114,34 +114,6 @@ public class Controller {
 
 
 
-
-
-    /**
-     * Team Owner Asks to add a new asset to the Team
-     * @param systemUser - the System User of the Team Owner
-     * @return true if the asset added successfully
-     */
-    public static boolean addAsset(SystemUser systemUser) throws Exception
-    {
-        TeamOwner myTeamOwner = getUserIfIsTeamOwner(systemUser);
-        if(myTeamOwner == null)
-        {
-            return false;
-        }
-
-        Team chosenTeam = getTeamByChoice(myTeamOwner);
-
-        if(chosenTeam == null)
-        {
-            throw new NoTeamExistsException("There was no Team found");
-        }
-
-        TeamAsset ass = getAssetTypeFromUser();
-        String name = getNameFromUser("What is the asset name/username?");
-
-        return TeamController.addAssetToTeam(name,chosenTeam,myTeamOwner,ass);
-    }
-
     private static String getNameFromUser(String msg) {
         UIController.printMessage(msg);
         String username = UIController.receiveString();
