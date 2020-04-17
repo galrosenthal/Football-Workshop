@@ -1,8 +1,10 @@
 package Domain.Users;
 
 
+import javax.security.auth.kerberos.KerberosTicket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class SystemUser {
@@ -40,9 +42,14 @@ public class SystemUser {
         return username;
     }
 
-    public void addNewRole(Role role)
+    public boolean addNewRole(Role role)
     {
-        roles.add(role);
+        if(role != null)
+        {
+            roles.add(role);
+            return true;
+        }
+        return false;
     }
 
     public List<Role> getRoles() {
@@ -70,5 +77,30 @@ public class SystemUser {
             }
         }
         return null;
+    }
+
+    public boolean removeRole(Role role) {
+        if(role != null)
+        {
+            roles.remove(role);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SystemUser)) return false;
+        SystemUser that = (SystemUser) o;
+        return getRoles().size() == that.getRoles().size() &&
+                getUsername().equals(that.getUsername()) &&
+                getPassword().equals(that.getPassword()) &&
+                Objects.equals(getName(), that.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUsername(), getPassword(), getName());
     }
 }

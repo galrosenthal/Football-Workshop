@@ -171,4 +171,11 @@ public class EntityManager {
         League league = new League(leagueName);
         allLeagues.add(league);
     }
+
+    public void clearAll() {
+        allStadiums = new ArrayList<>();
+        allLeagues = new HashSet<>();
+        allUsers = new ArrayList<>();
+
+    }
 }

@@ -138,7 +138,9 @@ public class Player extends Role implements Asset {
         if (!(o instanceof Player)) return false;
         Player player = (Player) o;
         return fieldJob == player.fieldJob &&
-                Objects.equals(bday, player.bday);
+                Objects.equals(bday, player.bday)&&
+                super.systemUser.equals(player.systemUser);
+
     }
 
 }

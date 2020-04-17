@@ -68,12 +68,12 @@ public class TeamController {
      * @return true if the player was added successfully
      * @throws NoTeamExistsException
      * @throws NotATeamOwner
-     * @throws NoSuchTeamAssetException
+     * @throws NullPointerException
      * @throws UserNotFoundException
      * @throws StadiumNotFoundException
      */
     public static boolean addAssetToTeam(String assetName, Team teamToAddAsset, TeamOwner teamOwner, TeamAsset assetType)
-            throws NoTeamExistsException,NotATeamOwner,NoSuchTeamAssetException,UserNotFoundException
+            throws NoTeamExistsException,NotATeamOwner,NullPointerException,UserNotFoundException
             ,StadiumNotFoundException
     {
         if(teamToAddAsset == null)
@@ -82,7 +82,7 @@ public class TeamController {
         }
         if(assetType == null)
         {
-            throw  new NoSuchTeamAssetException("No Asset Type was given");
+            throw  new NullPointerException("No Asset Type was given");
         }
         if(!teamToAddAsset.isTeamOwner(teamOwner))
         {

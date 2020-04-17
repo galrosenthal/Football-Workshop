@@ -57,7 +57,7 @@ public class TeamManager extends Role implements Asset {
 
     @Override
     public boolean addAllProperties() {
-        return false;
+        return true;
     }
 
     @Override

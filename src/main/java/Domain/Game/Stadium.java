@@ -1,6 +1,8 @@
 package Domain.Game;
 
+import Domain.EntityManager;
 import Domain.Users.TeamOwner;
+import Service.UIController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,7 @@ public class Stadium implements Asset{
     private String stadLocation;
     private List<Team> homeTeams;
 
+    public final String namePropertyString = "Name";
 
 
     public Stadium(String location)
@@ -25,7 +28,7 @@ public class Stadium implements Asset{
     public Stadium(String stadName, String stadLocation) {
         this(stadLocation);
         this.stadName = stadName;
-        this.stadLocation = stadLocation;
+        EntityManager.getInstance().addStadium(this);
     }
 
     @Override
@@ -38,7 +41,7 @@ public class Stadium implements Asset{
     @Override
     public boolean changeProperty(String property, String toChange)
     {
-        if(property.equalsIgnoreCase("Name"))
+        if(property.equalsIgnoreCase(namePropertyString))
         {
             this.stadName=toChange;
             return true;
@@ -52,7 +55,8 @@ public class Stadium implements Asset{
         if (!(o instanceof Stadium)) return false;
         Stadium stadium = (Stadium) o;
         return stadName.equals(stadium.stadName) &&
-                stadLocation.equals(stadium.stadLocation);
+                stadLocation.equals(stadium.stadLocation) &&
+                homeTeams.size() == stadium.homeTeams.size();
     }
     @Override
     public boolean isListProperty(String property) {
@@ -61,7 +65,7 @@ public class Stadium implements Asset{
 
     @Override
     public boolean isStringProperty(String property) {
-        if(property.equals("Name"))
+        if(property.equalsIgnoreCase(namePropertyString))
         {
             return true;
         }
@@ -85,13 +89,24 @@ public class Stadium implements Asset{
 
     @Override
     public boolean addAllProperties() {
-        return false;
+        return addProperty(namePropertyString);
     }
 
     @Override
     public boolean addProperty(String property) {
+        String stringProp = "";
+        if(property.equalsIgnoreCase(namePropertyString))
+        {
+            UIController.printMessage("Please Enter Stadium name");
+
+            stringProp = UIController.receiveString();
+            changeProperty(property,stringProp);
+        }
+
         return false;
     }
+
+
 
     @Override
     public boolean removeProperty(String property) {
