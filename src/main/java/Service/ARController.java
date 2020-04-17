@@ -40,23 +40,38 @@ public class ARController {
         return true;
     }
 
+    /**
+     * Controls the flow of Adding a new Season to a chosen league.
+     *
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - True if a new season was created and added to a league successfully, else false
+     */
     public static boolean addSeasonToLeague(SystemUser systemUser) {
         if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
             return false;
         }
-        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
 
-        League chosenLeague = getLeagueByChoice();
+        League chosenLeague = null;
+        try {
+            chosenLeague = getLeagueByChoice();
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage() + "\nPlease add a league before adding a season");
+            return false;
+        }
 
         String seasonYears = "";
         boolean seasonExists = true;
+
         while (seasonExists) {
             UIController.printMessage("Enter season years (yyyy/yy) ex. 2020/21:");
             seasonYears = UIController.receiveString();
+
             if (!Season.isGoodYearsFormat(seasonYears)) {
                 do {
                     UIController.printMessage("wrong years format, please enter the season years (yyyy/yy) ex. 2020/21:");
+                    System.out.println(seasonYears);//!!!
                     seasonYears = UIController.receiveString();
+                    System.out.println(seasonYears);//!!!
                 } while (!Season.isGoodYearsFormat(seasonYears));
             }
 
@@ -67,15 +82,18 @@ public class ARController {
             }
         }
 
-        if (chosenLeague.addSeason(seasonYears)) {
-            return true;
-        }
-        UIController.printMessage("The season creation failed");
-        return false;
+        chosenLeague.addSeason(seasonYears);
+        return true;
+//        }
+//        UIController.printMessage("The season creation failed");
+//        return false;
     }
 
-    private static League getLeagueByChoice() {
+    private static League getLeagueByChoice() throws Exception {
         List<League> leagues = EntityManager.getInstance().getLeagues();
+        if (leagues == null || leagues.isEmpty()) {
+            throw new Exception("There are no leagues");
+        }
         UIController.printMessage("Choose a League Number");
         for (int i = 0; i < leagues.size(); i++) {
             UIController.printMessage(i + ". " + leagues.get(i).getName());
