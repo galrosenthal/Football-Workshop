@@ -94,8 +94,8 @@ public class TeamStub extends Team{
     }
 
     @Override
-    public boolean addTeamOwner(TeamOwner townr, TeamOwner teamOwner) {
-        return super.addTeamOwner(townr, teamOwner);
+    public boolean addTeamOwner(Role teamOwner) {
+        return super.addTeamOwner(teamOwner);
     }
 
     @Override

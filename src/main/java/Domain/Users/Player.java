@@ -33,6 +33,15 @@ public class Player extends Role implements Asset {
         }
         return false;
     }
+    public boolean addTeam(Team playTeam)
+    {
+        if(playerTeam == null)
+        {
+            playerTeam = playTeam;
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public List<String> getProperties() {

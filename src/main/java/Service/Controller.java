@@ -150,6 +150,19 @@ public class Controller {
         return isSuccess;
     }
 
+    private static TeamOwner getUserIfIsTeamOwner(SystemUser systemUser) {
+        if(!systemUser.isType(RoleTypes.TEAM_OWNER))
+        {
+            return null;
+        }
+        Role myTeamOwnerRole = systemUser.getRole(RoleTypes.TEAM_OWNER);
+        if(!(myTeamOwnerRole instanceof TeamOwner))
+        {
+            return null;
+        }
+        return (TeamOwner)myTeamOwnerRole;
+    }
+
 
 
 
