@@ -15,6 +15,7 @@ public class Team {
     private List<Coach> teamCoaches;
     private List<TeamManager> teamManagers;
     private List<TeamOwner> teamOwners;
+    private List<Season> seasons;
 
     public List<TeamOwner> getTeamOwners() {
         return teamOwners;
@@ -25,6 +26,7 @@ public class Team {
         teamPlayers = new ArrayList<>();
         teamCoaches = new ArrayList<>();
         teamManagers = new ArrayList<>();
+        seasons = new ArrayList<>();
     }
     /**
      * A method that returns a string containing all team information for display
@@ -98,16 +100,25 @@ public class Team {
         return false;
     }
 
-    public boolean addTeamOwner(TeamOwner townr,TeamOwner teamOwner)
+    public boolean addTeamOwner(Role teamOwner)
     {
-        if(!teamOwners.contains(townr))
-        {
+        if(teamOwner == null){
+            return false;
+        }
+        if(teamOwner.getType() == RoleTypes.TEAM_OWNER){
+            return teamOwners.add((TeamOwner)teamOwner);
+        }
+
+        return false;
+    }
+
+    public boolean removeTeamOwner(TeamOwner teamOwner){
+        if(!teamOwners.contains(teamOwner)){
             return false;
         }
 
-        return teamOwners.add(teamOwner);
+        return teamOwners.remove(teamOwner);
     }
-
     public List<Player> getTeamPlayers() {
         return teamPlayers;
     }
@@ -271,5 +282,34 @@ public class Team {
 
     public void setTeamName(String testName) {
         this.teamName = testName;
+    }
+
+    /**
+     * Finds the season is now playing and returns it
+     * @return the current season
+     */
+    public Season getCurrentSeason(){
+        Season currentSeason;
+
+        if(seasons.size() == 0){
+            return null;
+        }
+        currentSeason = seasons.get(0);
+        for (Season s: seasons){
+            if(s.getYear().isAfter(currentSeason.getYear())){
+                currentSeason = s;
+            }
+        }
+
+        return  currentSeason;
+    }
+
+    public  boolean addSeason(Season season){
+        if(!seasons.contains(season)){
+            seasons.add(season);
+            return true;
+        }
+
+        return false;
     }
 }
