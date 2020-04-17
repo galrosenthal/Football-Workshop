@@ -8,6 +8,7 @@ import Domain.Users.Role;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
 import Domain.Users.*;
+import Domain.Game.Stadium;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -105,7 +106,7 @@ public class EntityManager {
     }
     public Stadium getStadium(String stadiumName) {
         for (Stadium std: allStadiums) {
-            if (std.getStadName().equals(stadiumName)) {
+            if (std.getName().equals(stadiumName)) {
                 return std;
             }
         }
@@ -130,6 +131,11 @@ public class EntityManager {
         if (!(this.allUsers.contains(systemUser))) {
             this.allUsers.add(systemUser);
         }
+        return true;
+    }
+
+    public boolean removeUserByReference(SystemUser systemUser) {
+        this.allUsers.remove(systemUser);
         return true;
     }
 

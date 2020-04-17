@@ -1,15 +1,29 @@
 package Domain.Game;
 
+import Domain.Users.TeamOwner;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Stadium implements Asset{
 
-    String stadName;
-    String stadLocation;
+    private String stadName;
+    private String stadLocation;
+    private List<Team> homeTeams;
+
+
+
+    public Stadium(String location)
+    {
+        homeTeams = new ArrayList<>();
+        stadLocation = location;
+    }
+
+
 
     public Stadium(String stadName, String stadLocation) {
+        this(stadLocation);
         this.stadName = stadName;
         this.stadLocation = stadLocation;
     }
@@ -24,7 +38,7 @@ public class Stadium implements Asset{
     @Override
     public boolean changeProperty(String property, String toChange)
     {
-        if(property.equals("Name"))
+        if(property.equalsIgnoreCase("Name"))
         {
             this.stadName=toChange;
             return true;
@@ -55,18 +69,33 @@ public class Stadium implements Asset{
     }
 
     @Override
+    public boolean addTeam(Team team, TeamOwner teamOwner) {
+        if(team != null && team.isTeamOwner(teamOwner))
+        {
+            homeTeams.add(team);
+            return team.addStadium(this);
+        }
+        return false;
+    }
+
+    @Override
     public boolean isEnumProperty(String property) {
         return false;
     }
 
     @Override
-    public void addProperty() {
-
+    public boolean addAllProperties() {
+        return false;
     }
 
     @Override
-    public void removeProperty() {
+    public boolean addProperty(String property) {
+        return false;
+    }
 
+    @Override
+    public boolean removeProperty(String property) {
+        return false;
     }
 
     @Override
@@ -81,11 +110,11 @@ public class Stadium implements Asset{
     }
 
 
-    public String getStadName() {
+    public String getName() {
         return stadName;
     }
 
-    public String getStadLocation() {
+    public String getLocation() {
         return stadLocation;
     }
 }

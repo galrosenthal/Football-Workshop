@@ -10,6 +10,9 @@ public class SystemUserStub extends SystemUser{
     private int selector;
 
 
+    /**
+     * Selector latest number: 3
+     */
     public SystemUserStub(String username,String name,int selector)
     {
         super(username,name);

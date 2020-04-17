@@ -8,9 +8,14 @@ import java.util.List;
 
 public class TeamOwnerStub extends TeamOwner {
 
+    /**
+     * Selector latest number: 0
+     */
     public TeamOwnerStub(SystemUser systemUser) {
         super(systemUser);
     }
+
+
 
     private static int selector = 0;
 

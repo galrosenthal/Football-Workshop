@@ -3,7 +3,9 @@ package Domain.Controllers;
 import Domain.EntityManager;
 import Domain.Game.Asset;
 import Domain.Game.Season;
+import Domain.Game.Stadium;
 import Domain.Game.Team;
+import Domain.Game.TeamAsset;
 import Domain.Users.*;
 import Domain.Exceptions.*;
 import Service.UIController;
@@ -50,14 +52,26 @@ public class TeamController {
         return true;
     }
 
-
     /**
      * Add a player with playerUsername to the teamToAddPlayer by the teamOwner
      *
      * @param playerUsername  is the Username of the player to add
      * @param teamToAddPlayer is the Team to add the player to
      * @param teamOwner       is the Owner who asks to add the player
+     * Adds asset with assetName and assetType to the teamToAddAsset by the teamOwner
+     * asset can be one of the following:
+     * <p>{@link Player}</p>
+     * <p>{@link Coach}</p>
+     * <p>{@link TeamManager}</p>
+     * <p>{@link Stadium}</p>
+     * @param assetName is the Name or Username of the asset to add
+     * @param teamToAddAsset is the Team to add the asset to
+     * @param teamOwner is the Owner who asks to add the asset
+     * @param assetType is the type of the asset to add {@link TeamAsset}
      * @return true if the player was added successfully
+     * @throws NoTeamExistsException
+     * @throws NotATeamOwner
+     * @throws NoSuchTeamAssetException
      * @throws UserNotFoundException
      * @throws PlayerIsAlreadyInThisTeamException
      */
@@ -88,7 +102,23 @@ public class TeamController {
      * Get the player date of birth from the user
      *
      * @return the birth date of the player as java.util.Date
+     * @throws StadiumNotFoundException
      */
+    public static boolean addAssetToTeam(String assetName, Team teamToAddAsset, TeamOwner teamOwner, TeamAsset assetType)
+            throws NoTeamExistsException,NotATeamOwner,NoSuchTeamAssetException,UserNotFoundException
+            ,StadiumNotFoundException
+    {
+        if(teamToAddAsset == null)
+        {
+            throw new NoTeamExistsException("No Team was given");
+        }
+        if(assetType == null)
+        {
+            throw  new NoSuchTeamAssetException("No Asset Type was given");
+        }
+        if(!teamToAddAsset.isTeamOwner(teamOwner))
+        {
+            throw new NotATeamOwner("Not One of the Team Owners");
     private static Date getPlayerBirthDate() {
         UIController.printMessage("Please insert Player Birth Date in format dd/MM/yyyy");
         String bDate;
@@ -128,6 +158,8 @@ public class TeamController {
             return -1;
         }
 
+        return teamToAddAsset.addAsset(assetName,teamOwner,assetType);
+    }
         for (int i = 0; i < values.size(); i++) {
             UIController.printMessage(i + ". " + values.get(i));
         }
