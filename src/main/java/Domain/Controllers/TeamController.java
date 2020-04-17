@@ -52,7 +52,7 @@ public class TeamController {
         return true;
     }
 
-    
+
     public static boolean editAssets(Team chosenTeam) throws Exception {
         List<Asset> allAssetsTeam = chosenTeam.getAllAssets();
         if (allAssetsTeam.size() == 0) {
