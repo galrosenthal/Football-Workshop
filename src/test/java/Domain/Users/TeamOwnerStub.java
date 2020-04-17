@@ -14,7 +14,6 @@ public class TeamOwnerStub extends TeamOwner {
      */
     public TeamOwnerStub(SystemUser systemUser) {
         super(systemUser);
-        setSelector(0);
     }
 
 

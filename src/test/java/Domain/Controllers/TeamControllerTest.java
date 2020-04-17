@@ -52,7 +52,7 @@ public class TeamControllerTest {
         }
         catch (Exception e){
             e.printStackTrace();
-            assertEquals("Only the owner of this team can add a new owner",e.getMessage());
+            Assert.assertEquals("Only the owner of this team can add a new owner",e.getMessage());
         }
 
 
@@ -76,7 +76,7 @@ public class TeamControllerTest {
         EntityManager.getInstance().addUser(teamOwnerUser);
         hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         try{
-            TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+            TeamController.addTeamOwner("dfds", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         }
         catch (Exception e){
             e.printStackTrace();
@@ -142,7 +142,7 @@ public class TeamControllerTest {
         }
         catch (Exception e){
             e.printStackTrace();
-            assertEquals("This User is already a team owner of this team",e.getMessage());
+            Assert.assertEquals("This User is already a team owner of this team",e.getMessage());
         }
 
         Season season = new Season(league,"2019/20");

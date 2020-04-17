@@ -1,7 +1,5 @@
 package Domain.Game;
 
-import Domain.Exceptions.StadiumNotFoundException;
-import Domain.Exceptions.UserNotFoundException;
 import Domain.Users.*;
 
 import java.util.ArrayList;
@@ -10,6 +8,7 @@ import java.util.List;
 
 public class TeamStub extends Team{
 
+    private List<TeamOwner> teamOwners;
     private int selector;
 
     /**
@@ -18,6 +17,12 @@ public class TeamStub extends Team{
     public TeamStub(int selector) {
         super();
         this.selector = selector;
+        this.teamOwners = new ArrayList<>();
+    }
+
+    @Override
+    public List<TeamOwner> getTeamOwners() {
+        return this.teamOwners;
     }
 
     public void setSelector(int selector) {
@@ -26,9 +31,8 @@ public class TeamStub extends Team{
 
 
 
-
     public boolean addTeamOwner(TeamOwner townr) {
-        return true;
+        return this.teamOwners.add(townr);
     }
 
     @Override

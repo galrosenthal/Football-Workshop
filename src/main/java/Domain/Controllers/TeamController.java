@@ -31,7 +31,7 @@ public class TeamController {
 
         if(newTeamOwnerUser == null)
         {
-            throw new UserNotFoundException("Could not find a user by the given username" + username);
+            throw new UserNotFoundException("Could not find a user by the given username");
         }
 
         Role newTeamOwnerRole = newTeamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
@@ -46,7 +46,7 @@ public class TeamController {
             teamOwner = (TeamOwner) newTeamOwnerRole;
             if(teamOwners.contains(teamOwner))
             {
-                throw new alreadyTeamOwnerException("This User is already a team owner");
+                throw new alreadyTeamOwnerException("This User is already a team owner of this team");
             }
 
             if(isAlreadyOwnedAnotherTeamInSeason(teamToOwn,teamOwner)){

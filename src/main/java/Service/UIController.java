@@ -65,7 +65,7 @@ public class UIController {
 
             return integer;
         } else {
-            if (selector == 0 || selector == 1 || selector == 2 || selector == 7 || selector == 8 ) {
+            if (selector == 0 || selector == 1 || selector == 2 || selector == 6117 || selector == 6118 ) {
                 return 0;
             } else {
                 return 0;
