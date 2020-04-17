@@ -99,4 +99,19 @@ public class AssetStub implements Asset {
         }
         return null;
     }
+
+    @Override
+    public List<Enum> getAllPropertyList(Team team, String propertyName) {
+        return null;
+    }
+
+    @Override
+    public boolean addProperty(String propertyName, Enum anEnum , Team team) {
+        return false;
+    }
+
+    @Override
+    public boolean removeProperty(String propertyName, Enum anEnum, Team team) {
+        return false;
+    }
 }

@@ -119,14 +119,14 @@ public class TeamController {
             int action = actionToDo();
             //FIXME!!
             if (action == 0) {
-                boolean isAdded = addProperty(allAssetsTeam.get(assetIndex), properties.get(propertyIndexToModify));
+                boolean isAdded = addProperty(allAssetsTeam.get(assetIndex), properties.get(propertyIndexToModify) , chosenTeam);
                 if (!isAdded) {
 
                     throw new AssetCantBeModifiedException("Can not modify asset");
 
                 }
             } else {
-                boolean isRemoved = removeProperty(allAssetsTeam.get(assetIndex), properties.get(propertyIndexToModify));
+                boolean isRemoved = removeProperty(allAssetsTeam.get(assetIndex), properties.get(propertyIndexToModify) , chosenTeam);
                 if (!isRemoved) {
 
                     throw new AssetCantBeModifiedException("Can not modify asset");
@@ -143,17 +143,69 @@ public class TeamController {
             //todo: check string?
             return allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify), newValue);
         }
-        return true;
-    }
-
-    //Fixme! need to see how to handel with list of property!  - in teamManger permissions
-    private static boolean addProperty(Asset asset, String s) {
         return false;
     }
 
-    private static boolean removeProperty(Asset asset, String s) {
+    private static boolean addProperty(Asset asset, String propertyName , Team team) {
+        List<Enum> enumList = team.getAllProperty(asset,propertyName);
+        List<Enum> allValue = asset.getAllValues(propertyName);
+        allValue.removeAll(enumList);
+        if(allValue.size() == 0)
+        {
+            return false;
+        }
+        int indexToAdd = addPropertyToListProperty(allValue);
+        return asset.addProperty(propertyName , allValue.get(indexToAdd) , team);
+    }
 
-        return false;
+    /**
+     * In case the user wants to add Property to property list- choose which new property he wants to change.
+     * - assumption- list of Enums property
+     * @param allEnumValues
+     * @return propertyNewValueIndex -int-
+     */
+    private static int addPropertyToListProperty(List<Enum> allEnumValues) {
+        UIController.printMessage("Choose Property to add ");
+        for (int i = 0; i < allEnumValues.size(); i++) {
+            UIController.printMessage(i + 1 + ". " + allEnumValues.get(i).toString());
+
+        }
+        int propertyValueIndex;
+        do {
+            propertyValueIndex = UIController.receiveInt()-1;
+        } while (!(propertyValueIndex >= 0 && propertyValueIndex < allEnumValues.size()));
+        return propertyValueIndex;
+
+    }
+
+    private static boolean removeProperty(Asset asset, String propertyName , Team team) {
+        List<Enum> enumList = team.getAllProperty(asset,propertyName);
+        if(enumList.size() == 0)
+        {
+            return false;
+        }
+        int indexToAdd = addPropertyToListProperty(enumList);
+        return asset.removeProperty(propertyName , enumList.get(indexToAdd) , team);
+    }
+
+    /**
+     * In case the user wants to remove Property to property list- choose which new property he wants to change.
+     * - assumption- list of Enums property
+     * @param allEnumValues
+     * @return propertyNewValueIndex -int-
+     */
+    private static int removePropertyToListProperty(List<Enum> allEnumValues) {
+        UIController.printMessage("Choose Property to add ");
+        for (int i = 0; i < allEnumValues.size(); i++) {
+            UIController.printMessage(i + 1 + ". " + allEnumValues.get(i).toString());
+
+        }
+        int propertyValueIndex;
+        do {
+            propertyValueIndex = UIController.receiveInt()-1;
+        } while (!(propertyValueIndex >= 0 && propertyValueIndex < allEnumValues.size()));
+        return propertyValueIndex;
+
     }
 
     /**
@@ -173,8 +225,6 @@ public class TeamController {
             assetIndex = UIController.receiveInt();
         } while (!(assetIndex >= 1 && assetIndex <= allAssetsTeam.size()));
         return assetIndex-1;
-
-
     }
 
 

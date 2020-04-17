@@ -25,4 +25,11 @@ public interface Asset {
     boolean removeProperty(String property);
 
     List<Enum> getAllValues(String property);
+
+    List<Enum> getAllPropertyList(Team team, String propertyName);
+
+    boolean addProperty(String propertyName, Enum anEnum ,Team team);
+
+    boolean removeProperty(String propertyName, Enum anEnum, Team team);
+
 }

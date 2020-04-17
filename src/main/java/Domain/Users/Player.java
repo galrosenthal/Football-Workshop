@@ -140,6 +140,21 @@ public class Player extends Role implements Asset {
         return allEnumValues;
     }
 
+    @Override
+    public List<Enum> getAllPropertyList(Team team, String propertyName) {
+        return null;
+    }
+
+    @Override
+    public boolean addProperty(String propertyName, Enum anEnum , Team team) {
+        return false;
+    }
+
+    @Override
+    public boolean removeProperty(String propertyName, Enum anEnum, Team team) {
+        return false;
+    }
+
 
     @Override
     public boolean equals(Object o) {

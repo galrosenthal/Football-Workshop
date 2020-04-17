@@ -1,0 +1,5 @@
+package Domain.Users;
+
+public enum TeamManagerPermissions {
+    REMOVE_PLAYER,ADD_PLAYER,CHANGE_POSITION_PLAYER,REMOVE_COACH,ADD_COACH,CHANGE_TEAM_JOB_COACH;
+}

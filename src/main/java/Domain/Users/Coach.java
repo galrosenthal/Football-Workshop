@@ -156,6 +156,21 @@ public class Coach extends Role implements Asset {
     }
 
     @Override
+    public List<Enum> getAllPropertyList(Team team, String propertyName) {
+        return null;
+    }
+
+    @Override
+    public boolean addProperty(String propertyName, Enum anEnum , Team team) {
+        return false;
+    }
+
+    @Override
+    public boolean removeProperty(String propertyName, Enum anEnum, Team team) {
+        return false;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Coach)) return false;

@@ -7,7 +7,6 @@ import Service.UIController;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -519,5 +518,10 @@ public class Team {
         }
 
         return false;
+    }
+
+    public List<Enum> getAllProperty(Asset asset, String propertyName) {
+        List<Enum> enumList = asset.getAllPropertyList(this , propertyName);
+        return enumList;
     }
 }
