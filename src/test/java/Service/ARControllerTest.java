@@ -14,6 +14,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ARControllerTest {
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        EntityManager.getInstance().clearAll();
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -83,9 +87,13 @@ public class ARControllerTest {
     @Test
     public void addSeasonToLeague2ITest() {
         //success no re-tries test
+
+        System.out.println("addSeasonToLeague2ITest");
+
         SystemUser systemUser = getSystemUserAR();
         EntityManager.getInstance().addLeague("newLeagueName");
-        UIController.setSelector(7); //0 , "2020/21","2021/22"
+
+        UIController.setSelector(921); //0 , "2020/21","2021/22"
 
         assertTrue(ARController.addSeasonToLeague(systemUser));
 
@@ -99,9 +107,12 @@ public class ARControllerTest {
     @Test
     public void addSeasonToLeague3ITest() {
         //duplicated creation attempt failure and then change input and success..
+
+        System.out.println("addSeasonToLeague3ITest");
+
         SystemUser systemUser = getSystemUserAR();
         EntityManager.getInstance().addLeague("newLeagueName");
-        UIController.setSelector(7); //0 , "2020/21", "2020/21", "2021/22"
+        UIController.setSelector(921); //0 , "2020/21", "2020/21", "2021/22"
 
         assertTrue(ARController.addSeasonToLeague(systemUser));
         League league = EntityManager.getInstance().getLeagues().get(0);
@@ -117,9 +128,12 @@ public class ARControllerTest {
     @Test
     public void addSeasonToLeague4ITest() {
         //success after wrong format
+
+        System.out.println("addSeasonToLeague4ITest");
+
         SystemUser systemUser = getSystemUserAR();
         EntityManager.getInstance().addLeague("newLeagueName");
-        UIController.setSelector(10); //0 , "wrong Format","2021/22"
+        UIController.setSelector(924); //0 , "wrong Format","2021/22"
 
         assertTrue(ARController.addSeasonToLeague(systemUser));
 
@@ -132,6 +146,6 @@ public class ARControllerTest {
 
     @After
     public void tearDown() throws Exception {
-        UIController.setSelector(0);
+        //UIController.setSelector(0);
     }
 }

@@ -8,7 +8,9 @@ public class UIController {
     private static int selector = 0; //latest = 10
 
     public static void setSelector(int selector) {
+        System.out.println("from: "+selector);
         UIController.selector = selector;
+        System.out.println("to: "+selector);
     }
 
     public static void setIsTest(boolean isTest) {
@@ -29,6 +31,7 @@ public class UIController {
 
             return line;
         } else {
+            System.out.println("receiveString selector: "+selector);
             if (selector == 0) {
                 return "Not a username";
             } else if (selector == 1) {
@@ -44,16 +47,16 @@ public class UIController {
                 return "newLeagueName";
             } else if (selector == 6) {
                 return "Premier League";
-            } else if (selector == 7) {
-                selector= 8;
+            } else if (selector == 921) {//7
+                selector= 922;
                 return "2020/21";
-            } else if (selector == 8) {
-                selector= 9;
+            } else if (selector == 922) {//8
+                selector= 923;
                 return "2020/21";
-            }  else if (selector == 9) {
+            }  else if (selector == 923) {//9
                 return "2021/22";
-            }  else if (selector == 10) {
-                selector = 9;
+            }  else if (selector == 924) {//10
+                selector = 923;
                 return "wrong Format";
             } else
                 return null;
@@ -67,7 +70,7 @@ public class UIController {
 
             return integer;
         } else {
-            if (selector == 0 || selector == 1 || selector == 2 || selector == 7 || selector ==8 || selector==10) {
+            if (selector == 0 || selector == 1 || selector == 2 || selector == 921 || selector ==922 || selector==924) {
                 return 0;
             } else {
                 return 0;

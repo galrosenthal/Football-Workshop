@@ -155,4 +155,9 @@ public class EntityManager {
         League league = new League(leagueName);
         allLeagues.add(league);
     }
+
+    public void clearAll(){
+        this.allUsers = new ArrayList<>();
+        this.allLeagues = new HashSet<>();
+    }
 }
