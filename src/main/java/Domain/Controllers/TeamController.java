@@ -52,55 +52,7 @@ public class TeamController {
         return true;
     }
 
-    private static Date getPlayerBirthDate() {
-        UIController.printMessage("Please insert Player Birth Date in format dd/MM/yyyy");
-        String bDate;
-        do {
-            bDate = UIController.receiveString();
-        } while (!bDate.matches("^(3[01]|[12][0-9]|0[1-9])/(1[0-2]|0[1-9])/[0-9]{4}$"));
-
-        try {
-            return new SimpleDateFormat("dd/MM/yyyy").parse(bDate);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-
-    }
-
-
-
-
-    /**
-     * Gets the player field job chosen by the user from the list of filed jobs
-     *
-     * @return the field job chosen for the suer
-     * @see PlayerFieldJobs
-     */
-
-
-
-    public static boolean addTeamManager(String managerUsername, Team teamToAddManager, TeamOwner teamOwner) throws Exception {
-        SystemUser managerUser = EntityManager.getInstance().getUser(managerUsername);
-        if (managerUser == null) {
-            throw new UserNotFoundException("Could not find a user by the given username" + managerUsername);
-        }
-
-        Role getRoleForUser = managerUser.getRole(RoleTypes.COACH);
-        TeamManager managerRole;
-        if (getRoleForUser == null) {
-
-
-            managerRole = new TeamManager(managerUser);
-        }
-        return false;
-    }
-
-    public static boolean addStadium(String stadiumName, Team teamToAddStadium, TeamOwner teamOwner) throws Exception {
-        return false;
-    }
-
-
+    
     public static boolean editAssets(Team chosenTeam) throws Exception {
         List<Asset> allAssetsTeam = chosenTeam.getAllAssets();
         if (allAssetsTeam.size() == 0) {
