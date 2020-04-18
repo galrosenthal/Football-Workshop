@@ -65,4 +65,10 @@ public class StadiumStub extends Stadium{
             return false;
         }
     }
+
+    @Override
+    public List<Enum> getAllPropertyList(Team team, String propertyName)
+    {
+        return null;
+    }
 }

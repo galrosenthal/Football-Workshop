@@ -29,4 +29,10 @@ public class TeamManagerStub extends TeamManager {
     public boolean addAllProperties() {
         return true;
     }
+
+    @Override
+    public List<Enum> getAllPropertyList(Team team, String propertyName)
+    {
+        return null;
+    }
 }

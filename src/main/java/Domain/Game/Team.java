@@ -21,16 +21,15 @@ public class Team {
     private List<Coach> teamCoaches;
     private List<TeamManager> teamManagers;
     private List<TeamOwner> teamOwners;
+    private List<Season> seasons;
     private List<Stadium> stadiums;
     private TeamStatus status;
-    private List<Season> seasons;
 
     public List<TeamOwner> getTeamOwners() {
         return teamOwners;
     }
 
-    public Team(Team anotherTeam)
-    {
+    public Team(Team anotherTeam) {
         teamCoaches = new ArrayList<>(anotherTeam.teamCoaches);
         teamManagers = new ArrayList<>(anotherTeam.teamManagers);
         teamOwners = new ArrayList<>(anotherTeam.teamOwners);
@@ -139,6 +138,7 @@ public class Team {
 
         return teamOwners.remove(teamOwner);
     }
+
     public List<Player> getTeamPlayers() {
         return teamPlayers;
     }
@@ -176,10 +176,8 @@ public class Team {
      */
     private boolean checkStadiumListEquals(List<Stadium> stadiums, List<Stadium> anotherStadiumsList) {
 
-        for (Stadium st : stadiums)
-        {
-            if(!anotherStadiumsList.contains(st))
-            {
+        for (Stadium st : stadiums) {
+            if (!anotherStadiumsList.contains(st)) {
                 return false;
             }
         }
@@ -551,5 +549,17 @@ public class Team {
     }
     public boolean removeTeamManager(TeamManager teamManager){
         return teamManagers.remove(teamManager);
+    }
+
+
+    /**
+     *  - assumption - propertyName is Enum type!
+     * @param asset
+     * @param propertyName
+     * @return List<Enum> - contains all the Enum options to property of the asset
+     */
+    public List<Enum> getAllProperty(Asset asset, String propertyName) {
+        List<Enum> enumList = asset.getAllPropertyList(this, propertyName);
+        return enumList;
     }
 }
