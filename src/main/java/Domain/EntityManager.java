@@ -97,6 +97,10 @@ public class EntityManager {
 
     }
 
+    public List<League> getLeagues() {
+        return new ArrayList<League>(allLeagues);
+    }
+
     public SystemUser getUser(String username) {
         for (SystemUser su : allUsers) {
             if (su.getUsername().equals(username)) {
@@ -139,7 +143,6 @@ public class EntityManager {
         this.allUsers.remove(systemUser);
         return true;
     }
-
 
     /**
      * Removes a league by a given name

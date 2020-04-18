@@ -45,18 +45,15 @@ public class Controller {
         return true;
     }
 
-    public static boolean addTeamOwner(SystemUser systemUser)
-    {
-        if(!systemUser.isType(RoleTypes.TEAM_OWNER))
-        {
+    public static boolean addTeamOwner(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.TEAM_OWNER)) {
             return false;
         }
         Role myTeamOwnerRole = systemUser.getRole(RoleTypes.TEAM_OWNER);
-        if(!(myTeamOwnerRole instanceof TeamOwner))
-        {
+        if (!(myTeamOwnerRole instanceof TeamOwner)) {
             return false;
         }
-        TeamOwner myTeamOwner = (TeamOwner)myTeamOwnerRole;
+        TeamOwner myTeamOwner = (TeamOwner) myTeamOwnerRole;
         Team chosenTeam = getTeamByChoice(myTeamOwner);
 
         String newTeamOwnerUsername = getUsernameFromUser("Team Owner");
@@ -87,7 +84,7 @@ public class Controller {
     }
 
     private static String getUsernameFromUser(String msg) {
-        UIController.printMessage("Enter new "+ msg +" Username:");
+        UIController.printMessage("Enter new " + msg + " Username:");
 
         String username = UIController.receiveString();
         return username;

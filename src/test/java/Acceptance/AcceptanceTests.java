@@ -1,32 +1,35 @@
 package Acceptance;
 
 import Domain.EntityManager;
+import Domain.Game.League;
+import Domain.Users.AssociationRepresentative;
+import Domain.Users.SystemAdmin;
+import Domain.Users.SystemUser;
+import Domain.Users.Unregistered;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.Team;
 import Domain.Users.*;
 import Service.ARController;
 import Service.Controller;
 import Service.UIController;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.experimental.categories.Category;
+
 
 import java.util.Date;
 
 import static org.junit.Assert.*;
 
+@Category(RegressionTests.class)
 public class AcceptanceTests {
     private static SystemUser existingUser;
-
     @BeforeClass
     public static void setUp() { //Will be called only once
         existingUser = new SystemUser("abc", "aBc12345", "abc");
-        UIController.setIsTest(true);
     }
 
     @Test
-    public void systemBootATest() {
+    public void systemBootATest(){
         initEntities();
         UIController.setIsTest(true);
         UIController.setSelector(3);
@@ -34,15 +37,15 @@ public class AcceptanceTests {
     }
 
     private void initEntities() {
-        SystemUser adminUser = new SystemUser("admin", "12345678", "administrator");
+        SystemUser adminUser = new SystemUser("admin","12345678","administrator");
         adminUser.addNewRole(new SystemAdmin(adminUser));
         EntityManager.getInstance().addUser(adminUser);
     }
 
     @Test
-    public void addTeamOwnerATest() throws Exception {
+    public void addTeamOwnerATest() {
         UIController.setIsTest(true);
-        Controller.addTeamOwner(new SystemUser("rosengal", "Gal"));
+        Controller.addTeamOwner(new SystemUser("rosengal","Gal"));
     }
 
 
@@ -62,9 +65,10 @@ public class AcceptanceTests {
         //not a user
         Unregistered unregUser2 = new Unregistered();
         try {
-            SystemUser user2 = unregUser2.login("notAUser", "aBc12345");
+        SystemUser user2 = unregUser2.login("notAUser", "aBc12345");
             Assert.fail();
-        } catch (Exception e) {
+        }
+        catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -77,7 +81,8 @@ public class AcceptanceTests {
         try {
             SystemUser user3 = unregUser3.login("abc", "pass12345");
             Assert.fail();
-        } catch (Exception e) {
+        }
+        catch (Exception e){
             e.printStackTrace();
         }
 
@@ -101,7 +106,8 @@ public class AcceptanceTests {
         try {
             SystemUser user2 = unregUser2.signUp("abc", "abc", "aBc12345");
             Assert.fail();
-        } catch (Exception e) {
+        }
+        catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -114,7 +120,8 @@ public class AcceptanceTests {
         try {
             SystemUser user3 = unregUser3.signUp("abc", "abc", "123");
             Assert.fail();
-        } catch (Exception e) {
+        }
+        catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -123,7 +130,7 @@ public class AcceptanceTests {
      * 9.1.a
      */
     @Test
-    public void addLeagueATest() {
+    public void addLeagueATest(){
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser));
         EntityManager.getInstance().addUser(systemUser);
@@ -136,12 +143,11 @@ public class AcceptanceTests {
         EntityManager.getInstance().removeLeagueByName("Premier League");
         assertFalse(EntityManager.getInstance().doesLeagueExists("Premier League"));
     }
-
     /**
      * 9.1.b
      */
     @Test
-    public void addLeague2ATest() {
+    public void addLeague2ATest(){
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser));
         EntityManager.getInstance().addUser(systemUser);
@@ -155,6 +161,50 @@ public class AcceptanceTests {
         EntityManager.getInstance().removeLeagueByName("Premier League");
         assertFalse(EntityManager.getInstance().doesLeagueExists("Premier League"));
     }
+
+
+    /**
+     * 9.2.a
+     */
+    @Test
+    public void addSeasonToLeagueATest(){
+        SystemUser systemUser = new SystemUser("username", "name");
+        systemUser.addNewRole(new AssociationRepresentative(systemUser));
+        EntityManager.getInstance().addUser(systemUser);
+        EntityManager.getInstance().addLeague("Premier League");
+        UIController.setIsTest(true);
+        UIController.setSelector(921); //0 , "2020/21", "2020/21", "2021/22"
+
+        assertTrue(ARController.addSeasonToLeague(systemUser));
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        assertTrue(league.doesSeasonExists("2020/21"));
+    }
+
+    /**
+     * 9.2.b
+     */
+    @Test
+    public void addSeasonToLeague2ATest(){
+        SystemUser systemUser = new SystemUser("username", "name");
+        systemUser.addNewRole(new AssociationRepresentative(systemUser));
+        EntityManager.getInstance().addUser(systemUser);
+        EntityManager.getInstance().addLeague("Premier League");
+        UIController.setIsTest(true);
+        UIController.setSelector(921); //0 , "2020/21", "2020/21", "2021/22"
+
+        assertTrue(ARController.addSeasonToLeague(systemUser));
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        assertTrue(league.doesSeasonExists("2020/21"));
+
+        assertTrue(ARController.addSeasonToLeague(systemUser));
+
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        EntityManager.getInstance().clearAll();
+    }
+
 
     /**
      * 6.1.1.a
