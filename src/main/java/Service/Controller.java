@@ -69,6 +69,19 @@ public class Controller {
 
     }
 
+    public static TeamOwner getUserIfIsTeamOwner(SystemUser systemUser) {
+        if(!systemUser.isType(RoleTypes.TEAM_OWNER))
+        {
+            return null;
+        }
+        Role myTeamOwnerRole = systemUser.getRole(RoleTypes.TEAM_OWNER);
+        if(!(myTeamOwnerRole instanceof TeamOwner))
+        {
+            return null;
+        }
+        return (TeamOwner)myTeamOwnerRole;
+    }
+
     private static String getUsernameFromUser(String msg) {
         UIController.printMessage("Enter new " + msg + " Username:");
 

@@ -16,41 +16,55 @@ import java.util.List;
  */
 public class TOController {
 
+    private static boolean closeOrOpenTeam(SystemUser systemUser, String closeOrReopen) throws Exception {
+        TeamOwner myTeamOwner = Controller.getUserIfIsTeamOwner(systemUser);
+        if(myTeamOwner == null)
+        {
+            return false;
+        }
+        Team chosenTeam;
+        if(closeOrReopen.equals("reopen")){
+            chosenTeam = getClosedTeamByChoice(myTeamOwner);
+        }
+        else {
+            if (closeOrReopen.equals("close")) {
+                chosenTeam = Controller.getTeamByChoice(myTeamOwner);
+                if (chosenTeam.getStatus() != TeamStatus.OPEN) {
+                    UIController.printMessage("Cannot perform action on closed team.");
+                    return false; //cannot perform action on closed team.
+                }
+            }
+            else{
+                throw new Exception("Expected \"close\" or \"reopen\" command");
+            }
+        }
+
+        boolean choice = UIController.receiveChoice("Are you sure you want to "+closeOrReopen+" the team \""+
+                chosenTeam.getTeamName()+"\"? y/n");
+        if (!choice){
+            UIController.printMessage("No teams were "+closeOrReopen+"ed");
+            return false;
+        }
+
+        if(closeOrReopen.equals("reopen")){
+            TeamController.reopenTeam(chosenTeam);
+        }
+        else if(closeOrReopen.equals("close")){
+            TeamController.closeTeam(chosenTeam);
+        }
+
+        UIController.printMessage("Team \""+chosenTeam.getTeamName()+"\" " + closeOrReopen+"ed successfully");
+        return true;
+    }
+
     /**
      * Called when a system user wants to close a team (should bb team owner for that).
      * Performs validations and calls the TeamController for further treatment.
      * @param systemUser The system user who wants to close a team.
      * @return True if successfully closed a team.
      */
-    public static boolean closeTeam(SystemUser systemUser) {
-        if (!systemUser.isType(RoleTypes.TEAM_OWNER)) {
-            return false;
-        }
-
-        Role myTeamOwnerRole = systemUser.getRole(RoleTypes.TEAM_OWNER);
-        if(!(myTeamOwnerRole instanceof TeamOwner))
-        {
-            return false;
-        }
-
-        TeamOwner myTeamOwner = (TeamOwner)myTeamOwnerRole;
-        Team chosenTeam = Controller.getTeamByChoice(myTeamOwner);
-
-        if(chosenTeam.getStatus() != TeamStatus.OPEN) {
-            UIController.printMessage("Cannot perform action on closed team.");
-            return false; //cannot perform action on closed team.
-        }
-
-        boolean choice = UIController.receiveChoice("Are you sure you want to close the team \""+
-                chosenTeam.getTeamName()+"\"? y/n");
-        if (!choice){
-            UIController.printMessage("No teams were closed");
-            return false;
-        }
-
-        TeamController.closeTeam(chosenTeam);
-        UIController.printMessage("Team \""+chosenTeam.getTeamName()+"\" closed successfully");
-        return true;
+    public static boolean closeTeam(SystemUser systemUser) throws Exception {
+        return closeOrOpenTeam(systemUser, "close");
     }
 
     /**
@@ -59,30 +73,8 @@ public class TOController {
      * @param systemUser The system user who wants to re-open a closed  team.
      * @return True if successfully re-opened a team.
      */
-    public static boolean reopenTeam(SystemUser systemUser) {
-        if (!systemUser.isType(RoleTypes.TEAM_OWNER)) {
-            return false;
-        }
-
-        Role myTeamOwnerRole = systemUser.getRole(RoleTypes.TEAM_OWNER);
-        if(!(myTeamOwnerRole instanceof TeamOwner))
-        {
-            return false;
-        }
-
-        TeamOwner myTeamOwner = (TeamOwner)myTeamOwnerRole;
-        Team chosenTeam = getClosedTeamByChoice(myTeamOwner);
-
-        boolean choice = UIController.receiveChoice("Are you sure you want to re-open the team \""+
-                chosenTeam.getTeamName()+"\"? y/n");
-        if (!choice){
-            UIController.printMessage("No teams were re-opened");
-            return false;
-        }
-
-        TeamController.reopenTeam(chosenTeam);
-        UIController.printMessage("Team \""+chosenTeam.getTeamName()+"\" re-opened successfully");
-        return true;
+    public static boolean reopenTeam(SystemUser systemUser) throws Exception {
+        return closeOrOpenTeam(systemUser, "reopen");
     }
 
 

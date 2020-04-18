@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 public class TOControllerTest {
 
     @Test
-    public void closeTeamUTest() {
+    public void closeTeamUTest() throws Exception {
         assertFalse(TOController.closeTeam(new SystemUserStub("rosengal", "gal", 66141)));
         assertFalse(TOController.closeTeam(new SystemUserStub("rosengal", "gal", 66142)));
 
@@ -29,7 +29,7 @@ public class TOControllerTest {
     }
 
     @Test
-    public void closeTeamITest() {
+    public void closeTeamITest() throws Exception {
         //Integration with TeamController
         UIController.setIsTest(true);
         UIController.setSelector(66151);
@@ -41,7 +41,7 @@ public class TOControllerTest {
 
 
     @Test
-    public void reopenTeamUTest() {
+    public void reopenTeamUTest() throws Exception {
         assertFalse(TOController.reopenTeam(new SystemUserStub("rosengal", "gal", 66161)));
         assertFalse(TOController.reopenTeam(new SystemUserStub("rosengal", "gal", 66162)));
 
@@ -53,7 +53,7 @@ public class TOControllerTest {
     }
 
     @Test
-    public void reopenTeamITest() {
+    public void reopenTeamITest() throws Exception {
         //Integration with TeamController
         UIController.setIsTest(true);
         UIController.setSelector(66251);

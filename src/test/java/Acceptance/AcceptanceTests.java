@@ -183,7 +183,7 @@ public class AcceptanceTests {
      * 6.6.1.a
      */
     @Test
-    public void closeTeamATest(){
+    public void closeTeamATest() throws Exception {
         //setups
         TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner);
@@ -222,7 +222,7 @@ public class AcceptanceTests {
      * 6.6.1.b
      */
     @Test
-    public void closeTeam2ATest(){
+    public void closeTeam2ATest() throws Exception {
         //setups
         TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner);
@@ -260,7 +260,7 @@ public class AcceptanceTests {
      * 6.6.2.a
      */
     @Test
-    public void reopenTeamATest(){
+    public void reopenTeamATest() throws Exception {
         //setups
         TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner);
@@ -298,7 +298,7 @@ public class AcceptanceTests {
      * 6.6.2.b
      */
     @Test
-    public void reopenTeam2ATest(){
+    public void reopenTeam2ATest() throws Exception {
         //setups
         TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner);
@@ -336,7 +336,7 @@ public class AcceptanceTests {
      * 6.6.2.c
      */
     @Test
-    public void reopenTeam3ATest(){
+    public void reopenTeam3ATest() throws Exception {
         //setups
         TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner);
