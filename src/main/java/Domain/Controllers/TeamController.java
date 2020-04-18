@@ -48,10 +48,7 @@ public class TeamController {
         TeamOwner teamOwner;
         if (newTeamOwnerRole == null) {
             teamOwner = new TeamOwner(newTeamOwnerUser);
-        } else {
-            //teamOwner.addTeamToOwn(teamToOwn);
             newTeamOwnerUser.addNewRole(teamOwner);
-
         }
         else
         {

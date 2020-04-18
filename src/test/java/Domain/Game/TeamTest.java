@@ -698,5 +698,4 @@ public class TeamTest {
         EntityManager.getInstance().clearAll();
     }
 
-
 }
