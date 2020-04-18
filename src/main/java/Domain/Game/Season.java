@@ -10,7 +10,6 @@ public class Season {
     private String years; //name
     List<Team> teams;
 
-    //todo: decide whether as fields or as an association class.
     private GamePolicy gamePolicy; //todo: initialize with default
     private PointsPolicy pointsPolicy; //todo: initialize with default
 

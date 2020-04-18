@@ -2,21 +2,33 @@ package Domain.Users;
 
 
 import Domain.EntityManager;
+import Domain.UserComplaints;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 
-public class SystemUser {
+public class SystemUser extends User implements Fan{
 
     private List<Role> roles;
+    private List<UserComplaints> complaints;
 
     protected String username;
     private String password;
     private String name;
 
-    public SystemUser(String username,String password, String name) {
+    @Override
+    public boolean removePageFromFollow() {
+        return false;
+    }
+
+    @Override
+    public boolean addPageToFollow() {
+        return false;
+    }
+
+    public SystemUser(String username, String password, String name) {
         this.roles = new ArrayList<>();
         this.username = username;
         this.name = name;

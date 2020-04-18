@@ -7,7 +7,7 @@ import Service.UIController;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Unregistered {
+public class Unregistered extends User{
     private SystemUser systemUser = null;
 
 
@@ -70,7 +70,12 @@ public class Unregistered {
         }
 
         SystemUser newUser = new SystemUser(usrNm, pswrd, name);
-        newUser.addNewRole(new Fan(newUser)); //add the role "fan" to the new user
+
+
+//        newUser.addNewRole(new Fan(newUser)); //add the role "fan" to the new user
+
+
+
         entManager.addUser(newUser);
 
         //Adding user to system-users table

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class Player extends Role implements Asset {
+public class Player extends PartOfTeam{
 
     private PlayerFieldJobs fieldJob;
     private List<Team> playerTeams;
