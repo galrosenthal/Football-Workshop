@@ -12,10 +12,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Date;
+
 import static org.junit.Assert.*;
 
 public class AcceptanceTests {
     private static SystemUser existingUser;
+
     @BeforeClass
     public static void setUp() { //Will be called only once
         existingUser = new SystemUser("abc", "aBc12345", "abc");
@@ -23,7 +26,7 @@ public class AcceptanceTests {
     }
 
     @Test
-    public void systemBootATest(){
+    public void systemBootATest() {
         initEntities();
         UIController.setIsTest(true);
         UIController.setSelector(3);
@@ -31,15 +34,15 @@ public class AcceptanceTests {
     }
 
     private void initEntities() {
-        SystemUser adminUser = new SystemUser("admin","12345678","administrator");
+        SystemUser adminUser = new SystemUser("admin", "12345678", "administrator");
         adminUser.addNewRole(new SystemAdmin(adminUser));
         EntityManager.getInstance().addUser(adminUser);
     }
 
     @Test
-    public void addTeamOwnerATest() throws Exception{
+    public void addTeamOwnerATest() throws Exception {
         UIController.setIsTest(true);
-        Controller.addTeamOwner(new SystemUser("rosengal","Gal"));
+        Controller.addTeamOwner(new SystemUser("rosengal", "Gal"));
     }
 
 
@@ -59,10 +62,9 @@ public class AcceptanceTests {
         //not a user
         Unregistered unregUser2 = new Unregistered();
         try {
-        SystemUser user2 = unregUser2.login("notAUser", "aBc12345");
+            SystemUser user2 = unregUser2.login("notAUser", "aBc12345");
             Assert.fail();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -75,8 +77,7 @@ public class AcceptanceTests {
         try {
             SystemUser user3 = unregUser3.login("abc", "pass12345");
             Assert.fail();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -100,8 +101,7 @@ public class AcceptanceTests {
         try {
             SystemUser user2 = unregUser2.signUp("abc", "abc", "aBc12345");
             Assert.fail();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -114,8 +114,7 @@ public class AcceptanceTests {
         try {
             SystemUser user3 = unregUser3.signUp("abc", "abc", "123");
             Assert.fail();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -124,7 +123,7 @@ public class AcceptanceTests {
      * 9.1.a
      */
     @Test
-    public void addLeagueATest(){
+    public void addLeagueATest() {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser));
         EntityManager.getInstance().addUser(systemUser);
@@ -137,11 +136,12 @@ public class AcceptanceTests {
         EntityManager.getInstance().removeLeagueByName("Premier League");
         assertFalse(EntityManager.getInstance().doesLeagueExists("Premier League"));
     }
+
     /**
      * 9.1.b
      */
     @Test
-    public void addLeague2ATest(){
+    public void addLeague2ATest() {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser));
         EntityManager.getInstance().addUser(systemUser);
@@ -161,20 +161,19 @@ public class AcceptanceTests {
      * User for Elisha Levy exists
      */
     @Test
-    public void addAsset1ATest() throws Exception
-    {
+    public void addAsset1ATest() throws Exception {
         Team beitShean = new Team();
 
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
+        SystemUser abcCreate = new SystemUser("abc1", "abc12345", "abc");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
-        SystemUser elisha = new SystemUser("elevy","Elisha Levy");
+        SystemUser elisha = new SystemUser("elevy", "Elisha Levy");
 
         Unregistered abcUnreg = new Unregistered();
-        SystemUser abc = abcUnreg.login("abc1","abc12345");
-        assertEquals(abc,abcCreate);
+        SystemUser abc = abcUnreg.login("abc1", "abc12345");
+        assertEquals(abc, abcCreate);
 
         UIController.setSelector(61118);
         assertTrue(Controller.addAsset(abc));
@@ -187,30 +186,60 @@ public class AcceptanceTests {
      * User for Elisha Levy does not exists
      */
     @Test
-    public void addAsset2ATest() throws Exception
-    {
+    public void addAsset2ATest() throws Exception {
         Team beitShean = new Team();
 
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
+        SystemUser abcCreate = new SystemUser("abc1", "abc12345", "abc");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
 
         Unregistered abcUnreg = new Unregistered();
-        SystemUser abc = abcUnreg.login("abc1","abc12345");
-        assertEquals(abc,abcCreate);
+        SystemUser abc = abcUnreg.login("abc1", "abc12345");
+        assertEquals(abc, abcCreate);
 
         UIController.setSelector(61118);
-        try{
+        try {
             Controller.addAsset(abc);
             fail();
-        }
-        catch (UserNotFoundException e)
-        {
+        } catch (UserNotFoundException e) {
             UIController.printMessage(e.getMessage());
-            assertEquals("Could not find user elevy",e.getMessage());
+            assertEquals("Could not find user elevy", e.getMessage());
         }
+
+
+    }
+
+
+    /**
+     * 6.1.3.a
+     * preconditions:
+     * beitShean - team
+     * abcCreate - team owner
+     * playerElisha - player
+     *
+     * edit elisha levy position to DEFENCE
+     * success!
+     */
+    @Test
+    public void modifyTeamAssetDetails1ATest() throws Exception {
+        Team beitShean = new Team();
+        beitShean.setTeamName("Beit Shean");
+        SystemUser abcCreate = new SystemUser("abc1", "abc12345", "abc");
+        TeamOwner abcOwner = new TeamOwner(abcCreate);
+        abcOwner.addTeamToOwn(beitShean);
+        beitShean.getTeamOwners().add(abcOwner);
+
+        Unregistered abcUnreg = new Unregistered();
+        SystemUser abc = abcUnreg.login("abc1", "abc12345");
+        assertEquals(abc, abcCreate);
+
+        SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");
+        Player playerElisha = new Player(elivyCreate, new Date());
+        beitShean.addTeamPlayer(abcOwner , playerElisha);
+        UIController.setSelector(6139);
+        assertTrue(Controller.modifyTeamAssetDetails(abc));
 
 
     }

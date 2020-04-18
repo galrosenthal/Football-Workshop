@@ -71,7 +71,10 @@ public class UIController {
                 return "elevy";
             } else if (selector == 61119) {
                 return "01/11/1199";
-            } else
+            }else if (selector == 61310) {
+                return "AESSEAL";
+            }
+            else
                 return null;
         }
     }
@@ -106,7 +109,7 @@ public class UIController {
             } else if (selector == 61118) {
                 return 0;
             } else if (selector == 61119) {
-            } else if (selector == 6132 || selector == 6133 || selector == 6134 || selector == 61341 || selector == 6135 || selector == 6136 || selector == 6137 || selector == 6138 || selector == 61383 || selector == 61381) {
+            } else if (selector == 6132 || selector == 6133 || selector == 6134 || selector == 61341 || selector == 6135 || selector == 6136 || selector == 6137 || selector == 6138 || selector == 61383 || selector == 61381 || selector == 61310) {
                 if (selector == 6134) {
                     selector = 61341;
                 } else if (selector == 61341) {
@@ -121,8 +124,12 @@ public class UIController {
                 if (selector == 61382)
                     selector = 61383;
                 return 2;
-                /*TODO CHECK!*/
-            } else {
+            }else if(selector == 6139)
+            {
+                setSelector(61310);
+                return 0;
+            }
+            else {
                 //random number to crash test that were not checked
                 return 123812;
             }

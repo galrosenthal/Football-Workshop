@@ -98,7 +98,7 @@ public class TeamControllerTest {
 
         UIController.setIsTest(true);
         UIController.setSelector(6137);
-        Assert.assertFalse(TeamController.editAssets(team));
+        assertTrue(TeamController.editAssets(team));
 
     }
 

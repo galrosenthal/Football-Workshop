@@ -92,7 +92,17 @@ public class TeamController {
         return teamToAddAsset.addAsset(assetName, teamOwner, assetType);
     }
 
-    public static boolean editAssets(Team chosenTeam) throws Exception {
+    /**
+     * Modify team asset property by the team owner - to chosen team
+     * asset property can be - list property , enum property , string property.
+     * all assets are implements asset interface!
+     * @param chosenTeam
+     * @return true if the assets has been modified
+     * @throws AssetsNotExistsException
+     * @throws AssetCantBeModifiedException
+     */
+
+    public static boolean editAssets(Team chosenTeam) throws AssetsNotExistsException, AssetCantBeModifiedException {
         List<Asset> allAssetsTeam = chosenTeam.getAllAssets();
         if (allAssetsTeam.size() == 0) {
 
@@ -141,6 +151,14 @@ public class TeamController {
         return false;
     }
 
+
+    /**
+     * add to asset property - type list
+     * @param asset - asset to modify
+     * @param propertyName - which property
+     * @param team - chosen team
+     * @return true if successfully added
+     */
     private static boolean addProperty(Asset asset, String propertyName, Team team) {
         List<Enum> enumList = team.getAllProperty(asset, propertyName);
         if (enumList == null) {
@@ -176,6 +194,13 @@ public class TeamController {
 
     }
 
+    /**
+     * remove to asset property - type list
+     * @param asset - asset to modify
+     * @param propertyName - which property
+     * @param team - chosen team
+     * @return true if successfully removed
+     */
     private static boolean removeProperty(Asset asset, String propertyName, Team team) {
         List<Enum> enumList = team.getAllProperty(asset, propertyName);
         if (enumList == null || enumList.size() == 0) {

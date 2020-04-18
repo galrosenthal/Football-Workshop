@@ -38,7 +38,7 @@ public class AssetStub implements Asset {
     @Override
     public boolean changeProperty(String propertyToChange, String newValue) {
 
-        if(selector == 6135 || selector ==6136)
+        if(selector == 6135 || selector ==6136 || selector == 6137)
         {
             return true;
         }
@@ -91,7 +91,7 @@ public class AssetStub implements Asset {
     @Override
     public List<Enum> getAllValues(String property) {
 
-        if(this.selector == 6135)
+        if(this.selector == 6135 || this.selector == 6136)
         {
             List<Enum> enumList = new ArrayList<>();
             enumList.add(PlayerFieldJobs.DEFENSE);

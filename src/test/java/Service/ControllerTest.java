@@ -3,6 +3,7 @@ package Service;
 import Domain.Exceptions.NoTeamExistsException;
 import Domain.Exceptions.alreadyTeamOwnerException;
 import Domain.Exceptions.UserNotFoundException;
+import Domain.Game.Stadium;
 import Domain.Users.SystemUserStub;
 import Domain.Users.TeamOwnerStub;
 import Domain.EntityManager;
@@ -127,17 +128,6 @@ public class ControllerTest {
         assertTrue(Controller.addAsset(test));
     }
 
-    @Test
-    public void modifyTeamAssetDetails1ITest() throws Exception{
-        UIController.setIsTest(true);
-        new SystemUserStub("newTOUsername", "newTO", 3);
-        UIController.setSelector(2);
-        //false because of wrong username from user
-        assertTrue(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
-        UIController.setSelector(0);
-
-    }
-
 
     @Test
     public void modifyTeamAssetDetailsUTest1() throws Exception {
@@ -148,6 +138,33 @@ public class ControllerTest {
     @Test(expected = NoTeamExistsException.class)
     public void modifyTeamAssetDetailsUTest2() throws Exception {
         Controller.modifyTeamAssetDetails(new SystemUserStub("rosengal", "gal", 6131));
+    }
+
+
+    @Test
+    public void modifyTeamAssetDetailsITest1() throws Exception {
+        assertFalse(Controller.modifyTeamAssetDetails(new SystemUser("rosengal", "gal")));
+
+    }
+
+    @Test(expected = NoTeamExistsException.class)
+    public void modifyTeamAssetDetailsITest2() throws Exception {
+        SystemUser systemUser = new SystemUser("rosengal", "gal");
+        TeamOwner teamOwner = new TeamOwner(systemUser);
+        Controller.modifyTeamAssetDetails(systemUser);
+    }
+
+    @Test
+    public void modifyTeamAssetDetailsITest3() throws Exception {
+        SystemUser systemUser = new SystemUser("rosengal", "gal");
+        TeamOwner teamOwner = new TeamOwner(systemUser);
+        Team team = new Team();
+        teamOwner.addTeamToOwn(team);
+        Stadium stadium = new Stadium("AESEAL" , "New York");
+        team.addStadium(stadium);
+        UIController.setSelector(6139);
+        assertTrue(Controller.modifyTeamAssetDetails(systemUser));
+        System.out.println(stadium.getName());
     }
 
 }
