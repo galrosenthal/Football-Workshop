@@ -3,6 +3,10 @@ package Domain;
 import DB.DBManager;
 import DB.Table;
 import Domain.Game.League;
+import Domain.Game.Stadium;
+import Domain.Users.Role;
+import Domain.Users.RoleTypes;
+import Domain.Users.SystemUser;
 import Domain.Users.*;
 import Domain.Game.Stadium;
 

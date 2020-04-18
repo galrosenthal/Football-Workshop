@@ -147,12 +147,26 @@ public class Coach extends Role implements Asset {
         {
             CoachQualification[] coachQualifications = CoachQualification.values();
             for (int i = 0; i < coachQualifications.length; i++) {
-                //todo: check!
                 allEnumValues.add(coachQualifications[i]);
             }
             return allEnumValues;
         }
-        return allEnumValues;
+        return null;
+    }
+
+    @Override
+    public List<Enum> getAllPropertyList(Team team, String propertyName) {
+        return null;
+    }
+
+    @Override
+    public boolean addProperty(String propertyName, Enum anEnum , Team team) {
+        return false;
+    }
+
+    @Override
+    public boolean removeProperty(String propertyName, Enum anEnum, Team team) {
+        return false;
     }
 
     @Override
@@ -175,4 +189,14 @@ public class Coach extends Role implements Asset {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return "Coach{" +
+                "qualification=" + qualification +
+                ", coachedTeam=" + coachedTeam +
+                ", teamJob='" + teamJob + '\'' +
+                ", teamJobString='" + teamJobString + '\'' +
+                ", qualificationString='" + qualificationString + '\'' +
+                '}';
+    }
 }

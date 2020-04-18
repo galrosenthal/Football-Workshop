@@ -1,5 +1,11 @@
 package Service;
 
+import Domain.Exceptions.NoTeamExistsException;
+import Domain.Exceptions.alreadyTeamOwnerException;
+import Domain.Exceptions.UserNotFoundException;
+import Domain.Game.Stadium;
+import Domain.Users.SystemUserStub;
+import Domain.Users.TeamOwnerStub;
 import Domain.EntityManager;
 import Domain.Exceptions.NoTeamExistsException;
 import Domain.Game.Team;
@@ -120,6 +126,45 @@ public class ControllerTest {
         assertTrue(to.addTeamToOwn(team));
         UIController.setSelector(61115);
         assertTrue(Controller.addAsset(test));
+    }
+
+
+    @Test
+    public void modifyTeamAssetDetails1UTest() throws Exception {
+        assertFalse(Controller.modifyTeamAssetDetails(new SystemUserStub("rosengal", "gal", 0)));
+
+    }
+
+    @Test(expected = NoTeamExistsException.class)
+    public void modifyTeamAssetDetails2UTest() throws Exception {
+        Controller.modifyTeamAssetDetails(new SystemUserStub("rosengal", "gal", 6131));
+    }
+
+
+    @Test
+    public void modifyTeamAssetDetails1ITest() throws Exception {
+        assertFalse(Controller.modifyTeamAssetDetails(new SystemUser("rosengal", "gal")));
+
+    }
+
+    @Test(expected = NoTeamExistsException.class)
+    public void modifyTeamAssetDetails2ITest() throws Exception {
+        SystemUser systemUser = new SystemUser("rosengal", "gal");
+        TeamOwner teamOwner = new TeamOwner(systemUser);
+        Controller.modifyTeamAssetDetails(systemUser);
+    }
+
+    @Test
+    public void modifyTeamAssetDetails3ITest() throws Exception {
+        SystemUser systemUser = new SystemUser("rosengal", "gal");
+        TeamOwner teamOwner = new TeamOwner(systemUser);
+        Team team = new Team();
+        teamOwner.addTeamToOwn(team);
+        Stadium stadium = new Stadium("AESEAL" , "New York");
+        team.addStadium(stadium);
+        UIController.setSelector(6139);
+        assertTrue(Controller.modifyTeamAssetDetails(systemUser));
+        System.out.println(stadium.getName());
     }
 
 }

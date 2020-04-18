@@ -17,16 +17,10 @@ public class Stadium implements Asset{
     public final String namePropertyString = "Name";
 
 
-    public Stadium(String location)
-    {
-        homeTeams = new ArrayList<>();
-        stadLocation = location;
-    }
-
-
 
     public Stadium(String stadName, String stadLocation) {
-        this(stadLocation);
+        this.homeTeams = new ArrayList<>();
+        this.stadLocation = stadLocation;
         this.stadName = stadName;
         EntityManager.getInstance().addStadium(this);
     }
@@ -34,7 +28,7 @@ public class Stadium implements Asset{
     @Override
     public List<String> getProperties() {
         List<String> properties = new ArrayList<>();
-        properties.add("Name");
+        properties.add(namePropertyString);
         return properties;
     }
 
@@ -116,6 +110,21 @@ public class Stadium implements Asset{
     @Override
     public List<Enum> getAllValues(String property) {
         return null;
+    }
+
+    @Override
+    public List<Enum> getAllPropertyList(Team team, String propertyName) {
+        return null;
+    }
+
+    @Override
+    public boolean addProperty(String propertyName, Enum anEnum , Team team) {
+        return false;
+    }
+
+    @Override
+    public boolean removeProperty(String propertyName, Enum anEnum, Team team) {
+        return false;
     }
 
 

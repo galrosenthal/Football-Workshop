@@ -106,4 +106,5 @@ public class SystemUser {
     public int hashCode() {
         return Objects.hash(getUsername(), getPassword(), getName());
     }
+
 }

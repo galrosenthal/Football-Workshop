@@ -2,6 +2,8 @@ package Domain.Game;
 
 import Domain.Users.TeamOwner;
 
+import java.util.List;
+
 public class StadiumStub extends Stadium{
 
     private int selector;
@@ -44,5 +46,11 @@ public class StadiumStub extends Stadium{
         {
             return false;
         }
+    }
+
+    @Override
+    public List<Enum> getAllPropertyList(Team team, String propertyName)
+    {
+        return null;
     }
 }

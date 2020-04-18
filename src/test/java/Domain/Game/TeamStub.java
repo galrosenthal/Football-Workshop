@@ -8,6 +8,7 @@ import java.util.List;
 
 public class TeamStub extends Team{
 
+    private List<TeamOwner> teamOwners;
     private int selector;
 
     /**
@@ -16,6 +17,7 @@ public class TeamStub extends Team{
     public TeamStub(int selector) {
         super();
         this.selector = selector;
+        this.teamOwners = new ArrayList<>();
     }
 
     @Override
@@ -64,6 +66,10 @@ public class TeamStub extends Team{
 
     @Override
     public boolean addTeamManager(TeamOwner townr, Role teamManager) {
+        if(this.selector == 6131)
+        {
+            return true;
+        }
         return super.addTeamManager(townr, teamManager);
     }
 
@@ -105,6 +111,10 @@ public class TeamStub extends Team{
         {
             return true;
         }
+        else if(selector == 6131)
+        {
+            return true;
+        }
         else{
             return false;
         }
@@ -130,5 +140,71 @@ public class TeamStub extends Team{
         else{
             return false;
         }
+    }
+
+    /**
+     * Each team has a lot of Assets {@link TeamAsset},
+     * @return a list of all the team assets
+     */
+    public List<Asset> getAllAssets() {
+
+        if(this.selector == 6132)
+        {
+            List<Asset> allTeamAssets = new ArrayList<>();
+            allTeamAssets.add(new AssetStub(6132));
+            return allTeamAssets;
+
+        }
+        else if(this.selector == 6133)
+        {
+            List<Asset> allTeamAssets = new ArrayList<>();
+            allTeamAssets.add(new AssetStub(6133));
+            return allTeamAssets;
+
+        }
+        else if(this.selector == 6134)
+        {
+            List<Asset> allTeamAssets = new ArrayList<>();
+            allTeamAssets.add(new AssetStub(6134));
+            return allTeamAssets;
+
+        }
+        else if(this.selector == 6135)
+        {
+            List<Asset> allTeamAssets = new ArrayList<>();
+            allTeamAssets.add(new AssetStub(6135));
+            return allTeamAssets;
+
+        }
+        else if(this.selector == 6136)
+        {
+            List<Asset> allTeamAssets = new ArrayList<>();
+            allTeamAssets.add(new AssetStub(6136));
+            return allTeamAssets;
+
+        }
+        else if(this.selector == 6137)
+        {
+            List<Asset> allTeamAssets = new ArrayList<>();
+            allTeamAssets.add(new AssetStub(6137));
+            return allTeamAssets;
+
+        }
+        else if(this.selector == 6138)
+        {
+            List<Asset> allTeamAssets = new ArrayList<>();
+            allTeamAssets.add(new AssetStub(6138));
+            return allTeamAssets;
+
+        }
+        List<Asset> allTeamAssets = new ArrayList<>();
+        return allTeamAssets;
+
+    }
+
+    @Override
+    public List<Enum> getAllProperty(Asset asset, String propertyName) {
+        List<Enum> enumList = asset.getAllPropertyList(this , propertyName);
+        return enumList;
     }
 }

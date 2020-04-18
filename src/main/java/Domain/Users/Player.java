@@ -33,6 +33,15 @@ public class Player extends Role implements Asset {
         }
         return false;
     }
+    public boolean addTeam(Team playTeam)
+    {
+        if(playerTeam == null)
+        {
+            playerTeam = playTeam;
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public List<String> getProperties() {
@@ -123,12 +132,26 @@ public class Player extends Role implements Asset {
         {
             PlayerFieldJobs[] playerFieldJobs = PlayerFieldJobs.values();
             for (int i = 0; i < playerFieldJobs.length; i++) {
-                //todo: check!
                 allEnumValues.add(playerFieldJobs[i]);
             }
             return allEnumValues;
         }
-        return allEnumValues;
+        return null;
+    }
+
+    @Override
+    public List<Enum> getAllPropertyList(Team team, String propertyName) {
+        return null;
+    }
+
+    @Override
+    public boolean addProperty(String propertyName, Enum anEnum , Team team) {
+        return false;
+    }
+
+    @Override
+    public boolean removeProperty(String propertyName, Enum anEnum, Team team) {
+        return false;
     }
 
 
