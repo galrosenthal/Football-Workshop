@@ -1,6 +1,11 @@
 package Acceptance;
 
 import Domain.EntityManager;
+import Domain.Game.League;
+import Domain.Users.AssociationRepresentative;
+import Domain.Users.SystemAdmin;
+import Domain.Users.SystemUser;
+import Domain.Users.Unregistered;
 import Domain.Game.Team;
 import Domain.Game.TeamStatus;
 import Domain.Users.*;
@@ -8,13 +13,13 @@ import Service.ARController;
 import Service.Controller;
 import Service.TOController;
 import Service.UIController;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.experimental.categories.Category;
+
 
 import static org.junit.Assert.*;
 
+@Category(RegressionTests.class)
 public class AcceptanceTests {
     private static SystemUser existingUser;
     private static SystemUser aviCohenSu;
@@ -28,6 +33,7 @@ public class AcceptanceTests {
         yosiManagerSu = new SystemUser("yosilevi", "123Ab456", "Yosi Levi");
         yosiManagerSu.addNewRole(new TeamManager(yosiManagerSu));
     }
+
 
     @Test
     public void systemBootATest(){
@@ -358,4 +364,48 @@ public class AcceptanceTests {
         EntityManager.getInstance().removeUserByName(yosiManagerSu.getUsername());
         EntityManager.getInstance().removeTeamByReference(team);
     }
+
+
+    /**
+     * 9.2.a
+     */
+    @Test
+    public void addSeasonToLeagueATest(){
+        SystemUser systemUser = new SystemUser("username", "name");
+        systemUser.addNewRole(new AssociationRepresentative(systemUser));
+        EntityManager.getInstance().addUser(systemUser);
+        EntityManager.getInstance().addLeague("Premier League");
+        UIController.setIsTest(true);
+        UIController.setSelector(921); //0 , "2020/21", "2020/21", "2021/22"
+
+        assertTrue(ARController.addSeasonToLeague(systemUser));
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        assertTrue(league.doesSeasonExists("2020/21"));
+    }
+
+    /**
+     * 9.2.b
+     */
+    @Test
+    public void addSeasonToLeague2ATest(){
+        SystemUser systemUser = new SystemUser("username", "name");
+        systemUser.addNewRole(new AssociationRepresentative(systemUser));
+        EntityManager.getInstance().addUser(systemUser);
+        EntityManager.getInstance().addLeague("Premier League");
+        UIController.setIsTest(true);
+        UIController.setSelector(921); //0 , "2020/21", "2020/21", "2021/22"
+
+        assertTrue(ARController.addSeasonToLeague(systemUser));
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        assertTrue(league.doesSeasonExists("2020/21"));
+
+        assertTrue(ARController.addSeasonToLeague(systemUser));
+
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        EntityManager.getInstance().clearAll();
+    }
+
 }

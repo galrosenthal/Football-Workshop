@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class UIController {
 
     private static boolean isTest = false;
-    private static int selector = 0; //latest = 6
+    private static int selector = 0; //latest = 10
 
     public static void setSelector(int selector) {
         UIController.selector = selector;
@@ -44,6 +44,17 @@ public class UIController {
                 return "newLeagueName";
             } else if (selector == 6) {
                 return "Premier League";
+            } else if (selector == 921) {//7
+                selector= 922;
+                return "2020/21";
+            } else if (selector == 922) {//8
+                selector= 923;
+                return "2020/21";
+            }  else if (selector == 923) {//9
+                return "2021/22";
+            }  else if (selector == 924) {//10
+                selector = 923;
+                return "wrong Format";
             } else
                 return null;
         }
@@ -56,7 +67,7 @@ public class UIController {
 
             return integer;
         } else {
-            if (selector == 0 || selector == 1 || selector == 2) {
+            if (selector == 0 || selector == 1 || selector == 2 || selector == 921 || selector ==922 || selector==924) {
                 return 0;
             } else {
                 return 0;
