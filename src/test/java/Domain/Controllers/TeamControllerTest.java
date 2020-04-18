@@ -1,14 +1,15 @@
 package Domain.Controllers;
 
+import Domain.EntityManager;
 import Domain.Exceptions.AssetCantBeModifiedException;
 import Domain.Exceptions.AssetsNotExistsException;
-import Domain.Game.Stadium;
-import Domain.Game.Team;
-import Domain.Game.TeamStub;
+import Domain.Exceptions.NoTeamExistsException;
+import Domain.Exceptions.NotATeamOwner;
+import Domain.Game.*;
 import Domain.Users.*;
 import Service.UIController;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.ExpectedException;
 
 import java.util.Date;
 
@@ -199,14 +200,14 @@ public class TeamControllerTest {
     }
 
 
-
-    @Test
-    public void addAssetITest() throws Exception
-    {
-        SystemUser anotherUser = new SystemUser("test","testUser");
-        hapoelBash.getTeamOwners().add(to);
-        assertTrue(TeamController.addAssetToTeam("test",hapoelBash,to,TeamAsset.TEAM_MANAGER));
-    }
+//
+//    @Test
+//    public void addAssetITest() throws Exception
+//    {
+//        SystemUser anotherUser = new SystemUser("test","testUser");
+//        hapoelBash.getTeamOwners().add(to);
+//        assertTrue(TeamController.addAssetToTeam("test",hapoelBash,to,TeamAsset.TEAM_MANAGER));
+//    }
 
 
 
