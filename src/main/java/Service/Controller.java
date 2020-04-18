@@ -2,9 +2,6 @@ package Service;
 
 import Domain.Controllers.TeamController;
 import Domain.Exceptions.NoTeamExistsException;
-import Domain.Exceptions.alreadyTeamOwnerException;
-import Domain.Exceptions.UserNotFoundException;
-import Domain.Game.Asset;
 import Domain.Game.Team;
 import Domain.Game.TeamAsset;
 import Domain.Users.*;
@@ -179,7 +176,8 @@ public class Controller {
 
         boolean isSuccess = TeamController.editAssets(chosenTeam);
 
-        UIController.printMessage("The action completed successfully");
+        if(isSuccess)
+            UIController.printMessage("The action completed successfully");
 
         return isSuccess;
     }

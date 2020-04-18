@@ -1,6 +1,7 @@
 package Acceptance;
 
 import Domain.EntityManager;
+import Domain.Exceptions.AssetsNotExistsException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.Team;
 import Domain.Users.*;
@@ -305,6 +306,39 @@ public class AcceptanceTests {
         UIController.setIsTest(true);
         UIController.setSelector(6139);
         assertTrue(Controller.modifyTeamAssetDetails(abc));
+
+
+    }
+
+    /**
+     * 6.1.3.b
+     * preconditions:
+     * beitShean - team
+     * abcCreate - team owner
+     *
+     *
+     * No assets to to team
+     * failure!
+     */
+    @Test (expected = AssetsNotExistsException.class)
+    public void modifyTeamAssetDetails2ATest() throws Exception {
+        Team beitShean = new Team();
+        beitShean.setTeamName("Beit Shean");
+        SystemUser abcCreate = new SystemUser("abc1", "abc12345", "abc");
+        TeamOwner abcOwner = new TeamOwner(abcCreate);
+        abcOwner.addTeamToOwn(beitShean);
+        beitShean.getTeamOwners().add(abcOwner);
+
+        Unregistered abcUnreg = new Unregistered();
+        SystemUser abc = abcUnreg.login("abc1", "abc12345");
+        assertEquals(abc, abcCreate);
+
+        SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");
+        Player playerElisha = new Player(elivyCreate, new Date());
+
+        UIController.setIsTest(true);
+        UIController.setSelector(6139);
+        Controller.modifyTeamAssetDetails(abc);
 
 
     }
