@@ -11,7 +11,6 @@ public class TeamOwner extends Role {
     private SystemUser appointedOwner;
 
     public TeamOwner(SystemUser systemUser) {
-        //TODO:
         super(RoleTypes.TEAM_OWNER,systemUser);
         ownedTeams = new ArrayList<>();
     }

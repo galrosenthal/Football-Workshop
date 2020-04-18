@@ -1,17 +1,26 @@
 package Acceptance;
 
 import Domain.EntityManager;
+import Domain.Exceptions.AssetsNotExistsException;
+import Domain.Exceptions.UserNotFoundException;
+import Domain.Game.Team;
+import Domain.Users.*;
 import Domain.Game.League;
 import Domain.Users.AssociationRepresentative;
 import Domain.Users.SystemAdmin;
 import Domain.Users.SystemUser;
 import Domain.Users.Unregistered;
+import Domain.Exceptions.UserNotFoundException;
+import Domain.Game.Team;
+import Domain.Users.*;
 import Service.ARController;
 import Service.Controller;
 import Service.UIController;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
 
+
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -21,6 +30,7 @@ public class AcceptanceTests {
     @BeforeClass
     public static void setUp() { //Will be called only once
         existingUser = new SystemUser("abc", "aBc12345", "abc");
+        UIController.setIsTest(true);
     }
 
 
@@ -39,7 +49,7 @@ public class AcceptanceTests {
     }
 
     @Test
-    public void addTeamOwnerATest() {
+    public void addTeamOwnerATest() throws Exception{
         UIController.setIsTest(true);
         Controller.addTeamOwner(new SystemUser("rosengal","Gal"));
     }
@@ -199,6 +209,138 @@ public class AcceptanceTests {
     @After
     public void tearDown() throws Exception {
         EntityManager.getInstance().clearAll();
+    }
+
+
+    /**
+     * 6.1.1.a
+     * User for Elisha Levy exists
+     */
+    @Test
+    public void addAsset1ATest() throws Exception
+    {
+        Team beitShean = new Team();
+
+        beitShean.setTeamName("Beit Shean");
+        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
+        TeamOwner abcOwner = new TeamOwner(abcCreate);
+        abcOwner.addTeamToOwn(beitShean);
+        beitShean.getTeamOwners().add(abcOwner);
+        SystemUser elisha = new SystemUser("elevy","Elisha Levy");
+
+        Unregistered abcUnreg = new Unregistered();
+        SystemUser abc = abcUnreg.login("abc1","abc12345");
+        assertEquals(abc,abcCreate);
+
+        UIController.setSelector(61118);
+        assertTrue(Controller.addAsset(abc));
+
+        EntityManager.getInstance().removeUserByReference(abcCreate);
+
+
+    }
+
+    /**
+     * 6.1.1.b
+     * User for Elisha Levy does not exists
+     */
+    @Test
+    public void addAsset2ATest() throws Exception
+    {
+        Team beitShean = new Team();
+
+        beitShean.setTeamName("Beit Shean");
+
+        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
+        TeamOwner abcOwner = new TeamOwner(abcCreate);
+        abcOwner.addTeamToOwn(beitShean);
+        beitShean.getTeamOwners().add(abcOwner);
+
+        Unregistered abcUnreg = new Unregistered();
+        SystemUser abc = abcUnreg.login("abc1","abc12345");
+        assertEquals(abc,abcCreate);
+
+        UIController.setSelector(61118);
+        try{
+            Controller.addAsset(abc);
+            EntityManager.getInstance().removeUserByReference(abcCreate);
+            fail();
+        }
+        catch (UserNotFoundException e)
+        {
+            UIController.printMessage(e.getMessage());
+            assertEquals("Could not find user elevy",e.getMessage());
+        }
+
+
+        EntityManager.getInstance().removeUserByReference(abcCreate);
+    }
+
+
+    /**
+     * 6.1.3.a
+     * preconditions:
+     * beitShean - team
+     * abcCreate - team owner
+     * playerElisha - player
+     *
+     * edit elisha levy position to DEFENCE
+     * success!
+     */
+    @Test
+    public void modifyTeamAssetDetails1ATest() throws Exception {
+        Team beitShean = new Team();
+        beitShean.setTeamName("Beit Shean");
+        SystemUser abcCreate = new SystemUser("abc1", "abc12345", "abc");
+        TeamOwner abcOwner = new TeamOwner(abcCreate);
+        abcOwner.addTeamToOwn(beitShean);
+        beitShean.getTeamOwners().add(abcOwner);
+
+        Unregistered abcUnreg = new Unregistered();
+        SystemUser abc = abcUnreg.login("abc1", "abc12345");
+        assertEquals(abc, abcCreate);
+
+        SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");
+        Player playerElisha = new Player(elivyCreate, new Date());
+        beitShean.addTeamPlayer(abcOwner , playerElisha);
+        UIController.setIsTest(true);
+        UIController.setSelector(6139);
+        assertTrue(Controller.modifyTeamAssetDetails(abc));
+
+
+    }
+
+    /**
+     * 6.1.3.b
+     * preconditions:
+     * beitShean - team
+     * abcCreate - team owner
+     *
+     *
+     * No assets to to team
+     * failure!
+     */
+    @Test (expected = AssetsNotExistsException.class)
+    public void modifyTeamAssetDetails2ATest() throws Exception {
+        Team beitShean = new Team();
+        beitShean.setTeamName("Beit Shean");
+        SystemUser abcCreate = new SystemUser("abc1", "abc12345", "abc");
+        TeamOwner abcOwner = new TeamOwner(abcCreate);
+        abcOwner.addTeamToOwn(beitShean);
+        beitShean.getTeamOwners().add(abcOwner);
+
+        Unregistered abcUnreg = new Unregistered();
+        SystemUser abc = abcUnreg.login("abc1", "abc12345");
+        assertEquals(abc, abcCreate);
+
+        SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");
+        Player playerElisha = new Player(elivyCreate, new Date());
+
+        UIController.setIsTest(true);
+        UIController.setSelector(6139);
+        Controller.modifyTeamAssetDetails(abc);
+
+
     }
 
 }
