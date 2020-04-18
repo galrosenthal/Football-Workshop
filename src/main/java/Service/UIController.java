@@ -109,8 +109,7 @@ public class UIController {
         } else {
             if (selector == 0 || selector == 1 || selector == 2 || selector == 6117 || selector == 6118 || selector == 921 || selector ==922 || selector==924) {
                 return 0;
-            }
-            else if(selector == 61111){
+            } else if(selector == 61111){
                 setSelector(61112);
                 return 1000;
             }else if(selector == 61112){
@@ -132,8 +131,12 @@ public class UIController {
                 return 0;
             }else if(selector == 61119){
                 return 0;
-            }else if(selector == 61120){
-            } else if (selector == 6132 || selector == 6133 || selector == 6134 || selector == 61341 || selector == 6135 || selector == 6136 || selector == 6137 || selector == 6138 || selector == 61383 || selector == 61381 || selector == 61310) {
+            }else if(selector == 61120 || selector == 6623 || selector == 6622 || selector == 6612 || selector == 6611
+        || selector == 6621 || selector ==66151 || selector == 66144|| selector == 66143 || selector ==6625
+             || selector==66163 || selector ==66251 ){
+                return 0;
+            }
+            else if (selector == 6132 || selector == 6133 || selector == 6134 || selector == 61341 || selector == 6135 || selector == 6136 || selector == 6137 || selector == 6138 || selector == 61383 || selector == 61381 || selector == 61310) {
                 if (selector == 6134) {
                     selector = 61341;
                 } else if (selector == 61341) {
@@ -157,7 +160,6 @@ public class UIController {
                 return 123812;
             }
         }
-        return 0;
     }
 
     public static boolean receiveChoice(String message) {
@@ -174,7 +176,7 @@ public class UIController {
             return false;
         }
 
-        if (selector == 4) {
+        if (selector == 6611 || selector == 6621 || selector == 6623 || selector == 4  || selector == 66151|| selector == 66251) {
             return true;
         } else {
             return false;

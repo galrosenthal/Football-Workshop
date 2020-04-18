@@ -33,6 +33,7 @@ public class UnregisteredTest {
         }
         catch(Exception e) {
             e.printStackTrace();
+            Assert.assertEquals("Username or Password was incorrect!",e.getMessage());
         }
 
         //working good
@@ -51,6 +52,7 @@ public class UnregisteredTest {
         }
         catch(Exception e) {
             e.printStackTrace();
+            Assert.assertEquals("Username or Password was incorrect!",e.getMessage());
         }
         EntityManager.getInstance().removeUserByReference(systemUser);
     }
@@ -69,10 +71,10 @@ public class UnregisteredTest {
         try{
             unregistered.signUp("Avi", "nir", "1234cB57");
             Assert.fail();
-
         }
         catch(Exception e) {
             e.printStackTrace();
+            Assert.assertEquals("Username already exists",e.getMessage());
         }
 
         try {
@@ -82,6 +84,7 @@ public class UnregisteredTest {
         }
         catch(Exception e) {
             e.printStackTrace();
+            Assert.assertEquals("Password does not meet the requirements",e.getMessage());
         }
 
         try {
@@ -91,6 +94,7 @@ public class UnregisteredTest {
         }
         catch(Exception e) {
             e.printStackTrace();
+            Assert.assertEquals("Password does not meet the requirements",e.getMessage());
         }
 
         EntityManager.getInstance().removeUserByReference(systemUser);

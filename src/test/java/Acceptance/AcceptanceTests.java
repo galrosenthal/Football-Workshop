@@ -10,11 +10,15 @@ import Domain.Users.AssociationRepresentative;
 import Domain.Users.SystemAdmin;
 import Domain.Users.SystemUser;
 import Domain.Users.Unregistered;
+import Domain.Game.Team;
+import Domain.Game.TeamStatus;
+import Domain.Users.*;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.Team;
 import Domain.Users.*;
 import Service.ARController;
 import Service.Controller;
+import Service.TOController;
 import Service.UIController;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
@@ -27,9 +31,16 @@ import static org.junit.Assert.*;
 @Category(RegressionTests.class)
 public class AcceptanceTests {
     private static SystemUser existingUser;
+    private static SystemUser aviCohenSu;
+    private static SystemUser yosiManagerSu;
     @BeforeClass
     public static void setUp() { //Will be called only once
         existingUser = new SystemUser("abc", "aBc12345", "abc");
+        existingUser.addNewRole(new TeamOwner(existingUser));
+        aviCohenSu = new SystemUser("avicohen", "123Ab456", "Avi Cohen");
+        aviCohenSu.addNewRole(new TeamOwner(aviCohenSu));
+        yosiManagerSu = new SystemUser("yosilevi", "123Ab456", "Yosi Levi");
+        yosiManagerSu.addNewRole(new TeamManager(yosiManagerSu));
         UIController.setIsTest(true);
     }
 
@@ -64,6 +75,9 @@ public class AcceptanceTests {
         Unregistered unregUser = new Unregistered();
         SystemUser user = unregUser.login("abc", "aBc12345");
 
+        //cleanup
+        EntityManager.getInstance().removeUserByReference(existingUser);
+
     }
 
     @Test
@@ -92,6 +106,9 @@ public class AcceptanceTests {
             e.printStackTrace();
         }
 
+        //cleanup
+        EntityManager.getInstance().removeUserByReference(existingUser);
+
     }
 
     //***** signUp() *****
@@ -116,6 +133,9 @@ public class AcceptanceTests {
         catch (Exception e){
             e.printStackTrace();
         }
+
+        //cleanup
+        EntityManager.getInstance().removeUserByReference(existingUser);
     }
 
     @Test
@@ -166,6 +186,193 @@ public class AcceptanceTests {
         //CleanUp
         EntityManager.getInstance().removeLeagueByName("Premier League");
         assertFalse(EntityManager.getInstance().doesLeagueExists("Premier League"));
+    }
+
+
+    /**
+     * 6.6.1.a
+     */
+    @Test
+    public void closeTeamATest() throws Exception {
+        //setups
+        TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
+        Team team = new Team("Hapoel Beit Shan", teamOwner);
+        teamOwner.addTeamToOwn(team);
+        //add team owner
+        TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
+        team.addTeamOwner(aviTo);
+        aviTo.addTeamToOwn(team);
+        //add team manager
+        TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
+        team.addTeamManager(teamOwner, tmanager);
+        tmanager.addTeam(team);
+        //add to Entity manager
+        EntityManager.getInstance().addUser(existingUser);
+        EntityManager.getInstance().addUser(aviCohenSu);
+        EntityManager.getInstance().addUser(yosiManagerSu);
+        EntityManager.getInstance().addTeam(team);
+
+        //success
+        UIController.setIsTest(true);
+        UIController.setSelector(6611);
+        Assert.assertTrue(TOController.closeTeam(existingUser));
+
+        //cleanup
+        teamOwner.removeTeamOwned(team);
+        aviTo.removeTeamOwned(team);
+        tmanager.removeTeam(team);
+        EntityManager.getInstance().removeUserByName(existingUser.getUsername());
+        EntityManager.getInstance().removeUserByName(aviCohenSu.getUsername());
+        EntityManager.getInstance().removeUserByName(yosiManagerSu.getUsername());
+        EntityManager.getInstance().removeTeamByReference(team);
+
+    }
+
+    /**
+     * 6.6.1.b
+     */
+    @Test
+    public void closeTeam2ATest() throws Exception {
+        //setups
+        TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
+        Team team = new Team("Hapoel Beit Shan", teamOwner);
+        teamOwner.addTeamToOwn(team);
+        //add team owner
+        TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
+        team.addTeamOwner(aviTo);
+        aviTo.addTeamToOwn(team);
+        //add team manager
+        TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
+        team.addTeamManager(teamOwner, tmanager);
+        tmanager.addTeam(team);
+        //add to Entity manager
+        EntityManager.getInstance().addUser(existingUser);
+        EntityManager.getInstance().addUser(aviCohenSu);
+        EntityManager.getInstance().addUser(yosiManagerSu);
+        EntityManager.getInstance().addTeam(team);
+
+        //operation cancelled
+        UIController.setIsTest(true);
+        UIController.setSelector(6612);
+        Assert.assertFalse(TOController.closeTeam(existingUser));
+
+        //cleanup
+        teamOwner.removeTeamOwned(team);
+        aviTo.removeTeamOwned(team);
+        tmanager.removeTeam(team);
+        EntityManager.getInstance().removeUserByName(existingUser.getUsername());
+        EntityManager.getInstance().removeUserByName(aviCohenSu.getUsername());
+        EntityManager.getInstance().removeUserByName(yosiManagerSu.getUsername());
+        EntityManager.getInstance().removeTeamByReference(team);
+    }
+
+    /**
+     * 6.6.2.a
+     */
+    @Test
+    public void reopenTeamATest() throws Exception {
+        //setups
+        TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
+        Team team = new Team("Hapoel Beit Shan", teamOwner);
+        teamOwner.addTeamToOwn(team);
+        //add team owner
+        TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
+        team.addTeamOwner(aviTo);
+        aviTo.addTeamToOwn(team);
+        //add team manager, BUT NOT the team TO the manager
+        TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
+        team.addTeamManager(teamOwner, tmanager);
+        //add to Entity manager
+        EntityManager.getInstance().addUser(existingUser);
+        EntityManager.getInstance().addUser(aviCohenSu);
+        EntityManager.getInstance().addUser(yosiManagerSu);
+        EntityManager.getInstance().addTeam(team);
+
+        //success. Yosi the team manager got his team back.
+        team.setStatus(TeamStatus.CLOSED); // set status to closed
+        UIController.setIsTest(true);
+        UIController.setSelector(6621);
+        Assert.assertTrue(TOController.reopenTeam(existingUser));
+
+        //cleanup
+        teamOwner.removeTeamOwned(team);
+        aviTo.removeTeamOwned(team);
+        tmanager.removeTeam(team);
+        EntityManager.getInstance().removeUserByName(existingUser.getUsername());
+        EntityManager.getInstance().removeUserByName(aviCohenSu.getUsername());
+        EntityManager.getInstance().removeUserByName(yosiManagerSu.getUsername());
+        EntityManager.getInstance().removeTeamByReference(team);
+    }
+
+    /**
+     * 6.6.2.b
+     */
+    @Test
+    public void reopenTeam2ATest() throws Exception {
+        //setups
+        TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
+        Team team = new Team("Hapoel Beit Shan", teamOwner);
+        teamOwner.addTeamToOwn(team);
+        //add team owner
+        TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
+        team.addTeamOwner(aviTo);
+        aviTo.addTeamToOwn(team);
+        //add team manager, BUT NOT the team TO the manager
+        TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
+        team.addTeamManager(teamOwner, tmanager);
+        //add to Entity manager
+        EntityManager.getInstance().addUser(existingUser);
+        EntityManager.getInstance().addUser(aviCohenSu);
+        EntityManager.getInstance().addUser(yosiManagerSu);
+        EntityManager.getInstance().addTeam(team);
+
+        //operation cancelled
+        team.setStatus(TeamStatus.CLOSED); // set status to closed
+        UIController.setIsTest(true);
+        UIController.setSelector(6622);
+        Assert.assertFalse(TOController.reopenTeam(existingUser));
+
+        //cleanup
+        teamOwner.removeTeamOwned(team);
+        aviTo.removeTeamOwned(team);
+        tmanager.removeTeam(team);
+        EntityManager.getInstance().removeUserByName(existingUser.getUsername());
+        EntityManager.getInstance().removeUserByName(aviCohenSu.getUsername());
+        EntityManager.getInstance().removeUserByName(yosiManagerSu.getUsername());
+        EntityManager.getInstance().removeTeamByReference(team);
+    }
+
+    /**
+     * 6.6.2.c
+     */
+    @Test
+    public void reopenTeam3ATest() throws Exception {
+        //setups
+        TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
+        Team team = new Team("Hapoel Beit Shan", teamOwner);
+        teamOwner.addTeamToOwn(team);
+        //add team manager, BUT NOT the team TO the manager
+        TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
+        team.addTeamManager(teamOwner, tmanager);
+        //add to Entity manager
+        EntityManager.getInstance().addUser(existingUser);
+        EntityManager.getInstance().addUser(yosiManagerSu);
+        EntityManager.getInstance().addTeam(team);
+
+        //success, but could not retrieve avi cohen's permissions
+        team.setStatus(TeamStatus.CLOSED); // set status to closed
+        yosiManagerSu.removeRole(tmanager); //Yosi lost his role as Team Manger in the system
+        UIController.setIsTest(true);
+        UIController.setSelector(6623);
+        Assert.assertTrue(TOController.reopenTeam(existingUser));
+
+        //cleanup
+        teamOwner.removeTeamOwned(team);
+        tmanager.removeTeam(team);
+        EntityManager.getInstance().removeUserByName(existingUser.getUsername());
+        EntityManager.getInstance().removeUserByName(aviCohenSu.getUsername());
+        EntityManager.getInstance().removeUserByName(yosiManagerSu.getUsername());
+        EntityManager.getInstance().removeTeamByReference(team);
     }
 
 

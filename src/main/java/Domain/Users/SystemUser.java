@@ -56,6 +56,7 @@ public class SystemUser {
         return false;
     }
 
+
     public List<Role> getRoles() {
         return roles;
     }

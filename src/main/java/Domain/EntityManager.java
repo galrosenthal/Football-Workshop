@@ -7,6 +7,8 @@ import Domain.Game.Stadium;
 import Domain.Users.Role;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
+import Domain.Game.Stadium;
+import Domain.Game.Team;
 import Domain.Users.*;
 import Domain.Game.Stadium;
 
@@ -17,13 +19,15 @@ import java.util.List;
 public class EntityManager {
     private static EntityManager entityManagerInstance = null;
 
-    private List<Stadium> allStadiums;
     private List<SystemUser> allUsers;
+    private List<Team> allTeams;
+    private List<Stadium> allStadiums;
     private HashSet<League> allLeagues;
 
     private EntityManager() {
         allUsers = new ArrayList<>();
         allLeagues = new HashSet<>();
+        allTeams = new ArrayList<>();
         allStadiums = new ArrayList<>();
     }
 
@@ -135,22 +139,47 @@ public class EntityManager {
     public boolean addUser(SystemUser systemUser) {
         if (!(this.allUsers.contains(systemUser))) {
             this.allUsers.add(systemUser);
+            return true;
         }
-        return true;
+        return false;
     }
 
     public boolean removeUserByReference(SystemUser systemUser) {
-        this.allUsers.remove(systemUser);
-        return true;
+        return this.allUsers.remove(systemUser);
     }
 
-    public boolean addStadium(Stadium newStadium)
-    {
-        if(!this.allStadiums.contains(newStadium))
-        {
-            this.allStadiums.add(newStadium);
+    public boolean removeUserByName(String username) {
+        for (SystemUser su : allUsers) {
+            if (su.getUsername().equals(username)) {
+                this.allUsers.remove(su);
+                return true;
+            }
         }
-        return true;
+        return false;
+    }
+
+    public boolean addTeam(Team team) {
+        if (!(this.allTeams.contains(team))) {
+            this.allTeams.add(team);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean addStadium(Stadium stadium) {
+        if (!(this.allStadiums.contains(stadium))) {
+            this.allStadiums.add(stadium);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isStadiumExists(Stadium stadium){
+        return allStadiums.contains(stadium);
+    }
+
+    public boolean removeTeamByReference(Team team) {
+        return this.allTeams.remove(team);
     }
 
     /**
@@ -184,6 +213,10 @@ public class EntityManager {
         allStadiums = new ArrayList<>();
         allLeagues = new HashSet<>();
         allUsers = new ArrayList<>();
+        allTeams = new ArrayList<>();
+    }
 
+    public boolean removeStadiumByReference(Stadium st) {
+        return allStadiums.remove(st);
     }
 }

@@ -4,6 +4,7 @@ import Domain.Controllers.TeamController;
 import Domain.Exceptions.NoTeamExistsException;
 import Domain.Game.Team;
 import Domain.Game.TeamAsset;
+import Domain.Game.TeamStatus;
 import Domain.Users.*;
 
 import java.util.List;
@@ -60,6 +61,11 @@ public class Controller {
         }
         TeamOwner myTeamOwner = (TeamOwner) myTeamOwnerRole;
         Team chosenTeam = getTeamByChoice(myTeamOwner);
+
+        if(chosenTeam.getStatus() != TeamStatus.OPEN) {
+            UIController.printMessage("Cannot perform action on closed team.");
+            return false; //cannot perform action on closed team.
+        }
 
         String newTeamOwnerUsername = getUsernameFromUser("new Team Owner");
 
@@ -118,7 +124,8 @@ public class Controller {
         return username;
     }
 
-    private static TeamOwner getUserIfIsTeamOwner(SystemUser systemUser) {
+
+    public static TeamOwner getUserIfIsTeamOwner(SystemUser systemUser) {
         if(!systemUser.isType(RoleTypes.TEAM_OWNER))
         {
             return null;
@@ -132,7 +139,6 @@ public class Controller {
     }
 
     private static String getUsernameFromUser(String msg) {
-        UIController.printMessage("Enter new " + msg + " Username:");
         UIController.printMessage("Enter "+ msg +" Username:");
 
         String username = UIController.receiveString();
@@ -140,15 +146,20 @@ public class Controller {
 
     }
 
-    private static Team getTeamByChoice(TeamOwner myTeamOwner) {
+    public static Team getTeamByChoice(TeamOwner myTeamOwner) {
         List<Team> myTeams = myTeamOwner.getOwnedTeams();
         if(myTeams == null|| myTeams.size() == 0)
         {
             return null;
         }
         UIController.printMessage("Choose a Team Number");
-        for (int i = 0; i < myTeams.size(); i++) {
-            UIController.printMessage(i + ". " + myTeams.get(i).getTeamName());
+        for (int i = 0; i < myTeams.size() ; i++) {
+            if(myTeams.get(i).getStatus() == TeamStatus.CLOSED)
+                 UIController.printMessage(i + ". " + myTeams.get(i).getTeamName()+" (closed)");
+            else if(myTeams.get(i).getStatus() == TeamStatus.PERMENENTLY_CLOSED)
+                UIController.printMessage(i + ". " + myTeams.get(i).getTeamName()+" (closed forever)");
+            else //open
+                UIController.printMessage(i + ". " + myTeams.get(i).getTeamName());
         }
         int teamIndex;
 

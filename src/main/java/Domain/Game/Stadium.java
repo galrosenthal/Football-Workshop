@@ -141,4 +141,12 @@ public class Stadium implements Asset{
     public String getLocation() {
         return stadLocation;
     }
+
+    public boolean removeTeam(Team team){
+        return this.homeTeams.remove(team);
+    }
+
+    public List<Team> getTeams() {
+        return this.homeTeams;
+    }
 }

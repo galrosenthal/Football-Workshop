@@ -180,5 +180,19 @@ public class TeamManager extends Role implements Asset {
                 this.getSystemUser().getUsername().equals(teamManager.getSystemUser().getUsername());
     }
 
+    public boolean addTeam(Team team){
+        if(!this.managedTeams.contains(team)) {
+            this.managedTeams.add(team);
+            return true;
+        }
+        return false;
+    }
 
+    public boolean removeTeam(Team team){
+        return this.managedTeams.remove(team);
+    }
+
+    public List<Team> getTeamsManaged() {
+        return managedTeams;
+    }
 }
