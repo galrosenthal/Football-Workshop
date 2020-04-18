@@ -6,10 +6,7 @@ import Domain.Users.*;
 import Service.UIController;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * This Class is representing a Football Team
@@ -17,8 +14,7 @@ import java.util.List;
 public class Team {
 
     private String teamName;
-    private List<Player> teamPlayers;
-    private List<Coach> teamCoaches;
+    private HashSet<BelongToTeam> playersAndCoaches;
     private List<TeamManager> teamManagers;
     private List<TeamOwner> teamOwners;
     private List<Season> seasons;
@@ -30,19 +26,17 @@ public class Team {
     }
 
     public Team(Team anotherTeam) {
-        teamCoaches = new ArrayList<>(anotherTeam.teamCoaches);
         teamManagers = new ArrayList<>(anotherTeam.teamManagers);
         teamOwners = new ArrayList<>(anotherTeam.teamOwners);
-        teamPlayers = new ArrayList<>(anotherTeam.teamPlayers);
         stadiums = new ArrayList<>(anotherTeam.stadiums);
         teamName = new String(anotherTeam.teamName);
-
+        playersAndCoaches = new HashSet<>(anotherTeam.playersAndCoaches);
+        status = TeamStatus.OPEN;
     }
 
     public Team() {
         teamOwners = new ArrayList<>();
-        teamPlayers = new ArrayList<>();
-        teamCoaches = new ArrayList<>();
+        playersAndCoaches = new HashSet<>();
         teamManagers = new ArrayList<>();
         seasons = new ArrayList<>();
         stadiums = new ArrayList<>();
@@ -50,10 +44,9 @@ public class Team {
     }
 
     public Team(String teamName, TeamOwner to) {
-        this.teamOwners = new ArrayList<>();
+        teamOwners = new ArrayList<>();
         teamOwners.add(to);
-        teamPlayers = new ArrayList<>();
-        teamCoaches = new ArrayList<>();
+        playersAndCoaches = new HashSet<>();
         teamManagers = new ArrayList<>();
         stadiums = new ArrayList<>();
         status = TeamStatus.OPEN;
@@ -75,13 +68,28 @@ public class Team {
         }
         if(teamPlayer.getType() == RoleTypes.PLAYER)
         {
-            boolean playerAdded = teamPlayers.add((Player)teamPlayer);
-            if(playerAdded)
-            {
-                return true;
-            }
+            return addConnection((Player)teamPlayer);
         }
         return false;
+    }
+
+    private boolean addConnection(PartOfTeam teamConnectionAsset) {
+        BelongToTeam bg = new BelongToTeam(this,teamConnectionAsset);
+        if(playersAndCoaches.contains(bg))
+        {
+            return false;
+        }
+        playersAndCoaches.add(bg);
+        boolean addedPlayerConnection = teamConnectionAsset.addTeamConnection(bg);
+        if(addedPlayerConnection)
+        {
+            return true;
+        }
+        else
+        {
+            playersAndCoaches.remove(bg);
+            return false;
+        }
     }
 
     public boolean addTeamCoach(TeamOwner townr, Role coach)
@@ -92,11 +100,7 @@ public class Team {
         }
         if(coach.getType() == RoleTypes.COACH)
         {
-            boolean coachAdded = teamCoaches.add((Coach)coach);
-            if(coachAdded)
-            {
-                return true;
-            }
+            return addConnection((Coach)coach);
         }
         return false;
     }
@@ -140,11 +144,29 @@ public class Team {
     }
 
     public List<Player> getTeamPlayers() {
-        return teamPlayers;
+        List<Player> allPlayersInTeam = new ArrayList<>();
+        for (BelongToTeam po: playersAndCoaches)
+        {
+            PartOfTeam teamAssetConnection = po.getAssetOfTheTeam();
+            if(teamAssetConnection instanceof Player)
+            {
+                allPlayersInTeam.add((Player)teamAssetConnection);
+            }
+        }
+        return allPlayersInTeam;
     }
 
     public List<Coach> getTeamCoaches() {
-        return teamCoaches;
+        List<Coach> allPlayersInTeam = new ArrayList<>();
+        for (BelongToTeam po: playersAndCoaches)
+        {
+            PartOfTeam teamAssetConnection = po.getAssetOfTheTeam();
+            if(teamAssetConnection instanceof Coach)
+            {
+                allPlayersInTeam.add((Coach) teamAssetConnection);
+            }
+        }
+        return allPlayersInTeam;
     }
 
     public List<TeamManager> getTeamManagers() {
@@ -156,102 +178,104 @@ public class Team {
         if (this == o) return true;
         if (!(o instanceof Team)) return false;
         Team team = (Team) o;
-        return this.teamPlayers.size() == team.teamPlayers.size() &&
-                this.teamOwners.size() == team.teamOwners.size() &&
-                this.teamCoaches.size() == team.teamCoaches.size() &&
-                this.teamManagers.size() == team.teamManagers.size() &&
-                this.stadiums.size() == team.stadiums.size() &&
-                checkPlayerListEquals(this.teamPlayers,team.teamPlayers) &&
-                checkCoachListEquals(this.teamCoaches,team.teamCoaches) &&
-                checkManagersListEquals(this.teamManagers,team.teamManagers) &&
-                checkTeamOwnerListEquals(this.teamOwners,team.teamOwners) &&
-                checkStadiumListEquals(this.stadiums,team.stadiums);
+        return teamOwners.equals(team.teamOwners) &&
+                teamManagers.equals(team.teamManagers) &&
+                stadiums.equals(team.stadiums)&&
+                playersAndCoaches.equals(team.playersAndCoaches);
+//        return this.teamOwners.size() == team.teamOwners.size() &&
+//               this.teamManagers.size() == team.teamManagers.size() &&
+//                this.stadiums.size() == team.stadiums.size() &&
+//                this.playerAndCoaches.keySet().size() == team.playerAndCoaches.keySet().size() &&
+//                checkManagersListEquals(this.teamManagers,team.teamManagers) &&
+//                checkTeamOwnerListEquals(this.teamOwners,team.teamOwners) &&
+//                checkStadiumListEquals(this.stadiums,team.stadiums);
+
     }
 
-    /**
-     * Iterate over all the stadiums and check if the other team has all of them.
-     * @param stadiums a list of this stadiums
-     * @param anotherStadiumsList a list of the other team stadiums
-     * @return true if the lists are equal
-     */
-    private boolean checkStadiumListEquals(List<Stadium> stadiums, List<Stadium> anotherStadiumsList) {
-
-        for (Stadium st : stadiums) {
-            if (!anotherStadiumsList.contains(st)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Iterate over all the teamManagers and check if the other team has all of them.
-     * @param teamManagers a list of this team managers
-     * @param anotherTeamOfManagers a list of the other team managers
-     * @return true if the lists are equal
-     */
-    private boolean checkManagersListEquals(List<TeamManager> teamManagers, List<TeamManager> anotherTeamOfManagers) {
-        for (TeamManager tm : teamManagers)
-        {
-            if(!anotherTeamOfManagers.contains(tm))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Iterate over all the teamCoaches and check if the other team has all of them.
-     * @param teamCoaches a list of this team coaches
-     * @param anotherListOfCoaches a list of the other team coaches
-     * @return true if the lists are equal
-     */
-    private boolean checkCoachListEquals(List<Coach> teamCoaches, List<Coach> anotherListOfCoaches) {
-        for (Coach c : teamCoaches)
-        {
-            if(!anotherListOfCoaches.contains(c))
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Iterate over all the teamPlayers and check if the other team has all of them.
-     * @param currentTeamPlayers a list of this team players
-     * @param anotherTeamPlayers a list of the other team players
-     * @return true if the lists are equal
-     */
-    private boolean checkPlayerListEquals(List<Player> currentTeamPlayers, List<Player> anotherTeamPlayers) {
-        for(Player p: currentTeamPlayers)
-        {
-            if(!anotherTeamPlayers.contains(p))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Iterate over all the teamPlayers and check if the other team has all of them.
-     * @param currentTeamOwners a list of this team owners
-     * @param anotherTeamOwners a list of the other team owners
-     * @return true if the lists are equal
-     */
-    private boolean checkTeamOwnerListEquals(List<TeamOwner> currentTeamOwners, List<TeamOwner> anotherTeamOwners) {
-        for(TeamOwner tw: currentTeamOwners)
-        {
-            if(!anotherTeamOwners.contains(tw))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+//    /**
+//     * Iterate over all the stadiums and check if the other team has all of them.
+//     * @param stadiums a list of this stadiums
+//     * @param anotherStadiumsList a list of the other team stadiums
+//     * @return true if the lists are equal
+//     */
+//    private boolean checkStadiumListEquals(List<Stadium> stadiums, List<Stadium> anotherStadiumsList) {
+//
+//        for (Stadium st : stadiums) {
+//            if (!anotherStadiumsList.contains(st)) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+//
+//    /**
+//     * Iterate over all the teamManagers and check if the other team has all of them.
+//     * @param teamManagers a list of this team managers
+//     * @param anotherTeamOfManagers a list of the other team managers
+//     * @return true if the lists are equal
+//     */
+//    private boolean checkManagersListEquals(List<TeamManager> teamManagers, List<TeamManager> anotherTeamOfManagers) {
+//        for (TeamManager tm : teamManagers)
+//        {
+//            if(!anotherTeamOfManagers.contains(tm))
+//            {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+//
+//    /**
+//     * Iterate over all the teamCoaches and check if the other team has all of them.
+//     * @param teamCoaches a list of this team coaches
+//     * @param anotherListOfCoaches a list of the other team coaches
+//     * @return true if the lists are equal
+//     */
+//    private boolean checkCoachListEquals(List<Coach> teamCoaches, List<Coach> anotherListOfCoaches) {
+//        for (Coach c : teamCoaches)
+//        {
+//            if(!anotherListOfCoaches.contains(c))
+//            {
+//                return false;
+//            }
+//        }
+//
+//        return true;
+//    }
+//
+//    /**
+//     * Iterate over all the teamPlayers and check if the other team has all of them.
+//     * @param currentTeamPlayers a list of this team players
+//     * @param anotherTeamPlayers a list of the other team players
+//     * @return true if the lists are equal
+//     */
+//    private boolean checkPlayerListEquals(List<Player> currentTeamPlayers, List<Player> anotherTeamPlayers) {
+//        for(Player p: currentTeamPlayers)
+//        {
+//            if(!anotherTeamPlayers.contains(p))
+//            {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+//
+//    /**
+//     * Iterate over all the teamPlayers and check if the other team has all of them.
+//     * @param currentTeamOwners a list of this team owners
+//     * @param anotherTeamOwners a list of the other team owners
+//     * @return true if the lists are equal
+//     */
+//    private boolean checkTeamOwnerListEquals(List<TeamOwner> currentTeamOwners, List<TeamOwner> anotherTeamOwners) {
+//        for(TeamOwner tw: currentTeamOwners)
+//        {
+//            if(!anotherTeamOwners.contains(tw))
+//            {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
     @Override
     public String toString() {
@@ -313,7 +337,7 @@ public class Team {
     private String teamCoachesToString() {
         StringBuilder teamCoachesString = new StringBuilder();
         teamCoachesString.append("Coaches: \n");
-
+        List<Coach> teamCoaches = getTeamCoaches();
         for (int i = 0; i < teamCoaches.size(); i++)
         {
             teamCoachesString.append(i+1).append(". ");
@@ -327,6 +351,7 @@ public class Team {
         StringBuilder teamPlayersString = new StringBuilder();
         teamPlayersString.append("Players: \n");
 
+        List<Player> teamPlayers = getTeamPlayers();
         for (int i = 0; i < teamPlayers.size(); i++)
         {
             teamPlayersString.append(i+1).append(". ");
@@ -395,8 +420,8 @@ public class Team {
     public List<Asset> getAllAssets() {
 
         List<Asset> allTeamAssets = new ArrayList<>();
-        allTeamAssets.addAll(this.teamPlayers);
-        allTeamAssets.addAll(this.teamCoaches);
+        allTeamAssets.addAll(getTeamPlayers());
+        allTeamAssets.addAll(getTeamCoaches());
         allTeamAssets.addAll(this.teamManagers);
         allTeamAssets.addAll(this.stadiums);
         return allTeamAssets;
@@ -540,12 +565,24 @@ public class Team {
         return false;
     }
 
+    private boolean removePlayerOrCoach(PartOfTeam playerOrCoach)
+    {
+        for(BelongToTeam po: playersAndCoaches)
+        {
+            if(po.getAssetOfTheTeam().equals(playerOrCoach))
+            {
+                playersAndCoaches.remove(po);
+                return true;
+            }
+        }
+        return false;
+    }
 
     public boolean removeTeamPlayer(Player player){
-        return teamPlayers.remove(player);
+        return removePlayerOrCoach(player);
     }
     public boolean removeTeamCoach(Coach coach){
-        return teamCoaches.remove(coach);
+        return removePlayerOrCoach(coach);
     }
     public boolean removeTeamManager(TeamManager teamManager){
         return teamManagers.remove(teamManager);

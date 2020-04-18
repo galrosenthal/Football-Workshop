@@ -3,11 +3,12 @@ package Domain.Users;
 import Domain.Game.Asset;
 import Domain.Game.Team;
 import Service.UIController;
+import javafx.scene.shape.Path;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Coach extends Role implements Asset {
+public class Coach extends PartOfTeam {
 
     private CoachQualification qualification;
     private List<Team> coachedTeams;
