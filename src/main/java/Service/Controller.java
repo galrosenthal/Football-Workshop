@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Controller {
 
-    public static boolean systemBoot(){
+    public static boolean systemBoot() {
         //Establishing connections to external DBMS
         //access DB
         //extract system admins
@@ -26,15 +26,15 @@ public class Controller {
         //Retrieve system user
         SystemUser admin = null;
         try {
-            admin =  new Unregistered().login(username, password);
+            admin = new Unregistered().login(username, password);
         } catch (Exception e) {
             UIController.printMessage("Username or Password was incorrect!!!!!");
             e.printStackTrace();
         }
-        UIController.printMessage("Successful login. Welcome back, "+ admin.getName());
+        UIController.printMessage("Successful login. Welcome back, " + admin.getName());
         //system boot choice
         boolean choice = UIController.receiveChoice("Would you like to boot the system? y/n");
-        if (!choice){
+        if (!choice) {
             return false;
         }
 
@@ -45,27 +45,22 @@ public class Controller {
         return true;
     }
 
-    public static boolean addTeamOwner(SystemUser systemUser)
-    {
-        if(!systemUser.isType(RoleTypes.TEAM_OWNER))
-        {
+    public static boolean addTeamOwner(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.TEAM_OWNER)) {
             return false;
         }
         Role myTeamOwnerRole = systemUser.getRole(RoleTypes.TEAM_OWNER);
-        if(!(myTeamOwnerRole instanceof TeamOwner))
-        {
+        if (!(myTeamOwnerRole instanceof TeamOwner)) {
             return false;
         }
-        TeamOwner myTeamOwner = (TeamOwner)myTeamOwnerRole;
+        TeamOwner myTeamOwner = (TeamOwner) myTeamOwnerRole;
         Team chosenTeam = getTeamByChoice(myTeamOwner);
 
         String newTeamOwnerUsername = getUsernameFromUser("Team Owner");
-        UIController.printMessage(newTeamOwnerUsername);
-        try{
-            TeamController.addTeamOwner(newTeamOwnerUsername,chosenTeam,myTeamOwner);
-        }
-        catch (Exception e)
-        {
+
+        try {
+            TeamController.addTeamOwner(newTeamOwnerUsername, chosenTeam, myTeamOwner);
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -87,7 +82,7 @@ public class Controller {
     }
 
     private static String getUsernameFromUser(String msg) {
-        UIController.printMessage("Enter new "+ msg +" Username:");
+        UIController.printMessage("Enter new " + msg + " Username:");
 
         String username = UIController.receiveString();
         return username;
@@ -101,7 +96,7 @@ public class Controller {
             return null;
         }
         UIController.printMessage("Choose a Team Number");
-        for (int i = 0; i < myTeams.size() ; i++) {
+        for (int i = 0; i < myTeams.size(); i++) {
             UIController.printMessage(i + ". " + myTeams.get(i).getTeamName());
         }
         int teamIndex;
