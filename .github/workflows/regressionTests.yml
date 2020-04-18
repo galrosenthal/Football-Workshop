@@ -25,6 +25,6 @@ jobs:
         run: mvn -B -DskipTests clean package --file pom.xml
       - name: Run Regression tests suit with Failsafe
         run: |
-        mvn failsafe:integration-test --file pom.xml
-        mvn failsafe:verify --file pom.xml
+          mvn failsafe:integration-test --file pom.xml
+          mvn failsafe:verify --file pom.xml
 
