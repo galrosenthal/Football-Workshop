@@ -3,6 +3,7 @@ package Domain;
 import DB.DBManager;
 import DB.Table;
 import Domain.Game.League;
+import Domain.Game.Stadium;
 import Domain.Game.Team;
 import Domain.Users.*;
 
@@ -15,12 +16,14 @@ public class EntityManager {
 
     private List<SystemUser> allUsers;
     private List<Team> allTeams;
+    private List<Stadium> allStadiums;
     private HashSet<League> allLeagues;
 
     private EntityManager() {
         allUsers = new ArrayList<>();
         allLeagues = new HashSet<>();
         allTeams = new ArrayList<>();
+        allStadiums = new ArrayList<>();
     }
 
     /**
@@ -150,6 +153,18 @@ public class EntityManager {
         return false;
     }
 
+    public boolean addStadium(Stadium stadium) {
+        if (!(this.allStadiums.contains(stadium))) {
+            this.allStadiums.add(stadium);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isStadiumExists(Stadium stadium){
+        return allStadiums.contains(stadium);
+    }
+
     public boolean removeTeamByReference(Team team) {
         return this.allTeams.remove(team);
     }
@@ -184,5 +199,9 @@ public class EntityManager {
     public void clearAll(){
         this.allUsers = new ArrayList<>();
         this.allLeagues = new HashSet<>();
+    }
+
+    public boolean removeStadiumByReference(Stadium st) {
+        return allStadiums.remove(st);
     }
 }

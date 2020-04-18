@@ -116,47 +116,56 @@ public class TeamController {
     public static boolean reopenTeam(Team teamToReOpen) {
         teamToReOpen.setStatus(TeamStatus.OPEN);
 
-        for(Stadium st : teamToReOpen.getStadiums()){
-            if(st != null) //Check in the db that the stadium still exists
+        for(int i = 0 ; i < teamToReOpen.getStadiums().size(); i++){
+            Stadium st = teamToReOpen.getStadiums().get(i);
+            if(st != null && EntityManager.getInstance().isStadiumExists(st)) //Check in the db that the stadium still exists
                 st.addTeam(teamToReOpen);
-            else{ //TODO: Remove this asset from the team because he is not in the system anymore!
-
+            else{
+                //Removes stadium from the team because he is no longer exists.
+                teamToReOpen.removeStadium(st);
+                i--;
             }
         }
 
-        for(Role playerRole : teamToReOpen.getTeamPlayers()){
+        for(int i =0 ; i < teamToReOpen.getTeamPlayers().size(); i++){
+            Player playerRole = teamToReOpen.getTeamPlayers().get(i);
             if(roleStillExists(playerRole) &&
                     playerRole.getSystemUser().getRole(RoleTypes.PLAYER) instanceof Player) //Check in the db that the player still exists
             {
-                Player p = (Player)playerRole;
-                p.addTeam(teamToReOpen);
+                playerRole.addTeam(teamToReOpen);
             }
-            else{ //TODO: Remove this asset from the team because he is not in the system anymore!
-
+            else{
+                //Removes player from the team because he is no longer exists.
+                teamToReOpen.removeTeamPlayer(playerRole);
+                i--;
             }
         }
 
-        for(Role coachRole : teamToReOpen.getTeamCoaches()){
+        for(int i = 0 ; i < teamToReOpen.getTeamCoaches().size(); i++){
+            Coach coachRole = teamToReOpen.getTeamCoaches().get(i);
             if(roleStillExists(coachRole) &&
                     coachRole.getSystemUser().getRole(RoleTypes.COACH) instanceof Coach)  //Check in the db that the coach still exists
             {
-                Coach c = (Coach) coachRole;
-                c.addTeamToCoach(teamToReOpen);
+                coachRole.addTeamToCoach(teamToReOpen);
             }
-            else{ //TODO: Remove this asset from the team because he is not in the system anymore!
-
+            else{
+                //Removes Team Coach from the team because he is no longer exists.
+                teamToReOpen.removeTeamCoach(coachRole);
+                i--;
             }
         }
 
-        for(Role tmRole : teamToReOpen.getTeamManagers()){
+        for(int i =0 ; i < teamToReOpen.getTeamManagers().size(); i++){
+            TeamManager tmRole = teamToReOpen.getTeamManagers().get(i);
             if(roleStillExists(tmRole) &&
                     tmRole.getSystemUser().getRole(RoleTypes.TEAM_MANAGER) instanceof TeamManager)//Check in the db that the tm still exists
             {
-                TeamManager tm = (TeamManager)tmRole;
-                tm.addTeam(teamToReOpen);
+                tmRole.addTeam(teamToReOpen);
             }
             else {
-                //TODO: Remove this asset from the team because he is not in the system anymore!
+                //Removes Team Manager from the team because he is no longer exists.
+                teamToReOpen.removeTeamManager(tmRole);
+                i--;
                 if(tmRole == null || tmRole.getSystemUser() == null
                         || EntityManager.getInstance().getUser(tmRole.getSystemUser().getUsername()) == null) {
                     //the user deleted entirely from the system

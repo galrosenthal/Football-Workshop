@@ -6,6 +6,8 @@ import Domain.Users.*;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
+import java.util.EmptyStackException;
+
 public class TeamControllerTest {
 
     @Rule
@@ -247,6 +249,7 @@ public class TeamControllerTest {
         EntityManager.getInstance().addUser(su3);
         EntityManager.getInstance().addUser(su4);
         EntityManager.getInstance().addTeam(teamStub);
+        EntityManager.getInstance().addStadium(st1);
 
         //success
         Assert.assertEquals(1, to.getOwnedTeams().size());
@@ -268,6 +271,7 @@ public class TeamControllerTest {
         EntityManager.getInstance().removeUserByReference(su3);
         EntityManager.getInstance().removeUserByReference(su4);
         EntityManager.getInstance().removeTeamByReference(teamStub);
+        EntityManager.getInstance().removeStadiumByReference(st1);
     }
 
 
@@ -304,6 +308,7 @@ public class TeamControllerTest {
         EntityManager.getInstance().addUser(su3);
         EntityManager.getInstance().addUser(su4);
         EntityManager.getInstance().addTeam(teamStub);
+        EntityManager.getInstance().addStadium(st1);
 
         //success, but could not restore nirdz the team's manager because he is not a user anymore
         Assert.assertEquals(1, teamStub.getTeamManagers().size());
@@ -313,6 +318,7 @@ public class TeamControllerTest {
         Assert.assertEquals(0, st1.getTeams().size());
         Assert.assertTrue(TeamController.reopenTeam(teamStub));
         Assert.assertEquals(TeamStatus.OPEN, teamStub.getStatus());
+        Assert.assertEquals(0, teamStub.getTeamManagers().size());
         Assert.assertEquals(1, to.getOwnedTeams().size());
         Assert.assertEquals(1, p1.getPlayerTeams().size());
         Assert.assertEquals(1, co1.getCoachedTeams().size());
@@ -324,6 +330,8 @@ public class TeamControllerTest {
         EntityManager.getInstance().removeUserByReference(su3);
         EntityManager.getInstance().removeUserByReference(su4);
         EntityManager.getInstance().removeTeamByReference(teamStub);
+        EntityManager.getInstance().removeStadiumByReference(st1);
+
     }
 
 }

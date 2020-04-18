@@ -348,4 +348,18 @@ public class Team {
         }
         return false;
     }
+
+    public boolean removeStadium(Stadium stadium){
+        return stadiums.remove(stadium);
+    }
+
+    public boolean removeTeamPlayer(Player player){
+        return teamPlayers.remove(player);
+    }
+    public boolean removeTeamCoach(Coach coach){
+        return teamCoaches.remove(coach);
+    }
+    public boolean removeTeamManager(TeamManager teamManager){
+        return teamManagers.remove(teamManager);
+    }
 }

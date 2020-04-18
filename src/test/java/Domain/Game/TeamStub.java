@@ -14,6 +14,7 @@ public class TeamStub extends Team{
     private List<Player> players;
     private List<TeamManager> teamManagers;
     private List<Coach> coaches;
+    private List<Stadium> stadiums;
     private int selector;
 
     public TeamStub(int selector) {
@@ -22,6 +23,7 @@ public class TeamStub extends Team{
         this.players = new ArrayList<>();
         this.teamManagers = new ArrayList<>();
         this.coaches = new ArrayList<>();
+        this.stadiums = new ArrayList<>();
         this.setTeamName( "stubTeam"+selector);
         if(selector == 66143 || selector == 66163)
             setStatus(TeamStatus.CLOSED);
@@ -47,6 +49,37 @@ public class TeamStub extends Team{
         return this.teamManagers;
     }
 
+    @Override
+    public List<Stadium> getStadiums() {
+        return this.stadiums;
+    }
+
+
+    @Override
+    public boolean removeTeamOwner(TeamOwner teamOwner) {
+        return this.teamOwners.remove(teamOwner);
+    }
+
+    @Override
+    public boolean removeStadium(Stadium stadium) {
+        return this.stadiums.remove(stadium);
+    }
+
+    @Override
+    public boolean removeTeamPlayer(Player player) {
+        return this.players.remove(player);
+    }
+
+    @Override
+    public boolean removeTeamCoach(Coach coach) {
+        return this.coaches.remove(coach);
+    }
+
+    @Override
+    public boolean removeTeamManager(TeamManager teamManager) {
+        return this.teamManagers.remove(teamManager);
+    }
+
     public boolean addTeamOwner(TeamOwner townr) {
         return this.teamOwners.add(townr);
     }
@@ -61,6 +94,11 @@ public class TeamStub extends Team{
 
     public boolean addCoach(Coach coach) {
         return this.coaches.add(coach);
+    }
+
+    @Override
+    public boolean addStadium(Stadium stadium) {
+        return this.stadiums.add(stadium);
     }
 
 
