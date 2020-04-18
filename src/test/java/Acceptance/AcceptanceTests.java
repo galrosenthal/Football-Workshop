@@ -205,7 +205,7 @@ public class AcceptanceTests {
         //success
         UIController.setIsTest(true);
         UIController.setSelector(6611);
-        TOController.closeTeam(existingUser);
+        Assert.assertTrue(TOController.closeTeam(existingUser));
 
         //cleanup
         teamOwner.removeTeamOwned(team);
@@ -244,7 +244,7 @@ public class AcceptanceTests {
         //operation cancelled
         UIController.setIsTest(true);
         UIController.setSelector(6612);
-        TOController.closeTeam(existingUser);
+        Assert.assertFalse(TOController.closeTeam(existingUser));
 
         //cleanup
         teamOwner.removeTeamOwned(team);
@@ -282,7 +282,7 @@ public class AcceptanceTests {
         team.setStatus(TeamStatus.CLOSED); // set status to closed
         UIController.setIsTest(true);
         UIController.setSelector(6621);
-        TOController.reopenTeam(existingUser);
+        Assert.assertTrue(TOController.reopenTeam(existingUser));
 
         //cleanup
         teamOwner.removeTeamOwned(team);
@@ -320,7 +320,7 @@ public class AcceptanceTests {
         team.setStatus(TeamStatus.CLOSED); // set status to closed
         UIController.setIsTest(true);
         UIController.setSelector(6622);
-        TOController.reopenTeam(existingUser);
+        Assert.assertFalse(TOController.reopenTeam(existingUser));
 
         //cleanup
         teamOwner.removeTeamOwned(team);
@@ -354,7 +354,7 @@ public class AcceptanceTests {
         yosiManagerSu.removeRole(tmanager); //Yosi lost his role as Team Manger in the system
         UIController.setIsTest(true);
         UIController.setSelector(6623);
-        TOController.reopenTeam(existingUser);
+        Assert.assertTrue(TOController.reopenTeam(existingUser));
 
         //cleanup
         teamOwner.removeTeamOwned(team);
