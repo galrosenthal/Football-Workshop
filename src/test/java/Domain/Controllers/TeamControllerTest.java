@@ -13,8 +13,9 @@ import org.junit.rules.ExpectedException;
 
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import java.util.EmptyStackException;
 
+import static org.junit.Assert.*;
 
 public class TeamControllerTest {
 
@@ -157,6 +158,7 @@ public class TeamControllerTest {
 
         try{
             TeamController.addTeamOwner("oranShich", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+            Assert.fail();
         }
         catch (Exception e){
             e.printStackTrace();
@@ -417,5 +419,188 @@ public class TeamControllerTest {
         assertTrue(TeamController.editAssets(team));
 
     }
+
+    @Test
+    public void closeTeamITest(){
+        //Integration with player, coach, stadium, team manager but only calls simple method from them.
+        TeamStub teamStub = new TeamStub(66171);
+        Assert.assertTrue(TeamController.closeTeam(teamStub));
+        Assert.assertEquals(TeamStatus.CLOSED, teamStub.getStatus());
+    }
+
+    @Test
+    public void closeTeamUTest(){
+        TeamStub teamStub = new TeamStub(66172);
+        SystemUserStub su1 = new SystemUserStub("rosengal", "gal",661721);
+        PlayerStub p1 = (PlayerStub)su1.getRole(RoleTypes.PLAYER);
+        p1.addTeam(teamStub);
+        teamStub.addPlayer(p1);
+
+        SystemUserStub su2 = new SystemUserStub("nirdz", "nir",661722);
+        TeamManagerStub tm1 = (TeamManagerStub)su2.getRole(RoleTypes.TEAM_MANAGER);
+        tm1.addTeam(teamStub);
+        teamStub.addTeamManager(tm1);
+
+        SystemUserStub su3 = new SystemUserStub("coach", "coach",661723);
+        CoachStub co1 = (CoachStub)su3.getRole(RoleTypes.COACH);
+        co1.addTeamToCoach(teamStub);
+        teamStub.addCoach(co1);
+
+        SystemUserStub su4 = new SystemUserStub("iamowner", "owner",661724);
+        TeamOwnerStub to = (TeamOwnerStub)su4.getRole(RoleTypes.TEAM_OWNER);
+        to.addTeamToOwn(teamStub);
+        teamStub.addTeamOwner(to);
+
+
+        StadiumStub st1 = new StadiumStub("stadiumStub", "stub street 22");
+        st1.addTeam(teamStub);
+        teamStub.addStadium(st1);
+
+        //add to Entity Manager
+        EntityManager.getInstance().addUser(su1);
+        EntityManager.getInstance().addUser(su2);
+        EntityManager.getInstance().addUser(su3);
+        EntityManager.getInstance().addUser(su4);
+        EntityManager.getInstance().addTeam(teamStub);
+
+        //success
+        Assert.assertEquals(1, to.getOwnedTeams().size());
+        Assert.assertEquals(1, p1.getPlayerTeams().size());
+        Assert.assertEquals(1, tm1.getTeamsManaged().size());
+        Assert.assertEquals(1, co1.getCoachedTeams().size());
+        Assert.assertEquals(1, st1.getTeams().size());
+        Assert.assertTrue(TeamController.closeTeam(teamStub));
+        Assert.assertEquals(TeamStatus.CLOSED, teamStub.getStatus());
+        Assert.assertEquals(1, to.getOwnedTeams().size());
+        Assert.assertEquals(0, p1.getPlayerTeams().size());
+        Assert.assertEquals(0, tm1.getTeamsManaged().size());
+        Assert.assertEquals(0, co1.getCoachedTeams().size());
+        Assert.assertEquals(0, st1.getTeams().size());
+
+        //cleanup
+        EntityManager.getInstance().removeUserByReference(su1);
+        EntityManager.getInstance().removeUserByReference(su2);
+        EntityManager.getInstance().removeUserByReference(su3);
+        EntityManager.getInstance().removeUserByReference(su4);
+        EntityManager.getInstance().removeTeamByReference(teamStub);
+    }
+
+    @Test
+    public void reopenTeamUTest(){
+        TeamStub teamStub = new TeamStub(66271);
+        SystemUserStub su1 = new SystemUserStub("rosengal", "gal",662721);
+        PlayerStub p1 = (PlayerStub)su1.getRole(RoleTypes.PLAYER);
+        teamStub.addPlayer(p1);
+
+        SystemUserStub su2 = new SystemUserStub("nirdz", "nir",662722);
+        TeamManagerStub tm1 = (TeamManagerStub)su2.getRole(RoleTypes.TEAM_MANAGER);
+        teamStub.addTeamManager(tm1);
+
+        SystemUserStub su3 = new SystemUserStub("coach", "coach",662723);
+        CoachStub co1 = (CoachStub)su3.getRole(RoleTypes.COACH);
+        teamStub.addCoach(co1);
+
+        SystemUserStub su4 = new SystemUserStub("iamowner", "owner",662724);
+        TeamOwnerStub to = (TeamOwnerStub)su4.getRole(RoleTypes.TEAM_OWNER);
+        to.addTeamToOwn(teamStub);
+        teamStub.addTeamOwner(to);
+
+        StadiumStub st1 = new StadiumStub("stadiumStub", "stub street 22");
+        teamStub.addStadium(st1);
+
+        teamStub.setStatus(TeamStatus.CLOSED);
+
+        //add to Entity Manager
+        EntityManager.getInstance().addUser(su1);
+        EntityManager.getInstance().addUser(su2);
+        EntityManager.getInstance().addUser(su3);
+        EntityManager.getInstance().addUser(su4);
+        EntityManager.getInstance().addTeam(teamStub);
+        EntityManager.getInstance().addStadium(st1);
+
+        //success
+        Assert.assertEquals(1, to.getOwnedTeams().size());
+        Assert.assertEquals(0, p1.getPlayerTeams().size());
+        Assert.assertEquals(0, tm1.getTeamsManaged().size());
+        Assert.assertEquals(0, co1.getCoachedTeams().size());
+        Assert.assertEquals(0, st1.getTeams().size());
+        Assert.assertTrue(TeamController.reopenTeam(teamStub, to));
+        Assert.assertEquals(TeamStatus.OPEN, teamStub.getStatus());
+        Assert.assertEquals(1, to.getOwnedTeams().size());
+        Assert.assertEquals(1, p1.getPlayerTeams().size());
+        Assert.assertEquals(1, tm1.getTeamsManaged().size());
+        Assert.assertEquals(1, co1.getCoachedTeams().size());
+        Assert.assertEquals(1, st1.getTeams().size());
+
+        //cleanup
+        EntityManager.getInstance().removeUserByReference(su1);
+        EntityManager.getInstance().removeUserByReference(su2);
+        EntityManager.getInstance().removeUserByReference(su3);
+        EntityManager.getInstance().removeUserByReference(su4);
+        EntityManager.getInstance().removeTeamByReference(teamStub);
+        EntityManager.getInstance().removeStadiumByReference(st1);
+    }
+
+
+    @Test
+    public void reopenTeam2UTest(){
+        TeamStub teamStub = new TeamStub(66271);
+        SystemUserStub su1 = new SystemUserStub("rosengal", "gal",662721);
+        PlayerStub p1 = (PlayerStub)su1.getRole(RoleTypes.PLAYER);
+        teamStub.addPlayer(p1);
+
+        SystemUserStub su2 = new SystemUserStub("nirdz", "nir",662722);
+        TeamManagerStub tm1 = (TeamManagerStub)su2.getRole(RoleTypes.TEAM_MANAGER);
+        teamStub.addTeamManager(tm1);
+
+        SystemUserStub su3 = new SystemUserStub("coach", "coach",662723);
+        CoachStub co1 = (CoachStub)su3.getRole(RoleTypes.COACH);
+        teamStub.addCoach(co1);
+
+        SystemUserStub su4 = new SystemUserStub("iamowner", "owner",662724);
+        TeamOwnerStub to = (TeamOwnerStub)su4.getRole(RoleTypes.TEAM_OWNER);
+        to.addTeamToOwn(teamStub);
+        teamStub.addTeamOwner(to);
+
+        StadiumStub st1 = new StadiumStub("stadiumStub", "stub street 22");
+        teamStub.addStadium(st1);
+
+        teamStub.setStatus(TeamStatus.CLOSED);
+
+        //add to Entity Manager
+        EntityManager.getInstance().addUser(su1);
+        //removing the team manager
+        su2.removeRole(tm1);
+        su2.setSelector(66162); //get role will return null
+        EntityManager.getInstance().removeUserByReference(su2);
+        EntityManager.getInstance().addUser(su3);
+        EntityManager.getInstance().addUser(su4);
+        EntityManager.getInstance().addTeam(teamStub);
+        EntityManager.getInstance().addStadium(st1);
+
+        //success, but could not restore nirdz the team's manager because he is not a user anymore
+        Assert.assertEquals(1, teamStub.getTeamManagers().size());
+        Assert.assertEquals(1, to.getOwnedTeams().size());
+        Assert.assertEquals(0, p1.getPlayerTeams().size());
+        Assert.assertEquals(0, co1.getCoachedTeams().size());
+        Assert.assertEquals(0, st1.getTeams().size());
+        Assert.assertTrue(TeamController.reopenTeam(teamStub, to));
+        Assert.assertEquals(TeamStatus.OPEN, teamStub.getStatus());
+        Assert.assertEquals(0, teamStub.getTeamManagers().size());
+        Assert.assertEquals(1, to.getOwnedTeams().size());
+        Assert.assertEquals(1, p1.getPlayerTeams().size());
+        Assert.assertEquals(1, co1.getCoachedTeams().size());
+        Assert.assertEquals(1, st1.getTeams().size());
+
+        //cleanup
+        EntityManager.getInstance().removeUserByReference(su1);
+        EntityManager.getInstance().removeUserByReference(su2);
+        EntityManager.getInstance().removeUserByReference(su3);
+        EntityManager.getInstance().removeUserByReference(su4);
+        EntityManager.getInstance().removeTeamByReference(teamStub);
+        EntityManager.getInstance().removeStadiumByReference(st1);
+
+    }
+
 }
 

@@ -1,12 +1,15 @@
 package Domain.Controllers;
 
 import Domain.EntityManager;
+import Domain.Game.Stadium;
 import Domain.Game.Asset;
 import Domain.Game.Season;
 import Domain.Game.Stadium;
 import Domain.Game.Team;
+import Domain.Game.TeamStatus;
 import Domain.Game.TeamAsset;
 import Domain.Users.*;
+import Service.UIController;
 import Domain.Exceptions.*;
 import Service.UIController;
 
@@ -20,7 +23,7 @@ public class TeamController {
 
 
     public static boolean addTeamOwner(String username, Team teamToOwn, TeamOwner owner)
-            throws Exception {
+    throws Exception{
 
         List<TeamOwner> teamOwners = teamToOwn.getTeamOwners();
 
@@ -276,4 +279,117 @@ public class TeamController {
         return false;
     }
 
+    /**
+     * Closing the team, removing the team itself from its assets,
+     * BUT not the assets from the team. After the team is closed we cannot perform actions on it.
+     * @param teamToClose Team to close.
+     * @return True if succeeded.
+     */
+    public static boolean closeTeam(Team teamToClose) {
+        //Removing the team from team managers, coaches, players, stadiums
+        for(Stadium st : teamToClose.getStadiums()){
+            st.removeTeam(teamToClose);
+        }
+        for(TeamManager tm : teamToClose.getTeamManagers()){
+            tm.removeTeam(teamToClose);
+        }
+        for(Player p : teamToClose.getTeamPlayers()){
+            p.removeTeam(teamToClose);
+        }
+        for(Coach coach : teamToClose.getTeamCoaches()){
+            coach.removeTeamToCoach(teamToClose);
+        }
+
+        teamToClose.setStatus(TeamStatus.CLOSED);
+        return true;
+    }
+
+    /**
+     * Re-open a closed team. Trying to add back the team's managers, coaches, players, stadiums.
+     * Check that the team's assets still exists, if so, adds back the team to the assets.
+     * If an asset is no longer in the system or its permissions gor revoked, we should
+     * remove the asset from the team.
+     * @param teamToReOpen The team to reopen.
+     * @return True if succeeded.
+     */
+    public static boolean reopenTeam(Team teamToReOpen, TeamOwner teamOwner) {
+        teamToReOpen.setStatus(TeamStatus.OPEN);
+
+        for(int i = 0 ; i < teamToReOpen.getStadiums().size(); i++){
+            Stadium st = teamToReOpen.getStadiums().get(i);
+            if(st != null && EntityManager.getInstance().isStadiumExists(st)) //Check in the db that the stadium still exists
+                st.addTeam(teamToReOpen, teamOwner);
+            else{
+                //Removes stadium from the team because he is no longer exists.
+                teamToReOpen.removeStadium(st);
+                i--;
+            }
+        }
+
+        for(int i =0 ; i < teamToReOpen.getTeamPlayers().size(); i++){
+            Player playerRole = teamToReOpen.getTeamPlayers().get(i);
+            if(roleStillExists(playerRole) &&
+                    playerRole.getSystemUser().getRole(RoleTypes.PLAYER) instanceof Player) //Check in the db that the player still exists
+            {
+                playerRole.addTeam(teamToReOpen);
+            }
+            else{
+                //Removes player from the team because he is no longer exists.
+                teamToReOpen.removeTeamPlayer(playerRole);
+                i--;
+            }
+        }
+
+        for(int i = 0 ; i < teamToReOpen.getTeamCoaches().size(); i++){
+            Coach coachRole = teamToReOpen.getTeamCoaches().get(i);
+            if(roleStillExists(coachRole) &&
+                    coachRole.getSystemUser().getRole(RoleTypes.COACH) instanceof Coach)  //Check in the db that the coach still exists
+            {
+                coachRole.addTeamToCoach(teamToReOpen);
+            }
+            else{
+                //Removes Team Coach from the team because he is no longer exists.
+                teamToReOpen.removeTeamCoach(coachRole);
+                i--;
+            }
+        }
+
+        for(int i =0 ; i < teamToReOpen.getTeamManagers().size(); i++){
+            TeamManager tmRole = teamToReOpen.getTeamManagers().get(i);
+            if(roleStillExists(tmRole) &&
+                    tmRole.getSystemUser().getRole(RoleTypes.TEAM_MANAGER) instanceof TeamManager)//Check in the db that the tm still exists
+            {
+                tmRole.addTeam(teamToReOpen);
+            }
+            else {
+                //Removes Team Manager from the team because he is no longer exists.
+                teamToReOpen.removeTeamManager(tmRole);
+                i--;
+                if(tmRole == null || tmRole.getSystemUser() == null
+                        || EntityManager.getInstance().getUser(tmRole.getSystemUser().getUsername()) == null) {
+                    //the user deleted entirely from the system
+                    UIController.printMessage("Could not restore permissions of lost team manager");
+                }
+                else {//The user exists but no longer have the role team-manager
+                    UIController.printMessage("Could not restore permissions of the team manager: " +
+                            tmRole.getSystemUser().getName());
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if a role still exists on the system.
+     * @param role Role to check.
+     * @return True if the role still exists.
+     */
+    private static boolean roleStillExists(Role role){
+        if(role != null &&
+                role.getSystemUser() != null &&
+                EntityManager.getInstance().getUser(role.getSystemUser().getUsername())!= null)
+            return true;
+        return false;
+    }
 }

@@ -2,14 +2,20 @@ package Domain.Users;
 
 import Domain.Game.Team;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class PlayerStub extends Player{
     private int selector;
-    public PlayerStub(SystemUser user, Date bdate) {
 
+    public PlayerStub(SystemUser systemUser) {
+        this(systemUser, null);
+    }
+
+    public PlayerStub(SystemUser user, Date bdate) {
         super(user,bdate);
     }
 

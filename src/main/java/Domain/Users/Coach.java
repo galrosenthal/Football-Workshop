@@ -10,15 +10,21 @@ import java.util.List;
 public class Coach extends Role implements Asset {
 
     private CoachQualification qualification;
-    private Team coachedTeam;
+    private List<Team> coachedTeams;
     private String teamJob;
 
+    public Coach(SystemUser systemUser) {
+        super(RoleTypes.COACH, systemUser);
+        coachedTeams = new ArrayList<>();
+    }
     public final String teamJobString = "Team job";
     public final String qualificationString = "Qualification";
 
-
-    public Coach(SystemUser su) {
+    public Coach(SystemUser su , CoachQualification qlf,  String jobTitle) {
         super(RoleTypes.COACH,su);
+        qualification = qlf;
+        teamJob = jobTitle;
+        coachedTeams = new ArrayList<>();
     }
 
     @Override
@@ -183,17 +189,36 @@ public class Coach extends Role implements Asset {
     {
         if(teamToAdd != null && teamToAdd.isTeamOwner(teamOwner))
         {
-            this.coachedTeam = teamToAdd;
-            return coachedTeam.addTeamCoach(teamOwner,this);
+            this.coachedTeams.add(teamToAdd);
+            return teamToAdd.addTeamCoach(teamOwner,this);
         }
         return false;
     }
 
+    public boolean addTeamToCoach(Team playTeam){
+        if(!this.coachedTeams.contains(playTeam)) {
+            this.coachedTeams.add(playTeam);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeTeamToCoach(Team team){
+        return this.coachedTeams.remove(team);
+    }
+
+    public List<Team> getCoachedTeams() {
+        return coachedTeams;
+    }
+
+    public String getTeamJob() {
+        return teamJob;
+    }
     @Override
     public String toString() {
         return "Coach{" +
                 "qualification=" + qualification +
-                ", coachedTeam=" + coachedTeam +
+                ", coachedTeam=" + coachedTeams +
                 ", teamJob='" + teamJob + '\'' +
                 ", teamJobString='" + teamJobString + '\'' +
                 ", qualificationString='" + qualificationString + '\'' +

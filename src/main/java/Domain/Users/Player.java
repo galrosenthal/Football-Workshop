@@ -13,32 +13,21 @@ import java.util.Objects;
 public class Player extends Role implements Asset {
 
     private PlayerFieldJobs fieldJob;
-    private Team playerTeam;
+    private List<Team> playerTeams;
     private Date bday;
 
     public final String fieldJobString = "Filed Job";
 
     public Player(SystemUser systemUser,Date birthDate) {
         super(RoleTypes.PLAYER, systemUser);
+        playerTeams= new ArrayList<>();
         bday = birthDate;
     }
 
-    public boolean addTeam(Team playTeam,TeamOwner teamOwner)
-    {
-        if(playTeam != null)
-        {
-            playerTeam = playTeam;
-            return playerTeam.addTeamPlayer(teamOwner,this);
 
-        }
-        return false;
-    }
-    public boolean addTeam(Team playTeam)
-    {
-        if(playerTeam == null)
-        {
-            playerTeam = playTeam;
-            return true;
+    public boolean addTeam(Team playTeam){
+        if(!this.playerTeams.contains(playTeam)) {
+            this.playerTeams.add(playTeam);
         }
         return false;
     }
@@ -48,6 +37,17 @@ public class Player extends Role implements Asset {
         List<String>properties = new ArrayList<>();
         properties.add(fieldJobString);
         return properties;
+    }
+
+    @Override
+    public boolean addTeam(Team team, TeamOwner teamOwner) {
+        if(team != null)
+        {
+            playerTeams.add(team);
+            return team.addTeamPlayer(teamOwner,this);
+
+        }
+        return false;
     }
 
     @Override
@@ -78,6 +78,10 @@ public class Player extends Role implements Asset {
             return true;
         }
         return false;
+    }
+
+    public boolean removeTeam(Team team){
+        return this.playerTeams.remove(team);
     }
 
 
@@ -166,4 +170,7 @@ public class Player extends Role implements Asset {
 
     }
 
+    public List<Team> getPlayerTeams() {
+        return playerTeams;
+    }
 }
