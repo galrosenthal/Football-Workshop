@@ -69,9 +69,7 @@ public class ARController {
             if (!Season.isGoodYearsFormat(seasonYears)) {
                 do {
                     UIController.printMessage("wrong years format, please enter the season years (yyyy/yy) ex. 2020/21:");
-                    System.out.println(seasonYears);//!!!
                     seasonYears = UIController.receiveString();
-                    System.out.println(seasonYears);//!!!
                 } while (!Season.isGoodYearsFormat(seasonYears));
             }
 

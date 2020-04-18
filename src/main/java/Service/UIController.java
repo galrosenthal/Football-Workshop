@@ -8,9 +8,7 @@ public class UIController {
     private static int selector = 0; //latest = 10
 
     public static void setSelector(int selector) {
-        System.out.println("from: "+selector);
         UIController.selector = selector;
-        System.out.println("to: "+selector);
     }
 
     public static void setIsTest(boolean isTest) {
@@ -31,7 +29,6 @@ public class UIController {
 
             return line;
         } else {
-            System.out.println("receiveString selector: "+selector);
             if (selector == 0) {
                 return "Not a username";
             } else if (selector == 1) {

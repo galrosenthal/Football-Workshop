@@ -87,9 +87,6 @@ public class ARControllerTest {
     @Test
     public void addSeasonToLeague2ITest() {
         //success no re-tries test
-
-        System.out.println("addSeasonToLeague2ITest");
-
         SystemUser systemUser = getSystemUserAR();
         EntityManager.getInstance().addLeague("newLeagueName");
 
@@ -106,10 +103,7 @@ public class ARControllerTest {
 
     @Test
     public void addSeasonToLeague3ITest() {
-        //duplicated creation attempt failure and then change input and success..
-
-        System.out.println("addSeasonToLeague3ITest");
-
+        //duplicated creation attempt failure and then change input and success.
         SystemUser systemUser = getSystemUserAR();
         EntityManager.getInstance().addLeague("newLeagueName");
         UIController.setSelector(921); //0 , "2020/21", "2020/21", "2021/22"
@@ -128,9 +122,6 @@ public class ARControllerTest {
     @Test
     public void addSeasonToLeague4ITest() {
         //success after wrong format
-
-        System.out.println("addSeasonToLeague4ITest");
-
         SystemUser systemUser = getSystemUserAR();
         EntityManager.getInstance().addLeague("newLeagueName");
         UIController.setSelector(924); //0 , "wrong Format","2021/22"
