@@ -144,6 +144,15 @@ public class EntityManager {
         return true;
     }
 
+    public boolean addStadium(Stadium newStadium)
+    {
+        if(!this.allStadiums.contains(newStadium))
+        {
+            this.allStadiums.add(newStadium);
+        }
+        return true;
+    }
+
     /**
      * Removes a league by a given name
      * @param leagueName - String - a name of the league to be removed
@@ -169,15 +178,6 @@ public class EntityManager {
     public void addLeague(String leagueName) {
         League league = new League(leagueName);
         allLeagues.add(league);
-    }
-
-    public boolean addStadium(Stadium newStadium)
-    {
-        if(!this.allStadiums.contains(newStadium))
-        {
-            this.allStadiums.add(newStadium);
-        }
-        return true;
     }
 
     public void clearAll() {

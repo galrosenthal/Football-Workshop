@@ -44,6 +44,17 @@ public class UIController {
                 return "newLeagueName";
             } else if (selector == 6) {
                 return "Premier League";
+            } else if (selector == 921) {//7
+                selector= 922;
+                return "2020/21";
+            } else if (selector == 922) {//8
+                selector= 923;
+                return "2020/21";
+            }  else if (selector == 923) {//9
+                return "2021/22";
+            }  else if (selector == 924) {//10
+                selector = 923;
+                return "wrong Format";
             } else if (selector == 6117) {
                 return "01/11/1199";
             } else if (selector == 6118) {
@@ -59,17 +70,17 @@ public class UIController {
                 return "11/11/2011";
             } else if (selector == 61113) {
                 return "test";
-            } else if (selector == 61114) {
+            }else if(selector == 61114){
                 return "anotherUser";
-            } else if (selector == 61116) {
+            }else if (selector == 61116) {
                 setSelector(61117);
                 return "anotherUser";
             } else if (selector == 61117) {
                 return "01/11/1199";
-            } else if (selector == 61118) {
+            }else if(selector == 61118){
                 setSelector(61119);
                 return "elevy";
-            } else if (selector == 61119) {
+            } else if(selector == 61119){
                 return "01/11/1199";
             }else if (selector == 61310) {
                 return "AESSEAL";
@@ -96,30 +107,32 @@ public class UIController {
 
             return integer;
         } else {
-            if (selector == 0 || selector == 1 || selector == 2 || selector == 6117 || selector == 6118|| selector == 921 || selector ==922 || selector==924)
-            {
+            if (selector == 0 || selector == 1 || selector == 2 || selector == 6117 || selector == 6118 || selector == 921 || selector ==922 || selector==924) {
                 return 0;
-            } else if (selector == 61111) {
+            }
+            else if(selector == 61111){
                 setSelector(61112);
                 return 1000;
-            } else if (selector == 61112) {
+            }else if(selector == 61112){
                 setSelector(61113);
                 return 0;
-            } else if (selector == 61113) {
+            }else if(selector == 61113){
                 setSelector(61112);
                 return 1000;
-            } else if (selector == 61114) {
+            }else if(selector == 61114){
                 return 0;
-            } else if (selector == 61115) {
+            }else if(selector == 61115){
                 setSelector(61116);
                 return 0;
-            } else if (selector == 61116) {
+            }else if(selector == 61116){
                 return 0;
-            } else if (selector == 61117) {
+            }else if(selector == 61117){
                 return 0;
-            } else if (selector == 61118) {
+            }else if(selector == 61118){
                 return 0;
-            } else if (selector == 61119) {
+            }else if(selector == 61119){
+                return 0;
+            }else if(selector == 61120){
             } else if (selector == 6132 || selector == 6133 || selector == 6134 || selector == 61341 || selector == 6135 || selector == 6136 || selector == 6137 || selector == 6138 || selector == 61383 || selector == 61381 || selector == 61310) {
                 if (selector == 6134) {
                     selector = 61341;
@@ -139,8 +152,7 @@ public class UIController {
             {
                 setSelector(61310);
                 return 0;
-            }
-            else {
+            }else {
                 //random number to crash test that were not checked
                 return 123812;
             }

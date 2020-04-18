@@ -1,6 +1,9 @@
 package Acceptance;
 
 import Domain.EntityManager;
+import Domain.Exceptions.UserNotFoundException;
+import Domain.Game.Team;
+import Domain.Users.*;
 import Domain.Game.League;
 import Domain.Users.AssociationRepresentative;
 import Domain.Users.SystemAdmin;
@@ -26,7 +29,9 @@ public class AcceptanceTests {
     @BeforeClass
     public static void setUp() { //Will be called only once
         existingUser = new SystemUser("abc", "aBc12345", "abc");
+        UIController.setIsTest(true);
     }
+
 
     @Test
     public void systemBootATest(){
@@ -43,7 +48,7 @@ public class AcceptanceTests {
     }
 
     @Test
-    public void addTeamOwnerATest() {
+    public void addTeamOwnerATest() throws Exception{
         UIController.setIsTest(true);
         Controller.addTeamOwner(new SystemUser("rosengal","Gal"));
     }
@@ -211,22 +216,25 @@ public class AcceptanceTests {
      * User for Elisha Levy exists
      */
     @Test
-    public void addAsset1ATest() throws Exception {
+    public void addAsset1ATest() throws Exception
+    {
         Team beitShean = new Team();
 
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = new SystemUser("abc1", "abc12345", "abc");
+        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
-        SystemUser elisha = new SystemUser("elevy", "Elisha Levy");
+        SystemUser elisha = new SystemUser("elevy","Elisha Levy");
 
         Unregistered abcUnreg = new Unregistered();
-        SystemUser abc = abcUnreg.login("abc1", "abc12345");
-        assertEquals(abc, abcCreate);
+        SystemUser abc = abcUnreg.login("abc1","abc12345");
+        assertEquals(abc,abcCreate);
 
         UIController.setSelector(61118);
         assertTrue(Controller.addAsset(abc));
+
+        EntityManager.getInstance().removeUserByReference(abcCreate);
 
 
     }
@@ -236,29 +244,35 @@ public class AcceptanceTests {
      * User for Elisha Levy does not exists
      */
     @Test
-    public void addAsset2ATest() throws Exception {
+    public void addAsset2ATest() throws Exception
+    {
         Team beitShean = new Team();
 
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = new SystemUser("abc1", "abc12345", "abc");
+
+        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
 
         Unregistered abcUnreg = new Unregistered();
-        SystemUser abc = abcUnreg.login("abc1", "abc12345");
-        assertEquals(abc, abcCreate);
+        SystemUser abc = abcUnreg.login("abc1","abc12345");
+        assertEquals(abc,abcCreate);
 
         UIController.setSelector(61118);
-        try {
+        try{
             Controller.addAsset(abc);
+            EntityManager.getInstance().removeUserByReference(abcCreate);
             fail();
-        } catch (UserNotFoundException e) {
+        }
+        catch (UserNotFoundException e)
+        {
             UIController.printMessage(e.getMessage());
-            assertEquals("Could not find user elevy", e.getMessage());
+            assertEquals("Could not find user elevy",e.getMessage());
         }
 
 
+        EntityManager.getInstance().removeUserByReference(abcCreate);
     }
 
 

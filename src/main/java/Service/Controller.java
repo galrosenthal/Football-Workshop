@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Controller {
 
-    public static boolean systemBoot(){
+    public static boolean systemBoot() {
         //Establishing connections to external DBMS
         //access DB
         //extract system admins
@@ -26,15 +26,15 @@ public class Controller {
         //Retrieve system user
         SystemUser admin = null;
         try {
-            admin =  new Unregistered().login(username, password);
+            admin = new Unregistered().login(username, password);
         } catch (Exception e) {
             UIController.printMessage("Username or Password was incorrect!!!!!");
             e.printStackTrace();
         }
-        UIController.printMessage("Successful login. Welcome back, "+ admin.getName());
+        UIController.printMessage("Successful login. Welcome back, " + admin.getName());
         //system boot choice
         boolean choice = UIController.receiveChoice("Would you like to boot the system? y/n");
-        if (!choice){
+        if (!choice) {
             return false;
         }
 
@@ -57,12 +57,10 @@ public class Controller {
         Team chosenTeam = getTeamByChoice(myTeamOwner);
 
         String newTeamOwnerUsername = getUsernameFromUser("Team Owner");
-        UIController.printMessage(newTeamOwnerUsername);
-        try{
-            TeamController.addTeamOwner(newTeamOwnerUsername,chosenTeam,myTeamOwner);
-        }
-        catch (Exception e)
-        {
+
+        try {
+            TeamController.addTeamOwner(newTeamOwnerUsername, chosenTeam, myTeamOwner);
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -98,14 +96,14 @@ public class Controller {
             return null;
         }
         UIController.printMessage("Choose a Team Number");
-        for (int i = 0; i < myTeams.size() ; i++) {
+        for (int i = 0; i < myTeams.size(); i++) {
             UIController.printMessage(i + ". " + myTeams.get(i).getTeamName());
         }
         int teamIndex;
 
-        do{
+        do {
             teamIndex = UIController.receiveInt();
-        }while (!(teamIndex >= 0 && teamIndex < myTeams.size()));
+        } while (!(teamIndex >= 0 && teamIndex < myTeams.size()));
 
         return myTeams.get(teamIndex);
     }
@@ -167,7 +165,8 @@ public class Controller {
      * @param systemUser - the System User of the Team Owner
      * @return true if the asset was edit successfully, false otherwise.
      */
-    public static boolean modifyTeamAssetDetails(SystemUser systemUser) throws Exception {
+    public static boolean modifyTeamAssetDetails(SystemUser systemUser) throws Exception
+    {
         TeamOwner myTeamOwner = getUserIfIsTeamOwner(systemUser);
         if (myTeamOwner == null) {
             return false;
