@@ -4,6 +4,7 @@ import DB.DBManager;
 import DB.Table;
 import Domain.Game.League;
 import Domain.Users.*;
+import Domain.Game.Stadium;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,12 +13,14 @@ import java.util.List;
 public class EntityManager {
     private static EntityManager entityManagerInstance = null;
 
+    private List<Stadium> allStadiums;
     private List<SystemUser> allUsers;
     private HashSet<League> allLeagues;
 
     private EntityManager() {
         allUsers = new ArrayList<>();
         allLeagues = new HashSet<>();
+        allStadiums = new ArrayList<>();
     }
 
     /**
@@ -102,6 +105,14 @@ public class EntityManager {
         }
         return null;
     }
+    public Stadium getStadium(String stadiumName) {
+        for (Stadium std: allStadiums) {
+            if (std.getName().equals(stadiumName)) {
+                return std;
+            }
+        }
+        return null;
+    }
 
     /**
      * Checks if a league with a name that matches the given name already exists.
@@ -126,6 +137,15 @@ public class EntityManager {
 
     public boolean removeUserByReference(SystemUser systemUser) {
         this.allUsers.remove(systemUser);
+        return true;
+    }
+
+    public boolean addStadium(Stadium newStadium)
+    {
+        if(!this.allStadiums.contains(newStadium))
+        {
+            this.allStadiums.add(newStadium);
+        }
         return true;
     }
 
@@ -156,8 +176,10 @@ public class EntityManager {
         allLeagues.add(league);
     }
 
-    public void clearAll(){
-        this.allUsers = new ArrayList<>();
-        this.allLeagues = new HashSet<>();
+    public void clearAll() {
+        allStadiums = new ArrayList<>();
+        allLeagues = new HashSet<>();
+        allUsers = new ArrayList<>();
+
     }
 }

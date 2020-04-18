@@ -1,8 +1,11 @@
 package Domain.Users;
 
 
+import Domain.EntityManager;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class SystemUser {
@@ -14,9 +17,11 @@ public class SystemUser {
     private String name;
 
     public SystemUser(String username,String password, String name) {
-        this(username,name);
+        this.roles = new ArrayList<>();
+        this.username = username;
+        this.name = name;
         this.password = password;
-        //TODO: Add to database?????
+        EntityManager.getInstance().addUser(this);
     }
 
     public SystemUser(String username,String name)
@@ -24,6 +29,7 @@ public class SystemUser {
         this.roles = new ArrayList<>();
         this.username = username;
         this.name = name;
+        EntityManager.getInstance().addUser(this);
     }
 
 //
@@ -40,9 +46,14 @@ public class SystemUser {
         return username;
     }
 
-    public void addNewRole(Role role)
+    public boolean addNewRole(Role role)
     {
-        roles.add(role);
+        if(role != null)
+        {
+            roles.add(role);
+            return true;
+        }
+        return false;
     }
 
     public List<Role> getRoles() {
@@ -72,12 +83,27 @@ public class SystemUser {
         return null;
     }
 
+    public boolean removeRole(Role role) {
+        if(role != null)
+        {
+            roles.remove(role);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof SystemUser)) return false;
-        SystemUser systemUser = (SystemUser) o;
-        return this.username.equals(systemUser.username) &&
-                this.name.equals(systemUser.name);
+        SystemUser that = (SystemUser) o;
+        return getRoles().size() == that.getRoles().size() &&
+                getUsername().equals(that.getUsername()) &&
+                getName().equals(that.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUsername(), getPassword(), getName());
     }
 }

@@ -55,7 +55,30 @@ public class UIController {
             }  else if (selector == 924) {//10
                 selector = 923;
                 return "wrong Format";
-            } else
+            } else if (selector == 6117) {
+                return "01/11/1199";
+            } else if (selector == 6118) {
+                return "CoachJob";
+            } else if (selector == 6119) {
+                return "StadiumName";
+            } else if (selector == 61110) {
+                setSelector(6117);
+                return "StadiumName";
+            } else if(selector == 61113){
+                return "test";
+            }else if(selector == 61114){
+                return "anotherUser";
+            }else if (selector == 61116) {
+                setSelector(61117);
+                return "anotherUser";
+            } else if (selector == 61117) {
+                return "01/11/1199";
+            }else if(selector == 61118){
+                setSelector(61119);
+                return "elevy";
+            } else if(selector == 61119){
+                return "01/11/1199";
+            }  else
                 return null;
         }
     }
@@ -67,10 +90,35 @@ public class UIController {
 
             return integer;
         } else {
-            if (selector == 0 || selector == 1 || selector == 2 || selector == 921 || selector ==922 || selector==924) {
+            if (selector == 0 || selector == 1 || selector == 2 || selector == 6117 || selector == 6118 || selector == 921 || selector ==922 || selector==924) {
                 return 0;
-            } else {
+            } else if(selector == 61111){
+                setSelector(61112);
+                return 1000;
+            }else if(selector == 61112){
+                setSelector(61113);
                 return 0;
+            }else if(selector == 61113){
+                setSelector(61112);
+                return 1000;
+            }else if(selector == 61114){
+                return 0;
+            }else if(selector == 61115){
+                setSelector(61116);
+                return 0;
+            }else if(selector == 61116){
+                return 0;
+            }else if(selector == 61117){
+                return 0;
+            }else if(selector == 61118){
+                return 0;
+            }else if(selector == 61119){
+                return 0;
+            }else if(selector == 61120){
+                return 0;
+            }else {
+                //random number to crash test that were not checked
+                return 123812;
             }
         }
     }

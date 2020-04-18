@@ -5,9 +5,14 @@ target/test-classes/*/*.class
 target/**/*.html
 target/**/*.png
 target/**/*.gif
-target/**/*.gif
 target/**/*.txt
 target/**/*.js
 target/**/*.css
 target/**/*.properties
 /target/classes/META-INF/Football-Workshop.kotlin_module
+/target/maven-status/maven-compiler-plugin/compile/default-compile/*.lst
+/resources/Tables/testTable.csv
+/target/test-classes/META-INF/Football-Workshop.kotlin_module
+/target/classes/Tables/testTable.csv
+**/*.lst
+**/*.csv
