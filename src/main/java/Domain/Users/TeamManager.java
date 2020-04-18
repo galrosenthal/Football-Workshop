@@ -31,6 +31,7 @@ public class TeamManager extends Role implements Asset {
             {
                 List<TeamManagerPermissions> permissions = new ArrayList<>();
                 this.permissionsPerTeam.put(teamToMange , permissions);
+                return true;
             }
             else
             {

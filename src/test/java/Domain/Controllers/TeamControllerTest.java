@@ -200,14 +200,14 @@ public class TeamControllerTest {
     }
 
 
-//
-//    @Test
-//    public void addAssetITest() throws Exception
-//    {
-//        SystemUser anotherUser = new SystemUser("test","testUser");
-//        hapoelBash.getTeamOwners().add(to);
-//        assertTrue(TeamController.addAssetToTeam("test",hapoelBash,to,TeamAsset.TEAM_MANAGER));
-//    }
+
+    @Test
+    public void addAssetITest() throws Exception
+    {
+        SystemUser anotherUser = new SystemUser("test","testUser");
+        hapoelBash.getTeamOwners().add(to);
+        assertTrue(TeamController.addAssetToTeam("test",hapoelBash,to,TeamAsset.TEAM_MANAGER));
+    }
 
 
 
