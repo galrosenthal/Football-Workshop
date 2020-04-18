@@ -2,6 +2,7 @@ package Domain.Users;
 
 
 import Domain.EntityManager;
+import Domain.UserComplaints;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Objects;
 public class SystemUser extends User implements Fan{
 
     private List<Role> roles;
+    private List<UserComplaints> complaints;
 
     protected String username;
     private String password;
