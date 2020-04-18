@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Game {
-
+    
     Stadium stadium;
     Team homeTeam;
     Team awayTeam;
