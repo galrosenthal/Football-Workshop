@@ -58,7 +58,7 @@ public class SystemUser extends User implements Fan{
 
     public boolean addNewRole(Role role)
     {
-        if(role != null)
+        if(role != null && !roles.contains(role))
         {
             roles.add(role);
             return true;

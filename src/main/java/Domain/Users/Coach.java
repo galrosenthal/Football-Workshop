@@ -13,13 +13,14 @@ public class Coach extends PartOfTeam {
     private CoachQualification qualification;
     private List<Team> coachedTeams;
     private String teamJob;
+    public final String teamJobString = "Team job";
+    public final String qualificationString = "Qualification";
 
     public Coach(SystemUser systemUser) {
         super(RoleTypes.COACH, systemUser);
         coachedTeams = new ArrayList<>();
     }
-    public final String teamJobString = "Team job";
-    public final String qualificationString = "Qualification";
+
 
     public Coach(SystemUser su , CoachQualification qlf,  String jobTitle) {
         super(RoleTypes.COACH,su);
@@ -182,7 +183,7 @@ public class Coach extends PartOfTeam {
         if (!(o instanceof Coach)) return false;
         Coach coach = (Coach) o;
         return qualification == coach.qualification &&
-                teamJob.equals(coach.teamJob) &&
+                ((teamJob == null && coach.teamJob == null) || teamJob.equals(coach.teamJob)) &&
                 super.systemUser.equals(coach.systemUser);
     }
 
