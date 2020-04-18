@@ -77,6 +77,7 @@ public class TeamControllerTest {
         hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         try{
             TeamController.addTeamOwner("dfds", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+            fail();
         }
         catch (Exception e){
             e.printStackTrace();

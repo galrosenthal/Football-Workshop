@@ -229,6 +229,8 @@ public class AcceptanceTests {
         UIController.setSelector(61118);
         assertTrue(Controller.addAsset(abc));
 
+        EntityManager.getInstance().removeUserByReference(abcCreate);
+
 
     }
 
@@ -242,6 +244,7 @@ public class AcceptanceTests {
         Team beitShean = new Team();
 
         beitShean.setTeamName("Beit Shean");
+
         SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
@@ -254,6 +257,7 @@ public class AcceptanceTests {
         UIController.setSelector(61118);
         try{
             Controller.addAsset(abc);
+            EntityManager.getInstance().removeUserByReference(abcCreate);
             fail();
         }
         catch (UserNotFoundException e)
@@ -263,6 +267,7 @@ public class AcceptanceTests {
         }
 
 
+        EntityManager.getInstance().removeUserByReference(abcCreate);
     }
 
 }

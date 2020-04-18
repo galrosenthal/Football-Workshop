@@ -78,7 +78,7 @@ public class UIController {
                 return "elevy";
             } else if(selector == 61119){
                 return "01/11/1199";
-            } else
+            }  else
                 return null;
         }
     }
@@ -113,6 +113,8 @@ public class UIController {
             }else if(selector == 61118){
                 return 0;
             }else if(selector == 61119){
+                return 0;
+            }else if(selector == 61120){
                 return 0;
             }else {
                 //random number to crash test that were not checked

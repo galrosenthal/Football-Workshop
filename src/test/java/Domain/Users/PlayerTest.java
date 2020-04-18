@@ -50,6 +50,7 @@ public class PlayerTest {
     @Test
     public void addAllProperties() throws Exception{
         UIController.setIsTest(true);
+        UIController.setSelector(61120);
         Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
         Player p1 = new Player(testUser,bday);
 
@@ -60,6 +61,7 @@ public class PlayerTest {
     @Test
     public void addProperty() throws Exception{
         UIController.setIsTest(true);
+        UIController.setSelector(61120);
         Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
         Player p1 = new Player(testUser,bday);
 
