@@ -18,12 +18,12 @@ public class TOControllerTest {
 
         UIController.setIsTest(true);
         UIController.setSelector(66143);
-        TeamOwnerStub.setSelector(66143);
+        new TeamOwnerStub(new SystemUserStub("a","a",0)).setSelector(66143);
         //false because team is already closed
         assertFalse(TOController.closeTeam(new SystemUserStub("rosengal", "gal", 66143)));
 
         UIController.setSelector(66144);
-        TeamOwnerStub.setSelector(66144);
+        new TeamOwnerStub(new SystemUserStub("a","a",0)).setSelector(66144);
         //false because chose n
         assertFalse(TOController.closeTeam(new SystemUserStub("rosengal", "gal", 66144)));
     }
@@ -33,7 +33,7 @@ public class TOControllerTest {
         //Integration with TeamController
         UIController.setIsTest(true);
         UIController.setSelector(66151);
-        TeamOwnerStub.setSelector(66151);
+        new TeamOwnerStub(new SystemUserStub("a","a",0)).setSelector(66151);
         //success
         assertTrue(TOController.closeTeam(new SystemUserStub("rosengal", "gal", 66151)));
 
@@ -47,7 +47,7 @@ public class TOControllerTest {
 
         UIController.setIsTest(true);
         UIController.setSelector(66163);
-        TeamOwnerStub.setSelector(66163);
+        new TeamOwnerStub(new SystemUserStub("a","a",0)).setSelector(66163);
         //false because chose n
         assertFalse(TOController.reopenTeam(new SystemUserStub("rosengal", "gal", 66163)));
     }
@@ -57,7 +57,7 @@ public class TOControllerTest {
         //Integration with TeamController
         UIController.setIsTest(true);
         UIController.setSelector(66251);
-        TeamOwnerStub.setSelector(66251);
+        new TeamOwnerStub(new SystemUserStub("a","a",0)).setSelector(66251);
         //success
         assertTrue(TOController.reopenTeam(new SystemUserStub("rosengal", "gal", 66251)));
     }

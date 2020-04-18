@@ -1,9 +1,6 @@
 package Domain.Game;
 
-import Domain.Users.Coach;
-import Domain.Users.Player;
-import Domain.Users.TeamManager;
-import Domain.Users.TeamOwner;
+import Domain.Users.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +14,11 @@ public class TeamStub extends Team{
     private List<Stadium> stadiums;
     private int selector;
 
+    /**
+     * Selector latest Number: 2
+     */
     public TeamStub(int selector) {
+        super();
         this.selector = selector;
         this.teamOwners = new ArrayList<>();
         this.players = new ArrayList<>();
@@ -33,6 +34,11 @@ public class TeamStub extends Team{
     public List<TeamOwner> getTeamOwners() {
         return this.teamOwners;
     }
+
+    public void setSelector(int selector) {
+        this.selector = selector;
+    }
+
 
     @Override
     public List<Player> getTeamPlayers() {
@@ -115,5 +121,75 @@ public class TeamStub extends Team{
     @Override
     public void setTeamName(String testName) {
         super.setTeamName(testName);
+    }
+
+    @Override
+    public boolean addTeamPlayer(TeamOwner townr, Role teamPlayer) {
+        if(selector == 1)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean addTeamCoach(TeamOwner townr, Role coach) {
+        return super.addTeamCoach(townr, coach);
+    }
+
+    @Override
+    public boolean addTeamManager(TeamOwner townr, Role teamManager) {
+        return super.addTeamManager(townr, teamManager);
+    }
+
+    @Override
+    public boolean addTeamOwner(Role teamOwner) {
+        return true;
+    }
+
+
+    @Override
+    public boolean isTeamOwner(TeamOwner teamOwner) {
+        if(selector == 6110)
+        {
+            return true;
+        }
+        else if(selector == 6111)
+        {
+            return true;
+        }
+        else if(selector == 6112)
+        {
+            return true;
+        }else if(selector == 6113)
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean addAsset(String assetName, TeamOwner teamOwner, TeamAsset assetType){
+        if(selector == 6110)
+        {
+            return true;
+        }
+        else if(selector == 6111)
+        {
+            return false;
+        }else if(selector == 6112)
+        {
+            return true;
+        }
+        else if(selector == 6113)
+        {
+            return false;
+        }
+        else{
+            return false;
+        }
     }
 }

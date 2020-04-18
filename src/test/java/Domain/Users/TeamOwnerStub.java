@@ -7,14 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TeamOwnerStub extends TeamOwner {
+    private int selector;
 
+    /**
+     * Selector latest number: 1
+     */
     public TeamOwnerStub(SystemUser systemUser) {
         super(systemUser);
     }
 
-    private static int selector = 0;
 
-    public static void setSelector(int select) {
+
+
+    public void setSelector(int select) {
         selector = select;
     }
 
@@ -24,6 +29,20 @@ public class TeamOwnerStub extends TeamOwner {
         if (selector == 0 || selector == 66143 || selector == 66144 || selector == 66151 || selector == 66163
                 || selector == 66251) {
             TeamStub teamStub = new TeamStub(selector);
+            test.add(teamStub);
+            teamStub.addTeamOwner(this);
+        }
+        else if(selector == 6111)
+        {
+            return null;
+        }else if(selector == 6112)
+        {
+            TeamStub teamStub = new TeamStub(6112);
+            test.add(teamStub);
+            teamStub.addTeamOwner(this);
+        }else if(selector == 6113)
+        {
+            TeamStub teamStub = new TeamStub(6113);
             test.add(teamStub);
             teamStub.addTeamOwner(this);
         }
@@ -37,6 +56,9 @@ public class TeamOwnerStub extends TeamOwner {
         }
         if (selector == 0){
             return true;
+        }else if(selector == 1)
+        {
+            return false;
         }else{
             return false;
         }

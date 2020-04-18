@@ -1,7 +1,12 @@
 package Service;
 
 import Domain.Controllers.TeamController;
+import Domain.Exceptions.NoTeamExistsException;
+import Domain.Exceptions.alreadyTeamOwnerException;
+import Domain.Exceptions.UserNotFoundException;
+import Domain.Game.Asset;
 import Domain.Game.Team;
+import Domain.Game.TeamAsset;
 import Domain.Game.TeamStatus;
 import Domain.Users.*;
 
@@ -92,6 +97,10 @@ public class Controller {
 
     public static Team getTeamByChoice(TeamOwner myTeamOwner) {
         List<Team> myTeams = myTeamOwner.getOwnedTeams();
+        if(myTeams == null)
+        {
+            return null;
+        }
         UIController.printMessage("Choose a Team Number");
         for (int i = 0; i < myTeams.size() ; i++) {
             if(myTeams.get(i).getStatus() == TeamStatus.CLOSED)
@@ -109,4 +118,89 @@ public class Controller {
 
         return myTeams.get(teamIndex);
     }
+
+
+
+
+
+    /**
+     * Team Owner Asks to add a new asset to the Team
+     * @param systemUser - the System User of the Team Owner
+     * @return true if the asset added successfully
+     */
+    public static boolean addAsset(SystemUser systemUser) throws Exception
+    {
+        TeamOwner myTeamOwner = getUserIfIsTeamOwner(systemUser);
+        if(myTeamOwner == null)
+        {
+            return false;
+        }
+
+        Team chosenTeam = getTeamByChoice(myTeamOwner);
+
+        if(chosenTeam == null)
+        {
+            throw new NoTeamExistsException("There was no Team found");
+        }
+
+        TeamAsset ass = getAssetTypeFromUser();
+        String name = getNameFromUser("What is the asset name/username?");
+
+        return TeamController.addAssetToTeam(name,chosenTeam,myTeamOwner,ass);
+    }
+
+    private static String getNameFromUser(String msg) {
+        UIController.printMessage(msg);
+        String username = UIController.receiveString();
+        return username;
+    }
+
+
+    private static TeamAsset getAssetTypeFromUser() {
+        UIController.printMessage("Choose Asset Type: ");
+        for (int i = 0; i < TeamAsset.values().length; i++) {
+            UIController.printMessage(i + ". " + TeamAsset.values()[i]);
+        }
+
+        int assetIndex;
+
+        do{
+            assetIndex = UIController.receiveInt();
+        }while (!(assetIndex >= 0 && assetIndex < TeamAsset.values().length));
+
+        return TeamAsset.values()[assetIndex];
+    }
+
+    /**
+     * Team Owner Asks to edit an asset to the Team
+     * @param systemUser - the System User of the Team Owner
+     * @return true if the asset was edit successfully, false otherwise.
+     */
+    public static boolean modifyTeamAssetDetails(SystemUser systemUser) throws Exception
+    {
+        TeamOwner myTeamOwner = getUserIfIsTeamOwner(systemUser);
+        if(myTeamOwner == null)
+        {
+            return false;
+        }
+        Team chosenTeam = getTeamByChoice(myTeamOwner);
+
+        if(chosenTeam == null)
+        {
+            throw new NoTeamExistsException("There was no Team found");
+        }
+
+        boolean isSuccess = TeamController.editAssets(chosenTeam);
+
+        UIController.printMessage("The action completed successfully");
+
+        return isSuccess;
+    }
+
+
+
+
+
+
+
 }

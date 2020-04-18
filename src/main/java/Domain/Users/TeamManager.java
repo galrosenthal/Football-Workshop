@@ -1,16 +1,79 @@
 package Domain.Users;
 
+import Domain.Game.Asset;
 import Domain.Game.Team;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TeamManager extends Role {
-    private List<Team> teamsManaged;
-
-    public TeamManager(SystemUser systemUser) {
+public class TeamManager extends Role implements Asset {
+    private List<Team> managedTeams;
+    public TeamManager(SystemUser systemUser)
+    {
         super(RoleTypes.TEAM_MANAGER, systemUser);
-        teamsManaged = new ArrayList<>();
+        managedTeams = new ArrayList<>();
+    }
+
+
+    public boolean addTeam(Team teamToMange, TeamOwner teamOwner)
+    {
+        if(teamToMange != null && teamToMange.isTeamOwner(teamOwner))
+        {
+            managedTeams.add(teamToMange);
+            return teamToMange.addTeamManager(teamOwner,this);
+        }
+        return false;
+    }
+
+
+    //todo: add permissions!
+    @Override
+    public List<String> getProperties() {
+        List<String> properties = new ArrayList<>();
+        return properties;
+    }
+
+    @Override
+    public boolean changeProperty(String toChange, String property)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isListProperty(String property) {
+        return true;
+    }
+
+    @Override
+    public boolean isStringProperty(String property) {
+        return false;
+    }
+
+    @Override
+    public boolean isEnumProperty(String property) {
+        return false;
+    }
+
+
+    @Override
+    public boolean addAllProperties() {
+        return true;
+    }
+
+    @Override
+    public boolean addProperty(String property) {
+        return false;
+
+    }
+
+    @Override
+    public boolean removeProperty(String property) {
+        return false;
+    }
+
+    @Override
+    public List<Enum> getAllValues(String property) {
+        return null;
     }
 
     @Override
@@ -23,18 +86,18 @@ public class TeamManager extends Role {
     }
 
     public boolean addTeam(Team team){
-        if(!this.teamsManaged.contains(team)) {
-            this.teamsManaged.add(team);
+        if(!this.managedTeams.contains(team)) {
+            this.managedTeams.add(team);
             return true;
         }
         return false;
     }
 
     public boolean removeTeam(Team team){
-        return this.teamsManaged.remove(team);
+        return this.managedTeams.remove(team);
     }
 
     public List<Team> getTeamsManaged() {
-        return teamsManaged;
+        return managedTeams;
     }
 }

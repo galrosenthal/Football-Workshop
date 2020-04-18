@@ -6,6 +6,7 @@ import Domain.Game.League;
 import Domain.Game.Stadium;
 import Domain.Game.Team;
 import Domain.Users.*;
+import Domain.Game.Stadium;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -108,6 +109,14 @@ public class EntityManager {
         }
         return null;
     }
+    public Stadium getStadium(String stadiumName) {
+        for (Stadium std: allStadiums) {
+            if (std.getName().equals(stadiumName)) {
+                return std;
+            }
+        }
+        return null;
+    }
 
     /**
      * Checks if a league with a name that matches the given name already exists.
@@ -196,9 +205,11 @@ public class EntityManager {
         allLeagues.add(league);
     }
 
-    public void clearAll(){
-        this.allUsers = new ArrayList<>();
-        this.allLeagues = new HashSet<>();
+    public void clearAll() {
+        allStadiums = new ArrayList<>();
+        allLeagues = new HashSet<>();
+        allUsers = new ArrayList<>();
+        allTeams = new ArrayList<>();
     }
 
     public boolean removeStadiumByReference(Stadium st) {

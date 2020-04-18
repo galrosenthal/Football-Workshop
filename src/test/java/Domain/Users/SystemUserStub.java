@@ -2,6 +2,7 @@ package Domain.Users;
 
 import Domain.EntityManager;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,9 @@ public class SystemUserStub extends SystemUser{
     private int selector;
 
 
+    /**
+     * Selector latest number: 9
+     */
     public SystemUserStub(String username,String name,int selector)
     {
         super(username,name);
@@ -34,13 +38,18 @@ public class SystemUserStub extends SystemUser{
         return username;
     }
 
-    public void addNewRole(Role role)
+    public boolean addNewRole(Role role)
     {
-        getRoles().add(role);
+        if(role != null)
+        {
+            getRoles().add(role);
+            return true;
+        }
+        return false;
     }
 
     public List<Role> getRoles() {
-        return getRoles();
+        return super.getRoles();
     }
 
     public boolean isType(RoleTypes roleType) {
@@ -51,8 +60,7 @@ public class SystemUserStub extends SystemUser{
         return true;
     }
 
-    public Role getRole(RoleTypes roleType)
-    {
+    public Role getRole(RoleTypes roleType) {
         if(selector == 1 || selector == 66142 || selector == 66162)
         {
             return null;
@@ -64,6 +72,18 @@ public class SystemUserStub extends SystemUser{
         }
         else if( selector == 5){
             return new AssociationRepresentativeStub(this);
+        }else if(selector == 6111)
+        {
+            return getRoles().get(0);
+        }else if(selector == 6112)
+        {
+            return new Player(this,null);
+        }
+        else if(selector == 6116)
+        {
+            PlayerStub p = new PlayerStub(this,null);
+            p.setSelector(0);
+            return p;
         }
         else if (selector == 661721 ||selector == 662721)
             return new PlayerStub(this);
@@ -72,6 +92,36 @@ public class SystemUserStub extends SystemUser{
         else if (selector == 661723 || selector == 662723)
             return new CoachStub(this);
 
+        else if(selector == 6117)
+        {
+            CoachStub c = new CoachStub(this);
+            c.setSelector(0);
+            return c;
+        }
+        else if(selector == 6118)
+        {
+            TeamManagerStub tm = new TeamManagerStub(this);
+            tm.setSelector(0);
+            return tm;
+        }
+        else if(selector == 6119)
+        {
+            return null;
+        }
+
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(selector == 0 || selector == 1)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public void setSelector(int i) {
+        selector = i;
     }
 }

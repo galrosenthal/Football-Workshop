@@ -47,7 +47,7 @@ public class TOController {
         }
 
         if(closeOrReopen.equals("reopen")){
-            TeamController.reopenTeam(chosenTeam);
+            TeamController.reopenTeam(chosenTeam, myTeamOwner);
         }
         else if(closeOrReopen.equals("close")){
             TeamController.closeTeam(chosenTeam);

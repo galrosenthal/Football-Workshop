@@ -1,34 +1,42 @@
 package Domain.Controllers;
 
 import Domain.EntityManager;
+import Domain.Exceptions.NoTeamExistsException;
+import Domain.Exceptions.NotATeamOwner;
 import Domain.Game.*;
 import Domain.Users.*;
+import Service.Controller;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
 import java.util.EmptyStackException;
+
+import static org.junit.Assert.*;
 
 public class TeamControllerTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private SystemUser teamOwnerUser = new SystemUser("oranShich", "Oran2802", "name");
-    private SystemUser teamOwnerToAdd = new SystemUser("oranSh", "Oran2802", "name");
-    private Team hapoelBash = new Team();
+    SystemUser teamOwnerUser = new SystemUser("oranShich", "Oran2802", "name");
+    SystemUser teamOwnerToAdd = new SystemUser("oranSh", "Oran2802", "name");
+    Team hapoelBash = new Team();
+    TeamStub stubTeam = new TeamStub(0);
     //TeamOwner originalOwner = new TeamOwner(teamOwnerUser);
-    private League league = new League("Premier League");
+    League league = new League("Premier League");
+    TeamOwnerStub to;
     @Before
     public void runBeforeTests(){
-        teamOwnerUser.addNewRole(new TeamOwner(teamOwnerUser));
+        to = new TeamOwnerStub(teamOwnerUser);
+        teamOwnerUser.addNewRole(to);
     }
 
     @After
     public void runAfterTests(){
+        hapoelBash.removeTeamOwner((TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         hapoelBash = new Team();
         EntityManager.getInstance().removeUserByReference(teamOwnerUser);
         EntityManager.getInstance().removeUserByReference(teamOwnerToAdd);
-        hapoelBash.removeTeamOwner((TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
     }
 
     /**
@@ -70,11 +78,12 @@ public class TeamControllerTest {
         EntityManager.getInstance().addUser(teamOwnerUser);
         hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         try{
-            TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+            TeamController.addTeamOwner("dfds", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+            fail();
         }
         catch (Exception e){
             e.printStackTrace();
-            Assert.assertEquals("Could not find a user by the given username",e.getMessage());
+            assertEquals("Could not find a user by the given username",e.getMessage());
         }
 
         //Add the user to the system' expected to succeed
@@ -110,7 +119,7 @@ public class TeamControllerTest {
         }
         catch (Exception e){
             e.printStackTrace();
-            Assert.assertEquals("This User is already a team owner of a different team in same league",e.getMessage());
+            assertEquals("This User is already a team owner of a different team in same league",e.getMessage());
         }
 
 
@@ -149,8 +158,53 @@ public class TeamControllerTest {
         }
         catch (Exception e){
             e.printStackTrace();
-            Assert.assertEquals("This User is already a team owner of this team",e.getMessage());
+            assertEquals("This User is already a team owner of this team",e.getMessage());
         }
+    }
+
+
+    @Test
+    public void addAssetUTest() throws Exception
+    {
+        SystemUserStub assetToAdd = new SystemUserStub("asset","asset user", 0);
+        try{
+            TeamController.addAssetToTeam("asset",hapoelBash,to, TeamAsset.PLAYER);
+        }
+        catch (NotATeamOwner e)
+        {
+            assertEquals("Not One of the Team Owners",e.getMessage());
+        }
+
+        try{
+            TeamController.addAssetToTeam("asset",hapoelBash,to, null);
+        }
+        catch (NullPointerException e)
+        {
+            assertEquals("No Asset Type was given",e.getMessage());
+        }
+
+        try{
+            TeamController.addAssetToTeam("asset",null,to, null);
+        }
+        catch (NoTeamExistsException e)
+        {
+            assertEquals("No Team was given", e.getMessage());
+        }
+
+        stubTeam.setSelector(6110);
+        assertTrue(TeamController.addAssetToTeam("asset",stubTeam,to, TeamAsset.PLAYER));
+        stubTeam.setSelector(6111);
+        assertFalse(TeamController.addAssetToTeam("asset",stubTeam,to,  TeamAsset.PLAYER));
+    }
+
+
+
+    @Test
+    public void addAssetITest() throws Exception
+    {
+        SystemUser anotherUser = new SystemUser("test","testUser");
+        hapoelBash.getTeamOwners().add(to);
+        assertTrue(TeamController.addAssetToTeam("test",hapoelBash,to,TeamAsset.TEAM_MANAGER));
     }
 
     @Test
@@ -185,7 +239,7 @@ public class TeamControllerTest {
         teamStub.addTeamOwner(to);
 
 
-        StadiumStub st1 = new StadiumStub();
+        StadiumStub st1 = new StadiumStub("stadiumStub", "stub street 22");
         st1.addTeam(teamStub);
         teamStub.addStadium(st1);
 
@@ -238,7 +292,7 @@ public class TeamControllerTest {
         to.addTeamToOwn(teamStub);
         teamStub.addTeamOwner(to);
 
-        StadiumStub st1 = new StadiumStub();
+        StadiumStub st1 = new StadiumStub("stadiumStub", "stub street 22");
         teamStub.addStadium(st1);
 
         teamStub.setStatus(TeamStatus.CLOSED);
@@ -257,7 +311,7 @@ public class TeamControllerTest {
         Assert.assertEquals(0, tm1.getTeamsManaged().size());
         Assert.assertEquals(0, co1.getCoachedTeams().size());
         Assert.assertEquals(0, st1.getTeams().size());
-        Assert.assertTrue(TeamController.reopenTeam(teamStub));
+        Assert.assertTrue(TeamController.reopenTeam(teamStub, to));
         Assert.assertEquals(TeamStatus.OPEN, teamStub.getStatus());
         Assert.assertEquals(1, to.getOwnedTeams().size());
         Assert.assertEquals(1, p1.getPlayerTeams().size());
@@ -295,7 +349,7 @@ public class TeamControllerTest {
         to.addTeamToOwn(teamStub);
         teamStub.addTeamOwner(to);
 
-        StadiumStub st1 = new StadiumStub();
+        StadiumStub st1 = new StadiumStub("stadiumStub", "stub street 22");
         teamStub.addStadium(st1);
 
         teamStub.setStatus(TeamStatus.CLOSED);
@@ -304,6 +358,7 @@ public class TeamControllerTest {
         EntityManager.getInstance().addUser(su1);
         //removing the team manager
         su2.removeRole(tm1);
+        su2.setSelector(66162); //get role will return null
         EntityManager.getInstance().removeUserByReference(su2);
         EntityManager.getInstance().addUser(su3);
         EntityManager.getInstance().addUser(su4);
@@ -316,7 +371,7 @@ public class TeamControllerTest {
         Assert.assertEquals(0, p1.getPlayerTeams().size());
         Assert.assertEquals(0, co1.getCoachedTeams().size());
         Assert.assertEquals(0, st1.getTeams().size());
-        Assert.assertTrue(TeamController.reopenTeam(teamStub));
+        Assert.assertTrue(TeamController.reopenTeam(teamStub, to));
         Assert.assertEquals(TeamStatus.OPEN, teamStub.getStatus());
         Assert.assertEquals(0, teamStub.getTeamManagers().size());
         Assert.assertEquals(1, to.getOwnedTeams().size());
