@@ -16,14 +16,19 @@ public class TeamControllerTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    SystemUser teamOwnerUser = new SystemUser("oranShich", "Oran2802", "name");
-    SystemUser teamOwnerToAdd = new SystemUser("oranSh", "Oran2802", "name");
+    SystemUser teamOwnerUser = new SystemUser("oranShich", "Oran2802", "Oran");
+    SystemUser teamOwnerToAdd = new SystemUser("oranSh", "Oran2802", "Shichman");
     Team hapoelBash = new Team();
-    //TeamOwner originalOwner = new TeamOwner(teamOwnerUser);
     League league = new League("Premier League");
+
+    //For removeOwner tests
+    SystemUser teamOwnerUser2 = new SystemUser("rosengal", "Gal12345", "Gal");
+    SystemUser teamOwnerUser3 = new SystemUser("nirdz", "Nir12345", "Nir");
+
     @Before
     public void runBeforeTests(){
         teamOwnerUser.addNewRole(new TeamOwner(teamOwnerUser));
+        hapoelBash.setTeamName("Hapoel Beer Sheva");
     }
 
     @After
@@ -153,6 +158,34 @@ public class TeamControllerTest {
             e.printStackTrace();
             Assert.assertEquals("This User is already a team owner of this team",e.getMessage());
         }
+    }
+
+    /**
+     * Check that the team owner has added to the team and the team has added to the team owner
+     * @throws Exception
+     */
+    @Test
+    public void AddTeamOwner5UTest() throws Exception {
+        hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        EntityManager.getInstance().addUser(teamOwnerUser);
+        EntityManager.getInstance().addUser(teamOwnerToAdd);
+
+        TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        Assert.assertEquals(((TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER)).getOwnedTeams().get(0),hapoelBash);
+        Assert.assertEquals(hapoelBash.getTeamOwners().get(0),((TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER)));
+        Assert.assertEquals(hapoelBash.getTeamOwners().get(1),((TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER)));
+    }
+
+
+    @Test
+    public void removeTeamOwner1UTest() throws Exception{
+
+
+        hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        EntityManager.getInstance().addUser(teamOwnerUser);
+        EntityManager.getInstance().addUser(teamOwnerToAdd);
+
+        TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
     }
 }
 

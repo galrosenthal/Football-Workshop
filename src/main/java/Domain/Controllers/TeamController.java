@@ -41,6 +41,9 @@ public class TeamController {
         if(newTeamOwnerRole == null)
         {
             teamOwner = new TeamOwner(newTeamOwnerUser);
+            //teamOwner.addTeamToOwn(teamToOwn);
+            newTeamOwnerUser.addNewRole(teamOwner);
+
         }
         else
         {
@@ -57,6 +60,7 @@ public class TeamController {
             }
 
         }
+
 
         teamOwner.addTeamToOwn(teamToOwn);
 
@@ -151,6 +155,4 @@ public class TeamController {
 
         return teamOwnersToRemove;
     }
-
-
 }
