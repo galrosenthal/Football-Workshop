@@ -288,6 +288,7 @@ public class AcceptanceTests {
         SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");
         Player playerElisha = new Player(elivyCreate, new Date());
         beitShean.addTeamPlayer(abcOwner , playerElisha);
+        UIController.setIsTest(true);
         UIController.setSelector(6139);
         assertTrue(Controller.modifyTeamAssetDetails(abc));
 

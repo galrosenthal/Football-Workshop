@@ -4,7 +4,6 @@ import Domain.Exceptions.AssetCantBeModifiedException;
 import Domain.Exceptions.AssetsNotExistsException;
 import Domain.Game.Stadium;
 import Domain.Game.Team;
-import Domain.Game.TeamAsset;
 import Domain.Game.TeamStub;
 import Domain.Users.*;
 import Service.UIController;
