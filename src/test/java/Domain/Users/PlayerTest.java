@@ -49,26 +49,26 @@ public class PlayerTest {
     }
 
 
-    @Test
-    public void addAllProperties() throws Exception{
-        UIController.setIsTest(true);
-        Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
-        Player p1 = new Player(testUser,bday);
-
-        assertTrue(p1.addAllProperties());
-
-    }
-
-    @Test
-    public void addProperty() throws Exception{
-        UIController.setIsTest(true);
-        Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
-        Player p1 = new Player(testUser,bday);
-
-        assertFalse(p1.addProperty("NotAValidString"));
-        assertTrue(p1.addProperty(p1.fieldJobString));
-
-    }
+//    @Test
+//    public void addAllProperties() throws Exception{
+//        UIController.setIsTest(true);
+//        Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
+//        Player p1 = new Player(testUser,bday);
+//
+//        assertTrue(p1.addAllProperties());
+//
+//    }
+//
+//    @Test
+//    public void addProperty() throws Exception{
+//        UIController.setIsTest(true);
+//        Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
+//        Player p1 = new Player(testUser,bday);
+//
+//        assertFalse(p1.addProperty("NotAValidString"));
+//        assertTrue(p1.addProperty(p1.fieldJobString));
+//
+//    }
 
 //    @Test
 //    public void removeProperty() {
@@ -78,8 +78,8 @@ public class PlayerTest {
     public void getPropertiesUTest() {
         Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131) , new Date());
         List<String> allProperties = player.getProperties();
-        Assert.assertTrue(allProperties.size() == 1);
-        Assert.assertTrue(allProperties.contains(player.fieldJobString));
+        assertTrue(allProperties.size() == 1);
+        assertTrue(allProperties.contains(player.fieldJobString));
     }
 
     @Test

@@ -16,20 +16,21 @@ import java.util.Date;
 import static org.junit.Assert.*;
 
 
-
 public class TeamControllerTest {
 
 
     /*No asset*/
-    @Test (expected = AssetsNotExistsException.class)
+    @Test(expected = AssetsNotExistsException.class)
     public void editAssetsTest1UTest() throws Exception {
+
         Team team = new TeamStub(6131);
         TeamController.editAssets(team);
+
 
     }
 
     /*can not modified asset - no property*/
-    @Test (expected = AssetCantBeModifiedException.class)
+    @Test(expected = AssetCantBeModifiedException.class)
     public void editAssetsTest2UTest() throws Exception {
         Team team = new TeamStub(6132);
         UIController.setIsTest(true);
@@ -39,7 +40,7 @@ public class TeamControllerTest {
 
 
     /*can not modified asset - add property value*/
-    @Test (expected = AssetCantBeModifiedException.class)
+    @Test(expected = AssetCantBeModifiedException.class)
     public void editAssetsTest3UTest() throws Exception {
         Team team = new TeamStub(6133);
         UIController.setIsTest(true);
@@ -48,7 +49,7 @@ public class TeamControllerTest {
     }
 
     /*can not modified asset - remove property value*/
-    @Test (expected = AssetCantBeModifiedException.class)
+    @Test(expected = AssetCantBeModifiedException.class)
     public void editAssetsTest4UTest() throws Exception {
         Team team = new TeamStub(6134);
 
@@ -69,6 +70,7 @@ public class TeamControllerTest {
         assertTrue(TeamController.editAssets(team));
 
     }
+
     /*success add property list*/
     @Test
     public void editAssetsTest8UTest() throws Exception {
@@ -103,7 +105,7 @@ public class TeamControllerTest {
     }
 
     /*No asset*/
-    @Test (expected = AssetsNotExistsException.class)
+    @Test(expected = AssetsNotExistsException.class)
     public void editAssetsTest1ITest() throws Exception {
         Team team = new Team();
         UIController.setIsTest(true);
@@ -114,27 +116,27 @@ public class TeamControllerTest {
 
 
     /*can not modified asset - no property*/
-    @Test (expected = AssetCantBeModifiedException.class)
+    @Test(expected = AssetCantBeModifiedException.class)
     public void editAssetsTest2ITest() throws Exception {
         Team team = new Team();
         UIController.setIsTest(true);
         UIController.setSelector(6132);
-        TeamOwnerStub teamOwnerStub = new TeamOwnerStub(new SystemUserStub("teamOwnerStub" , "gal" , 6132));
-        PlayerStub playerStub = new PlayerStub(new  SystemUserStub("playerStub" , "gal" , 6132), new Date(),6132);
+        TeamOwnerStub teamOwnerStub = new TeamOwnerStub(new SystemUserStub("teamOwnerStub", "gal", 6132));
+        PlayerStub playerStub = new PlayerStub(new SystemUserStub("playerStub", "gal", 6132), new Date(), 6132);
         team.addTeamOwner(teamOwnerStub);
-        team.addTeamPlayer(teamOwnerStub,playerStub);
+        team.addTeamPlayer(teamOwnerStub, playerStub);
         TeamController.editAssets(team);
     }
 
 
     /*can not modified asset - add property value*/
-    @Test (expected = AssetCantBeModifiedException.class)
+    @Test(expected = AssetCantBeModifiedException.class)
     public void editAssetsTest3ITest() throws Exception {
         Team team = new Team();
-        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest" , "gal"));
-        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest" , "gal"));
+        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"));
         team.addTeamOwner(teamOwner);
-        team.addTeamManager(teamOwner,teamManager);
+        team.addTeamManager(teamOwner, teamManager);
         UIController.setIsTest(true);
         UIController.setSelector(6135);
         TeamController.editAssets(team);
@@ -149,13 +151,13 @@ public class TeamControllerTest {
     }
 
     /*can not modified asset - remove property value*/
-    @Test (expected = AssetCantBeModifiedException.class)
+    @Test(expected = AssetCantBeModifiedException.class)
     public void editAssetsTest4ITest() throws Exception {
         Team team = new Team();
-        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest" , "gal"));
-        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest" , "gal"));
+        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"));
         team.addTeamOwner(teamOwner);
-        team.addTeamManager(teamOwner,teamManager);
+        team.addTeamManager(teamOwner, teamManager);
         UIController.setIsTest(true);
         UIController.setSelector(6134);
 
@@ -167,10 +169,10 @@ public class TeamControllerTest {
     public void editAssetsTest5ITest() throws Exception {
 
         Team team = new Team();
-        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest" , "gal"));
-        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest" , "gal"));
+        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"));
         team.addTeamOwner(teamOwner);
-        team.addTeamManager(teamOwner,teamManager);
+        team.addTeamManager(teamOwner, teamManager);
         UIController.setIsTest(true);
         UIController.setSelector(6135);
         Assert.assertTrue(TeamController.editAssets(team));
@@ -181,14 +183,15 @@ public class TeamControllerTest {
         assertTrue(TeamController.editAssets(team));
 
     }
+
     /*success add property list*/
     @Test
     public void editAssetsTest8ITest() throws Exception {
         Team team = new Team();
-        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest" , "gal"));
-        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest" , "gal"));
+        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"));
         team.addTeamOwner(teamOwner);
-        team.addTeamManager(teamOwner,teamManager);
+        team.addTeamManager(teamOwner, teamManager);
         UIController.setIsTest(true);
         UIController.setSelector(6135);
         Assert.assertTrue(TeamController.editAssets(team));
@@ -199,10 +202,10 @@ public class TeamControllerTest {
     @Test
     public void editAssetsTest6ITest() throws Exception {
         Team team = new Team();
-        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest1" , "gal"));
+        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest1", "gal"));
         team.addTeamOwner(teamOwner);
-        Player player = new Player(new SystemUser("teamOwnerTest2" , "gal") , new Date());
-        team.addTeamPlayer(teamOwner , player);
+        Player player = new Player(new SystemUser("teamOwnerTest2", "gal"), new Date());
+        team.addTeamPlayer(teamOwner, player);
         UIController.setIsTest(true);
         UIController.setSelector(6136);
         Assert.assertTrue(TeamController.editAssets(team));
@@ -213,7 +216,7 @@ public class TeamControllerTest {
     @Test
     public void editAssetsTest7ITest() throws Exception {
         Team team = new Team();
-        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest1" , "gal"));
+        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest1", "gal"));
         team.addTeamOwner(teamOwner);
         Stadium stadium = new Stadium("testStadium", "bs");
         team.addStadium(stadium);
