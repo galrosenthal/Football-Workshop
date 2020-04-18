@@ -10,6 +10,7 @@ import Service.ARController;
 import Service.Controller;
 import Service.UIController;
 import org.junit.*;
+import org.junit.experimental.categories.Category;
 
 
 import static org.junit.Assert.*;
