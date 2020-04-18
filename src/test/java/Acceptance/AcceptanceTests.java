@@ -11,14 +11,17 @@ import Service.Controller;
 import Service.UIController;
 import org.junit.*;
 
+
 import static org.junit.Assert.*;
 
+@Category(RegressionTests.class)
 public class AcceptanceTests {
     private static SystemUser existingUser;
     @BeforeClass
     public static void setUp() { //Will be called only once
         existingUser = new SystemUser("abc", "aBc12345", "abc");
     }
+
 
     @Test
     public void systemBootATest(){
@@ -154,6 +157,7 @@ public class AcceptanceTests {
         assertFalse(EntityManager.getInstance().doesLeagueExists("Premier League"));
     }
 
+
     /**
      * 9.2.a
      */
@@ -195,4 +199,5 @@ public class AcceptanceTests {
     public void tearDown() throws Exception {
         EntityManager.getInstance().clearAll();
     }
+
 }
