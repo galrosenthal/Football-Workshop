@@ -38,16 +38,6 @@ public class SystemUserStub extends SystemUser{
         return username;
     }
 
-    public boolean addNewRole(Role role)
-    {
-        if(role != null)
-        {
-            getRoles().add(role);
-            return true;
-        }
-        return false;
-    }
-
     public List<Role> getRoles() {
         return super.getRoles();
     }
