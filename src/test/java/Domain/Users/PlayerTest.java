@@ -59,16 +59,16 @@ public class PlayerTest {
 //
 //    }
 //
-//    @Test
-//    public void addProperty() throws Exception{
-//        UIController.setIsTest(true);
-//        Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
-//        Player p1 = new Player(testUser,bday);
-//
-//        assertFalse(p1.addProperty("NotAValidString"));
-//        assertTrue(p1.addProperty(p1.fieldJobString));
-//
-//    }
+    @Test
+    public void addProperty() throws Exception{
+        UIController.setIsTest(true);
+        Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
+        Player p1 = new Player(testUser,bday);
+
+        assertFalse(p1.addProperty("NotAValidString"));
+        assertTrue(p1.addProperty(p1.fieldJobString));
+
+    }
 
 //    @Test
 //    public void removeProperty() {
@@ -206,8 +206,6 @@ public class PlayerTest {
         Player player = new Player(new SystemUser("playerTest" , "gal" ) , new Date());
         Assert.assertFalse(player.removeProperty(player.fieldJobString ,PlayerFieldJobs.FRONT ,new TeamStub(6131)));
     }
-
-
 
 
 }
