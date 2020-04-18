@@ -47,19 +47,6 @@ public class Team {
         seasons = new ArrayList<>();
     }
 
-    /**
-     * A method that returns a string containing all team information for display
-     *
-     * @return string containing all team information.
-     */
-    public String DisplayTeam() {
-        String output = "Team Name:" + teamName + "\n" +
-                "Team Coaches:";
-
-
-        return output;
-    }
-
 
     /**
      * Add a Player to the team,

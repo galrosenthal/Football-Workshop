@@ -50,7 +50,7 @@ public class TeamManager extends Role implements Asset {
         return false;
     }
 
-    private List<TeamManagerPermissions> allPermissionsPerTeam(Team team)
+    private List<TeamManagerPermissions> getAllPermissionsPerTeam(Team team)
     {
         List<TeamManagerPermissions> permissions = new ArrayList<>();
         if(this.permissionsPerTeam.get(team) != null)
@@ -60,7 +60,6 @@ public class TeamManager extends Role implements Asset {
         return permissions;
     }
 
-    //todo: add permissions!
     @Override
     public List<String> getProperties() {
         List<String> properties = new ArrayList<>();
@@ -129,7 +128,7 @@ public class TeamManager extends Role implements Asset {
     @Override
     public List<Enum> getAllPropertyList(Team team, String propertyName) {
         if(propertyName.equals(this.permissionsString)) {
-            List<TeamManagerPermissions> permissions = this.allPermissionsPerTeam(team);
+            List<TeamManagerPermissions> permissions = this.getAllPermissionsPerTeam(team);
             List<Enum> enumList = new ArrayList<>();
             for (int i = 0; i < permissions.size(); i++) {
                 enumList.add(permissions.get(i));
@@ -143,7 +142,7 @@ public class TeamManager extends Role implements Asset {
     public boolean addProperty(String propertyName, Enum anEnum , Team team) {
         if(propertyName.equals(this.permissionsString))
         {
-            List<TeamManagerPermissions> permissions = this.allPermissionsPerTeam(team);
+            List<TeamManagerPermissions> permissions = this.getAllPermissionsPerTeam(team);
             if(!(permissions.contains(anEnum)))
             {
                 permissions.add((TeamManagerPermissions) anEnum);
@@ -159,7 +158,7 @@ public class TeamManager extends Role implements Asset {
     public boolean removeProperty(String propertyName, Enum anEnum, Team team) {
         if(propertyName.equals(this.permissionsString))
         {
-            List<TeamManagerPermissions> permissions = this.allPermissionsPerTeam(team);
+            List<TeamManagerPermissions> permissions = this.getAllPermissionsPerTeam(team);
             if(permissions.contains(anEnum))
             {
                 permissions.remove(anEnum);

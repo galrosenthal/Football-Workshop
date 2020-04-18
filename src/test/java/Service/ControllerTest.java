@@ -130,32 +130,32 @@ public class ControllerTest {
 
 
     @Test
-    public void modifyTeamAssetDetailsUTest1() throws Exception {
+    public void modifyTeamAssetDetails1UTest() throws Exception {
         assertFalse(Controller.modifyTeamAssetDetails(new SystemUserStub("rosengal", "gal", 0)));
 
     }
 
     @Test(expected = NoTeamExistsException.class)
-    public void modifyTeamAssetDetailsUTest2() throws Exception {
+    public void modifyTeamAssetDetails2UTest() throws Exception {
         Controller.modifyTeamAssetDetails(new SystemUserStub("rosengal", "gal", 6131));
     }
 
 
     @Test
-    public void modifyTeamAssetDetailsITest1() throws Exception {
+    public void modifyTeamAssetDetails1ITest() throws Exception {
         assertFalse(Controller.modifyTeamAssetDetails(new SystemUser("rosengal", "gal")));
 
     }
 
     @Test(expected = NoTeamExistsException.class)
-    public void modifyTeamAssetDetailsITest2() throws Exception {
+    public void modifyTeamAssetDetails2ITest() throws Exception {
         SystemUser systemUser = new SystemUser("rosengal", "gal");
         TeamOwner teamOwner = new TeamOwner(systemUser);
         Controller.modifyTeamAssetDetails(systemUser);
     }
 
     @Test
-    public void modifyTeamAssetDetailsITest3() throws Exception {
+    public void modifyTeamAssetDetails3ITest() throws Exception {
         SystemUser systemUser = new SystemUser("rosengal", "gal");
         TeamOwner teamOwner = new TeamOwner(systemUser);
         Team team = new Team();

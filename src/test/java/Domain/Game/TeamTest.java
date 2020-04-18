@@ -476,7 +476,7 @@ public class TeamTest {
 
     /*User System*/
     @Test
-    public void getAllAssetsITest_0() {
+    public void getAllAssets0ITest() {
         Team team = new Team();
         assertTrue(team.getAllAssets().size() == 0);
         Stadium stadium = new Stadium("vas", "BS");
@@ -496,7 +496,7 @@ public class TeamTest {
     }
     /*Stadium*/
     @Test
-    public void getAllAssetsITest_1() {
+    public void getAllAssets1ITest() {
         Team team = new Team();
         assertTrue(team.getAllAssets().size() == 0);
         Stadium stadium = new Stadium("vas", "BS");
@@ -517,7 +517,7 @@ public class TeamTest {
 
     /*Stadium , Player*/
     @Test
-    public void getAllAssetsITest_2() {
+    public void getAllAssets2ITest() {
         Team team = new Team();
         assertTrue(team.getAllAssets().size() == 0);
         Stadium stadium = new Stadium("vas", "BS");
@@ -538,7 +538,7 @@ public class TeamTest {
 
     /*Stadium , Player , Coach*/
     @Test
-    public void getAllAssetsITest_3() {
+    public void getAllAssets3ITest() {
         Team team = new Team();
         assertTrue(team.getAllAssets().size() == 0);
         Stadium stadium = new Stadium("vas", "BS");
@@ -559,7 +559,7 @@ public class TeamTest {
 
     /*Stadium , Player , Coach , TeamManager*/
     @Test
-    public void getAllAssetsITest_4() {
+    public void getAllAssets4ITest() {
         Team team = new Team();
         assertTrue(team.getAllAssets().size() == 0);
         Stadium stadium = new Stadium("vas", "BS");
@@ -583,7 +583,7 @@ public class TeamTest {
 
     /*Stadium , Player , Coach , TeamManager , TeamOwner*/
     @Test
-    public void getAllAssetsITest_5() {
+    public void getAllAssets5ITest() {
         Team team = new Team();
         assertTrue(team.getAllAssets().size() == 0);
         Stadium stadium = new Stadium("vas", "BS");
@@ -608,7 +608,7 @@ public class TeamTest {
 
     /*Stadium*/
     @Test
-    public void getAllPropertyITest_1() {
+    public void getAllProperty1ITest() {
         Team team = new Team();
         Stadium stadium = new Stadium("vas", "BS");
         team.addStadium( stadium);
@@ -618,7 +618,7 @@ public class TeamTest {
 
     /*Player*/
     @Test
-    public void getAllPropertyITest_2() {
+    public void getAllProperty2ITest() {
         Team team = new Team();
         Player player = new Player(new SystemUser("teamTest1", "gal"), new Date());
         TeamOwner teamOwner = new TeamOwnerStub( new SystemUser("teamTest2", "gal"));
@@ -630,7 +630,7 @@ public class TeamTest {
 
     /*Coach*/
     @Test
-    public void getAllPropertyITest_3() {
+    public void getAllProperty3ITest() {
         Team team = new Team();
         Coach coach = new Coach(new SystemUser("teamTest3", "gal"));
         TeamOwner teamOwner = new TeamOwnerStub( new SystemUser("teamTest2", "gal"));
@@ -642,7 +642,7 @@ public class TeamTest {
 
     /*TeamManger*/
     @Test
-    public void getAllPropertyITest_4() {
+    public void getAllProperty4ITest() {
         Team team = new Team();
         TeamManager teamManager = new TeamManager(new SystemUser("teamTest3", "gal"));
         TeamOwner teamOwner = new TeamOwnerStub( new SystemUser("teamTest2", "gal"));
@@ -664,7 +664,7 @@ public class TeamTest {
 
     /*TeamOwner*/
     @Test
-    public void getAllPropertyITest_5() {
+    public void getAllProperty5ITest() {
         Team team = new Team();
         TeamManager teamManager = new TeamManager(new SystemUser("teamTest1", "gal"));
         TeamOwner teamOwner = new TeamOwner( new SystemUser("teamTest2", "gal"));

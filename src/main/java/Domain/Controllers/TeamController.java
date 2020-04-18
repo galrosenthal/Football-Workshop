@@ -109,6 +109,7 @@ public class TeamController {
             throw new AssetsNotExistsException("There is not assets to team");
 
         }
+
         int assetIndex = TeamController.chooseAssetToModify(allAssetsTeam);
         List<String> properties = allAssetsTeam.get(assetIndex).getProperties();
         if (properties.size() == 0) {
@@ -169,19 +170,19 @@ public class TeamController {
         if (allValue.size() == 0) {
             return false;
         }
-        int indexToAdd = addPropertyToListProperty(allValue);
+        UIController.printMessage("Choose Property to add ");
+        int indexToAdd = modifyListProperty(allValue);
         return asset.addProperty(propertyName, allValue.get(indexToAdd), team);
     }
 
     /**
-     * In case the user wants to add Property to property list- choose which new property he wants to change.
+     * In case the user wants to modify Property to property list- choose which new property he wants to change.
      * - assumption- list of Enums property
      *
      * @param allEnumValues
      * @return propertyNewValueIndex -int-
      */
-    private static int addPropertyToListProperty(List<Enum> allEnumValues) {
-        UIController.printMessage("Choose Property to add ");
+    private static int modifyListProperty(List<Enum> allEnumValues) {
         for (int i = 0; i < allEnumValues.size(); i++) {
             UIController.printMessage(i + 1 + ". " + allEnumValues.get(i).toString());
 
@@ -206,30 +207,11 @@ public class TeamController {
         if (enumList == null || enumList.size() == 0) {
             return false;
         }
-        int indexToAdd = removePropertyToListProperty(enumList);
+        UIController.printMessage("Choose Property to remove ");
+        int indexToAdd = modifyListProperty(enumList);
         return asset.removeProperty(propertyName, enumList.get(indexToAdd), team);
     }
 
-    /**
-     * In case the user wants to remove Property to property list- choose which new property he wants to change.
-     * - assumption- list of Enums property
-     *
-     * @param allEnumValues
-     * @return propertyNewValueIndex -int-
-     */
-    private static int removePropertyToListProperty(List<Enum> allEnumValues) {
-        UIController.printMessage("Choose Property to remove ");
-        for (int i = 0; i < allEnumValues.size(); i++) {
-            UIController.printMessage(i + 1 + ". " + allEnumValues.get(i).toString());
-
-        }
-        int propertyValueIndex;
-        do {
-            propertyValueIndex = UIController.receiveInt() - 1;
-        } while (!(propertyValueIndex >= 0 && propertyValueIndex < allEnumValues.size()));
-        return propertyValueIndex;
-
-    }
 
     /**
      * User choose which asset he wants to modify
@@ -239,7 +221,6 @@ public class TeamController {
      */
     private static int chooseAssetToModify(List<Asset> allAssetsTeam) {
 
-        UIController.printMessage("Choose Asset to modify: ");
         for (int i = 0; i < allAssetsTeam.size(); i++) {
             UIController.printMessage(i + 1 + ". " + allAssetsTeam.get(i));
         }
@@ -287,7 +268,7 @@ public class TeamController {
 
         return propertyIndex;
     }
-
+    
     /**
      * In case the property ia a list - let the user to choose if he want to Add or Delete value to the list
      *

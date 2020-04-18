@@ -17,16 +17,10 @@ public class Stadium implements Asset{
     public final String namePropertyString = "Name";
 
 
-    public Stadium(String location)
-    {
-        homeTeams = new ArrayList<>();
-        stadLocation = location;
-    }
-
-
 
     public Stadium(String stadName, String stadLocation) {
-        this(stadLocation);
+        this.homeTeams = new ArrayList<>();
+        this.stadLocation = stadLocation;
         this.stadName = stadName;
         EntityManager.getInstance().addStadium(this);
     }
