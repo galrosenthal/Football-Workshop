@@ -1,9 +1,7 @@
 package Domain.Users;
 
-import Domain.Game.Asset;
 import Domain.Game.Team;
 import Service.UIController;
-import javafx.scene.shape.Path;
 
 import java.util.ArrayList;
 import java.util.List;
