@@ -49,26 +49,26 @@ public class PlayerTest {
     }
 
 
-//    @Test
-//    public void addAllProperties() throws Exception{
-//        UIController.setIsTest(true);
-//        Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
-//        Player p1 = new Player(testUser,bday);
-//
-//        assertTrue(p1.addAllProperties());
-//
-//    }
-//
     @Test
-    public void addProperty() throws Exception{
+    public void addAllProperties() throws Exception{
         UIController.setIsTest(true);
         Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
         Player p1 = new Player(testUser,bday);
 
-        assertFalse(p1.addProperty("NotAValidString"));
-        assertTrue(p1.addProperty(p1.fieldJobString));
+        assertTrue(p1.addAllProperties());
 
     }
+
+//    @Test
+//    public void addProperty() throws Exception{
+//        UIController.setIsTest(true);
+//        Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
+//        Player p1 = new Player(testUser,bday);
+//
+//        assertFalse(p1.addProperty("NotAValidString"));
+//        assertTrue(p1.addProperty(p1.fieldJobString));
+//
+//    }
 
 //    @Test
 //    public void removeProperty() {
