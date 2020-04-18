@@ -49,15 +49,15 @@ public class PlayerTest {
     }
 
 
-    @Test
-    public void addAllProperties() throws Exception{
-        UIController.setIsTest(true);
-        Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
-        Player p1 = new Player(testUser,bday);
-
-        assertTrue(p1.addAllProperties());
-
-    }
+//    @Test
+//    public void addAllProperties() throws Exception{
+//        UIController.setIsTest(true);
+//        Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
+//        Player p1 = new Player(testUser,bday);
+//
+//        assertTrue(p1.addAllProperties());
+//
+//    }
 
 //    @Test
 //    public void addProperty() throws Exception{
