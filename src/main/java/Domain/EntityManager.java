@@ -90,6 +90,10 @@ public class EntityManager {
 
     }
 
+    public List<League> getLeagues() {
+        return new ArrayList<League>(allLeagues);
+    }
+
     public SystemUser getUser(String username) {
         for (SystemUser su : allUsers) {
             if (su.getUsername().equals(username)) {
@@ -150,5 +154,10 @@ public class EntityManager {
     public void addLeague(String leagueName) {
         League league = new League(leagueName);
         allLeagues.add(league);
+    }
+
+    public void clearAll(){
+        this.allUsers = new ArrayList<>();
+        this.allLeagues = new HashSet<>();
     }
 }

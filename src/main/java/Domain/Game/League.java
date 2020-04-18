@@ -1,9 +1,11 @@
 package Domain.Game;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class League {
     private String name;
+    private List<Season> seasons;
 
     /**
      * Constructor
@@ -12,13 +14,52 @@ public class League {
      */
     public League(String leagueName) {
         this.name = leagueName;
+        this.seasons = new ArrayList<>();
     }
 
+    /**
+     * Getter for the name
+     *
+     * @return - String - League name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Setter for the name
+     *
+     * @param name - String - League name
+     */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Checks if a season with the same years already exists as the given years.
+     *
+     * @param seasonYears - String - years in the correct format as dictated by Season
+     * @return - true if a season with the same years already exists, else false
+     */
+    public boolean doesSeasonExists(String seasonYears) {
+        for (Season currSeason : seasons) {
+            String currSeasonYears = currSeason.getYears();
+            if (currSeasonYears.equals(seasonYears)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Adds a season to this league with the given season years
+     *
+     * @param seasonYears - String - unique season years for this league
+     * @return - boolean - true if the addition completed successfully, else false
+     */
+    public boolean addSeason(String seasonYears) {
+        Season season = new Season(this, seasonYears);
+        this.seasons.add(season);
+        return true;
     }
 }
