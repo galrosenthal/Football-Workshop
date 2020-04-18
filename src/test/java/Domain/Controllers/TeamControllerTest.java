@@ -29,6 +29,10 @@ public class TeamControllerTest {
     public void runBeforeTests(){
         teamOwnerUser.addNewRole(new TeamOwner(teamOwnerUser));
         hapoelBash.setTeamName("Hapoel Beer Sheva");
+        teamOwnerUser2.addNewRole(new TeamOwner(teamOwnerUser2));
+        teamOwnerUser3.addNewRole(new TeamOwner(teamOwnerUser3));
+        EntityManager.getInstance().addUser(teamOwnerUser2);
+        EntityManager.getInstance().addUser(teamOwnerUser3);
     }
 
     @After
@@ -177,15 +181,105 @@ public class TeamControllerTest {
     }
 
 
+    /**
+     * Check that if we remove the owner who appointed the others, everyone removed.
+     * @throws Exception
+     */
     @Test
     public void removeTeamOwner1UTest() throws Exception{
-
 
         hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         EntityManager.getInstance().addUser(teamOwnerUser);
         EntityManager.getInstance().addUser(teamOwnerToAdd);
 
         TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        TeamController.addTeamOwner("nirdz", hapoelBash, (TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
+        TeamController.addTeamOwner("rosengal", hapoelBash, (TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
+
+        Assert.assertEquals(4,hapoelBash.getTeamOwners().size());
+
+        TeamController.removeTeamOwner("oranShich",hapoelBash,(TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+
+        Assert.assertEquals(0,hapoelBash.getTeamOwners().size());
+    }
+
+    /**
+     * Check only one removed
+     */
+    @Test
+    public void removeTeamOwner2UTest() throws Exception{
+        hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        EntityManager.getInstance().addUser(teamOwnerUser);
+        EntityManager.getInstance().addUser(teamOwnerToAdd);
+
+        TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        TeamController.addTeamOwner("nirdz", hapoelBash, (TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
+        TeamController.addTeamOwner("rosengal", hapoelBash, (TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
+
+        Assert.assertEquals(4,hapoelBash.getTeamOwners().size());
+
+        TeamController.removeTeamOwner("nirdz",hapoelBash,(TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+
+        Assert.assertEquals(3,hapoelBash.getTeamOwners().size());
+    }
+
+    /**
+     * Check input of wrong username
+     * @throws Exception
+     */
+    @Test
+    public void removeTeamOwner3UTest(){
+        hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        EntityManager.getInstance().addUser(teamOwnerUser);
+
+
+        try {
+            TeamController.removeTeamOwner("orah",hapoelBash,(TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.assertEquals("Could not find a user by the given username",e.getMessage());
+        }
+    }
+
+    /**
+     * Check the owner is the owner of the team
+     */
+    @Test
+    public void removeTeamOwner4UTest(){
+        EntityManager.getInstance().addUser(teamOwnerUser);
+        EntityManager.getInstance().addUser(teamOwnerToAdd);
+
+        try {
+            TeamController.removeTeamOwner("oranSh",hapoelBash,(TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.assertEquals("Only the owner of this team can remove owner",e.getMessage());
+        }
+
+        try {
+            hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+            TeamController.addTeamOwner("oranSh",hapoelBash,(TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+            Assert.assertTrue(TeamController.removeTeamOwner("oranSh",hapoelBash,(TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Check the input of the owner we want to remove.
+     */
+    @Test
+    public void removeTeamOwner5UTest(){
+        hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        EntityManager.getInstance().addUser(teamOwnerUser);
+        EntityManager.getInstance().addUser(teamOwnerToAdd);
+
+        try {
+            TeamController.removeTeamOwner("oranSh",hapoelBash,(TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.assertEquals("The user is not a owner of this team",e.getMessage());
+        }
     }
 }
 

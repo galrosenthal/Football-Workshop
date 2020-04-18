@@ -4,6 +4,7 @@ import Domain.EntityManager;
 import Domain.Game.Season;
 import Domain.Game.Team;
 import Domain.Users.*;
+import com.sun.xml.internal.bind.v2.TODO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +83,11 @@ public class TeamController {
 
         Season currentSeason = teamToOwn.getCurrentSeason();
 
+        //If the team not assigned yet to a season
+        if(currentSeason == null){
+            return false;
+        }
+
         List<Team> teamsInSeason = currentSeason.getTeams();
 
         for (Team team: teamsInSeason){
@@ -142,11 +148,16 @@ public class TeamController {
         teamOwnersToCheck.add(teamOwner);
         teamOwnersToRemove.add(teamOwner);
 
+        //Remove the desired owner
+
+
         while(teamOwnersToCheck.size() != 0){
             TeamOwner teamOwnerToCheck = teamOwnersToCheck.remove(0);
 
             for (TeamOwner ownerOfTeam: teamOwners){
-                if(ownerOfTeam.getAppointedOwner().equals(teamOwnerToCheck.getSystemUser())){
+
+                // Change the if to representative once it will complete
+                if(ownerOfTeam.getAppointedOwner()!= null && ownerOfTeam.getAppointedOwner().equals(teamOwnerToCheck.getSystemUser())){
                     teamOwnersToCheck.add(ownerOfTeam);
                     teamOwnersToRemove.add(ownerOfTeam);
                 }

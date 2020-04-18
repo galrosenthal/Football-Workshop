@@ -41,7 +41,7 @@ public class ControllerTest {
     }
 
     /**
-     * Check that if the user already owner og this team return false
+     * Check that if the user already owner of this team return false
      */
     @Test
     public void addTeamOwnerITest() {
@@ -63,5 +63,11 @@ public class ControllerTest {
         UIController.setSelector(2);
 
         assertTrue(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
+    }
+
+    @Test
+    public void removeTeamOwner1UTest(){
+        UIController.setIsTest(true);
+
     }
 }
