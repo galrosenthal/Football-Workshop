@@ -75,8 +75,8 @@ public class TeamOwnerStub extends TeamOwner {
     }
 
     @Override
-    public void setAppointedOwner(SystemUser appointedOwner) {
-        super.setAppointedOwner(appointedOwner);
+    public boolean setAppointedOwner(SystemUser appointedOwner) {
+        return super.setAppointedOwner(appointedOwner);
     }
 
     @Override

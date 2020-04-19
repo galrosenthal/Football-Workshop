@@ -77,8 +77,14 @@ public class TeamOwner extends Role {
         return appointedOwner;
     }
 
-    public void setAppointedOwner(SystemUser appointedOwner) {
-        this.appointedOwner = appointedOwner;
+    public boolean setAppointedOwner(SystemUser appointedOwner) {
+
+        if(appointedOwner != null){
+            this.appointedOwner = appointedOwner;
+            return true;
+        }
+
+        return false;
     }
 
     @Override
