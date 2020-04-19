@@ -19,8 +19,6 @@ import static org.junit.Assert.*;
 
 public class TeamControllerTest {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     SystemUser teamOwnerUser = new SystemUser("oranShich", "Oran2802", "Oran");
     SystemUser teamOwnerToAdd = new SystemUser("oranSh", "Oran2802", "Shichman");

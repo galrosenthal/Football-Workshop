@@ -48,25 +48,27 @@ public class TeamTest {
 
         //Test copy of players list
         copyTeam = null;
+        team.getTeamOwners().add(localTeamOwner);
         SystemUser anotherUser = new SystemUserStub("test2", "Test User2", 0);
         Player p1 = new PlayerStub(anotherUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
-        team.getTeamPlayers().add(p1);
+        team.addTeamPlayer(localTeamOwner,p1);
         assertEquals(1, team.getTeamPlayers().size());
         copyTeam = new Team(team);
         assertEquals(1, copyTeam.getTeamPlayers().size());
-        team.getTeamPlayers().remove(p1);
+        team.removeTeamPlayer(p1);
         assertEquals(1, copyTeam.getTeamPlayers().size());
 
         //Test copy of Coaches list
         copyTeam = null;
         anotherUser = new SystemUserStub("test3", "Test User3", 0);
         Coach c = new CoachStub(anotherUser);
-        team.getTeamCoaches().add(c);
+        team.addTeamCoach(localTeamOwner,c);
         assertEquals(1, team.getTeamCoaches().size());
         copyTeam = new Team(team);
         assertEquals(1, copyTeam.getTeamCoaches().size());
-        team.getTeamCoaches().remove(c);
+        team.removeTeamCoach(c);
         assertEquals(1, copyTeam.getTeamCoaches().size());
+        team.removeTeamOwner(localTeamOwner);
 
         //Test copy of Managers list
         copyTeam = null;
@@ -146,13 +148,13 @@ public class TeamTest {
     public void testPlayersListEqualsUTest() throws Exception {
         SystemUser anotherUser = new SystemUserStub("test2", "UserTest2", 0);
         Team copyTeam = new Team(team);
+        assertTrue(copyTeam.addTeamOwner(localTeamOwner));
         Player p1 = new PlayerStub(testUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
-        copyTeam.getTeamPlayers().add(p1);
+        assertTrue(copyTeam.addTeamPlayer(localTeamOwner,p1));
         assertNotEquals(team, copyTeam);
         Player p2 = new PlayerStub(anotherUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
-        team.getTeamPlayers().add(p2);
+        team.addTeamPlayer(localTeamOwner,p2);
         assertNotEquals(team, copyTeam);
-        copyTeam.getTeamPlayers().remove(p1);
     }
 
 
@@ -166,15 +168,16 @@ public class TeamTest {
         Team copyTeam = new Team(team);
         SystemUser anotherUser = new SystemUserStub("test2", "UserTest2", 0);
         Coach c1 = new CoachStub(testUser);
-        copyTeam.getTeamCoaches().add(c1);
+        copyTeam.addTeamOwner(localTeamOwner);
+        copyTeam.addTeamCoach(localTeamOwner,c1);
         assertNotEquals(team, copyTeam);
         UIController.setIsTest(true);
         UIController.setSelector(6118);
         Coach c2 = new Coach(anotherUser);
         c2.addAllProperties();
-        team.getTeamCoaches().add(c2);
+        team.addTeamOwner(localTeamOwner);
+        team.addTeamCoach(localTeamOwner,c2);
         assertNotEquals(team, copyTeam);
-        copyTeam.getTeamCoaches().remove(c1);
     }
 
     /**
@@ -294,9 +297,9 @@ public class TeamTest {
         UIController.setSelector(6118);
         Coach c2 = new Coach(testUser);
         c2.addAllProperties();
-        team.getTeamCoaches().add(c2);
+        team.addTeamCoach(localTeamOwner,c2);
         Player p2 = new PlayerStub(testUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
-        team.getTeamPlayers().add(p2);
+        team.addTeamPlayer(localTeamOwner,p2);
 
         String toString = team.toString();
         Assert.assertEquals("Team {\n" +
@@ -356,10 +359,11 @@ public class TeamTest {
 
         Player p1 = new PlayerStub(testUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
         ((PlayerStub) p1).setSelector(0);
-        team.getTeamPlayers().add(p1);
+        team.addTeamOwner(localTeamOwner);
+        team.addTeamPlayer(localTeamOwner,p1);
         result = team.getAllAssets();
         assertEquals(1, result.size());
-        team.getTeamCoaches().add(new CoachStub(testUser));
+        team.addTeamCoach(localTeamOwner,new CoachStub(testUser));
         result = team.getAllAssets();
         assertEquals(2, result.size());
         team.getTeamManagers().add(new TeamManagerStub(testUser));
@@ -478,20 +482,20 @@ public class TeamTest {
     @Test
     public void getAllAssets0ITest() {
         Team team = new Team();
-        assertTrue(team.getAllAssets().size() == 0);
+        assertEquals(0, team.getAllAssets().size());
         Stadium stadium = new Stadium("vas", "BS");
-        team.addStadium(stadium);
-        assertTrue(team.getAllAssets().size() == 1);
+        assertTrue(team.addStadium(stadium));
+        assertEquals(1, team.getAllAssets().size());
         Player player = new PlayerStub(new SystemUser("teamTest1", "gal"), new Date(), 6131);
         TeamOwner teamOwner = new TeamOwnerStub(new SystemUser("teamTest2", "gal"));
-        team.addTeamOwner(teamOwner);
-        team.addTeamPlayer(teamOwner, player);
-        assertTrue(team.getAllAssets().size() == 2);
+        assertTrue(team.addTeamOwner(teamOwner));
+        assertTrue(team.addTeamPlayer(teamOwner, player));
+        assertEquals(2, team.getAllAssets().size());
         Coach coach = new CoachStub(new SystemUser("teamTest3", "gal"));
-        team.addTeamCoach(teamOwner, coach);
-        assertTrue(team.getAllAssets().size() == 3);
+        assertTrue(team.addTeamCoach(teamOwner, coach));
+        assertEquals(3, team.getAllAssets().size());
         Coach secondCoach = new CoachStub(new SystemUser("teamTest4", "gal"));
-        team.addTeamCoach(teamOwner, coach);
+        assertTrue(team.addTeamCoach(teamOwner, coach));
         assertTrue(team.getAllAssets().size() == 4);
     }
     /*Stadium*/

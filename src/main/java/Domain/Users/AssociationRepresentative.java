@@ -1,8 +1,12 @@
 package Domain.Users;
 
 import Domain.EntityManager;
+import Domain.Financials.AssociationFinancialRecordLog;
+
+import java.util.List;
 
 public class AssociationRepresentative extends Role {
+    List<AssociationFinancialRecordLog> logger;
     public AssociationRepresentative(SystemUser systemUser) {
         super(RoleTypes.ASSOCIATION_REPRESENTATIVE, systemUser);
     }
