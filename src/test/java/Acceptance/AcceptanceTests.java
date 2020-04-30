@@ -73,7 +73,7 @@ public class AcceptanceTests {
         EntityManager.getInstance().addUser(existingUser);
         //success
         Unregistered unregUser = new Unregistered();
-        SystemUser user = unregUser.login("abc", "aBc12345");
+        SystemUser user = Controller.login(unregUser,"abc", "aBc12345");
 
         //cleanup
         EntityManager.getInstance().removeUserByReference(existingUser);
@@ -85,7 +85,7 @@ public class AcceptanceTests {
         //not a user
         Unregistered unregUser2 = new Unregistered();
         try {
-        SystemUser user2 = unregUser2.login("notAUser", "aBc12345");
+        SystemUser user2 = Controller.login(unregUser2,"notAUser", "aBc12345");
             Assert.fail();
         }
         catch (Exception e){
@@ -99,7 +99,7 @@ public class AcceptanceTests {
         //wrong password
         Unregistered unregUser3 = new Unregistered();
         try {
-            SystemUser user3 = unregUser3.login("abc", "pass12345");
+            SystemUser user3 =Controller.login(unregUser3,"abc", "pass12345");
             Assert.fail();
         }
         catch (Exception e){
@@ -118,7 +118,7 @@ public class AcceptanceTests {
         EntityManager.getInstance().removeUserByReference(existingUser);
         //success
         Unregistered unregUser = new Unregistered();
-        SystemUser user = unregUser.signUp("abc", "abc", "aBc12345");
+        SystemUser user = Controller.signUp(unregUser,"abc", "abc", "aBc12345");
     }
 
     @Test
@@ -127,7 +127,7 @@ public class AcceptanceTests {
         EntityManager.getInstance().addUser(existingUser);
         Unregistered unregUser2 = new Unregistered();
         try {
-            SystemUser user2 = unregUser2.signUp("abc", "abc", "aBc12345");
+            SystemUser user2 = Controller.signUp(unregUser2,"abc", "abc", "aBc12345");
             Assert.fail();
         }
         catch (Exception e){
@@ -144,7 +144,7 @@ public class AcceptanceTests {
         EntityManager.getInstance().removeUserByReference(existingUser);
         Unregistered unregUser3 = new Unregistered();
         try {
-            SystemUser user3 = unregUser3.signUp("abc", "abc", "123");
+            SystemUser user3 = Controller.signUp(unregUser3,"abc", "abc", "123");
             Assert.fail();
         }
         catch (Exception e){
@@ -436,7 +436,7 @@ public class AcceptanceTests {
         SystemUser elisha = new SystemUser("elevy","Elisha Levy");
 
         Unregistered abcUnreg = new Unregistered();
-        SystemUser abc = abcUnreg.login("abc1","abc12345");
+        SystemUser abc = Controller.login(abcUnreg,"abc1","abc12345");
         assertEquals(abc,abcCreate);
 
         UIController.setSelector(61118);
@@ -464,7 +464,7 @@ public class AcceptanceTests {
         beitShean.getTeamOwners().add(abcOwner);
 
         Unregistered abcUnreg = new Unregistered();
-        SystemUser abc = abcUnreg.login("abc1","abc12345");
+        SystemUser abc = Controller.login(abcUnreg,"abc1","abc12345");
         assertEquals(abc,abcCreate);
 
         UIController.setSelector(61118);
@@ -504,7 +504,7 @@ public class AcceptanceTests {
         beitShean.getTeamOwners().add(abcOwner);
 
         Unregistered abcUnreg = new Unregistered();
-        SystemUser abc = abcUnreg.login("abc1", "abc12345");
+        SystemUser abc = Controller.login(abcUnreg,"abc1", "abc12345");
         assertEquals(abc, abcCreate);
 
         SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");
@@ -537,7 +537,7 @@ public class AcceptanceTests {
         beitShean.getTeamOwners().add(abcOwner);
 
         Unregistered abcUnreg = new Unregistered();
-        SystemUser abc = abcUnreg.login("abc1", "abc12345");
+        SystemUser abc = Controller.login(abcUnreg,"abc1", "abc12345");
         assertEquals(abc, abcCreate);
 
         SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");

@@ -1,6 +1,7 @@
 package Domain.Users;
 
 import Domain.EntityManager;
+import Service.Controller;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class UnregisteredTest {
     public void loginUTest() throws Exception {
         //userName not exists
         try{
-            unregistered.login("usrNmNotExists", "pswrd");
+            Controller.login(unregistered,"usrNmNotExists", "pswrd");
             Assert.fail();
         }
         catch(Exception e) {
@@ -39,7 +40,7 @@ public class UnregisteredTest {
         //working good
         EntityManager.getInstance().addUser(systemUser);
 
-        SystemUser result2 = unregistered.login("nir", "12aA34567");
+        SystemUser result2 = Controller.login(unregistered,"nir", "12aA34567");
         Assert.assertEquals("nir", result2.getUsername());
         Assert.assertEquals("Nir", result2.getName());
         Assert.assertEquals("12aA34567", result2.getPassword());
@@ -47,7 +48,7 @@ public class UnregisteredTest {
 
         //password incorrect
         try{
-            unregistered.login("nir", "pswrdNotCorrect");
+            Controller.login(unregistered,"nir", "pswrdNotCorrect");
             Assert.fail();
         }
         catch(Exception e) {
@@ -60,7 +61,7 @@ public class UnregisteredTest {
     @Test
     public void signUpUTest() throws Exception {
         //success
-        SystemUser newUser = unregistered.signUp("Avi", "avi", "1234cB57");
+        SystemUser newUser = Controller.signUp(unregistered,"Avi", "avi", "1234cB57");
         Assert.assertEquals("avi", newUser.getUsername());
         Assert.assertEquals("Avi", newUser.getName());
         Assert.assertEquals("1234cB57", newUser.getPassword());
@@ -69,7 +70,7 @@ public class UnregisteredTest {
         //userName already exists
         EntityManager.getInstance().addUser(systemUser);
         try{
-            unregistered.signUp("Avi", "nir", "1234cB57");
+            Controller.signUp(unregistered,"Avi", "nir", "1234cB57");
             Assert.fail();
         }
         catch(Exception e) {
@@ -79,7 +80,7 @@ public class UnregisteredTest {
 
         try {
             //password does not meet security req
-            unregistered.signUp("Yosi", "yos", "12a34567");
+            Controller.signUp(unregistered,"Yosi", "yos", "12a34567");
             Assert.fail();
         }
         catch(Exception e) {
@@ -89,7 +90,7 @@ public class UnregisteredTest {
 
         try {
             //password does not meet security req
-            unregistered.signUp("Yossi", "yos1", "55bB");
+            Controller.signUp(unregistered,"Yossi", "yos1", "55bB");
             Assert.fail();
         }
         catch(Exception e) {
