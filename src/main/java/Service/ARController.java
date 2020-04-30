@@ -1,13 +1,17 @@
 package Service;
 
 import Domain.EntityManager;
+import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Game.League;
 import Domain.Game.Season;
 import Domain.Users.AssociationRepresentative;
+import Domain.Users.Referee;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
 
 import java.util.List;
+
+import static Service.UIController.*;
 
 /**
  * Association Representative services controller
@@ -103,5 +107,40 @@ public class ARController {
         } while (!(Index >= 0 && Index < leagues.size()));
 
         return leagues.get(Index);
+    }
+
+    public static boolean addReferee(SystemUser systemUser){
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+
+        String newRefereeUsername = getUsernameFromUser("referee");
+
+        SystemUser refereeUser=null;
+        do{
+            refereeUser = EntityManager.getInstance().getUser(newRefereeUsername);
+            if(refereeUser == null){
+                UIController.printMessage("Could not find a user by the given username\nPlease try again");
+                newRefereeUsername = getUsernameFromUser("referee");
+            }
+        } while(refereeUser==null);
+
+        UIController.printMessage("Enter the new referee's training");
+        String training = UIController.receiveString();
+
+        boolean succeeded = false;
+        try {
+            succeeded = ARRole.addReferee(refereeUser,training);
+        } catch (RoleExistsAlreadyException e) {
+            UIController.printMessage("the user is already a referee");
+            return false;
+        }
+
+        if (succeeded) {
+            //TODO: Send notification to newRefereeUUser
+            UIController.printMessage("The referee has been added successfully");
+        }
+        return true;
     }
 }

@@ -182,4 +182,11 @@ public class UIController {
             return false;
         }
     }
+    public static String getUsernameFromUser(String msg) {
+        UIController.printMessage("Enter new " + msg + " Username:");
+
+        String username = UIController.receiveString();
+        return username;
+
+    }
 }

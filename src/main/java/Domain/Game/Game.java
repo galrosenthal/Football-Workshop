@@ -1,7 +1,7 @@
 package Domain.Game;
 
 import Domain.Logger.EventsLogger;
-import Domain.Users.Refree;
+import Domain.Users.Referee;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +13,7 @@ public class Game {
     Team awayTeam;
     Date gameDate;
     Score score;
-    List<Refree> referees; // - maybe array?
+    List<Referee> referees; // - maybe array?
     EventsLogger eventsLogger;
     //TODO: should be more properties
 
