@@ -56,10 +56,12 @@ public class AssociationRepresentative extends Role {
      * @return - boolean - true if the Referee role was removed successfully, else false
      */
     public boolean removeReferee(SystemUser chosenUser) {
-        if (chosenUser.getRole(RoleTypes.REFEREE) != null) {
-            Referee refereeRole = (Referee)chosenUser.getRole(RoleTypes.REFEREE);
-            chosenUser.removeRole(refereeRole);
-            return true;
+        Referee refereeRole = (Referee)chosenUser.getRole(RoleTypes.REFEREE);
+        if (refereeRole!= null) {
+            if(!refereeRole.hasFutureGames()) {
+                chosenUser.removeRole(refereeRole);
+                return true;
+            }
         }
         return false;
     }

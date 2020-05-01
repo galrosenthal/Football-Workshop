@@ -171,9 +171,11 @@ public class ARController {
             return false;
         }
 
-        ARRole.removeReferee(chosenUser);
-        UIController.printMessage("The referee has been removed successfully");
-        return true;
+        if(ARRole.removeReferee(chosenUser)) {
+            UIController.printMessage("The referee has been removed successfully");
+            return true;
+        }
+        return false;
     }
 
     /**

@@ -29,5 +29,11 @@ public class AssociationRepresentativeStub extends AssociationRepresentative{
         return true;
     }
 
-
+    @Override
+    public boolean removeReferee(SystemUser chosenUser) {
+        if (selector ==0) {
+            return false;
+        }
+        return  true;
+    }
 }
