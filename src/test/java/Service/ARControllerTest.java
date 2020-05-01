@@ -7,6 +7,11 @@ import Domain.Game.League;
 import Domain.Game.TeamStub;
 import Domain.Users.*;
 import org.junit.*;
+import Domain.Users.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -130,6 +135,104 @@ public class ARControllerTest {
 
         //cleanUp
         assertTrue(EntityManager.getInstance().removeLeagueByName("newLeagueName"));
+    }
+
+    @Test
+    public void addRefereeUTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 0);
+        assertFalse(ARController.addReferee(systemUser));
+    }
+
+    @Test
+    public void addReferee2UTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 5);
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        AssociationRepresentativeStub.setSelector(0);
+        UIController.setSelector(9311);
+
+        assertFalse(ARController.addReferee(systemUser));
+    }
+    @Test
+    public void addReferee3UTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 5);
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        AssociationRepresentativeStub.setSelector(0);
+        UIController.setSelector(9312);
+
+        assertFalse(ARController.addReferee(systemUser));
+    }
+    @Test
+    public void addReferee4UTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 5);
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        AssociationRepresentativeStub.setSelector(1);
+        UIController.setSelector(9311);
+
+        assertTrue(ARController.addReferee(systemUser));
+    }
+    @Test
+    public void addReferee5UTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 5);
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        AssociationRepresentativeStub.setSelector(1);
+        UIController.setSelector(9312);
+
+        assertTrue(ARController.addReferee(systemUser));
+    }
+    @Test
+    public void addRefereeITest() {
+        SystemUser systemUser = getSystemUserAR();
+
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",93131));
+        UIController.setSelector(9311);
+
+        assertTrue(ARController.addReferee(systemUser));
+    }
+    @Test
+    public void addReferee2ITest() {
+        SystemUser systemUser = getSystemUserAR();
+
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",93132));
+        UIController.setSelector(9311);
+
+        assertFalse(ARController.addReferee(systemUser));
+    }
+
+    @Test
+    public void addReferee3ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+        UIController.setSelector(9311);
+
+        assertTrue(ARController.addReferee(systemUser));
+
+        assertNotNull(refereeUser);
+        assertTrue(refereeUser.isType(RoleTypes.REFEREE));
+        Referee refRole = (Referee)refereeUser.getRole(RoleTypes.REFEREE);
+        assertTrue(refRole.getTraining().equals("VAR"));
+    }
+    @Test
+    public void addReferee4ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+        UIController.setSelector(9312);
+
+        assertTrue(ARController.addReferee(systemUser));
+
+        assertNotNull(refereeUser);
+        assertTrue(refereeUser.isType(RoleTypes.REFEREE));
+        Referee refRole = (Referee)refereeUser.getRole(RoleTypes.REFEREE);
+        assertTrue(refRole.getTraining().equals("VAR"));
+    }
+    @Test
+    public void addReferee5ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+        new Referee(refereeUser,"training");
+
+        UIController.setSelector(9311);
+        //The user is already a referee
+        assertFalse(ARController.addReferee(systemUser));
     }
 
     @Test

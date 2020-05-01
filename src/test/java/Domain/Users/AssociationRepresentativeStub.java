@@ -1,5 +1,7 @@
 package Domain.Users;
 
+import Domain.Exceptions.RoleExistsAlreadyException;
+
 public class AssociationRepresentativeStub extends AssociationRepresentative{
 
     private static int selector;
@@ -19,6 +21,15 @@ public class AssociationRepresentativeStub extends AssociationRepresentative{
         }
         return true;
     }
+    @Override
+    public boolean addReferee(SystemUser newRefereeUser, String training) throws RoleExistsAlreadyException {
+        if (selector ==0) {
+            throw new RoleExistsAlreadyException("Already a referee");
+        }
+        return true;
+    }
+
+
 
     @Override
     public boolean addTeam(String teamName, SystemUser newTeamOwnerUser) {

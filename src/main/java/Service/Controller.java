@@ -14,6 +14,8 @@ import Domain.Users.*;
 import java.util.List;
 import static Service.UIController.getUsernameFromUser;
 
+import static Service.UIController.getUsernameFromUser;
+
 public class Controller {
 
     public static boolean systemBoot() {
@@ -88,6 +90,8 @@ public class Controller {
         }
         return (TeamOwner)myTeamOwnerRole;
     }
+
+
 
     public static Team getTeamByChoice(TeamOwner myTeamOwner) {
         List<Team> myTeams = myTeamOwner.getOwnedTeams();
