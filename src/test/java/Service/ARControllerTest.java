@@ -1,15 +1,12 @@
 package Service;
 
 import Domain.EntityManager;
+import Domain.Exceptions.TeamAlreadyExistsException;
+import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.League;
-import Domain.Users.AssociationRepresentative;
-import Domain.Users.AssociationRepresentativeStub;
-import Domain.Users.SystemUser;
-import Domain.Users.SystemUserStub;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import Domain.Game.TeamStub;
+import Domain.Users.*;
+import org.junit.*;
 
 import static org.junit.Assert.*;
 
@@ -135,8 +132,86 @@ public class ARControllerTest {
         assertTrue(EntityManager.getInstance().removeLeagueByName("newLeagueName"));
     }
 
+    @Test
+    public void registerNewTeamUTest() throws TeamAlreadyExistsException, UserNotFoundException {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9101);
+        assertFalse(ARController.registerNewTeam(systemUser));
+    }
+
+    @Test
+    public void registerNewTeam2UTest() throws TeamAlreadyExistsException, UserNotFoundException {
+        SystemUser arSystemUser = new SystemUserStub("stubUsername", "stub", 9102); //AR
+        EntityManager.getInstance().addTeam(new TeamStub(9102));
+        UIController.setSelector(9102);
+        try {
+            ARController.registerNewTeam(arSystemUser);
+            Assert.fail();
+        }
+        catch (TeamAlreadyExistsException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void registerNewTeam3UTest() throws TeamAlreadyExistsException, UserNotFoundException {
+        SystemUser arSystemUser = new SystemUserStub("stubUsername", "stub", 9103); //AR
+        UIController.setSelector(9103);
+        try {
+            ARController.registerNewTeam(arSystemUser);
+            Assert.fail();
+        }
+        catch (UserNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void registerNewTeam4UTest() throws TeamAlreadyExistsException, UserNotFoundException {
+        SystemUser arSystemUser = new SystemUserStub("stubUsername", "stub", 9104); //AR
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "toName",91041));
+        UIController.setSelector(91041);
+        assertTrue(ARController.registerNewTeam(arSystemUser));
+    }
+
+    @Test
+    public void registerNewTeamITest() throws TeamAlreadyExistsException, UserNotFoundException {
+        SystemUser systemUser = getSystemUserAR();
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "toName",91051));
+        UIController.setSelector(91051);
+        assertTrue(ARController.registerNewTeam(systemUser));
+    }
+
+    @Test
+    public void registerNewTeam2ITest() throws TeamAlreadyExistsException, UserNotFoundException {
+        SystemUser systemUser = getSystemUserAR();
+        SystemUser usrToBeOwner = new SystemUser("AviCohen", "name");
+        UIController.setSelector(91052);
+        assertTrue(ARController.registerNewTeam(systemUser));
+
+        assertNotNull(usrToBeOwner);
+        assertTrue(usrToBeOwner.isType(RoleTypes.TEAM_OWNER));
+        TeamOwner toRole = (TeamOwner) usrToBeOwner.getRole(RoleTypes.TEAM_OWNER);
+        assertEquals(1, toRole.getOwnedTeams().size());
+    }
+
+    @Test
+    public void registerNewTeam3ITest() throws TeamAlreadyExistsException, UserNotFoundException {
+        SystemUser systemUser = getSystemUserAR();
+        SystemUser usrToBeOwner = new SystemUser("AviCohen", "name");
+        usrToBeOwner.addNewRole(new TeamOwner(usrToBeOwner));
+        assertTrue(usrToBeOwner.isType(RoleTypes.TEAM_OWNER));
+        TeamOwner toRole = (TeamOwner) usrToBeOwner.getRole(RoleTypes.TEAM_OWNER);
+        assertEquals(0, toRole.getOwnedTeams().size());
+
+        UIController.setSelector(91053);
+        assertTrue(ARController.registerNewTeam(systemUser));
+        assertNotNull(usrToBeOwner);
+        assertTrue(usrToBeOwner.isType(RoleTypes.TEAM_OWNER));
+        assertEquals(1, toRole.getOwnedTeams().size());
+    }
+
     @After
     public void tearDown() throws Exception {
-        //UIController.setSelector(0);
+        EntityManager.getInstance().clearAll();
     }
 }

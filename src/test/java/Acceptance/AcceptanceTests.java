@@ -2,16 +2,15 @@ package Acceptance;
 
 import Domain.EntityManager;
 import Domain.Exceptions.AssetsNotExistsException;
+import Domain.Exceptions.TeamAlreadyExistsException;
 import Domain.Exceptions.UserNotFoundException;
-import Domain.Game.Team;
+import Domain.Game.*;
 import Domain.Users.*;
-import Domain.Game.League;
 import Domain.Users.AssociationRepresentative;
 import Domain.Users.SystemAdmin;
 import Domain.Users.SystemUser;
 import Domain.Users.Unregistered;
 import Domain.Game.Team;
-import Domain.Game.TeamStatus;
 import Domain.Users.*;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.Team;
@@ -550,4 +549,65 @@ public class AcceptanceTests {
 
     }
 
+    /**
+     * 9.10.a
+     */
+    @Test
+    public void registerNewTeamATest() throws TeamAlreadyExistsException, UserNotFoundException {
+        SystemUser arSystemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(arSystemUser);
+        SystemUser userToBeOwner = new SystemUser("AviCohen", "name");
+        UIController.setSelector(91011); // Hapoel Beit Shan
+
+        assertTrue(ARController.registerNewTeam(arSystemUser));
+        assertNotNull(userToBeOwner);
+        assertTrue(userToBeOwner.isType(RoleTypes.TEAM_OWNER));
+        TeamOwner toRole = (TeamOwner) userToBeOwner.getRole(RoleTypes.TEAM_OWNER);
+        assertEquals(1, toRole.getOwnedTeams().size());
+
+    }
+
+    /**
+     * 9.10.b
+     */
+    @Test
+    public void registerNewTeam2ATest() throws TeamAlreadyExistsException, UserNotFoundException {
+        SystemUser arSystemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(arSystemUser);
+        SystemUser userToBeOwner = new SystemUser("AviCohen", "name");
+
+        SystemUser teamOwnerUser = new SystemUser("to", "name");
+        new TeamOwner(teamOwnerUser);
+        TeamOwner toRole = (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
+        Team existingTeam = new Team("Hapoel Beit Shan", toRole);
+        EntityManager.getInstance().addTeam(existingTeam);
+        //Team already exists
+        UIController.setSelector(91021); // Hapoel Beit Shan
+        try {
+            ARController.registerNewTeam(arSystemUser);
+            Assert.fail();
+        }
+        catch (TeamAlreadyExistsException e){
+            e.printStackTrace();
+        }
+        assertNotNull(userToBeOwner);
+        assertFalse(userToBeOwner.isType(RoleTypes.TEAM_OWNER));
+    }
+
+    /**
+     * 9.10.c
+     */
+    @Test
+    public void registerNewTeam3ATest() throws TeamAlreadyExistsException, UserNotFoundException {
+        SystemUser arSystemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(arSystemUser);
+        UIController.setSelector(91031); // Hapoel Beit Shan, then NOTaUSERNAME
+        try {
+            ARController.registerNewTeam(arSystemUser);
+            Assert.fail();
+        }
+        catch (UserNotFoundException e){
+            e.printStackTrace();
+        }
+    }
 }

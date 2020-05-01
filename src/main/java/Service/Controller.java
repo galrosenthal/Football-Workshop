@@ -12,6 +12,7 @@ import Domain.Game.TeamStatus;
 import Domain.Users.*;
 
 import java.util.List;
+import static Service.UIController.getUsernameFromUser;
 
 public class Controller {
 
@@ -86,14 +87,6 @@ public class Controller {
             return null;
         }
         return (TeamOwner)myTeamOwnerRole;
-    }
-
-    private static String getUsernameFromUser(String msg) {
-        UIController.printMessage("Enter new " + msg + " Username:");
-
-        String username = UIController.receiveString();
-        return username;
-
     }
 
     public static Team getTeamByChoice(TeamOwner myTeamOwner) {

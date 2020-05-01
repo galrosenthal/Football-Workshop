@@ -95,7 +95,29 @@ public class UIController {
             }  else if (selector == 924) {//10
                 selector = 923;
                 return "wrong Format";
-            } else
+            }   else if (selector == 9311 || selector == 91012) {
+                selector = 9313;
+                return "AviCohen";
+            }   else if (selector == 9312|| selector == 91032 || selector == 910311) {
+                selector = 9311;
+                return "NOTaUSERNAME";
+            }   else if (selector == 9313) { //training
+                return "VAR";
+            }
+            else if (selector == 91011 || selector == 91021 || selector == 91031 || selector == 9103
+                    || selector == 91041  || selector == 91051 || selector == 91052 || selector == 91053) { //team name
+                if(selector == 91031 )
+                    selector = 91032;
+                else if (selector == 9103)
+                    selector = 910311;
+                    else
+                     selector = 91012; // avi cohen
+                return "Hapoel Beit Shan";
+            }
+            else if(selector == 9102){
+                return "stubTeam9102";
+            }
+            else
                 return null;
         }
     }
@@ -181,5 +203,12 @@ public class UIController {
         } else {
             return false;
         }
+    }
+    public static String getUsernameFromUser(String msg) {
+        UIController.printMessage("Enter new " + msg + " Username:");
+
+        String username = UIController.receiveString();
+        return username;
+
     }
 }

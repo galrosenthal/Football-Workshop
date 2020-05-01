@@ -113,6 +113,16 @@ public class EntityManager {
         }
         return null;
     }
+
+    public Team getTeam(String teamName) {
+        for (Team team : allTeams) {
+            if (team.getTeamName().toLowerCase().equals(teamName.toLowerCase())) {
+                return team;
+            }
+        }
+        return null;
+    }
+
     public Stadium getStadium(String stadiumName) {
         for (Stadium std: allStadiums) {
             if (std.getName().equals(stadiumName)) {
@@ -120,6 +130,20 @@ public class EntityManager {
             }
         }
         return null;
+    }
+
+    /**
+     * Checks if a team with a name that matches the given name already exists.
+     * @param name - String - name
+     * @return - boolean - True if a team with a name that matches the given name already exists, else false
+     */
+    public boolean doesTeamExists(String name){
+        for (Team team : allTeams) {
+            if (team.getTeamName().toLowerCase().equals(name.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -207,6 +231,15 @@ public class EntityManager {
     public void addLeague(String leagueName) {
         League league = new League(leagueName);
         allLeagues.add(league);
+    }
+
+    /**
+     * Adds a new team. Responsible only for creating and adding a new team, doesn't do any farther checks.
+     * @param teamName - String - A unique leagueName
+     */
+    public void addTeam(String teamName, TeamOwner to) {
+        Team team = new Team(teamName, to);
+        allTeams.add(team);
     }
 
     public void clearAll() {

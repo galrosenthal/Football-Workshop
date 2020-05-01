@@ -19,4 +19,9 @@ public class AssociationRepresentativeStub extends AssociationRepresentative{
         }
         return true;
     }
+
+    @Override
+    public boolean addTeam(String teamName, SystemUser newTeamOwnerUser) {
+        return true;
+    }
 }
