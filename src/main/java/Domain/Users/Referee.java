@@ -8,4 +8,8 @@ public class Referee extends Role {
         super(RoleTypes.REFEREE, systemUser);
         this.training = training;
     }
+
+    public String getTraining() {
+        return training;
+    }
 }

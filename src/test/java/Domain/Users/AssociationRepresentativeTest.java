@@ -2,11 +2,13 @@ package Domain.Users;
 
 import Domain.EntityManager;
 import Domain.Exceptions.RoleExistsAlreadyException;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import sun.net.www.ParseUtil;
 
 import static org.junit.Assert.*;
 
@@ -33,18 +35,19 @@ public class AssociationRepresentativeTest {
     @Test(expected = RoleExistsAlreadyException.class)
     public void addRefereeUTest() throws RoleExistsAlreadyException {
         aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5));
-        aR.addReferee(new SystemUserStub("stubUsername", "stub", 9311),"VAR");
+        aR.addReferee(new SystemUserStub("stubUsername", "stub", 9311), "VAR");
     }
+
     @Test
     public void addReferee2UTest() {
         aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5));
         SystemUser newRefereeUser = new SystemUserStub("stubUsername", "stub", 9312);
         try {
-            aR.addReferee(newRefereeUser,"VAR");
+            aR.addReferee(newRefereeUser, "VAR");
         } catch (RoleExistsAlreadyException e) {
             e.printStackTrace();
         }
-        assertTrue(newRefereeUser.getRole(RoleTypes.REFEREE)!=null);
+        assertTrue(newRefereeUser.getRole(RoleTypes.REFEREE) != null);
     }
 
     @Test
@@ -52,12 +55,43 @@ public class AssociationRepresentativeTest {
         aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5));
         SystemUser newRefereeUser = new SystemUserStub("stubUsername", "stub", 93131);
         try {
-            aR.addReferee(newRefereeUser,"VAR");
+           assertTrue(aR.addReferee(newRefereeUser, "VAR"));
         } catch (RoleExistsAlreadyException e) {
             e.printStackTrace();
         }
-        assertTrue(newRefereeUser.getRole(RoleTypes.REFEREE)!=null);
+        assertTrue(newRefereeUser.getRole(RoleTypes.REFEREE) != null);
     }
 
+
+    @Test
+    public void addReferee2ITest() {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
+        try {
+            assertTrue(aR.addReferee(newRefereeUser, "VAR"));
+        } catch (RoleExistsAlreadyException e) {
+            e.printStackTrace();
+        }
+        assertTrue(newRefereeUser.getRole(RoleTypes.REFEREE) != null);
+    }
+
+    @Test(expected = RoleExistsAlreadyException.class)
+    public void addReferee3ITest() throws RoleExistsAlreadyException {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
+        new Referee(newRefereeUser, "refTraining");
+
+        aR.addReferee(newRefereeUser, "VAR");
+    }
+
+
+    @After
+    public void tearDown() throws Exception {
+        EntityManager.getInstance().clearAll();
+    }
 }
+
+
 

@@ -109,31 +109,38 @@ public class ARController {
         return leagues.get(Index);
     }
 
-    public static boolean addReferee(SystemUser systemUser){
+    /**
+     * Controls the flow of Adding a new Referee role to an existing user.
+     *
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - boolean - True if a new referee was added successfully, else false
+     */
+    public static boolean addReferee(SystemUser systemUser) {
         if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
             return false;
         }
         AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
 
+        //receive the future referee username from ar
         String newRefereeUsername = getUsernameFromUser("referee");
-
-        SystemUser refereeUser=null;
-        do{
+        SystemUser refereeUser = null;
+        do {
             refereeUser = EntityManager.getInstance().getUser(newRefereeUsername);
-            if(refereeUser == null){
+            if (refereeUser == null) {
                 UIController.printMessage("Could not find a user by the given username\nPlease try again");
                 newRefereeUsername = getUsernameFromUser("referee");
             }
-        } while(refereeUser==null);
+        } while (refereeUser == null);
+        //A user has been identified.
 
-        UIController.printMessage("Enter the new referee's training");
+        UIController.printMessage("Enter the new referee's training:");
         String training = UIController.receiveString();
 
         boolean succeeded = false;
         try {
-            succeeded = ARRole.addReferee(refereeUser,training);
+            succeeded = ARRole.addReferee(refereeUser, training);
         } catch (RoleExistsAlreadyException e) {
-            UIController.printMessage("the user is already a referee");
+            UIController.printMessage("The user chosen is already a referee");
             return false;
         }
 
