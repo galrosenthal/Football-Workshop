@@ -10,12 +10,7 @@ import Domain.Users.AssociationRepresentative;
 import Domain.Users.SystemAdmin;
 import Domain.Users.SystemUser;
 import Domain.Users.Unregistered;
-import Domain.Game.Team;
 import Domain.Game.TeamStatus;
-import Domain.Users.*;
-import Domain.Exceptions.UserNotFoundException;
-import Domain.Game.Team;
-import Domain.Users.*;
 import Service.ARController;
 import Service.Controller;
 import Service.TOController;
@@ -413,11 +408,6 @@ public class AcceptanceTests {
 
     }
 
-    @After
-    public void tearDown() throws Exception {
-        EntityManager.getInstance().clearAll();
-    }
-
 
     /**
      * 6.1.1.a
@@ -548,6 +538,61 @@ public class AcceptanceTests {
         Controller.modifyTeamAssetDetails(abc);
 
 
+    }
+
+    /**
+     * 9.3.1.a
+     * Main success scenario - a user exists with no Referee role
+     */
+    @Test
+    public void addRefereeATest() {
+        UIController.setSelector(9311);
+        addRefereeSuccessTest();
+    }
+
+    /**
+     * 9.3.1.b
+     * first username entered wasn't found, second username exists with no Referee role.
+     */
+    @Test
+    public void addReferee2ATest() {
+        UIController.setSelector(9312);
+        addRefereeSuccessTest();
+    }
+
+
+    private void addRefereeSuccessTest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+
+        assertTrue(ARController.addReferee(systemUser));
+
+        assertNotNull(refereeUser);
+        assertTrue(refereeUser.isType(RoleTypes.REFEREE));
+        Referee refRole = (Referee) refereeUser.getRole(RoleTypes.REFEREE);
+        assertTrue(refRole.getTraining().equals("VAR"));
+    }
+
+    /**
+     * 9.3.1.c
+     * failure scenario - a user exists with the given username but he is already a referee.
+     */
+    @Test
+    public void addReferee3ATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+        new Referee(refereeUser,"training");
+
+        UIController.setSelector(9311);
+        //The user is already a referee
+        assertFalse(ARController.addReferee(systemUser));
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        EntityManager.getInstance().clearAll();
     }
 
 }
