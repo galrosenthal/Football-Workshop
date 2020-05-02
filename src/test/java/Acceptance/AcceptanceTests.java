@@ -34,6 +34,7 @@ public class AcceptanceTests {
     private static SystemUser existingUser;
     private static SystemUser aviCohenSu;
     private static SystemUser yosiManagerSu;
+
     @BeforeClass
     public static void setUp() { //Will be called only once
         existingUser = new SystemUser("abc", "aBc12345", "abc");
@@ -47,7 +48,7 @@ public class AcceptanceTests {
 
 
     @Test
-    public void systemBootATest(){
+    public void systemBootATest() {
         initEntities();
         UIController.setIsTest(true);
         UIController.setSelector(3);
@@ -55,15 +56,15 @@ public class AcceptanceTests {
     }
 
     private void initEntities() {
-        SystemUser adminUser = new SystemUser("admin","12345678","administrator");
+        SystemUser adminUser = new SystemUser("admin", "12345678", "administrator");
         adminUser.addNewRole(new SystemAdmin(adminUser));
         EntityManager.getInstance().addUser(adminUser);
     }
 
     @Test
-    public void addTeamOwnerATest() throws Exception{
+    public void addTeamOwnerATest() throws Exception {
         UIController.setIsTest(true);
-        Controller.addTeamOwner(new SystemUser("rosengal","Gal"));
+        Controller.addTeamOwner(new SystemUser("rosengal", "Gal"));
     }
 
 
@@ -102,8 +103,7 @@ public class AcceptanceTests {
         try {
             SystemUser user3 =Controller.login(unregUser3,"abc", "pass12345");
             Assert.fail();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -130,8 +130,7 @@ public class AcceptanceTests {
         try {
             SystemUser user2 = Controller.signUp(unregUser2,"abc", "abc", "aBc12345");
             Assert.fail();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -147,8 +146,7 @@ public class AcceptanceTests {
         try {
             SystemUser user3 = Controller.signUp(unregUser3,"abc", "abc", "123");
             Assert.fail();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -157,7 +155,7 @@ public class AcceptanceTests {
      * 9.1.a
      */
     @Test
-    public void addLeagueATest(){
+    public void addLeagueATest() {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser));
         EntityManager.getInstance().addUser(systemUser);
@@ -170,11 +168,12 @@ public class AcceptanceTests {
         EntityManager.getInstance().removeLeagueByName("Premier League");
         assertFalse(EntityManager.getInstance().doesLeagueExists("Premier League"));
     }
+
     /**
      * 9.1.b
      */
     @Test
-    public void addLeague2ATest(){
+    public void addLeague2ATest() {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser));
         EntityManager.getInstance().addUser(systemUser);
@@ -420,8 +419,7 @@ public class AcceptanceTests {
      * User for Elisha Levy exists
      */
     @Test
-    public void addAsset1ATest() throws Exception
-    {
+    public void addAsset1ATest() throws Exception {
         Team beitShean = new Team();
 
         beitShean.setTeamName("Beit Shean");
@@ -448,8 +446,7 @@ public class AcceptanceTests {
      * User for Elisha Levy does not exists
      */
     @Test
-    public void addAsset2ATest() throws Exception
-    {
+    public void addAsset2ATest() throws Exception {
         Team beitShean = new Team();
 
         beitShean.setTeamName("Beit Shean");
@@ -486,7 +483,7 @@ public class AcceptanceTests {
      * beitShean - team
      * abcCreate - team owner
      * playerElisha - player
-     *
+     * <p>
      * edit elisha levy position to DEFENCE
      * success!
      */
@@ -505,7 +502,7 @@ public class AcceptanceTests {
 
         SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");
         Player playerElisha = new Player(elivyCreate, new Date());
-        beitShean.addTeamPlayer(abcOwner , playerElisha);
+        beitShean.addTeamPlayer(abcOwner, playerElisha);
         UIController.setIsTest(true);
         UIController.setSelector(6139);
         assertTrue(Controller.modifyTeamAssetDetails(abc));
@@ -518,8 +515,8 @@ public class AcceptanceTests {
      * preconditions:
      * beitShean - team
      * abcCreate - team owner
-     *
-     *
+     * <p>
+     * <p>
      * No assets to to team
      * failure!
      */
@@ -589,11 +586,44 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         new AssociationRepresentative(systemUser);
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
-        new Referee(refereeUser,"training");
+        new Referee(refereeUser, "training");
 
         UIController.setSelector(9311);
         //The user is already a referee
         assertFalse(ARController.addReferee(systemUser));
+    }
+
+    /**
+     * 9.3.2.a
+     *  Main success scenario - a Referee role was removed successfully
+     */
+    @Test
+    public void removeRefereeATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+
+        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+        new Referee(refereeUser, "VAR");
+        UIController.setSelector(9321);
+        //There are no referees
+        assertTrue(ARController.removeReferee(systemUser));
+        assertFalse(refereeUser.isType(RoleTypes.REFEREE));
+    }
+
+    /**
+     * 9.3.2.b
+     * failure scenario - There are no referees
+     */
+    @Test
+    public void removeReferee2ATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+
+        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+
+        UIController.setSelector(9321);
+        //There are no referees
+        assertFalse(ARController.removeReferee(systemUser));
     }
 
     @After

@@ -218,7 +218,7 @@ public class EntityManager {
                 leagueToRemove = league;
             }
         }
-        if(leagueToRemove==null){
+        if (leagueToRemove == null) {
             return false;
         }
         return this.allLeagues.remove(leagueToRemove);
@@ -251,5 +251,20 @@ public class EntityManager {
 
     public boolean removeStadiumByReference(Stadium st) {
         return allStadiums.remove(st);
+    }
+
+    /**
+     * Returns a list of all the system users that are referees.
+     *
+     * @return - List<SystemUser> - A list of all the system users that are referees
+     */
+    public List<SystemUser> getReferees() {
+        List<SystemUser> referees = new ArrayList<>();
+        for (SystemUser user : this.allUsers) {
+            if (user.isType(RoleTypes.REFEREE)) {
+                referees.add(user);
+            }
+        }
+        return referees;
     }
 }
