@@ -65,5 +65,5 @@ public class AssociationRepresentative extends Role {
         }
         return false;
     }
-    
+
 }

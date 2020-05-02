@@ -19,6 +19,6 @@ public class Referee extends Role {
      */
     public boolean hasFutureGames() {
         //TODO:Checks if the referee has future games to judge.
-        return true;
+        return false;
     }
 }
