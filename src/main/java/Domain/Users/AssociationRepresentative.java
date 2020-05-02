@@ -49,4 +49,21 @@ public class AssociationRepresentative extends Role {
 
         return true;
     }
+
+    /**
+     * Removes the referee role from a given user.
+     * @param chosenUser - SystemUser - a user with a Referee role to be removed.
+     * @return - boolean - true if the Referee role was removed successfully, else false
+     */
+    public boolean removeReferee(SystemUser chosenUser) {
+        Referee refereeRole = (Referee)chosenUser.getRole(RoleTypes.REFEREE);
+        if (refereeRole!= null) {
+            if(!refereeRole.hasFutureGames()) {
+                chosenUser.removeRole(refereeRole);
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

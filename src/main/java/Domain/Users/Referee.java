@@ -12,4 +12,14 @@ public class Referee extends Role {
     public String getTraining() {
         return training;
     }
+
+    
+    /**
+     * Checks if the referee has future games to judge.
+     * @return - true if the referee is connected to future games.
+     */
+    public boolean hasFutureGames() {
+        //TODO:Checks if the referee has future games to judge.
+        return false;
+    }
 }

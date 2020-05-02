@@ -230,6 +230,72 @@ public class ARControllerTest {
         assertFalse(ARController.addReferee(systemUser));
     }
 
+    @Test
+    public void removeRefereeUTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 0);
+        assertFalse(ARController.removeReferee(systemUser));
+    }
+
+    @Test
+    public void removeReferee2UTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+
+        assertFalse(ARController.removeReferee(systemUser));
+    }
+
+    @Test
+    public void removeReferee3UTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+        AssociationRepresentativeStub.setSelector(0);
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        UIController.setSelector(9321);
+
+        assertFalse(ARController.removeReferee(systemUser));
+    }
+    @Test
+    public void removeReferee4UTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+        AssociationRepresentativeStub.setSelector(1);
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        UIController.setSelector(9321);
+
+        assertTrue(ARController.removeReferee(systemUser));
+    }
+
+    @Test
+    public void removeRefereeITest() {
+        SystemUser systemUser = getSystemUserAR();
+
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        UIController.setSelector(9321);
+
+        assertTrue(ARController.removeReferee(systemUser));
+    }
+
+    @Test
+    public void removeReferee2ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+
+        UIController.setSelector(9321);
+        //There are no referees
+        assertFalse(ARController.removeReferee(systemUser));
+    }
+
+    @Test
+    public void removeReferee3ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+        new Referee(refereeUser, "VAR");
+        UIController.setSelector(9321);
+        //There are no referees
+        assertTrue(ARController.removeReferee(systemUser));
+        assertFalse(refereeUser.isType(RoleTypes.REFEREE));
+    }
+
+
+
+
     @After
     public void tearDown() throws Exception {
         EntityManager.getInstance().clearAll();

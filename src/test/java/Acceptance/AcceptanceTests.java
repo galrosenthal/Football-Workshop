@@ -28,6 +28,7 @@ public class AcceptanceTests {
     private static SystemUser existingUser;
     private static SystemUser aviCohenSu;
     private static SystemUser yosiManagerSu;
+
     @BeforeClass
     public static void setUp() { //Will be called only once
         existingUser = new SystemUser("abc", "aBc12345", "abc");
@@ -41,7 +42,7 @@ public class AcceptanceTests {
 
 
     @Test
-    public void systemBootATest(){
+    public void systemBootATest() {
         initEntities();
         UIController.setIsTest(true);
         UIController.setSelector(3);
@@ -49,15 +50,15 @@ public class AcceptanceTests {
     }
 
     private void initEntities() {
-        SystemUser adminUser = new SystemUser("admin","12345678","administrator");
+        SystemUser adminUser = new SystemUser("admin", "12345678", "administrator");
         adminUser.addNewRole(new SystemAdmin(adminUser));
         EntityManager.getInstance().addUser(adminUser);
     }
 
     @Test
-    public void addTeamOwnerATest() throws Exception{
+    public void addTeamOwnerATest() throws Exception {
         UIController.setIsTest(true);
-        Controller.addTeamOwner(new SystemUser("rosengal","Gal"));
+        Controller.addTeamOwner(new SystemUser("rosengal", "Gal"));
     }
 
 
@@ -80,10 +81,9 @@ public class AcceptanceTests {
         //not a user
         Unregistered unregUser2 = new Unregistered();
         try {
-        SystemUser user2 = unregUser2.login("notAUser", "aBc12345");
+            SystemUser user2 = unregUser2.login("notAUser", "aBc12345");
             Assert.fail();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -96,8 +96,7 @@ public class AcceptanceTests {
         try {
             SystemUser user3 = unregUser3.login("abc", "pass12345");
             Assert.fail();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -124,8 +123,7 @@ public class AcceptanceTests {
         try {
             SystemUser user2 = unregUser2.signUp("abc", "abc", "aBc12345");
             Assert.fail();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -141,8 +139,7 @@ public class AcceptanceTests {
         try {
             SystemUser user3 = unregUser3.signUp("abc", "abc", "123");
             Assert.fail();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -151,7 +148,7 @@ public class AcceptanceTests {
      * 9.1.a
      */
     @Test
-    public void addLeagueATest(){
+    public void addLeagueATest() {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser));
         EntityManager.getInstance().addUser(systemUser);
@@ -164,11 +161,12 @@ public class AcceptanceTests {
         EntityManager.getInstance().removeLeagueByName("Premier League");
         assertFalse(EntityManager.getInstance().doesLeagueExists("Premier League"));
     }
+
     /**
      * 9.1.b
      */
     @Test
-    public void addLeague2ATest(){
+    public void addLeague2ATest() {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser));
         EntityManager.getInstance().addUser(systemUser);
@@ -190,15 +188,15 @@ public class AcceptanceTests {
     @Test
     public void closeTeamATest() throws Exception {
         //setups
-        TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner teamOwner = (TeamOwner) existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner);
         teamOwner.addTeamToOwn(team);
         //add team owner
-        TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner aviTo = (TeamOwner) aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
         team.addTeamOwner(aviTo);
         aviTo.addTeamToOwn(team);
         //add team manager
-        TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
+        TeamManager tmanager = (TeamManager) yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
         tmanager.addTeam(team);
         //add to Entity manager
@@ -229,15 +227,15 @@ public class AcceptanceTests {
     @Test
     public void closeTeam2ATest() throws Exception {
         //setups
-        TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner teamOwner = (TeamOwner) existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner);
         teamOwner.addTeamToOwn(team);
         //add team owner
-        TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner aviTo = (TeamOwner) aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
         team.addTeamOwner(aviTo);
         aviTo.addTeamToOwn(team);
         //add team manager
-        TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
+        TeamManager tmanager = (TeamManager) yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
         tmanager.addTeam(team);
         //add to Entity manager
@@ -267,15 +265,15 @@ public class AcceptanceTests {
     @Test
     public void reopenTeamATest() throws Exception {
         //setups
-        TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner teamOwner = (TeamOwner) existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner);
         teamOwner.addTeamToOwn(team);
         //add team owner
-        TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner aviTo = (TeamOwner) aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
         team.addTeamOwner(aviTo);
         aviTo.addTeamToOwn(team);
         //add team manager, BUT NOT the team TO the manager
-        TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
+        TeamManager tmanager = (TeamManager) yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
         //add to Entity manager
         EntityManager.getInstance().addUser(existingUser);
@@ -305,15 +303,15 @@ public class AcceptanceTests {
     @Test
     public void reopenTeam2ATest() throws Exception {
         //setups
-        TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner teamOwner = (TeamOwner) existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner);
         teamOwner.addTeamToOwn(team);
         //add team owner
-        TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner aviTo = (TeamOwner) aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
         team.addTeamOwner(aviTo);
         aviTo.addTeamToOwn(team);
         //add team manager, BUT NOT the team TO the manager
-        TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
+        TeamManager tmanager = (TeamManager) yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
         //add to Entity manager
         EntityManager.getInstance().addUser(existingUser);
@@ -343,11 +341,11 @@ public class AcceptanceTests {
     @Test
     public void reopenTeam3ATest() throws Exception {
         //setups
-        TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner teamOwner = (TeamOwner) existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner);
         teamOwner.addTeamToOwn(team);
         //add team manager, BUT NOT the team TO the manager
-        TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
+        TeamManager tmanager = (TeamManager) yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
         //add to Entity manager
         EntityManager.getInstance().addUser(existingUser);
@@ -375,7 +373,7 @@ public class AcceptanceTests {
      * 9.2.a
      */
     @Test
-    public void addSeasonToLeagueATest(){
+    public void addSeasonToLeagueATest() {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser));
         EntityManager.getInstance().addUser(systemUser);
@@ -392,7 +390,7 @@ public class AcceptanceTests {
      * 9.2.b
      */
     @Test
-    public void addSeasonToLeague2ATest(){
+    public void addSeasonToLeague2ATest() {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser));
         EntityManager.getInstance().addUser(systemUser);
@@ -414,20 +412,19 @@ public class AcceptanceTests {
      * User for Elisha Levy exists
      */
     @Test
-    public void addAsset1ATest() throws Exception
-    {
+    public void addAsset1ATest() throws Exception {
         Team beitShean = new Team();
 
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
+        SystemUser abcCreate = new SystemUser("abc1", "abc12345", "abc");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
-        SystemUser elisha = new SystemUser("elevy","Elisha Levy");
+        SystemUser elisha = new SystemUser("elevy", "Elisha Levy");
 
         Unregistered abcUnreg = new Unregistered();
-        SystemUser abc = abcUnreg.login("abc1","abc12345");
-        assertEquals(abc,abcCreate);
+        SystemUser abc = abcUnreg.login("abc1", "abc12345");
+        assertEquals(abc, abcCreate);
 
         UIController.setSelector(61118);
         assertTrue(Controller.addAsset(abc));
@@ -442,31 +439,28 @@ public class AcceptanceTests {
      * User for Elisha Levy does not exists
      */
     @Test
-    public void addAsset2ATest() throws Exception
-    {
+    public void addAsset2ATest() throws Exception {
         Team beitShean = new Team();
 
         beitShean.setTeamName("Beit Shean");
 
-        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
+        SystemUser abcCreate = new SystemUser("abc1", "abc12345", "abc");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
 
         Unregistered abcUnreg = new Unregistered();
-        SystemUser abc = abcUnreg.login("abc1","abc12345");
-        assertEquals(abc,abcCreate);
+        SystemUser abc = abcUnreg.login("abc1", "abc12345");
+        assertEquals(abc, abcCreate);
 
         UIController.setSelector(61118);
-        try{
+        try {
             Controller.addAsset(abc);
             EntityManager.getInstance().removeUserByReference(abcCreate);
             fail();
-        }
-        catch (UserNotFoundException e)
-        {
+        } catch (UserNotFoundException e) {
             UIController.printMessage(e.getMessage());
-            assertEquals("Could not find user elevy",e.getMessage());
+            assertEquals("Could not find user elevy", e.getMessage());
         }
 
 
@@ -480,7 +474,7 @@ public class AcceptanceTests {
      * beitShean - team
      * abcCreate - team owner
      * playerElisha - player
-     *
+     * <p>
      * edit elisha levy position to DEFENCE
      * success!
      */
@@ -499,7 +493,7 @@ public class AcceptanceTests {
 
         SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");
         Player playerElisha = new Player(elivyCreate, new Date());
-        beitShean.addTeamPlayer(abcOwner , playerElisha);
+        beitShean.addTeamPlayer(abcOwner, playerElisha);
         UIController.setIsTest(true);
         UIController.setSelector(6139);
         assertTrue(Controller.modifyTeamAssetDetails(abc));
@@ -512,12 +506,12 @@ public class AcceptanceTests {
      * preconditions:
      * beitShean - team
      * abcCreate - team owner
-     *
-     *
+     * <p>
+     * <p>
      * No assets to to team
      * failure!
      */
-    @Test (expected = AssetsNotExistsException.class)
+    @Test(expected = AssetsNotExistsException.class)
     public void modifyTeamAssetDetails2ATest() throws Exception {
         Team beitShean = new Team();
         beitShean.setTeamName("Beit Shean");
@@ -583,11 +577,44 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         new AssociationRepresentative(systemUser);
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
-        new Referee(refereeUser,"training");
+        new Referee(refereeUser, "training");
 
         UIController.setSelector(9311);
         //The user is already a referee
         assertFalse(ARController.addReferee(systemUser));
+    }
+
+    /**
+     * 9.3.2.a
+     *  Main success scenario - a Referee role was removed successfully
+     */
+    @Test
+    public void removeRefereeATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+
+        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+        new Referee(refereeUser, "VAR");
+        UIController.setSelector(9321);
+        //There are no referees
+        assertTrue(ARController.removeReferee(systemUser));
+        assertFalse(refereeUser.isType(RoleTypes.REFEREE));
+    }
+
+    /**
+     * 9.3.2.b
+     * failure scenario - There are no referees
+     */
+    @Test
+    public void removeReferee2ATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+
+        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+
+        UIController.setSelector(9321);
+        //There are no referees
+        assertFalse(ARController.removeReferee(systemUser));
     }
 
     @After

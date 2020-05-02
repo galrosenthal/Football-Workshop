@@ -145,10 +145,58 @@ public class ARController {
         }
 
         if (succeeded) {
-            //TODO: Send notification to newRefereeUUser
+            //TODO: Send notification to newRefereeUser
             UIController.printMessage("The referee has been added successfully");
         }
         return true;
     }
-    
+
+    /**
+     * Controls the flow of Adding a new Referee role to an existing user.
+     *
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - boolean - True if a new referee was added successfully, else false
+     */
+    public static boolean removeReferee(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+
+        SystemUser chosenUser = null;
+        try {
+            chosenUser = getRefereeByChoice();
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage());
+            return false;
+        }
+
+        if(ARRole.removeReferee(chosenUser)) {
+            UIController.printMessage("The referee has been removed successfully");
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * receives a system user selection from the user.
+     * @return - SystemUser - a referee chosen by the user
+     * @throws Exception - "There are no referees"
+     */
+    private static SystemUser getRefereeByChoice() throws Exception {
+        List<SystemUser> referees = EntityManager.getInstance().getReferees();
+        if (referees.isEmpty()) {
+            throw new Exception("There are no referees");
+        }
+        UIController.printMessage("Choose a referee number from the list:");
+        for (int i = 0; i < referees.size(); i++) {
+            UIController.printMessage(i + ". " + referees.get(i).getName());
+        }
+        int index;
+        do {
+            index = UIController.receiveInt();
+        } while (!(index >= 0 && index < referees.size()));
+
+        return referees.get(index);
+    }
 }

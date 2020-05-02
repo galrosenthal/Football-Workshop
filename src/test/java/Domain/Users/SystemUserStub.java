@@ -47,6 +47,12 @@ public class SystemUserStub extends SystemUser{
         {
             return false;
         }
+        else if(selector == 9321 && roleType.equals(RoleTypes.ASSOCIATION_REPRESENTATIVE)){
+            return true;
+        }
+        else if(selector == 9321 && roleType.equals(RoleTypes.REFEREE)){
+            return false;
+        }
         return true;
     }
 
@@ -118,6 +124,8 @@ public class SystemUserStub extends SystemUser{
         }else if( selector == 93132){
             Referee referee =  new Referee(this ,"VAR");
             return referee;
+        }else if( selector == 9321){
+            return new AssociationRepresentativeStub(this);
         }
         return null;
     }
