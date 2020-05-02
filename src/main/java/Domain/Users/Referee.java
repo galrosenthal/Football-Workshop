@@ -13,6 +13,7 @@ public class Referee extends Role {
         return training;
     }
 
+    
     /**
      * Checks if the referee has future games to judge.
      * @return - true if the referee is connected to future games.
