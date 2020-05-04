@@ -3,6 +3,8 @@ package Domain.Users;
 import Domain.EntityManager;
 import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Financials.AssociationFinancialRecordLog;
+import Domain.Game.Season;
+import Service.UIController;
 
 import java.util.List;
 
@@ -66,4 +68,18 @@ public class AssociationRepresentative extends Role {
         return false;
     }
 
+    /**
+     * Assigns a given referee to a given season if the referee has not been previously assigned to the season.
+     * @param chosenSeason - Season - the season to assign the referee to
+     * @param refereeRole - Referee - the referee to be assigned
+     * @throws Exception - throws if the referee has been previously assigned to the season.
+     */
+    public void assignRefereeToSeason(Season chosenSeason, Referee refereeRole) throws Exception {
+        if(chosenSeason.doesContainsReferee(refereeRole)){
+            throw new Exception("This referee is already assigned to the chosen season");
+        }
+        else{
+            chosenSeason.assignReferee(refereeRole);
+        }
+    }
 }
