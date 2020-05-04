@@ -150,5 +150,6 @@ public class Season {
         if (refereeRole != null) {
             this.referees.add(refereeRole);
         }
+        //TODO: add the season to the referee role
     }
 }
