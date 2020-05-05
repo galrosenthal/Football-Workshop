@@ -72,6 +72,14 @@ public class Season {
     }
 
     /**
+     * Returns the number of referees assigned to this season
+     * @return - int - the number of referees assigned to this season
+     */
+    public int refereesSize(){
+        return this.referees.size();
+    }
+
+    /**
      * Verifies that a given string is a correct season format.
      * yyyy/yy where the first year is one year prior to the second.
      * ex.: 2020/21 represents the season of 2020-2021.
@@ -150,6 +158,16 @@ public class Season {
         if (refereeRole != null) {
             this.referees.add(refereeRole);
         }
-        //TODO: add the season to the referee role
+    }
+
+    /**
+     * Un-assigns a referee from this season
+     *
+     * @param referee - Referee - a referee role to be removed
+     */
+    public void unAssignReferee(Referee referee) {
+        if (referee != null) {
+            this.referees.remove(referee);
+        }
     }
 }

@@ -1,0 +1,96 @@
+package Domain.Users;
+
+import Domain.EntityManager;
+import Domain.Game.League;
+import Domain.Game.Season;
+import Domain.Game.SeasonStub;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
+public class RefereeTest {
+
+    private Referee referee;
+
+    @Before
+    public void setUp() {
+        this.referee = new Referee(new SystemUser("username", "name"), "training");
+    }
+
+    @Test
+    public void getTrainingUTest() {
+        assertTrue(this.referee.getTraining().equals("training"));
+    }
+
+    @Test
+    public void assignToSeasonUTest() {
+        List<Season> seasonArrayList = assign2SeasonsStubs();
+        List<Season> seasons = referee.getSeasons();
+        assertTrue(seasons.size() == 2);
+        assertTrue(seasons.contains(seasonArrayList.get(0)));
+        assertTrue(seasons.contains(seasonArrayList.get(1)));
+    }
+
+    private List<Season> assign2SeasonsStubs() {
+        Season season1 = new SeasonStub(new League("noName1"), "2020/21");
+        Season season2 = new SeasonStub(new League("noName2"), "2020/21");
+        referee.assignToSeason(season1);
+        referee.assignToSeason(season2);
+        ArrayList<Season> seasonArrayList = new ArrayList<>();
+        seasonArrayList.add(season1);
+        seasonArrayList.add(season2);
+        return seasonArrayList;
+    }
+
+    @Test
+    public void unAssignFromAllSeasonsUTest() {
+        assign2SeasonsStubs();
+        List<Season> seasons = referee.getSeasons();
+        assertTrue(seasons.size() == 2);
+        referee.unAssignFromAllSeasons();
+        seasons = referee.getSeasons();
+        assertTrue(seasons.size() == 0);
+    }
+
+    @Test
+    public void assignToSeasonITest() {
+        List<Season> seasonArrayList = assign2Seasons();
+        List<Season> seasons = referee.getSeasons();
+        assertTrue(seasons.size() == 2);
+        assertTrue(seasons.contains(seasonArrayList.get(0)));
+        assertTrue(seasons.contains(seasonArrayList.get(1)));
+    }
+
+    private List<Season> assign2Seasons() {
+        Season season1 = new Season(new League("noName1"), "2020/21");
+        Season season2 = new Season(new League("noName2"), "2020/21");
+        referee.assignToSeason(season1);
+        referee.assignToSeason(season2);
+        ArrayList<Season> seasonArrayList = new ArrayList<>();
+        seasonArrayList.add(season1);
+        seasonArrayList.add(season2);
+        return seasonArrayList;
+    }
+
+    @Test
+    public void unAssignFromAllSeasonsITest() {
+        assign2Seasons();
+        List<Season> seasons = referee.getSeasons();
+        assertTrue(seasons.size() == 2);
+        referee.unAssignFromAllSeasons();
+        seasons = referee.getSeasons();
+        assertTrue(seasons.size() == 0);
+    }
+
+
+    @After
+    public void tearDown() {
+        this.referee = null;
+        EntityManager.getInstance().clearAll();
+    }
+}

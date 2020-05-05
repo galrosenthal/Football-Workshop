@@ -2,6 +2,8 @@ package Domain.Users;
 
 import Domain.EntityManager;
 import Domain.Exceptions.RoleExistsAlreadyException;
+import Domain.Game.League;
+import Domain.Game.Season;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -129,9 +131,98 @@ public class AssociationRepresentativeTest {
         assertTrue(aR.removeReferee(newRefereeUser));
     }
 
+    @Test
+    public void assignRefereeToSeasonUTest(){
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        SystemUser newRefereeUser = new SystemUserStub("refUsername", "refName",93121);
+        Referee refereeRole = (Referee)newRefereeUser.getRole(RoleTypes.REFEREE);
+        //new RefereeStub(newRefereeUser, "refTraining");
+        Season season = new Season(new League("noName"),"2020/21");
+
+        boolean thrown = false;
+        try {
+            aR.assignRefereeToSeason(season,refereeRole);
+        } catch (Exception e) {
+            thrown = true;
+        }
+        assertFalse(thrown);
+
+        assertTrue(season.doesContainsReferee(refereeRole));
+        assertTrue(refereeRole.getSeasons().contains(season));
+    }
+    @Test
+    public void assignRefereeToSeason2UTest(){
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        SystemUser newRefereeUser = new SystemUserStub("refUsername", "refName",93121);
+        Referee refereeRole = (Referee)newRefereeUser.getRole(RoleTypes.REFEREE);
+        //new RefereeStub(newRefereeUser, "refTraining");
+        Season season = new Season(new League("noName"),"2020/21");
+
+        boolean thrown = false;
+        try {
+            aR.assignRefereeToSeason(season,refereeRole);
+        } catch (Exception e) {
+            thrown = true;
+        }
+        assertFalse(thrown);
+        assertTrue(season.doesContainsReferee(refereeRole));
+        assertTrue(refereeRole.getSeasons().contains(season));
+        //duplicated assign
+        try {
+            aR.assignRefereeToSeason(season,refereeRole);
+        } catch (Exception e) {
+            assertEquals("This referee is already assigned to the chosen season",e.getMessage());
+        }
+    }
+    @Test
+    public void assignRefereeToSeasonITest(){
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
+        Referee refereeRole = new Referee(newRefereeUser, "refTraining");
+        Season season = new Season(new League("noName"),"2020/21");
+
+        boolean thrown = false;
+        try {
+            aR.assignRefereeToSeason(season,refereeRole);
+        } catch (Exception e) {
+            thrown = true;
+        }
+        assertFalse(thrown);
+
+        assertTrue(season.doesContainsReferee(refereeRole));
+        assertTrue(refereeRole.getSeasons().contains(season));
+    }
+    @Test
+    public void assignRefereeToSeason2ITest(){
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
+        Referee refereeRole = new Referee(newRefereeUser, "refTraining");
+        Season season = new Season(new League("noName"),"2020/21");
+
+
+        boolean thrown = false;
+        try {
+            aR.assignRefereeToSeason(season,refereeRole);
+        } catch (Exception e) {
+            thrown = true;
+        }
+        assertFalse(thrown);
+        assertTrue(season.doesContainsReferee(refereeRole));
+        assertTrue(refereeRole.getSeasons().contains(season));
+        //duplicated assign
+        try {
+            aR.assignRefereeToSeason(season,refereeRole);
+        } catch (Exception e) {
+            assertEquals("This referee is already assigned to the chosen season",e.getMessage());
+        }
+    }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         EntityManager.getInstance().clearAll();
     }
 }
