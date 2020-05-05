@@ -68,4 +68,15 @@ public class Referee extends Role {
             this.seasons.add(chosenSeason);
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof Referee){
+            Referee other = (Referee)obj;
+            if(this==other || this.systemUser.equals(other.systemUser)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

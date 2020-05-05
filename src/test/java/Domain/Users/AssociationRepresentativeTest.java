@@ -5,6 +5,7 @@ import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Game.League;
 import Domain.Game.Season;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 
 
@@ -158,7 +159,7 @@ public class AssociationRepresentativeTest {
     }
 
     @Test
-    public void assignRefereeToSeason2UTest() {
+    public void assignRefereeToSeasonITest() {
         SystemUser aRUser = new SystemUser("arUsername", "arName");
         aR = new AssociationRepresentative(aRUser);
         SystemUser newRefereeUser = new SystemUserStub("refUsername", "refName", 93121);
@@ -178,13 +179,14 @@ public class AssociationRepresentativeTest {
         //duplicated assign
         try {
             aR.assignRefereeToSeason(season, refereeRole);
+            Assert.fail();
         } catch (Exception e) {
             assertEquals("This referee is already assigned to the chosen season", e.getMessage());
         }
     }
 
     @Test
-    public void assignRefereeToSeasonITest() {
+    public void assignRefereeToSeason2ITest() {
         SystemUser aRUser = new SystemUser("arUsername", "arName");
         aR = new AssociationRepresentative(aRUser);
         SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
@@ -204,7 +206,7 @@ public class AssociationRepresentativeTest {
     }
 
     @Test
-    public void assignRefereeToSeason2ITest() {
+    public void assignRefereeToSeason3ITest() {
         SystemUser aRUser = new SystemUser("arUsername", "arName");
         aR = new AssociationRepresentative(aRUser);
         SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
@@ -224,6 +226,7 @@ public class AssociationRepresentativeTest {
         //duplicated assign
         try {
             aR.assignRefereeToSeason(season, refereeRole);
+            Assert.fail();
         } catch (Exception e) {
             assertEquals("This referee is already assigned to the chosen season", e.getMessage());
         }
