@@ -5,12 +5,8 @@ import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Game.League;
 import Domain.Game.Season;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import sun.net.www.ParseUtil;
+
 
 import static org.junit.Assert.*;
 
@@ -89,7 +85,7 @@ public class AssociationRepresentativeTest {
     }
 
     @Test
-    public void removeRefereeUTest(){
+    public void removeRefereeUTest() {
         aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5));
         SystemUser newRefereeUser = new SystemUserStub("stubUsername", "stub", 9312);
 
@@ -97,6 +93,7 @@ public class AssociationRepresentativeTest {
 
         assertTrue(newRefereeUser.getRole(RoleTypes.REFEREE) != null);
     }
+
     @Test
     public void removeReferee2UTest() {
         aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5));
@@ -128,21 +125,29 @@ public class AssociationRepresentativeTest {
         aR = new AssociationRepresentative(aRUser);
         SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
         new Referee(newRefereeUser, "refTraining");
+
+        Referee referee = (Referee) newRefereeUser.getRole(RoleTypes.REFEREE);
+        Season season = new Season(new League("noName"),"2020/21");
+        season.assignReferee(referee);
+        referee.assignToSeason(season);
+
+        assertTrue(season.doesContainsReferee(referee));
         assertTrue(aR.removeReferee(newRefereeUser));
+        assertFalse(season.doesContainsReferee(referee));
     }
 
     @Test
-    public void assignRefereeToSeasonUTest(){
+    public void assignRefereeToSeasonUTest() {
         SystemUser aRUser = new SystemUser("arUsername", "arName");
         aR = new AssociationRepresentative(aRUser);
-        SystemUser newRefereeUser = new SystemUserStub("refUsername", "refName",93121);
-        Referee refereeRole = (Referee)newRefereeUser.getRole(RoleTypes.REFEREE);
+        SystemUser newRefereeUser = new SystemUserStub("refUsername", "refName", 93121);
+        Referee refereeRole = (Referee) newRefereeUser.getRole(RoleTypes.REFEREE);
         //new RefereeStub(newRefereeUser, "refTraining");
-        Season season = new Season(new League("noName"),"2020/21");
+        Season season = new Season(new League("noName"), "2020/21");
 
         boolean thrown = false;
         try {
-            aR.assignRefereeToSeason(season,refereeRole);
+            aR.assignRefereeToSeason(season, refereeRole);
         } catch (Exception e) {
             thrown = true;
         }
@@ -151,18 +156,19 @@ public class AssociationRepresentativeTest {
         assertTrue(season.doesContainsReferee(refereeRole));
         assertTrue(refereeRole.getSeasons().contains(season));
     }
+
     @Test
-    public void assignRefereeToSeason2UTest(){
+    public void assignRefereeToSeason2UTest() {
         SystemUser aRUser = new SystemUser("arUsername", "arName");
         aR = new AssociationRepresentative(aRUser);
-        SystemUser newRefereeUser = new SystemUserStub("refUsername", "refName",93121);
-        Referee refereeRole = (Referee)newRefereeUser.getRole(RoleTypes.REFEREE);
+        SystemUser newRefereeUser = new SystemUserStub("refUsername", "refName", 93121);
+        Referee refereeRole = (Referee) newRefereeUser.getRole(RoleTypes.REFEREE);
         //new RefereeStub(newRefereeUser, "refTraining");
-        Season season = new Season(new League("noName"),"2020/21");
+        Season season = new Season(new League("noName"), "2020/21");
 
         boolean thrown = false;
         try {
-            aR.assignRefereeToSeason(season,refereeRole);
+            aR.assignRefereeToSeason(season, refereeRole);
         } catch (Exception e) {
             thrown = true;
         }
@@ -171,22 +177,23 @@ public class AssociationRepresentativeTest {
         assertTrue(refereeRole.getSeasons().contains(season));
         //duplicated assign
         try {
-            aR.assignRefereeToSeason(season,refereeRole);
+            aR.assignRefereeToSeason(season, refereeRole);
         } catch (Exception e) {
-            assertEquals("This referee is already assigned to the chosen season",e.getMessage());
+            assertEquals("This referee is already assigned to the chosen season", e.getMessage());
         }
     }
+
     @Test
-    public void assignRefereeToSeasonITest(){
+    public void assignRefereeToSeasonITest() {
         SystemUser aRUser = new SystemUser("arUsername", "arName");
         aR = new AssociationRepresentative(aRUser);
         SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
         Referee refereeRole = new Referee(newRefereeUser, "refTraining");
-        Season season = new Season(new League("noName"),"2020/21");
+        Season season = new Season(new League("noName"), "2020/21");
 
         boolean thrown = false;
         try {
-            aR.assignRefereeToSeason(season,refereeRole);
+            aR.assignRefereeToSeason(season, refereeRole);
         } catch (Exception e) {
             thrown = true;
         }
@@ -195,18 +202,19 @@ public class AssociationRepresentativeTest {
         assertTrue(season.doesContainsReferee(refereeRole));
         assertTrue(refereeRole.getSeasons().contains(season));
     }
+
     @Test
-    public void assignRefereeToSeason2ITest(){
+    public void assignRefereeToSeason2ITest() {
         SystemUser aRUser = new SystemUser("arUsername", "arName");
         aR = new AssociationRepresentative(aRUser);
         SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
         Referee refereeRole = new Referee(newRefereeUser, "refTraining");
-        Season season = new Season(new League("noName"),"2020/21");
+        Season season = new Season(new League("noName"), "2020/21");
 
 
         boolean thrown = false;
         try {
-            aR.assignRefereeToSeason(season,refereeRole);
+            aR.assignRefereeToSeason(season, refereeRole);
         } catch (Exception e) {
             thrown = true;
         }
@@ -215,9 +223,9 @@ public class AssociationRepresentativeTest {
         assertTrue(refereeRole.getSeasons().contains(season));
         //duplicated assign
         try {
-            aR.assignRefereeToSeason(season,refereeRole);
+            aR.assignRefereeToSeason(season, refereeRole);
         } catch (Exception e) {
-            assertEquals("This referee is already assigned to the chosen season",e.getMessage());
+            assertEquals("This referee is already assigned to the chosen season", e.getMessage());
         }
     }
 

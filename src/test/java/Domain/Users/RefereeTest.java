@@ -49,12 +49,13 @@ public class RefereeTest {
 
     @Test
     public void unAssignFromAllSeasonsUTest() {
-        assign2SeasonsStubs();
+        List<Season> seasonArrayList = assign2SeasonsStubs();
         List<Season> seasons = referee.getSeasons();
         assertTrue(seasons.size() == 2);
         referee.unAssignFromAllSeasons();
         seasons = referee.getSeasons();
         assertTrue(seasons.size() == 0);
+        assertFalse(seasonArrayList.get(0).doesContainsReferee(referee));
     }
 
     @Test
@@ -71,6 +72,8 @@ public class RefereeTest {
         Season season2 = new Season(new League("noName2"), "2020/21");
         referee.assignToSeason(season1);
         referee.assignToSeason(season2);
+        season1.assignReferee(referee);
+        season2.assignReferee(referee);
         ArrayList<Season> seasonArrayList = new ArrayList<>();
         seasonArrayList.add(season1);
         seasonArrayList.add(season2);
@@ -79,12 +82,17 @@ public class RefereeTest {
 
     @Test
     public void unAssignFromAllSeasonsITest() {
-        assign2Seasons();
+        List<Season> seasonArrayList = assign2Seasons();
+
+        seasonArrayList.get(0).getReferees();
+
         List<Season> seasons = referee.getSeasons();
         assertTrue(seasons.size() == 2);
         referee.unAssignFromAllSeasons();
         seasons = referee.getSeasons();
         assertTrue(seasons.size() == 0);
+        assertFalse(seasonArrayList.get(0).doesContainsReferee(referee));
+        seasonArrayList.get(0).getReferees();
     }
 
 
