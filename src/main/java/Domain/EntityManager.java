@@ -113,6 +113,7 @@ public class EntityManager {
         }
         return null;
     }
+
     public Stadium getStadium(String stadiumName) {
         for (Stadium std: allStadiums) {
             if (std.getName().equals(stadiumName)) {
