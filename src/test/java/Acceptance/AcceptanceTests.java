@@ -558,7 +558,7 @@ public class AcceptanceTests {
     private void addRefereeSuccessTest() {
         SystemUser systemUser = new SystemUser("username", "name");
         new AssociationRepresentative(systemUser);
-        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
 
         assertTrue(ARController.addReferee(systemUser));
 
@@ -576,7 +576,7 @@ public class AcceptanceTests {
     public void addReferee3ATest() {
         SystemUser systemUser = new SystemUser("username", "name");
         new AssociationRepresentative(systemUser);
-        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
         new Referee(refereeUser, "training");
 
         UIController.setSelector(9311);
@@ -586,14 +586,14 @@ public class AcceptanceTests {
 
     /**
      * 9.3.2.a
-     *  Main success scenario - a Referee role was removed successfully
+     * Main success scenario - a Referee role was removed successfully
      */
     @Test
     public void removeRefereeATest() {
         SystemUser systemUser = new SystemUser("username", "name");
         new AssociationRepresentative(systemUser);
 
-        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
         new Referee(refereeUser, "VAR");
         UIController.setSelector(9321);
         //There are no referees
@@ -610,12 +610,57 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         new AssociationRepresentative(systemUser);
 
-        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
 
         UIController.setSelector(9321);
         //There are no referees
         assertFalse(ARController.removeReferee(systemUser));
     }
+
+    /**
+     * 9.4.a
+     * Main success scenario - a Referee role was assigned to a season successfully
+     */
+    @Test
+    public void assignRefereeATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        UIController.setSelector(0);
+        EntityManager.getInstance().addLeague("Premier League");
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2019/20");
+        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
+        new Referee(refereeUser, "VAR");
+        /*
+        Expected: The referee has been assigned to the season successfully
+         */
+        assertTrue(ARController.assignReferee(systemUser));
+    }
+
+    /**
+     * 9.4.b
+     * failure scenario - The chosen referee is already assigned to the chosen season
+     */
+    @Test
+    public void assignReferee2ATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        UIController.setSelector(0);
+        EntityManager.getInstance().addLeague("Premier League");
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2019/20");
+        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
+        new Referee(refereeUser, "VAR");
+        /*
+        Expected: The referee has been assigned to the season successfully
+         */
+        assertTrue(ARController.assignReferee(systemUser));
+        /*
+        Expected: This referee is already assigned to the chosen season
+         */
+        assertFalse(ARController.assignReferee(systemUser));
+    }
+
 
     @After
     public void tearDown() throws Exception {

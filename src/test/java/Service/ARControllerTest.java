@@ -402,7 +402,7 @@ public class ARControllerTest {
         assertFalse(ARController.assignReferee(systemUser));
     }
 
-    
+
     @Test
     public void assignReferee2ITest() {
         SystemUser systemUser = getSystemUserAR();

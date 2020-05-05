@@ -116,10 +116,6 @@ public class ARController {
      * @throws Exception - throws if there are no seasons in the league
      */
     private static Season getSeasonByChoice(League league) throws Exception {
-        if (league == null){
-            return null;
-        }
-
         List<Season> seasons = league.getSeasons();
         if (seasons == null || seasons.isEmpty()) {
             throw new Exception("There are no seasons in the league");
