@@ -1,0 +1,105 @@
+package GUI;
+
+
+import GUI.About.AboutView;
+import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.KeyModifier;
+import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.PWA;
+import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.lumo.Lumo;
+
+
+/**
+ * The main layout. Contains the navigation menu.
+ */
+@Theme(value = Lumo.class)
+@PageTitle("MainPage")
+@PWA(name = "Football", shortName = "Football", enableInstallPrompt = false)
+@CssImport("./styles/shared-styles.css")
+@CssImport(value = "./styles/menu-buttons.css", themeFor = "vaadin-button")
+public class FootballMain extends AppLayout implements RouterLayout{
+
+    private final Button logoutButton;
+
+    public FootballMain() {
+// Header of the menu (the navbar)
+
+        // menu toggle
+        final DrawerToggle drawerToggle = new DrawerToggle();
+        drawerToggle.addClassName("menu-toggle");
+        addToNavbar(drawerToggle);
+
+        // image, logo
+        final HorizontalLayout top = new HorizontalLayout();
+        top.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+        top.setClassName("menu-header");
+
+        // Note! Image resource url is resolved here as it is dependent on the
+        // execution mode (development or production) and browser ES level
+        // support
+        final String resolvedImage = VaadinService.getCurrent().resolveResource("img/table-logo.png", VaadinSession.getCurrent().getBrowser());
+
+        final Image image = new Image(resolvedImage, "");
+        final Label title = new Label("Football Workshop");
+        top.add(image, title);
+        top.add(title);
+        addToNavbar(top);
+
+        // Navigation items
+
+        addToDrawer(createMenuLink(AboutView.class, AboutView.VIEW_NAME,
+                VaadinIcon.INFO_CIRCLE.create()));
+        addToDrawer(createMenuLink(RegistrationView.class, RegistrationView.VIEW_NAME,VaadinIcon.USER.create()));
+
+        // Create logout button but don't add it yet; admin view might be added
+        // in between (see #onAttach())
+        logoutButton = createMenuButton("Logout", VaadinIcon.SIGN_OUT.create());
+        logoutButton.addClickListener(e -> logout());
+        logoutButton.getElement().setAttribute("title", "Logout (Ctrl+L)");
+    }
+
+    private void logout() {
+        return;
+    }
+
+    private RouterLink createMenuLink(Class<? extends Component> viewClass,
+                                      String caption, Icon icon) {
+        final RouterLink routerLink = new RouterLink(null, viewClass);
+        routerLink.setClassName("menu-link");
+        routerLink.add(icon);
+        routerLink.add(new Span(caption));
+        icon.setSize("24px");
+        return routerLink;
+    }
+
+    private Button createMenuButton(String caption, Icon icon) {
+        final Button routerButton = new Button(caption);
+        routerButton.setClassName("menu-button");
+        routerButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
+        routerButton.setIcon(icon);
+        icon.setSize("24px");
+        return routerButton;
+    }
+}
+
+
+
+
+

@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * This Class is representing a Football Team
+ * This Class is representing a GUI.Football Team
  */
 public class Team {
 
