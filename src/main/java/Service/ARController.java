@@ -114,6 +114,29 @@ public class ARController {
     }
 
     /**
+     * Receives the user's selection of a season from a given league.
+     * @param league - League - a league with the desired season
+     * @return - Season - the selected season
+     * @throws Exception - throws if there are no seasons in the league
+     */
+    private static Season getSeasonByChoice(League league) throws Exception {
+        List<Season> seasons = league.getSeasons();
+        if (seasons == null || seasons.isEmpty()) {
+            throw new Exception("There are no seasons in the league");
+        }
+        UIController.printMessage("Choose a Season Number");
+        for (int i = 0; i < seasons.size(); i++) {
+            UIController.printMessage(i + ". " + seasons.get(i).getYears());
+        }
+        int Index;
+        do {
+            Index = UIController.receiveInt();
+        } while (!(Index >= 0 && Index < seasons.size()));
+
+        return seasons.get(Index);
+    }
+
+    /**
      * Controls the flow of Adding a new Referee role to an existing user.
      *
      * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
@@ -202,6 +225,55 @@ public class ARController {
         } while (!(index >= 0 && index < referees.size()));
 
         return referees.get(index);
+    }
+
+    /**
+     * Controls the flow of assigning a referee to an existing season.
+     *
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - boolean - True if a referee was assigned successfully, else false
+     */
+    public static boolean assignReferee(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        //League selection
+        League chosenLeague = null;
+        try {
+            chosenLeague = getLeagueByChoice();
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage() + "\nPlease add a league before assigning a referee");
+            return false;
+        }
+
+        Season chosenSeason = null;
+        try {
+            chosenSeason = getSeasonByChoice(chosenLeague);
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage() + "\nPlease add a season before assigning a referee");
+            return false;
+        }
+
+        SystemUser chosenRefereeUser = null;
+        try {
+            chosenRefereeUser = getRefereeByChoice();
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage());
+            return false;
+        }
+        Referee refereeRole = (Referee)chosenRefereeUser.getRole(RoleTypes.REFEREE);
+
+
+        try {
+            ARRole.assignRefereeToSeason(chosenSeason,refereeRole);
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage());
+            return false;
+        }
+
+        UIController.printMessage("The referee has been assigned to the season successfully");
+        return true;
     }
 
 

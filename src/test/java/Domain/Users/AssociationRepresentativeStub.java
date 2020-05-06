@@ -1,6 +1,7 @@
 package Domain.Users;
 
 import Domain.Exceptions.RoleExistsAlreadyException;
+import Domain.Game.Season;
 
 public class AssociationRepresentativeStub extends AssociationRepresentative{
 
@@ -35,6 +36,13 @@ public class AssociationRepresentativeStub extends AssociationRepresentative{
             return false;
         }
         return  true;
+    }
+
+    @Override
+    public void assignRefereeToSeason(Season chosenSeason, Referee refereeRole) throws Exception {
+        if (selector ==0) {
+            throw new Exception("This referee is already assigned to the chosen season");
+        }
     }
 
 
