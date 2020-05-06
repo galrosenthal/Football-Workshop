@@ -2,6 +2,7 @@ package Service;
 
 import Domain.EntityManager;
 import Domain.Game.League;
+import Domain.Game.Season;
 import Domain.Users.*;
 import org.junit.After;
 import org.junit.Before;
@@ -294,6 +295,147 @@ public class ARControllerTest {
     }
 
 
+    @Test //ITEST
+    public void assignRefereeUTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 0);
+        assertFalse(ARController.assignReferee(systemUser));
+    }
+
+    @Test //ITEST
+    public void assignReferee2UTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+        /*
+        Expected: There are no leagues
+                  Please add a league before assigning a referee
+         */
+        assertFalse(ARController.assignReferee(systemUser));
+    }
+
+    @Test
+    public void assignReferee3UTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+        UIController.setSelector(0);
+        EntityManager.getInstance().addLeague("newLeagueName");
+        /*
+        Expected: Choose a League Number
+                  0. newLeagueName
+                  There are no seasons in the league
+                  Please add a season before assigning a referee
+         */
+        assertFalse(ARController.assignReferee(systemUser));
+    }
+
+    @Test
+    public void assignRefereeITest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+        UIController.setSelector(0);
+        EntityManager.getInstance().addLeague("newLeagueName");
+        League league= EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2020/21");
+        /*
+        Expected: Choose a League Number
+                  0. newLeagueName
+                  Choose a Season Number
+                  0. 2020/21
+                  There are no referees
+         */
+        assertFalse(ARController.assignReferee(systemUser));
+    }
+    @Test
+    public void assignReferee3ITest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        assertFalse(ARController.assignReferee(systemUser));
+    }
+
+    @Test
+    public void assignReferee4ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        /*
+        Expected: There are no leagues
+                  Please add a league before assigning a referee
+         */
+        assertFalse(ARController.assignReferee(systemUser));
+    }
+
+    @Test
+    public void assignReferee5ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        UIController.setSelector(0);
+        EntityManager.getInstance().addLeague("newLeagueName");
+        /*
+        Expected: Choose a League Number
+                  0. newLeagueName
+                  There are no seasons in the league
+                  Please add a season before assigning a referee
+         */
+        assertFalse(ARController.assignReferee(systemUser));
+    }
+
+    @Test
+    public void assignReferee6ITest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+        UIController.setSelector(0);
+        AssociationRepresentativeStub.setSelector(1);
+        EntityManager.getInstance().addLeague("newLeagueName");
+        League league= EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2020/21");
+        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+        new Referee(refereeUser, "VAR");
+        /*
+        Expected: The referee has been assigned to the season successfully
+         */
+        assertTrue(ARController.assignReferee(systemUser));
+    }
+    @Test
+    public void assignReferee7ITest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+        UIController.setSelector(0);
+        AssociationRepresentativeStub.setSelector(0);
+        EntityManager.getInstance().addLeague("newLeagueName");
+        League league= EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2020/21");
+        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+        new Referee(refereeUser, "VAR");
+        /*
+        Expected: This referee is already assigned to the chosen season
+         */
+        assertFalse(ARController.assignReferee(systemUser));
+    }
+
+
+    @Test
+    public void assignReferee2ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        UIController.setSelector(0);
+        EntityManager.getInstance().addLeague("newLeagueName");
+        League league= EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2020/21");
+        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+        new Referee(refereeUser, "VAR");
+        /*
+        Expected: The referee has been assigned to the season successfully
+         */
+        assertTrue(ARController.assignReferee(systemUser));
+    }
+    @Test
+    public void assignReferee8ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        UIController.setSelector(0);
+
+        EntityManager.getInstance().addLeague("newLeagueName");
+        League league= EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2020/21");
+        SystemUser refereeUser = new SystemUser("AviCohen", "name");
+        new Referee(refereeUser, "VAR");
+        /*
+        Expected: The referee has been assigned to the season successfully
+         */
+        assertTrue(ARController.assignReferee(systemUser));
+        /*
+        Expected: This referee is already assigned to the chosen season
+         */
+        assertFalse(ARController.assignReferee(systemUser));
+    }
 
 
     @After

@@ -1,5 +1,10 @@
 package Domain.Game;
 
+import Domain.EntityManager;
+import Domain.Users.Referee;
+import Domain.Users.RefereeStub;
+import Domain.Users.SystemUser;
+import Domain.Users.SystemUserStub;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,8 +40,50 @@ public class SeasonTest {
         assertFalse(Season.isGoodYearsFormat("20das1"));
     }
 
+    @Test
+    public void assignAndUnAssignRefereeUTest() {
+        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121),"training");
+        assertTrue(season.refereesSize()==0);
+        season.assignReferee(referee);
+        assertTrue(season.refereesSize()==1);
+        assertTrue(season.getReferees().contains(referee));
+
+        season.unAssignReferee(referee);
+        assertTrue(season.refereesSize()==0);
+        assertFalse(season.getReferees().contains(referee));
+    }
+    //null test
+
+    @Test
+    public void unAssignRefereeUTest() {
+        season.unAssignReferee(null);
+        assertTrue(season.refereesSize()==0);
+    }
+    @Test
+    public void doesContainsRefereeUTest() {
+        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121),"training");
+        assertFalse(season.doesContainsReferee(referee));
+        season.assignReferee(referee);
+        assertTrue(season.doesContainsReferee(referee));
+    }
+
+    @Test
+    public void assignAndUnAssignRefereeITest() {
+        Referee referee = new Referee(new SystemUser("username", "name"),"training");
+        assertTrue(season.refereesSize()==0);
+        season.assignReferee(referee);
+        assertTrue(season.refereesSize()==1);
+
+        assertTrue(season.doesContainsReferee(referee));
+
+        season.unAssignReferee(referee);
+        assertTrue(season.refereesSize()==0);
+        assertFalse(season.doesContainsReferee(referee));
+    }
+
     @After
     public void tearDown() throws Exception {
         season = null;
+        EntityManager.getInstance().clearAll();
     }
 }
