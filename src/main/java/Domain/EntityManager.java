@@ -105,6 +105,11 @@ public class EntityManager {
         return new ArrayList<League>(allLeagues);
     }
 
+    /**
+     * Returns a SystemUser by his username
+     * @param username
+     * @return The SystemUser with the username, if exists in the system.
+     */
     public SystemUser getUser(String username) {
         for (SystemUser su : allUsers) {
             if (su.getUsername().equals(username)) {
@@ -114,6 +119,11 @@ public class EntityManager {
         return null;
     }
 
+    /**
+     * Returns a Team by its team name
+     * @param teamName
+     * @return The team with the given team name, if exists in the system.
+     */
     public Team getTeam(String teamName) {
         for (Team team : allTeams) {
             if (team.getTeamName().toLowerCase().equals(teamName.toLowerCase())) {
@@ -123,6 +133,11 @@ public class EntityManager {
         return null;
     }
 
+    /**
+     * Returns a Stadium by its stadium name
+     * @param stadiumName
+     * @return The Stadium with the given stadium name, if exists in the system.
+     */
     public Stadium getStadium(String stadiumName) {
         for (Stadium std: allStadiums) {
             if (std.getName().equals(stadiumName)) {
@@ -160,6 +175,11 @@ public class EntityManager {
         return false;
     }
 
+    /**
+     * Adds a given SystemUser to the user's list of the system.
+     * @param systemUser User to add
+     * @return true if successfully added the SystemUser to the system.
+     */
     public boolean addUser(SystemUser systemUser) {
         if (!(this.allUsers.contains(systemUser))) {
             this.allUsers.add(systemUser);
@@ -168,10 +188,20 @@ public class EntityManager {
         return false;
     }
 
+    /**
+     * Removes a SystemUser by a given reference to the SystemUser to remove.
+     * @param systemUser - SystemUser - the SystemUser to remove.
+     * @return - boolean - true if the SystemUser removed successfully, else false
+     */
     public boolean removeUserByReference(SystemUser systemUser) {
         return this.allUsers.remove(systemUser);
     }
 
+    /**
+     * Removes a SystemUser by a given username
+     * @param username - String - a name of the user to be removed
+     * @return - boolean - true if the SystemUser removed successfully, else false
+     */
     public boolean removeUserByName(String username) {
         for (SystemUser su : allUsers) {
             if (su.getUsername().equals(username)) {
@@ -182,6 +212,11 @@ public class EntityManager {
         return false;
     }
 
+    /**
+     * Adds a given Team to the team's list of the system.
+     * @param team Team to add
+     * @return true if successfully added the Team to the system.
+     */
     public boolean addTeam(Team team) {
         if (!(this.allTeams.contains(team))) {
             this.allTeams.add(team);
@@ -190,6 +225,11 @@ public class EntityManager {
         return false;
     }
 
+    /**
+     * Adds a given Stadium to the stadium's list of the system.
+     * @param stadium Stadium to add
+     * @return true if successfully added the Stadium to the system.
+     */
     public boolean addStadium(Stadium stadium) {
         if (!(this.allStadiums.contains(stadium))) {
             this.allStadiums.add(stadium);
@@ -198,10 +238,20 @@ public class EntityManager {
         return false;
     }
 
+    /**
+     * Checks if a given Stadium exists in the system.
+     * @param stadium
+     * @return true if the given Stadium exists in the system.
+     */
     public boolean isStadiumExists(Stadium stadium){
         return allStadiums.contains(stadium);
     }
 
+    /**
+     * Removes a Team by a given reference to the Team to remove.
+     * @param team - Team - the Team to remove.
+     * @return - boolean - true if the Team removed successfully, else false
+     */
     public boolean removeTeamByReference(Team team) {
         return this.allTeams.remove(team);
     }
@@ -249,13 +299,17 @@ public class EntityManager {
         allTeams = new ArrayList<>();
     }
 
+    /**
+     * Removes a Stadium by a given reference to the Stadium to remove.
+     * @param st - Stadium - the Stadium to remove.
+     * @return - boolean - true if the Stadium removed successfully, else false
+     */
     public boolean removeStadiumByReference(Stadium st) {
         return allStadiums.remove(st);
     }
 
     /**
      * Returns a list of all the system users that are referees.
-     *
      * @return - List<SystemUser> - A list of all the system users that are referees
      */
     public List<SystemUser> getReferees() {
