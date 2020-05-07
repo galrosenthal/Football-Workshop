@@ -1,5 +1,7 @@
 package GUI;
 
+import Domain.EntityManager;
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.UI;
@@ -41,8 +43,23 @@ public class Welcome extends FlexLayout
         next.addClickListener(event -> {
             getUI().get().navigate("About");
         });
+        next.setVisible(false);
 
         content.add(next);
 
+    }
+
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        super.onAttach(attachEvent);
+
+        if(EntityManager.getInstance().isLoggedIn())
+        {
+            next.setVisible(true);
+        }
+        else
+        {
+            next.setVisible(false);
+        }
     }
 }

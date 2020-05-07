@@ -1,11 +1,13 @@
 package GUI;
 
 import Domain.Users.Unregistered;
+import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -16,9 +18,10 @@ import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLayout;
 
 
-@Route(value = "Registration", layout = FootballMain.class)
+@Route(value = "Registration", layout = NotRegiseredView.class)
 public class RegistrationView extends VerticalLayout {
     public static final String VIEW_NAME = "Register";
     public RegistrationView() {

@@ -17,6 +17,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.*;
@@ -31,13 +32,14 @@ import com.vaadin.flow.theme.lumo.Lumo;
  * The main layout. Contains the navigation menu.
  */
 @Theme(value = Lumo.class)
-@PageTitle("MainPage")
 @PWA(name = "Football", shortName = "Football", enableInstallPrompt = false)
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/menu-buttons.css", themeFor = "vaadin-button")
 public class FootballMain extends AppLayout implements RouterLayout{
 
     private final Button logoutButton;
+    private final Button loginBtn;
+    private final Button signupBtn;
 
     public FootballMain() {
 // Header of the menu (the navbar)
@@ -59,15 +61,30 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
         final Image image = new Image(resolvedImage, "");
         final Label title = new Label("Football Workshop");
+        loginBtn = new Button("Login");
+        loginBtn.addClickListener(e -> {
+            getUI().get().navigate("Login");
+        });
+        signupBtn = new Button("Sign Up");
+        signupBtn.addClickListener(e -> {
+            getUI().get().navigate("Registration");
+        });
+
+        final HorizontalLayout buttons = new HorizontalLayout();
+        buttons.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+        buttons.setAlignItems(Alignment.END);
+        buttons.add(loginBtn,signupBtn);
+        buttons.setAlignSelf(Alignment.STRETCH);
+
         top.add(image, title);
         top.add(title);
+        top.addAndExpand(buttons);
+
         addToNavbar(top);
 
-        // Navigation items
 
-        addToDrawer(createMenuLink(AboutView.class, AboutView.VIEW_NAME,
-                VaadinIcon.INFO_CIRCLE.create()));
-        addToDrawer(createMenuLink(RegistrationView.class, RegistrationView.VIEW_NAME,VaadinIcon.USER.create()));
+
+//        addToDrawer(createMenuLink(RegistrationView.class, RegistrationView.VIEW_NAME,VaadinIcon.USER.create()));
 
         // Create logout button but don't add it yet; admin view might be added
         // in between (see #onAttach())
@@ -76,9 +93,20 @@ public class FootballMain extends AppLayout implements RouterLayout{
         logoutButton.getElement().setAttribute("title", "Logout (Ctrl+L)");
     }
 
+    private void createNavItems() {
+        if(EntityManager.getInstance().isLoggedIn())
+        {
+            addToDrawer(createMenuLink(AboutView.class, AboutView.VIEW_NAME,
+                    VaadinIcon.INFO_CIRCLE.create()));
+        }
+
+    }
+
     private void logout() {
         EntityManager.getInstance().setLoggedIn(false);
         getUI().get().navigate("");
+        getUI().get().getPage().reload();
+
     }
 
     private RouterLink createMenuLink(Class<? extends Component> viewClass,
@@ -103,6 +131,15 @@ public class FootballMain extends AppLayout implements RouterLayout{
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
+
+        if(EntityManager.getInstance().isLoggedIn())
+        {
+            loginBtn.setVisible(false);
+            signupBtn.setVisible(false);
+        }
+
+        // Navigation items
+        createNavItems();
 
         // User can quickly activate logout with Ctrl+L
         attachEvent.getUI().addShortcutListener(() -> logout(), Key.KEY_L,

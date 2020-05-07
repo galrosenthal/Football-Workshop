@@ -1,16 +1,23 @@
 package GUI.Login;
 
 import Domain.EntityManager;
+import Domain.Users.Unregistered;
+import Service.LoginController;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
+import javax.swing.*;
 
 /**
  * UI content when the user is not logged in yet.
@@ -35,15 +42,35 @@ public class LoginScreen extends FlexLayout {
         loginForm.addForgotPasswordListener(
                 event -> Notification.show("Hint: same as username"));
 
+        //SignUp button
+        Button signup = new Button("Sign Up Here");
+        signup.addClickListener(event -> {
+            getUI().get().navigate("Registration");
+        });
+
+        //Test Field
+        Label notReg = new Label("Not a user yet?");
+
+        VerticalLayout loginAndSignup = new VerticalLayout();
+        loginAndSignup.add(loginForm);
+        loginAndSignup.add(notReg);
+        loginAndSignup.add(signup);
+        loginAndSignup.setJustifyContentMode(JustifyContentMode.CENTER);
+        loginAndSignup.setAlignItems(Alignment.CENTER);
+
+
         // layout to center login form when there is sufficient screen space
         FlexLayout centeringLayout = new FlexLayout();
         centeringLayout.setSizeFull();
-        centeringLayout.setJustifyContentMode(JustifyContentMode.CENTER);
-        centeringLayout.setAlignItems(Alignment.CENTER);
-        centeringLayout.add(loginForm);
+//        centeringLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+//        centeringLayout.setAlignItems(Alignment.CENTER);
+        centeringLayout.add(loginAndSignup);
+
 
         // information text about logging in
         Component loginInformation = buildLoginInformation();
+
+
 
         add(loginInformation);
         add(centeringLayout);
@@ -70,6 +97,7 @@ public class LoginScreen extends FlexLayout {
         if (event.getUsername().equals("a") && event.getPassword().equals("a")) {
             EntityManager.getInstance().setLoggedIn(true);
             getUI().get().navigate("");
+
         } else {
             event.getSource().setError(true);
         }
