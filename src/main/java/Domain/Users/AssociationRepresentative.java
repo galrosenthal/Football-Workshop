@@ -1,18 +1,22 @@
 package Domain.Users;
 
 import Domain.EntityManager;
+import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Financials.AssociationFinancialRecordLog;
+import Domain.Game.Season;
 
 import java.util.List;
 
 public class AssociationRepresentative extends Role {
     List<AssociationFinancialRecordLog> logger;
+
     public AssociationRepresentative(SystemUser systemUser) {
         super(RoleTypes.ASSOCIATION_REPRESENTATIVE, systemUser);
     }
 
     /**
      * Creates a new League.
+     *
      * @param leagueName - String - A unique league name
      * @return - boolean - True if a new league was created successfully, else false
      * @throws Exception - throws if a league already exists with the given leagueName
@@ -27,5 +31,57 @@ public class AssociationRepresentative extends Role {
         EntityManager.getInstance().addLeague(leagueName);
 
         return true;
+    }
+
+    /**
+     * Adds a new Referee role to a given user with the given training.
+     * If the user is already a referee then throw exception.
+     *
+     * @param newRefereeUser - SystemUser - a user to add a referee role to.
+     * @param training       - String - the training of the referee
+     * @return - boolean - true if the referee role was added successfully.
+     * @throws RoleExistsAlreadyException - if the user is already a referee.
+     */
+    public boolean addReferee(SystemUser newRefereeUser, String training) throws RoleExistsAlreadyException {
+        if (newRefereeUser.getRole(RoleTypes.REFEREE) != null) {
+            throw new RoleExistsAlreadyException("Already a referee");
+        }
+        Referee refereeRole = new Referee(newRefereeUser, training);
+
+        return true;
+    }
+
+    /**
+     * Removes the referee role from a given user.
+     *
+     * @param chosenUser - SystemUser - a user with a Referee role to be removed.
+     * @return - boolean - true if the Referee role was removed successfully, else false
+     */
+    public boolean removeReferee(SystemUser chosenUser) {
+        Referee refereeRole = (Referee) chosenUser.getRole(RoleTypes.REFEREE);
+        if (refereeRole != null) {
+            if (!refereeRole.hasFutureGames()) {
+                refereeRole.unAssignFromAllSeasons();
+                chosenUser.removeRole(refereeRole);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Assigns a given referee to a given season if the referee has not been previously assigned to the season.
+     *
+     * @param chosenSeason - Season - the season to assign the referee to
+     * @param refereeRole  - Referee - the referee to be assigned
+     * @throws Exception - throws if the referee has been previously assigned to the season.
+     */
+    public void assignRefereeToSeason(Season chosenSeason, Referee refereeRole) throws Exception {
+        if (chosenSeason.doesContainsReferee(refereeRole)) {
+            throw new Exception("This referee is already assigned to the chosen season");
+        } else {
+            chosenSeason.assignReferee(refereeRole);
+            refereeRole.assignToSeason(chosenSeason);
+        }
     }
 }

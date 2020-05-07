@@ -36,6 +36,15 @@ public class League {
     }
 
     /**
+     * Getter for the seasons
+     *
+     * @return - List<Season>
+     */
+    public List<Season> getSeasons() {
+        return new ArrayList<>(seasons);
+    }
+
+    /**
      * Checks if a season with the same years already exists as the given years.
      *
      * @param seasonYears - String - years in the correct format as dictated by Season

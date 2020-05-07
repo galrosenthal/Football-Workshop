@@ -4,7 +4,6 @@ import Domain.EntityManager;
 import Domain.Game.Stadium;
 import Domain.Game.Asset;
 import Domain.Game.Season;
-import Domain.Game.Stadium;
 import Domain.Game.Team;
 import Domain.Game.TeamStatus;
 import Domain.Game.TeamAsset;
@@ -12,11 +11,8 @@ import Domain.Users.*;
 import com.sun.xml.internal.bind.v2.TODO;
 import Service.UIController;
 import Domain.Exceptions.*;
-import Service.UIController;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -57,7 +53,7 @@ public class TeamController {
 
             teamOwner = (TeamOwner) newTeamOwnerRole;
             if (teamOwners.contains(teamOwner)) {
-                throw new alreadyTeamOwnerException("This User is already a team owner of this team");
+                throw new RoleExistsAlreadyException("This User is already a team owner of this team");
             }
 
             if (isAlreadyOwnedAnotherTeamInSeason(teamToOwn, teamOwner)) {

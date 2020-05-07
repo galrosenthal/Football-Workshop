@@ -1,13 +1,9 @@
 package Service;
 
 import Domain.Exceptions.NoTeamExistsException;
-import Domain.Exceptions.alreadyTeamOwnerException;
-import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.Stadium;
 import Domain.Users.SystemUserStub;
 import Domain.Users.TeamOwnerStub;
-import Domain.EntityManager;
-import Domain.Exceptions.NoTeamExistsException;
 import Domain.Game.Team;
 import Domain.Users.*;
 import org.junit.After;

@@ -47,6 +47,12 @@ public class SystemUserStub extends SystemUser{
         {
             return false;
         }
+        else if(selector == 9321 && roleType.equals(RoleTypes.ASSOCIATION_REPRESENTATIVE)){
+            return true;
+        }
+        else if(selector == 9321 && roleType.equals(RoleTypes.REFEREE)){
+            return false;
+        }
         return true;
     }
 
@@ -98,12 +104,28 @@ public class SystemUserStub extends SystemUser{
         {
             return null;
         }
-
         else if( selector == 6131){
 
             TeamOwnerStub teamOwner =  new TeamOwnerStub(this);
             teamOwner.setSelector(6131);
             return teamOwner;
+        }else if( selector == 9311){
+            RefereeStub refereeStub =  new RefereeStub(this ,"VAR");
+            return refereeStub;
+        }else if( selector == 9312){
+            selector = 93121;
+            return null;
+        }else if( selector == 93121){
+            RefereeStub refereeStub =  new RefereeStub(this ,"VAR");
+            return refereeStub;
+        }else if( selector == 93131){
+            selector = 93132;
+            return null;
+        }else if( selector == 93132){
+            Referee referee =  new Referee(this ,"VAR");
+            return referee;
+        }else if( selector == 9321){
+            return new AssociationRepresentativeStub(this);
         }
         return null;
     }
