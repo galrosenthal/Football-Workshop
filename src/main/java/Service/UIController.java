@@ -95,6 +95,14 @@ public class UIController {
             }  else if (selector == 924) {//10
                 selector = 923;
                 return "wrong Format";
+            }   else if (selector == 9311) {
+                selector = 9313;
+                return "AviCohen";
+            }   else if (selector == 9312) {
+                selector = 9311;
+                return "NOTaUSERNAME";
+            }   else if (selector == 9313) { //training
+                return "VAR";
             } else
                 return null;
         }
@@ -107,7 +115,7 @@ public class UIController {
 
             return integer;
         } else {
-            if (selector == 0 || selector == 1 || selector == 2 || selector == 6117 || selector == 6118 || selector == 921 || selector ==922 || selector==924) {
+            if (selector == 0 || selector == 1 || selector == 2 || selector == 6117 || selector == 6118 || selector == 921 || selector ==922 || selector==924 || selector ==9321) {
                 return 0;
             } else if(selector == 61111){
                 setSelector(61112);
@@ -181,5 +189,12 @@ public class UIController {
         } else {
             return false;
         }
+    }
+    public static String getUsernameFromUser(String msg) {
+        UIController.printMessage("Enter new " + msg + " Username:");
+
+        String username = UIController.receiveString();
+        return username;
+
     }
 }

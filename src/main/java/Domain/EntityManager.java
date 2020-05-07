@@ -125,7 +125,7 @@ public class EntityManager {
     }
 
     public Stadium getStadium(String stadiumName) {
-        for (Stadium std: allStadiums) {
+        for (Stadium std : allStadiums) {
             if (std.getName().equals(stadiumName)) {
                 return std;
             }
@@ -135,10 +135,11 @@ public class EntityManager {
 
     /**
      * Checks if a league with a name that matches the given name already exists.
+     *
      * @param name - String - name
      * @return - boolean - True if a league with a name that matches the given name already exists, else false
      */
-    public boolean doesLeagueExists(String name){
+    public boolean doesLeagueExists(String name) {
         for (League league : allLeagues) {
             if (league.getName().equals(name)) {
                 return true;
@@ -185,7 +186,7 @@ public class EntityManager {
         return false;
     }
 
-    public boolean isStadiumExists(Stadium stadium){
+    public boolean isStadiumExists(Stadium stadium) {
         return allStadiums.contains(stadium);
     }
 
@@ -195,6 +196,7 @@ public class EntityManager {
 
     /**
      * Removes a league by a given name
+     *
      * @param leagueName - String - a name of the league to be removed
      * @return - boolean - true if the league removed successfully, else false
      */
@@ -205,7 +207,7 @@ public class EntityManager {
                 leagueToRemove = league;
             }
         }
-        if(leagueToRemove==null){
+        if (leagueToRemove == null) {
             return false;
         }
         return this.allLeagues.remove(leagueToRemove);
@@ -213,6 +215,7 @@ public class EntityManager {
 
     /**
      * Adds a new league. Responsible only for creating and adding a new league, doesn't do any farther checks.
+     *
      * @param leagueName - String - A unique leagueName
      */
     public void addLeague(String leagueName) {
@@ -229,5 +232,20 @@ public class EntityManager {
 
     public boolean removeStadiumByReference(Stadium st) {
         return allStadiums.remove(st);
+    }
+
+    /**
+     * Returns a list of all the system users that are referees.
+     *
+     * @return - List<SystemUser> - A list of all the system users that are referees
+     */
+    public List<SystemUser> getReferees() {
+        List<SystemUser> referees = new ArrayList<>();
+        for (SystemUser user : this.allUsers) {
+            if (user.isType(RoleTypes.REFEREE)) {
+                referees.add(user);
+            }
+        }
+        return referees;
     }
 }
