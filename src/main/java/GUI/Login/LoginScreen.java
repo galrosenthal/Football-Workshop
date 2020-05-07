@@ -68,8 +68,8 @@ public class LoginScreen extends FlexLayout {
 
     private void login(LoginForm.LoginEvent event) {
         if (event.getUsername().equals("a") && event.getPassword().equals("a")) {
-            getUI().get().navigate("");
             EntityManager.getInstance().setLoggedIn(true);
+            getUI().get().navigate("");
         } else {
             event.getSource().setError(true);
         }

@@ -89,6 +89,9 @@
                     <webAppConfig>
                         <allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>
                     </webAppConfig>
+                    <httpConnector>
+                        <port>80</port>
+                    </httpConnector>
                 </configuration>
             </plugin>
 

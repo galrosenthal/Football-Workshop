@@ -1,6 +1,7 @@
 package GUI;
 
 
+import Domain.EntityManager;
 import GUI.About.AboutView;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
@@ -76,7 +77,8 @@ public class FootballMain extends AppLayout implements RouterLayout{
     }
 
     private void logout() {
-        return;
+        EntityManager.getInstance().setLoggedIn(false);
+        getUI().get().navigate("");
     }
 
     private RouterLink createMenuLink(Class<? extends Component> viewClass,
@@ -96,6 +98,32 @@ public class FootballMain extends AppLayout implements RouterLayout{
         routerButton.setIcon(icon);
         icon.setSize("24px");
         return routerButton;
+    }
+
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        super.onAttach(attachEvent);
+
+        // User can quickly activate logout with Ctrl+L
+        attachEvent.getUI().addShortcutListener(() -> logout(), Key.KEY_L,
+                KeyModifier.CONTROL);
+
+//        // add the admin view menu item if user has admin role
+//        final AccessControl accessControl = AccessControlFactory.getInstance()
+//                .createAccessControl();
+//        if (accessControl.isUserInRole(AccessControl.ADMIN_ROLE_NAME)) {
+//
+//            // Create extra navigation target for admins
+//            registerAdminViewIfApplicable(accessControl);
+//
+//            // The link can only be created now, because the RouterLink checks
+//            // that the target is valid.
+//            addToDrawer(createMenuLink(AdminView.class, AdminView.VIEW_NAME,
+//                    VaadinIcon.DOCTOR.create()));
+//        }
+
+        // Finally, add logout button for all users
+        addToDrawer(logoutButton);
     }
 }
 
