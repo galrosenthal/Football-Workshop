@@ -24,6 +24,16 @@ public class EntityManager {
     private List<Stadium> allStadiums;
     private HashSet<League> allLeagues;
 
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
+
+    private boolean loggedIn = false;
+
     private EntityManager() {
         allUsers = new ArrayList<>();
         allLeagues = new HashSet<>();
