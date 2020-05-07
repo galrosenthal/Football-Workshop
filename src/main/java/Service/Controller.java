@@ -44,22 +44,18 @@ public class Controller {
     }
 
     /**
-     * The method get a user for who want to add a new owner to his team. the method checks the user
+     * The method gets a user who want to add a new owner to his team. the method checks the user
      * is a owner of a team, ask him for team selection and user selection for add.
      * @param systemUser - a Team owner
      * @return true if the method succeed adding a new team owner
      */
     public static boolean addTeamOwner(SystemUser systemUser)
     {
-        if(!systemUser.isType(RoleTypes.TEAM_OWNER))
-        {
+        TeamOwner myTeamOwner = getUserIfIsTeamOwner(systemUser);
+
+        if(myTeamOwner == null){
             return false;
         }
-        Role myTeamOwnerRole = systemUser.getRole(RoleTypes.TEAM_OWNER);
-        if (!(myTeamOwnerRole instanceof TeamOwner)) {
-            return false;
-        }
-        TeamOwner myTeamOwner = (TeamOwner) myTeamOwnerRole;
         Team chosenTeam = getTeamByChoice(myTeamOwner);
 
         if(chosenTeam.getStatus() != TeamStatus.OPEN) {
@@ -79,19 +75,25 @@ public class Controller {
 
     }
 
+    /**
+     * The method gets a user who want to remove a team owner. The method checks the user is a team owner and
+     * ask him for team selection and user selection he want to remove from the team he owned.
+     * @param user - team owner who want to remove another team owner from the team he owned
+     * @return true if the method succeed to remove the team owner
+     */
     public static boolean removeTeamOwner(SystemUser user){
-        if(!user.isType(RoleTypes.TEAM_OWNER))
-        {
+
+        TeamOwner myTeamOwner = getUserIfIsTeamOwner(user);
+
+        if(myTeamOwner == null){
             return false;
         }
-        Role myTeamOwnerRole = user.getRole(RoleTypes.TEAM_OWNER);
-        if(!(myTeamOwnerRole instanceof TeamOwner))
-        {
-            return false;
-        }
-        TeamOwner myTeamOwner = (TeamOwner)myTeamOwnerRole;
+
         Team chosenTeam = getTeamByChoice(myTeamOwner);
 
+        if(chosenTeam == null){
+            return false;
+        }
         String newTeamOwnerUsername = getUserOwnerSelection(chosenTeam);
 
         try{
@@ -169,11 +171,6 @@ public class Controller {
 
         return myTeams.get(teamIndex);
     }
-
-
-
-
-
 
 
     /**
