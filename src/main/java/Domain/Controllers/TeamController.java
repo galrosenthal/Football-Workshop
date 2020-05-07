@@ -34,7 +34,7 @@ public class TeamController {
         List<TeamOwner> teamOwners = teamToOwn.getTeamOwners();
 
         if (!teamOwners.contains(owner)) {
-            throw new Exception("Only the owner of this team can add a new owner");
+            throw new NotATeamOwner("Only the owner of this team can add a new owner");
         }
         SystemUser newTeamOwnerUser = EntityManager.getInstance().getUser(username);
 
@@ -57,7 +57,7 @@ public class TeamController {
             }
 
             if (isAlreadyOwnedAnotherTeamInSeason(teamToOwn, teamOwner)) {
-                throw new Exception("This User is already a team owner of a different team in same league");
+                throw new OwnedTeamInLeague("This User is already a team owner of a different team in same league");
             }
 
         }
@@ -418,19 +418,19 @@ public class TeamController {
         List<TeamOwner> teamOwners = team.getTeamOwners();
 
         if (!teamOwners.contains(owner)) {
-            throw new Exception("Only the owner of this team can remove owner");
+            throw new NotATeamOwner("Only the owner of this team can remove owner");
         }
         SystemUser newTeamOwnerUser = EntityManager.getInstance().getUser(username);
 
         if (newTeamOwnerUser == null) {
-            throw new Exception("Could not find a user by the given username");
+            throw new UserNotFoundException("Could not find a user by the given username");
         }
 
         Role TeamOwnerRole = newTeamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
         TeamOwner teamOwner = (TeamOwner)TeamOwnerRole;
 
         if(!teamOwners.contains(teamOwner)){
-            throw new Exception("The user is not a owner of this team");
+            throw new NotATeamOwner("The user is not a owner of this team");
         }
 
         List<TeamOwner> teamOwnersToRemove= allTeamOwnersToRemove(teamOwner,teamOwners);
