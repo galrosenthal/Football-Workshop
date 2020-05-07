@@ -283,14 +283,7 @@ public class EntityManager {
         allLeagues.add(league);
     }
 
-    /**
-     * Adds a new team. Responsible only for creating and adding a new team, doesn't do any farther checks.
-     * @param teamName - String - A unique leagueName
-     */
-    public void addTeam(String teamName, TeamOwner to) {
-        Team team = new Team(teamName, to);
-        allTeams.add(team);
-    }
+
 
     public void clearAll() {
         allStadiums = new ArrayList<>();

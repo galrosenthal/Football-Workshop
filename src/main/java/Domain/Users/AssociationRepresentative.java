@@ -66,12 +66,23 @@ public class AssociationRepresentative extends Role {
         else{
             teamOwner = (TeamOwner) newTeamOwnerRole;
         }
-        EntityManager.getInstance().addTeam(teamName, teamOwner);
         teamOwner.setAppointedOwner(this.getSystemUser());
-        Team newTeam = EntityManager.getInstance().getTeam(teamName);
+        Team newTeam = createNewTeam(teamName, teamOwner);
         teamOwner.addTeamToOwn(newTeam);
         newTeam.addTeamOwner(teamOwner);
         return true;
+    }
+
+    /**
+     * Creates a new team. Responsible only for creating and adding a new team, doesn't do any farther checks.
+     * @param teamName - String - the team's name.
+     * @param to -TeamOwner - The team's owner.
+     * @return   The new Team that was created.
+     */
+    private Team createNewTeam(String teamName, TeamOwner to) {
+        Team team = new Team(teamName, to);
+        EntityManager.getInstance().addTeam(team);
+        return team;
     }
 
     /**
