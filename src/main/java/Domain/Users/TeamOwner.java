@@ -8,6 +8,7 @@ import java.util.List;
 public class TeamOwner extends Role {
 
     private List<Team> ownedTeams;
+    private SystemUser appointedOwner; /** The team owner who appointed -this- team owner */
 
     public TeamOwner(SystemUser systemUser) {
         super(RoleTypes.TEAM_OWNER,systemUser);
@@ -71,6 +72,28 @@ public class TeamOwner extends Role {
 ////        return false;
 ////    }
 
+    /**
+     * Get the SystemUser who appointed this team owner.
+     * @return the SystemUser who appointed this team owner.
+     */
+    public SystemUser getAppointedOwner() {
+        return appointedOwner;
+    }
+
+    /**
+     * Set the SystemUser who appointed this team owner.
+     * @param appointedOwner SystemUser to set as the appointing team owner.
+     * @return true if successfully seted.
+     */
+    public boolean setAppointedOwner(SystemUser appointedOwner) {
+
+        if(appointedOwner != null){
+            this.appointedOwner = appointedOwner;
+            return true;
+        }
+
+        return false;
+    }
 
     @Override
     public boolean equals(Object o) {

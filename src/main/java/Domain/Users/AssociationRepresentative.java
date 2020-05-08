@@ -3,6 +3,7 @@ package Domain.Users;
 import Domain.EntityManager;
 import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Financials.AssociationFinancialRecordLog;
+import Domain.Game.Team;
 import Domain.Game.Season;
 
 import java.util.List;
@@ -16,7 +17,6 @@ public class AssociationRepresentative extends Role {
 
     /**
      * Creates a new League.
-     *
      * @param leagueName - String - A unique league name
      * @return - boolean - True if a new league was created successfully, else false
      * @throws Exception - throws if a league already exists with the given leagueName
@@ -52,8 +52,41 @@ public class AssociationRepresentative extends Role {
     }
 
     /**
+     * Creates a new team.
+     * @param teamName - String - A unique team name
+     * @param newTeamOwnerUser - SystemUser - The user who is chosen to be the team owner of the new team.
+     * @return - boolean - True if a new team was created successfully, else false
+     */
+    public boolean addTeam(String teamName, SystemUser newTeamOwnerUser) {
+        Role newTeamOwnerRole = newTeamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner teamOwner;
+        if (newTeamOwnerRole == null) {
+            teamOwner = new TeamOwner(newTeamOwnerUser);
+        }
+        else{
+            teamOwner = (TeamOwner) newTeamOwnerRole;
+        }
+        teamOwner.setAppointedOwner(this.getSystemUser());
+        Team newTeam = createNewTeam(teamName, teamOwner);
+        teamOwner.addTeamToOwn(newTeam);
+        newTeam.addTeamOwner(teamOwner);
+        return true;
+    }
+
+    /**
+     * Creates a new team. Responsible only for creating and adding a new team, doesn't do any farther checks.
+     * @param teamName - String - the team's name.
+     * @param to -TeamOwner - The team's owner.
+     * @return   The new Team that was created.
+     */
+    private Team createNewTeam(String teamName, TeamOwner to) {
+        Team team = new Team(teamName, to);
+        EntityManager.getInstance().addTeam(team);
+        return team;
+    }
+
+    /**
      * Removes the referee role from a given user.
-     *
      * @param chosenUser - SystemUser - a user with a Referee role to be removed.
      * @return - boolean - true if the Referee role was removed successfully, else false
      */

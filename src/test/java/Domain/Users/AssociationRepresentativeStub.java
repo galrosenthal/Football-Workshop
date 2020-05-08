@@ -44,4 +44,10 @@ public class AssociationRepresentativeStub extends AssociationRepresentative{
             throw new Exception("This referee is already assigned to the chosen season");
         }
     }
+
+
+    @Override
+    public boolean addTeam(String teamName, SystemUser newTeamOwnerUser) {
+        return true;
+    }
 }
