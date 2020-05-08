@@ -18,6 +18,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -102,7 +103,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
     private void createNavItems() {
         WrappedSession userSession = VaadinService.getCurrentRequest().getWrappedSession();
-        if(userSession == null)
+        if(userSession == null || userSession.getAttribute("username") == null  )
         {
             System.out.println("No Session acquired");
             return;
@@ -183,6 +184,15 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
         // Finally, add logout button for all users
         addToDrawer(logoutButton);
+    }
+
+    public static void showNotification(String msg)
+    {
+        if(msg != null)
+        {
+            Notification notification = new Notification(msg,3000, Notification.Position.BOTTOM_CENTER);
+            notification.open();
+        }
     }
 }
 

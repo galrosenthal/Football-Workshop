@@ -12,7 +12,11 @@ public class MainController {
 
     public static boolean login(String username, String password)
     {
-
+        SystemUser currentUser = EntityManager.getInstance().getUser(username);
+        if(currentUser == null)
+        {
+            return false;
+        }
         return false;
     }
 

@@ -1,5 +1,7 @@
 package Service;
 
+import GUI.FootballMain;
+
 import java.util.Scanner;
 
 public class UIController {
@@ -16,9 +18,13 @@ public class UIController {
     }
 
     public static void printMessage(String msg) {
-        //  if (!isTest) {
-        System.out.println(msg);
-        //  }
+        if (!isTest) {
+            FootballMain.showNotification(msg);
+        }
+        else
+        {
+            System.out.println(msg);
+        }
     }
 
     public static String receiveString() {
@@ -140,8 +146,8 @@ public class UIController {
             }else if(selector == 61119){
                 return 0;
             }else if(selector == 61120 || selector == 6623 || selector == 6622 || selector == 6612 || selector == 6611
-        || selector == 6621 || selector ==66151 || selector == 66144|| selector == 66143 || selector ==6625
-             || selector==66163 || selector ==66251 ){
+                    || selector == 6621 || selector ==66151 || selector == 66144|| selector == 66143 || selector ==6625
+                    || selector==66163 || selector ==66251 ){
                 return 0;
             }
             else if (selector == 6132 || selector == 6133 || selector == 6134 || selector == 61341 || selector == 6135 || selector == 6136 || selector == 6137 || selector == 6138 || selector == 61383 || selector == 61381 || selector == 61310) {
