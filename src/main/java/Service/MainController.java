@@ -1,6 +1,7 @@
 package Service;
 
 import Domain.EntityManager;
+import Domain.Exceptions.UsernameOrPasswordIncorrectException;
 import Domain.Users.Role;
 import Domain.Users.SystemUser;
 
@@ -12,12 +13,16 @@ public class MainController {
 
     public static boolean login(String username, String password)
     {
-        SystemUser currentUser = EntityManager.getInstance().getUser(username);
-        if(currentUser == null)
+
+        try {
+            SystemUser currentUser = Controller.login(username,password);
+            return true;
+        }
+        catch (UsernameOrPasswordIncorrectException e)
         {
+            e.printStackTrace();
             return false;
         }
-        return false;
     }
 
 

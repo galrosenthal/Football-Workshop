@@ -13,6 +13,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.WrappedSession;
 
 @Route(value = "Welcome", layout = FootballMain.class)
 @RouteAlias(value = "", layout = FootballMain.class)
@@ -52,8 +54,10 @@ public class Welcome extends FlexLayout
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
+        WrappedSession userSession = VaadinService.getCurrentRequest().getWrappedSession();
 
-        if(EntityManager.getInstance().isLoggedIn())
+        //This is just a button disable for fun not needed!
+        if(userSession.getAttribute("username") != null)
         {
             next.setVisible(true);
         }

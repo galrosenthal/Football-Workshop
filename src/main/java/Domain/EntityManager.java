@@ -353,6 +353,12 @@ public class EntityManager {
         throw new UsernameOrPasswordIncorrectException("Username or Password was incorrect!");
     }
 
+    /**
+     * This Function is used to authenticate the username with its password
+     * @param userWithUsrNm the SystemUser of the username from the entity manager
+     * @param pswrd the password recieved from the UI
+     * @return true if the password is correct and the user is able to login
+     */
     private boolean authenticate(SystemUser userWithUsrNm, String pswrd) {
         if (userWithUsrNm.getPassword().equals(pswrd)) {
             return true;
