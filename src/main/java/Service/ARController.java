@@ -1,13 +1,17 @@
 package Service;
 
+import Domain.Controllers.TeamController;
 import Domain.EntityManager;
 import Domain.Exceptions.RoleExistsAlreadyException;
+import Domain.Exceptions.TeamAlreadyExistsException;
+import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.League;
 import Domain.Game.Season;
 import Domain.Users.AssociationRepresentative;
 import Domain.Users.Referee;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
+import Domain.Users.*;
 
 import java.util.List;
 
@@ -194,7 +198,7 @@ public class ARController {
             return false;
         }
 
-        if (ARRole.removeReferee(chosenUser)) {
+        if(ARRole.removeReferee(chosenUser)) {
             UIController.printMessage("The referee has been removed successfully");
             return true;
         }
@@ -203,7 +207,6 @@ public class ARController {
 
     /**
      * receives a system user selection from the user.
-     *
      * @return - SystemUser - a referee chosen by the user
      * @throws Exception - "There are no referees"
      */
@@ -271,5 +274,41 @@ public class ARController {
 
         UIController.printMessage("The referee has been assigned to the season successfully");
         return true;
+    }
+
+
+    /**
+     * Controls the flow of Creating a new team.
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - boolean - True if a new team was created successfully, else false
+     * @throws TeamAlreadyExistsException
+     * @throws UserNotFoundException
+     */
+    public static boolean registerNewTeam(SystemUser systemUser) throws TeamAlreadyExistsException,UserNotFoundException  {
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+
+        UIController.printMessage("Enter the new team's name:");
+        String teamName = UIController.receiveString();
+
+        boolean teamExists = EntityManager.getInstance().doesTeamExists(teamName);
+        if (teamExists) {
+            throw new TeamAlreadyExistsException("The team \"" + teamName + "\" already exists in the system");
+        }
+
+        String newTeamOwnerUsername = UIController.getUsernameFromUser("Team Owner");
+        SystemUser newTeamOwnerUser = EntityManager.getInstance().getUser(newTeamOwnerUsername);
+        if (newTeamOwnerUser == null) {
+            throw new UserNotFoundException("Could not find a user by the given username");
+        }
+
+        //delegate the operation responsibility to AssociationRepresentative
+        boolean succeeded = ARRole.addTeam(teamName, newTeamOwnerUser);
+        if (succeeded) {
+            UIController.printMessage("The team has been created successfully");
+        }
+        return succeeded;
     }
 }

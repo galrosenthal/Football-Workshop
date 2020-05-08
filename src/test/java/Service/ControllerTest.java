@@ -1,5 +1,6 @@
 package Service;
 
+import Domain.EntityManager;
 import Domain.Exceptions.NoTeamExistsException;
 import Domain.Game.Stadium;
 import Domain.Users.SystemUserStub;
@@ -7,21 +8,110 @@ import Domain.Users.TeamOwnerStub;
 import Domain.Game.Team;
 import Domain.Users.*;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
 public class ControllerTest {
-
+    @Mock
+    SystemUser systemUser; //For testing login and signUp. Moved From UnregisteredTest
 
     @Before
     public void setUp() throws Exception {
         UIController.setIsTest(true);
+        //For testing login and signUp. Moved From UnregisteredTest
+        MockitoAnnotations.initMocks(this);
+        when(systemUser.getPassword()).thenReturn("12aA34567");
+        when(systemUser.getName()).thenReturn("Nir");
+        when(systemUser.getUsername()).thenReturn("nir");
     }
 
     @After
     public void tearDown() throws Exception {
+    }
+
+    @Test
+    public void loginUTest() throws Exception {
+        //userName not exists
+        try{
+            Controller.login("usrNmNotExists", "pswrd");
+            Assert.fail();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            Assert.assertEquals("Username or Password was incorrect!",e.getMessage());
+        }
+
+        //working good
+        EntityManager.getInstance().addUser(systemUser);
+
+        SystemUser result2 = Controller.login("nir", "12aA34567");
+        Assert.assertNotNull(result2);
+        Assert.assertEquals("nir", result2.getUsername());
+        Assert.assertEquals("Nir", result2.getName());
+        Assert.assertEquals("12aA34567", result2.getPassword());
+
+        //password incorrect
+        try{
+            Controller.login("nir", "pswrdNotCorrect");
+            Assert.fail();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            Assert.assertEquals("Username or Password was incorrect!",e.getMessage());
+        }
+        EntityManager.getInstance().removeUserByReference(systemUser);
+    }
+
+    @Test
+    public void signUpUTest() throws Exception {
+        //success
+        SystemUser newUser = Controller.signUp("Avi", "avi", "1234cB57");
+        Assert.assertNotNull(newUser);
+        Assert.assertEquals("avi", newUser.getUsername());
+        Assert.assertEquals("Avi", newUser.getName());
+        Assert.assertEquals("1234cB57", newUser.getPassword());
+
+
+        //userName already exists
+        EntityManager.getInstance().addUser(systemUser);
+        try{
+            Controller.signUp("Avi", "nir", "1234cB57");
+            Assert.fail();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            Assert.assertEquals("Username already exists",e.getMessage());
+        }
+
+        try {
+            //password does not meet security req
+            Controller.signUp("Yosi", "yos", "12a34567");
+            Assert.fail();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            Assert.assertEquals("Password does not meet the requirements",e.getMessage());
+        }
+
+        try {
+            //password does not meet security req
+            Controller.signUp("Yossi", "yos1", "55bB");
+            Assert.fail();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            Assert.assertEquals("Password does not meet the requirements",e.getMessage());
+        }
+
+        EntityManager.getInstance().removeUserByReference(systemUser);
+
     }
 
     @Test
