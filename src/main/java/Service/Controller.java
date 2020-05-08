@@ -1,13 +1,18 @@
 package Service;
 
 import Domain.Controllers.TeamController;
+import Domain.EntityManager;
 import Domain.Exceptions.NoTeamExistsException;
+import Domain.Exceptions.UsernameAlreadyExistsException;
+import Domain.Exceptions.UsernameOrPasswordIncorrectException;
+import Domain.Exceptions.WeakPasswordException;
 import Domain.Game.Team;
 import Domain.Game.TeamAsset;
 import Domain.Game.TeamStatus;
 import Domain.Users.*;
 
 import java.util.List;
+import static Service.UIController.getUsernameFromUser;
 
 import static Service.UIController.getUsernameFromUser;
 
@@ -26,7 +31,7 @@ public class Controller {
         //Retrieve system user
         SystemUser admin = null;
         try {
-            admin = new Unregistered().login(username, password);
+            admin = Controller.login(username, password);
         } catch (Exception e) {
             UIController.printMessage("Username or Password was incorrect!!!!!");
             e.printStackTrace();
@@ -189,10 +194,36 @@ public class Controller {
         return isSuccess;
     }
 
+    /**
+     * Receives user name and password from the unregistered user who wants to log in to the system,
+     * Delegates the responsibility to EntityManger.
+     * @param usrNm User name
+     * @param pswrd Password
+     * @return The user in the system with those credentials.
+     * @throws UsernameOrPasswordIncorrectException If user name or password are incorrect.
+     */
+    public static SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException {
+        return EntityManager.getInstance().login(usrNm, pswrd);
+    }
 
 
+    /**
+     * Receives name, user name and password from the unregistered user who wants to sign up to the system,
+     * Delegates the responsibility to EntityManger.
+     * @param name Name.
+     * @param usrNm User name.
+     * @param pswrd Password.
+     * @return New user with those credentials.
+     * @throws Exception If user name is already belongs to a user in the system, or
+     * the password does not meet the security requirements.
+     */
+    public static SystemUser signUp(String name, String usrNm, String pswrd)
+            throws UsernameAlreadyExistsException, WeakPasswordException {
+
+        return EntityManager.getInstance().signUp(name, usrNm, pswrd);
 
 
+    }
 
 
 }
