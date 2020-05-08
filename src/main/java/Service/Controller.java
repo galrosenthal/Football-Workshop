@@ -31,7 +31,7 @@ public class Controller {
         //Retrieve system user
         SystemUser admin = null;
         try {
-            admin = Controller.login(new Unregistered(),username, password);
+            admin = Controller.login(username, password);
         } catch (Exception e) {
             UIController.printMessage("Username or Password was incorrect!!!!!");
             e.printStackTrace();
@@ -196,38 +196,20 @@ public class Controller {
 
     /**
      * Receives user name and password from the unregistered user who wants to log in to the system,
-     * performs validation and returns the relevant user.
+     * Delegates the responsibility to EntityManger.
      * @param usrNm User name
      * @param pswrd Password
      * @return The user in the system with those credentials.
      * @throws UsernameOrPasswordIncorrectException If user name or password are incorrect.
      */
-    public static SystemUser login(Unregistered unreg, String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException {
-        EntityManager entManager = EntityManager.getInstance();
-        SystemUser userWithUsrNm = entManager.getUser(usrNm);
-        if(userWithUsrNm == null) //User name does not exists.
-            throw new UsernameOrPasswordIncorrectException("Username or Password was incorrect!");
-
-        //User name exists, checking password.
-        //List<String> userDetails = DBManager.getInstance().getSystemUsers().getRecord(new String[]{"username"}, new String[]{usrNm});
-        if (userWithUsrNm.getPassword().equals(pswrd)) {
-            unreg.setSystemUser(userWithUsrNm) ;
-            return userWithUsrNm;
-        }
-        throw new UsernameOrPasswordIncorrectException("Username or Password was incorrect!");
+    public static SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException {
+        return EntityManager.getInstance().login(usrNm, pswrd);
     }
 
 
     /**
      * Receives name, user name and password from the unregistered user who wants to sign up to the system,
-     * performs validation - checks whether the user name is not already belongs to a user in the system,
-     * and whether the given password meets the following security requirements:
-     * At least 8 characters.
-     * At least 1 number.
-     * At least 1 upper case letter.
-     * At least 1 lower case letter.
-     * Must not contain any spaces.
-     * Adds new user with the role fan to the system, and returns the relevant user.
+     * Delegates the responsibility to EntityManger.
      * @param name Name.
      * @param usrNm User name.
      * @param pswrd Password.
@@ -235,32 +217,11 @@ public class Controller {
      * @throws Exception If user name is already belongs to a user in the system, or
      * the password does not meet the security requirements.
      */
-    public static SystemUser signUp(Unregistered unreg, String name, String usrNm, String pswrd)
+    public static SystemUser signUp(String name, String usrNm, String pswrd)
             throws UsernameAlreadyExistsException, WeakPasswordException {
-        //Checking if user name is already exists
-        EntityManager entManager = EntityManager.getInstance();
-        if(entManager.getUser(usrNm) != null){
-            throw new UsernameAlreadyExistsException("Username already exists");
-        }
 
-        //Checking if the password meets the security requirements
-        // at least 8 characters
-        // at least 1 number
-        // at least 1 upper case letter
-        // at least 1 lower case letter
-        // must not contain any spaces
-        String pswrdRegEx = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$";
-        if(!pswrd.matches(pswrdRegEx)){
-            throw new WeakPasswordException("Password does not meet the requirements");
-        }
+        return EntityManager.getInstance().signUp(name, usrNm, pswrd);
 
-        SystemUser newUser = new SystemUser(usrNm, pswrd, name);
-        entManager.addUser(newUser);
-
-
-        unreg.setSystemUser(newUser) ;
-        UIController.printMessage("Successful sign up. Welcome, "+ usrNm);
-        return newUser;
 
     }
 

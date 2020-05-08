@@ -4,18 +4,12 @@ import Domain.EntityManager;
 import Domain.Exceptions.AssetsNotExistsException;
 import Domain.Exceptions.TeamAlreadyExistsException;
 import Domain.Exceptions.UserNotFoundException;
-import Domain.Game.*;
 import Domain.Users.*;
 import Domain.Game.League;
 import Domain.Users.AssociationRepresentative;
 import Domain.Users.SystemAdmin;
 import Domain.Users.SystemUser;
-import Domain.Users.Unregistered;
 import Domain.Game.Team;
-import Domain.Users.*;
-import Domain.Exceptions.UserNotFoundException;
-import Domain.Game.Team;
-import Domain.Users.*;
 import Domain.Game.TeamStatus;
 import Service.ARController;
 import Service.Controller;
@@ -74,8 +68,7 @@ public class AcceptanceTests {
     public void loginATest() throws Exception {
         EntityManager.getInstance().addUser(existingUser);
         //success
-        Unregistered unregUser = new Unregistered();
-        SystemUser user = Controller.login(unregUser,"abc", "aBc12345");
+        SystemUser user = Controller.login("abc", "aBc12345");
 
         //cleanup
         EntityManager.getInstance().removeUserByReference(existingUser);
@@ -85,9 +78,8 @@ public class AcceptanceTests {
     @Test
     public void login2ATest() throws Exception {
         //not a user
-        Unregistered unregUser2 = new Unregistered();
         try {
-        SystemUser user2 = Controller.login(unregUser2,"notAUser", "aBc12345");
+        SystemUser user2 = Controller.login("notAUser", "aBc12345");
             Assert.fail();
         }
         catch (Exception e){
@@ -99,9 +91,8 @@ public class AcceptanceTests {
     public void login3ATest() throws Exception {
         EntityManager.getInstance().addUser(existingUser);
         //wrong password
-        Unregistered unregUser3 = new Unregistered();
         try {
-            SystemUser user3 =Controller.login(unregUser3,"abc", "pass12345");
+            SystemUser user3 =Controller.login("abc", "pass12345");
             Assert.fail();
         } catch (Exception e) {
             e.printStackTrace();
@@ -118,17 +109,15 @@ public class AcceptanceTests {
     public void signUpATest() throws Exception {
         EntityManager.getInstance().removeUserByReference(existingUser);
         //success
-        Unregistered unregUser = new Unregistered();
-        SystemUser user = Controller.signUp(unregUser,"abc", "abc", "aBc12345");
+        SystemUser user = Controller.signUp("abc", "abc", "aBc12345");
     }
 
     @Test
     public void signUp2ATest() throws Exception {
         //username already exists
         EntityManager.getInstance().addUser(existingUser);
-        Unregistered unregUser2 = new Unregistered();
         try {
-            SystemUser user2 = Controller.signUp(unregUser2,"abc", "abc", "aBc12345");
+            SystemUser user2 = Controller.signUp("abc", "abc", "aBc12345");
             Assert.fail();
         } catch (Exception e) {
             e.printStackTrace();
@@ -142,9 +131,8 @@ public class AcceptanceTests {
     public void signUp3ATest() throws Exception {
         //password not strong
         EntityManager.getInstance().removeUserByReference(existingUser);
-        Unregistered unregUser3 = new Unregistered();
         try {
-            SystemUser user3 = Controller.signUp(unregUser3,"abc", "abc", "123");
+            SystemUser user3 = Controller.signUp("abc", "abc", "123");
             Assert.fail();
         } catch (Exception e) {
             e.printStackTrace();
@@ -429,8 +417,7 @@ public class AcceptanceTests {
         beitShean.getTeamOwners().add(abcOwner);
         SystemUser elisha = new SystemUser("elevy","Elisha Levy");
 
-        Unregistered abcUnreg = new Unregistered();
-        SystemUser abc = Controller.login(abcUnreg,"abc1","abc12345");
+        SystemUser abc = Controller.login("abc1","abc12345");
         assertEquals(abc,abcCreate);
 
         UIController.setSelector(61118);
@@ -456,8 +443,7 @@ public class AcceptanceTests {
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
 
-        Unregistered abcUnreg = new Unregistered();
-        SystemUser abc = Controller.login(abcUnreg,"abc1","abc12345");
+        SystemUser abc = Controller.login("abc1","abc12345");
         assertEquals(abc,abcCreate);
 
         UIController.setSelector(61118);
@@ -496,8 +482,7 @@ public class AcceptanceTests {
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
 
-        Unregistered abcUnreg = new Unregistered();
-        SystemUser abc = Controller.login(abcUnreg,"abc1", "abc12345");
+        SystemUser abc = Controller.login("abc1", "abc12345");
         assertEquals(abc, abcCreate);
 
         SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");
@@ -529,8 +514,7 @@ public class AcceptanceTests {
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
 
-        Unregistered abcUnreg = new Unregistered();
-        SystemUser abc = Controller.login(abcUnreg,"abc1", "abc12345");
+        SystemUser abc = Controller.login("abc1", "abc12345");
         assertEquals(abc, abcCreate);
 
         SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");

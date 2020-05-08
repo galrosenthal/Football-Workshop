@@ -2,6 +2,9 @@ package Domain;
 
 import DB.DBManager;
 import DB.Table;
+import Domain.Exceptions.UsernameAlreadyExistsException;
+import Domain.Exceptions.UsernameOrPasswordIncorrectException;
+import Domain.Exceptions.WeakPasswordException;
 import Domain.Game.League;
 import Domain.Game.Stadium;
 import Domain.Users.Role;
@@ -11,6 +14,7 @@ import Domain.Game.Stadium;
 import Domain.Game.Team;
 import Domain.Users.*;
 import Domain.Game.Stadium;
+import Service.UIController;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -313,5 +317,75 @@ public class EntityManager {
             }
         }
         return referees;
+    }
+
+    /**
+     * Receives user name and password from the unregistered user who wants to log in to the system,
+     * performs validation and returns the relevant user.
+     * @param usrNm User name
+     * @param pswrd Password
+     * @return The user in the system with those credentials.
+     * @throws UsernameOrPasswordIncorrectException If user name or password are incorrect.
+     */
+    public SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException {
+        SystemUser userWithUsrNm = getUser(usrNm);
+        if(userWithUsrNm == null) //User name does not exists.
+            throw new UsernameOrPasswordIncorrectException("Username or Password was incorrect!");
+
+        //User name exists, checking password.
+        if(authenticate(userWithUsrNm, pswrd)){
+            return userWithUsrNm;
+        }
+
+        throw new UsernameOrPasswordIncorrectException("Username or Password was incorrect!");
+    }
+
+    private boolean authenticate(SystemUser userWithUsrNm, String pswrd) {
+        if (userWithUsrNm.getPassword().equals(pswrd)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Receives name, user name and password from the unregistered user who wants to sign up to the system,
+     * performs validation - checks whether the user name is not already belongs to a user in the system,
+     * and whether the given password meets the following security requirements:
+     * At least 8 characters.
+     * At least 1 number.
+     * At least 1 upper case letter.
+     * At least 1 lower case letter.
+     * Must not contain any spaces.
+     * Adds new user with the role fan to the system, and returns the relevant user.
+     * @param name Name.
+     * @param usrNm User name.
+     * @param pswrd Password.
+     * @return New user with those credentials.
+     * @throws Exception If user name is already belongs to a user in the system, or
+     * the password does not meet the security requirements.
+     */
+    public SystemUser signUp(String name, String usrNm, String pswrd) throws UsernameAlreadyExistsException, WeakPasswordException {
+        //Checking if user name is already exists
+        if(getUser(usrNm) != null){
+            throw new UsernameAlreadyExistsException("Username already exists");
+        }
+
+        //Checking if the password meets the security requirements
+        // at least 8 characters
+        // at least 1 number
+        // at least 1 upper case letter
+        // at least 1 lower case letter
+        // must not contain any spaces
+        String pswrdRegEx = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$";
+        if(!pswrd.matches(pswrdRegEx)){
+            throw new WeakPasswordException("Password does not meet the requirements");
+        }
+
+        SystemUser newUser = new SystemUser(usrNm, pswrd, name);
+        addUser(newUser);
+
+        UIController.printMessage("Successful sign up. Welcome, "+ usrNm);
+        return newUser;
+
     }
 }
