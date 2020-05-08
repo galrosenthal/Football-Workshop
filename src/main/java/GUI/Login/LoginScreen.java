@@ -35,11 +35,12 @@ public class LoginScreen extends FlexLayout {
         setSizeFull();
         setClassName("login-screen");
 
+
         // login form, centered in the available part of the screen
         LoginForm loginForm = new LoginForm();
         loginForm.addLoginListener(this::login);
         loginForm.addForgotPasswordListener(
-                event -> Notification.show("Hint: same as username"));
+                event -> Notification.show("Sorry We cannot help you"));
 
         //SignUp button
         Button signup = new Button("Sign Up Here");

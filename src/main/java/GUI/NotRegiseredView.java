@@ -24,6 +24,15 @@ import com.vaadin.flow.theme.lumo.Lumo;
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/menu-buttons.css", themeFor = "vaadin-button")
 public class NotRegiseredView extends AppLayout implements RouterLayout {
+    private String lastUrl;
+
+    public String getLastUrl() {
+        return lastUrl;
+    }
+
+    public void setLastUrl(String lastUrl) {
+        this.lastUrl = lastUrl;
+    }
 
     public NotRegiseredView() {
         final DrawerToggle drawerToggle = new DrawerToggle();
@@ -46,11 +55,10 @@ public class NotRegiseredView extends AppLayout implements RouterLayout {
         top.add(title);
         addToNavbar(top);
 
-        Icon backIcon = VaadinIcon.ARROW_BACKWARD.create();
+        Icon backIcon = VaadinIcon.HOME_O.create();
         backIcon.setSize("2");
 
-        addToDrawer(createMenuLink(Welcome.class, "Back", backIcon
-                ));
+        addToDrawer(createMenuLink(Welcome.class, "Home", backIcon));
 
     }
 

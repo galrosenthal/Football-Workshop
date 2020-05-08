@@ -53,7 +53,7 @@ public class EntityManager {
     public static EntityManager getInstance() {
         if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
-            SystemUser a = new SystemUser("a","a","a");
+            SystemUser a = new SystemUser("admin","Aa123456","admin");
             a.addNewRole(new SystemAdmin(a));
         }
 
@@ -403,8 +403,12 @@ public class EntityManager {
         SystemUser newUser = new SystemUser(usrNm, pswrd, name);
         addUser(newUser);
 
-        UIController.printMessage("Successful sign up. Welcome, "+ usrNm);
+
         return newUser;
 
+    }
+
+    public List<SystemUser> getAllUsers() {
+        return allUsers;
     }
 }

@@ -1,7 +1,6 @@
 package GUI;
 
 
-import Domain.EntityManager;
 import GUI.About.AboutView;
 import Service.MainController;
 import com.vaadin.flow.component.AttachEvent;
@@ -19,7 +18,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.*;
@@ -94,6 +93,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
 
 
+
 //        addToDrawer(createMenuLink(RegistrationView.class, RegistrationView.VIEW_NAME,VaadinIcon.USER.create()));
 
         // Create logout button but don't add it yet; admin view might be added
@@ -111,8 +111,9 @@ public class FootballMain extends AppLayout implements RouterLayout{
             return;
         }
 
-        List<String> userRoles = MainController.getRoles(userSession.getAttribute(USERNAME_ATTRIBUTE_NAME).toString());
-
+        List<String> userRoles = MainController.getUserRoles(userSession.getAttribute(USERNAME_ATTRIBUTE_NAME).toString());
+        addToDrawer(createMenuLink(AboutView.class, AboutView.VIEW_NAME,
+                VaadinIcon.INFO_CIRCLE.create()));
 
         if(userRoles == null || userRoles.isEmpty())
         {
@@ -121,8 +122,9 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
         if(userRoles.contains("SYSTEM_ADMIN"))
         {
-            addToDrawer(createMenuLink(AboutView.class, AboutView.VIEW_NAME,
-                    VaadinIcon.INFO_CIRCLE.create()));
+            addToDrawer(createMenuLink(ModifyUsers.class, ModifyUsers.VIEW_NAME,
+                VaadinIcon.EDIT.create()));
+
         }
 
     }
@@ -190,11 +192,23 @@ public class FootballMain extends AppLayout implements RouterLayout{
         addToDrawer(logoutButton);
     }
 
+    /**
+     * Popup notification with a message msg in the top center of the screen
+     * @param msg the message to display
+     */
     public static void showNotification(String msg)
     {
         if(msg != null)
         {
-            Notification notification = new Notification(msg,3000, Notification.Position.BOTTOM_CENTER);
+            Notification notification = new Notification(msg,2500, Notification.Position.TOP_CENTER);
+            if(msg.toLowerCase().contains("success"))
+            {
+                notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            }
+            else if(msg.toLowerCase().contains("fail") || msg.toLowerCase().contains("error") || msg.toLowerCase().contains("wrong"))
+            {
+                notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
             notification.open();
         }
     }
