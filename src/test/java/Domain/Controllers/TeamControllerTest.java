@@ -31,6 +31,7 @@ public class TeamControllerTest {
     //For removeOwner tests
     SystemUser teamOwnerUser2 = new SystemUser("rosengal", "Gal12345", "Gal");
     SystemUser teamOwnerUser3 = new SystemUser("nirdz", "Nir12345", "Nir");
+    SystemUser teamOwnerUser4 = new SystemUser("merav", "Merav12345", "Mer");
 
     @Before
     public void runBeforeTests(){
@@ -40,8 +41,10 @@ public class TeamControllerTest {
         hapoelBash.setTeamName("Hapoel Beer Sheva");
         teamOwnerUser2.addNewRole(new TeamOwner(teamOwnerUser2));
         teamOwnerUser3.addNewRole(new TeamOwner(teamOwnerUser3));
+        teamOwnerUser4.addNewRole(new TeamOwner(teamOwnerUser4));
         EntityManager.getInstance().addUser(teamOwnerUser2);
         EntityManager.getInstance().addUser(teamOwnerUser3);
+        EntityManager.getInstance().addUser(teamOwnerUser4);
     }
 
     @After
@@ -479,7 +482,7 @@ public class TeamControllerTest {
 
         TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         TeamController.addTeamOwner("nirdz", hapoelBash, (TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
-        TeamController.addTeamOwner("rosengal", hapoelBash, (TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
+        TeamController.addTeamOwner("merav", hapoelBash, (TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
 
         Assert.assertEquals(4,hapoelBash.getTeamOwners().size());
 

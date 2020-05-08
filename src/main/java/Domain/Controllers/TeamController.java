@@ -409,10 +409,13 @@ public class TeamController {
     }
 
     /**
-     *
-     * @param
-     * @param
-     * @param
+     * Removes the owner form the team he owned, the method checks the owner to remove is one of the owners of the team the method recieved
+     * @param username to remove
+     * @param team who owned for removal
+     * @param owner who made the action
+     * @return
+     * @throws UserNotFoundException
+     * @throws NotATeamOwner
      */
     public static boolean removeTeamOwner(String username, Team team, TeamOwner owner) throws Exception {
         List<TeamOwner> teamOwners = team.getTeamOwners();

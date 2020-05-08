@@ -661,6 +661,11 @@ public class AcceptanceTests {
         assertFalse(ARController.assignReferee(systemUser));
     }
 
+    @Test
+    public void removeTeamOwner1ATest(){
+
+        //Controller
+    }
 
     @After
     public void tearDown() throws Exception {
