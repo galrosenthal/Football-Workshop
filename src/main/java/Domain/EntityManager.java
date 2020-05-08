@@ -49,7 +49,10 @@ public class EntityManager {
     public static EntityManager getInstance() {
         if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
+            SystemUser a = new SystemUser("a","a","a");
+            a.addNewRole(new SystemAdmin(a));
         }
+
         return entityManagerInstance;
     }
 

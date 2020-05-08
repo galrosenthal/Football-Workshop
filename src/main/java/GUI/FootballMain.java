@@ -3,6 +3,7 @@ package GUI;
 
 import Domain.EntityManager;
 import GUI.About.AboutView;
+import Service.MainController;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
@@ -24,8 +25,11 @@ import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+
+import java.util.List;
 
 
 /**
@@ -41,8 +45,11 @@ public class FootballMain extends AppLayout implements RouterLayout{
     private final Button loginBtn;
     private final Button signupBtn;
 
+
+
     public FootballMain() {
 // Header of the menu (the navbar)
+
 
         // menu toggle
         final DrawerToggle drawerToggle = new DrawerToggle();
@@ -94,7 +101,22 @@ public class FootballMain extends AppLayout implements RouterLayout{
     }
 
     private void createNavItems() {
-        if(EntityManager.getInstance().isLoggedIn())
+        WrappedSession userSession = VaadinService.getCurrentRequest().getWrappedSession();
+        if(userSession == null)
+        {
+            System.out.println("No Session acquired");
+            return;
+        }
+
+        List<String> userRoles = MainController.getRoles(userSession.getAttribute("username").toString());
+
+
+        if(userRoles == null || userRoles.isEmpty())
+        {
+            return;
+        }
+
+        if(userRoles.contains("SYSTEM_ADMIN"))
         {
             addToDrawer(createMenuLink(AboutView.class, AboutView.VIEW_NAME,
                     VaadinIcon.INFO_CIRCLE.create()));

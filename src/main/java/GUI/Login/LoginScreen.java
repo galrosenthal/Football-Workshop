@@ -1,8 +1,7 @@
 package GUI.Login;
 
 import Domain.EntityManager;
-import Domain.Users.Unregistered;
-import Service.LoginController;
+import Service.MainController;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -13,11 +12,8 @@ import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-
-import javax.swing.*;
 
 /**
  * UI content when the user is not logged in yet.
@@ -94,7 +90,7 @@ public class LoginScreen extends FlexLayout {
     }
 
     private void login(LoginForm.LoginEvent event) {
-        if (event.getUsername().equals("a") && event.getPassword().equals("a")) {
+        if (MainController.login(event.getUsername(), event.getPassword())) {
             EntityManager.getInstance().setLoggedIn(true);
             getUI().get().navigate("");
 
