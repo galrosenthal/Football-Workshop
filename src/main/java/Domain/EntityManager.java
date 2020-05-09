@@ -5,13 +5,11 @@ import DB.Table;
 import Domain.Exceptions.UsernameAlreadyExistsException;
 import Domain.Exceptions.UsernameOrPasswordIncorrectException;
 import Domain.Exceptions.WeakPasswordException;
-import Domain.Game.League;
-import Domain.Game.Stadium;
+import Domain.Game.*;
 import Domain.Users.Role;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
 import Domain.Game.Stadium;
-import Domain.Game.Team;
 import Domain.Users.*;
 import Domain.Game.Stadium;
 import Service.UIController;
@@ -107,6 +105,10 @@ public class EntityManager {
 
     public List<League> getLeagues() {
         return new ArrayList<League>(allLeagues);
+    }
+
+    public List<Team> getTeams() {
+        return new ArrayList<Team>(allTeams);
     }
 
     /**
@@ -228,6 +230,20 @@ public class EntityManager {
         }
         return false;
     }
+
+    /**
+     * Adds a given League to the league's list of the system.
+     * @param league league to add
+     * @return true if successfully added the League to the system.
+     */
+    public boolean addLeague(League league) {
+        if (!(this.allLeagues.contains(league))) {
+            this.allLeagues.add(league);
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * Adds a given Stadium to the stadium's list of the system.
