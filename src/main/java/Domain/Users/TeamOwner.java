@@ -1,5 +1,6 @@
 package Domain.Users;
 
+import Domain.EntityManager;
 import Domain.Game.Team;
 
 import java.util.ArrayList;
@@ -108,4 +109,33 @@ public class TeamOwner extends Role {
     public String toString() {
         return "TeamOwner{"+ this.getSystemUser().getName() +" }";
     }
+
+
+
+
+    /*notify teamOwners  and TeamMangers and systemAdmins - close team or reopen team*/
+    public void closeReopenTeam(Team team)
+    {
+        EntityManager entityManager = EntityManager.getInstance();
+        List<TeamOwner> teamOwners = new ArrayList<>();
+        List<TeamManager> teamManagers = new ArrayList<>();
+        List<SystemAdmin> SystemAdmins = entityManager.getSystemAdmins();
+        List<SystemUser> systemUsers = new ArrayList<>();
+        teamOwners.addAll(team.getTeamOwners());
+        teamManagers.addAll(team.getTeamManagers());
+        for (int i = 0; i <teamOwners.size() ; i++) {
+            systemUsers.add(teamOwners.get(i).getSystemUser());
+        }
+        for (int i = 0; i <teamManagers.size() ; i++) {
+            systemUsers.add(teamManagers.get(i).getSystemUser());
+        }
+        for (int i = 0; i <SystemAdmins.size() ; i++) {
+            systemUsers.add(SystemAdmins.get(i).getSystemUser());
+        }
+        entityManager.notifyObserver(systemUsers);
+    }
+
+
+
+
 }

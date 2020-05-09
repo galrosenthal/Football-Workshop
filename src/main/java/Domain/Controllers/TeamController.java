@@ -106,7 +106,6 @@ public class TeamController {
         if (allAssetsTeam.size() == 0) {
 
             throw new AssetsNotExistsException("There is not assets to team");
-
         }
 
         List<Object> objects = new ArrayList<>();

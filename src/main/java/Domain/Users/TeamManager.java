@@ -3,6 +3,7 @@ package Domain.Users;
 import Domain.Game.Asset;
 import Domain.Game.Team;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -195,4 +196,5 @@ public class TeamManager extends Role implements Asset {
     public List<Team> getTeamsManaged() {
         return managedTeams;
     }
+
 }

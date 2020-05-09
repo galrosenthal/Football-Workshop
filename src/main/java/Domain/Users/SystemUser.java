@@ -2,6 +2,7 @@ package Domain.Users;
 
 
 import Domain.EntityManager;
+import Domain.Game.Game;
 import Domain.UserComplaints;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class SystemUser extends User implements Fan{
 
     private List<Role> roles;
     private List<UserComplaints> complaints;
-
+    protected List<Game> gamesAlert;
     protected String username;
     private String password;
     private String name;
@@ -33,6 +34,7 @@ public class SystemUser extends User implements Fan{
         this.username = username;
         this.name = name;
         this.password = password;
+        gamesAlert = new ArrayList<>();
         EntityManager.getInstance().addUser(this);
     }
 
@@ -41,10 +43,13 @@ public class SystemUser extends User implements Fan{
         this.roles = new ArrayList<>();
         this.username = username;
         this.name = name;
+        gamesAlert = new ArrayList<>();
         EntityManager.getInstance().addUser(this);
     }
 
-//
+    public List<Game> getGamesAlert() {
+        return gamesAlert;
+    }
 
     public String getPassword() {
         return password;
