@@ -7,7 +7,7 @@ import Domain.Exceptions.NoTeamExistsException;
 import Domain.Exceptions.NotATeamOwner;
 import Domain.Game.*;
 import Domain.Users.*;
-import Service.UIController; 
+import Service.UIController;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
