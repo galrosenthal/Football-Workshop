@@ -2,16 +2,16 @@ package GUI;
 
 
 import GUI.About.AboutView;
+import GUI.RoleRelatedViews.AssociationRepresentative.ARControls;
 import Service.MainController;
-import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.KeyModifier;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
@@ -21,6 +21,9 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.NumberField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.server.VaadinService;
@@ -29,6 +32,7 @@ import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 
+import java.util.Collection;
 import java.util.List;
 
 
@@ -127,6 +131,12 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
         }
 
+        if(userRoles.contains("ASSOCIATION_REPRESENTATIVE"))
+        {
+            addToDrawer(createMenuLink(ARControls.class, ARControls.VIEW_NAME,
+                    VaadinIcon.USER.create()));
+        }
+
     }
 
     private void logout() {
@@ -205,12 +215,64 @@ public class FootballMain extends AppLayout implements RouterLayout{
             {
                 notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
             }
-            else if(msg.toLowerCase().contains("fail") || msg.toLowerCase().contains("error") || msg.toLowerCase().contains("wrong"))
+            else if(msg.toLowerCase().contains("fail") ||
+                    msg.toLowerCase().contains("error") ||
+                    msg.toLowerCase().contains("wrong") ||
+                    msg.toLowerCase().contains("incorrect"))
             {
                 notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
             notification.open();
         }
+    }
+
+    public static String popupWindow(String msg, String receiveType,StringBuilder returnedValue ,Collection<String>... displayValues)
+    {
+
+        Dialog newWindow = new Dialog();
+        VerticalLayout vl = new VerticalLayout();
+        newWindow.setCloseOnOutsideClick(false);
+        newWindow.setCloseOnEsc(false);
+
+        ComboBox<String> values = new ComboBox<>();
+        Button close = new Button("Submit");
+        close.addClickListener(e -> {
+
+            newWindow.close();
+        });
+
+        Label lbl = new Label(msg);
+        vl.add(lbl);
+        if(receiveType.equals("string"))
+        {
+            TextField tf = new TextField();
+            vl.add(tf);
+            setReturnedValue(returnedValue,tf.getValue());
+
+        }
+        else if(receiveType.equals("int"))
+        {
+            if(displayValues.length > 0) {
+                values.setItems(displayValues[0]);
+                values.setClearButtonVisible(true);
+                vl.add(values);
+                setReturnedValue(returnedValue,values.getValue());
+            }
+        }
+
+
+
+        vl.add(close);
+        newWindow.add(vl);
+        newWindow.open();
+
+        return returnedValue.toString();
+
+    }
+
+    private static void setReturnedValue(StringBuilder returnedValue, String valueToSet) {
+        returnedValue = new StringBuilder(valueToSet);
+
     }
 }
 

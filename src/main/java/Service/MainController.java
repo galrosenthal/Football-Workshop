@@ -1,14 +1,12 @@
 package Service;
 
 import Domain.EntityManager;
-import Domain.Exceptions.UsernameAlreadyExistsException;
-import Domain.Exceptions.UsernameOrPasswordIncorrectException;
-import Domain.Exceptions.WeakPasswordException;
+import Domain.Exceptions.*;
 import Domain.Users.*;
+import GUI.FootballMain;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +18,7 @@ public class MainController {
 
         try {
             SystemUser currentUser = Controller.login(username,password);
-            UIController.printMessage("Login Successfully");
+            UIController.showNotification("Login Successfully");
             return true;
         }
         catch (UsernameOrPasswordIncorrectException e)
@@ -159,4 +157,25 @@ public class MainController {
         return true;
 
     }
+
+
+    public static void registerNewTeam(String username)
+    {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.registerNewTeam(associationUser);
+        }
+        catch (TeamAlreadyExistsException | UserNotFoundException e )
+        {
+            e.printStackTrace();
+            FootballMain.showNotification("Something Went wrong please try again");
+        }
+    }
+
+
 }

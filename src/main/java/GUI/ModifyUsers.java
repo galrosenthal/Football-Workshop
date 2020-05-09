@@ -97,6 +97,7 @@ public class ModifyUsers extends FlexLayout {
             MainController.addRoleToUser(chooseRoleToAdd.getValue(),values);
             getUI().get().navigate("");
             FootballMain.showNotification("Role added Successfully");
+            FootballMain.showNotification("If you can't see the changes, please refresh the page");
         });
         verticalLayout.add(saveChanges);
 
