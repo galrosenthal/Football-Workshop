@@ -128,7 +128,7 @@ public class Team {
         if(teamOwner == null || status != TeamStatus.OPEN){
             return false;
         }
-        if(teamOwner.getType() == RoleTypes.TEAM_OWNER){
+        if(teamOwner.getType() == RoleTypes.TEAM_OWNER && !teamOwners.contains(teamOwner)){
             return teamOwners.add((TeamOwner)teamOwner);
         }
 

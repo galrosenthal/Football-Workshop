@@ -654,10 +654,47 @@ public class AcceptanceTests {
         assertFalse(ARController.assignReferee(systemUser));
     }
 
+    /**
+     * Removes one team owner
+     * @throws TeamAlreadyExistsException
+     * @throws UserNotFoundException
+     */
     @Test
-    public void removeTeamOwner1ATest(){
+    public void removeTeamOwner1ATest() throws TeamAlreadyExistsException, UserNotFoundException {
+        SystemUser arSystemUser = new SystemUser("oran", "oran");
+        SystemUser toSystemUser = new SystemUser("gal", "gal");
+        SystemUser to2SystemUser = new SystemUser("merav", "merav");
+        new AssociationRepresentative(arSystemUser);
+        UIController.setSelector(631);
+        ARController.registerNewTeam(arSystemUser);
+        UIController.setSelector(633);
+        Controller.addTeamOwner(toSystemUser);
+        assertTrue(Controller.removeTeamOwner(to2SystemUser));
+        assertEquals(EntityManager.getInstance().getTeam("Hapoel Ta").getTeamOwners().size(),1);
+    }
 
-        //Controller
+
+    /**
+     * Removes recursively two team owners
+     * @throws TeamAlreadyExistsException
+     * @throws UserNotFoundException
+     */
+    @Test
+    public void removeTeamOwner2ATest() throws TeamAlreadyExistsException, UserNotFoundException {
+        SystemUser arSystemUser = new SystemUser("oran", "oran");
+        SystemUser toSystemUser = new SystemUser("gal", "gal");
+        SystemUser to2SystemUser = new SystemUser("merav", "merav");
+        SystemUser to3SystemUser = new SystemUser("nir", "nir");
+        new AssociationRepresentative(arSystemUser);
+        UIController.setSelector(631);
+        ARController.registerNewTeam(arSystemUser);
+        UIController.setSelector(633);
+        Controller.addTeamOwner(toSystemUser);
+        UIController.setSelector(634);
+        Controller.addTeamOwner(to2SystemUser);
+        UIController.setSelector(633);
+        assertTrue(Controller.removeTeamOwner(toSystemUser));
+        assertEquals(EntityManager.getInstance().getTeam("Hapoel Ta").getTeamOwners().size(),1);
     }
 
     @After
