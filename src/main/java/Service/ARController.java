@@ -302,7 +302,7 @@ public class ARController {
         //delegate the operation responsibility to AssociationRepresentative
         boolean succeeded = ARRole.addTeam(teamName, newTeamOwnerUser);
         if (succeeded) {
-            UIController.showNotification("The team has been created successfully");
+            UIController.showNotification("The team " + teamName + " has been created successfully");
         }
         return succeeded;
     }
