@@ -55,6 +55,7 @@ public class EntityManager {
             entityManagerInstance = new EntityManager();
             SystemUser a = new SystemUser("admin","Aa123456","admin");
             a.addNewRole(new SystemAdmin(a));
+            a.addNewRole(new AssociationRepresentative(a));
         }
 
         return entityManagerInstance;
