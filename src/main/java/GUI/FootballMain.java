@@ -226,7 +226,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
         }
     }
 
-    public static String popupWindow(String msg, String receiveType,StringBuilder returnedValue ,Collection<String>... displayValues)
+    public static void popupWindow(String msg, String receiveType,StringBuilder returnedValue ,Collection<String>... displayValues)
     {
 
         Dialog newWindow = new Dialog();
@@ -247,7 +247,9 @@ public class FootballMain extends AppLayout implements RouterLayout{
         {
             TextField tf = new TextField();
             vl.add(tf);
-            setReturnedValue(returnedValue,tf.getValue());
+            tf.addValueChangeListener(e->{
+                setReturnedValue(returnedValue, e.getValue());
+            });
 
         }
         else if(receiveType.equals("int"))
@@ -256,7 +258,9 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 values.setItems(displayValues[0]);
                 values.setClearButtonVisible(true);
                 vl.add(values);
-                setReturnedValue(returnedValue,values.getValue());
+                values.addValueChangeListener(e-> {
+                    setReturnedValue(returnedValue, e.getValue());
+                });
             }
         }
 
@@ -266,7 +270,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
         newWindow.add(vl);
         newWindow.open();
 
-        return returnedValue.toString();
+
 
     }
 
