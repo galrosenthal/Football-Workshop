@@ -28,6 +28,16 @@ public class EntityManager {
     private List<Stadium> allStadiums;
     private HashSet<League> allLeagues;
 
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
+
+    private boolean loggedIn = false;
+
     private EntityManager() {
         allUsers = new ArrayList<>();
         allLeagues = new HashSet<>();
@@ -43,7 +53,10 @@ public class EntityManager {
     public static EntityManager getInstance() {
         if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
+            SystemUser a = new SystemUser("admin","Aa123456","admin");
+            a.addNewRole(new SystemAdmin(a));
         }
+
         return entityManagerInstance;
     }
 
@@ -340,6 +353,12 @@ public class EntityManager {
         throw new UsernameOrPasswordIncorrectException("Username or Password was incorrect!");
     }
 
+    /**
+     * This Function is used to authenticate the username with its password
+     * @param userWithUsrNm the SystemUser of the username from the entity manager
+     * @param pswrd the password recieved from the UI
+     * @return true if the password is correct and the user is able to login
+     */
     private boolean authenticate(SystemUser userWithUsrNm, String pswrd) {
         if (userWithUsrNm.getPassword().equals(pswrd)) {
             return true;
@@ -384,8 +403,12 @@ public class EntityManager {
         SystemUser newUser = new SystemUser(usrNm, pswrd, name);
         addUser(newUser);
 
-        UIController.printMessage("Successful sign up. Welcome, "+ usrNm);
+
         return newUser;
 
+    }
+
+    public List<SystemUser> getAllUsers() {
+        return allUsers;
     }
 }

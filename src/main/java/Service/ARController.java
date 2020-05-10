@@ -1,6 +1,5 @@
 package Service;
 
-import Domain.Controllers.TeamController;
 import Domain.EntityManager;
 import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Exceptions.TeamAlreadyExistsException;
@@ -11,8 +10,8 @@ import Domain.Users.AssociationRepresentative;
 import Domain.Users.Referee;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
-import Domain.Users.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static Service.UIController.*;
@@ -34,17 +33,16 @@ public class ARController {
         }
         AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
 
-        UIController.printMessage("Enter new league name:");
-        String leagueName = UIController.receiveString();
+        String leagueName = UIController.receiveString("Enter new league name:");
 
         //delegate the operation responsibility to AssociationRepresentative
         try {
             ARRole.addLeague(leagueName);
         } catch (Exception e) {
-            UIController.printMessage(e.getMessage());
+            UIController.showNotification(e.getMessage());
             return false;
         }
-        UIController.printMessage("The league was created successfully");
+        UIController.showNotification("The league was created successfully");
         return true;
     }
 
@@ -63,7 +61,7 @@ public class ARController {
         try {
             chosenLeague = getLeagueByChoice();
         } catch (Exception e) {
-            UIController.printMessage(e.getMessage() + "\nPlease add a league before adding a season");
+            UIController.showNotification(e.getMessage() + "\nPlease add a league before adding a season");
             return false;
         }
 
@@ -71,25 +69,23 @@ public class ARController {
         boolean seasonExists = true;
 
         while (seasonExists) {
-            UIController.printMessage("Enter season years (yyyy/yy) ex. 2020/21:");
-            seasonYears = UIController.receiveString();
+            seasonYears = UIController.receiveString("Enter season years (yyyy/yy) ex. 2020/21:");
 
             if (!Season.isGoodYearsFormat(seasonYears)) {
                 do {
-                    UIController.printMessage("wrong years format, please enter the season years (yyyy/yy) ex. 2020/21:");
-                    seasonYears = UIController.receiveString();
+                    seasonYears = UIController.receiveString("wrong years format, please enter the season years (yyyy/yy) ex. 2020/21:");
                 } while (!Season.isGoodYearsFormat(seasonYears));
             }
 
             if (!chosenLeague.doesSeasonExists(seasonYears)) {
                 seasonExists = false;
             } else {
-                UIController.printMessage("This season already exists in the chosen league. Please enter different years");
+                UIController.showNotification("This season already exists in the chosen league. Please enter different years");
             }
         }
 
         chosenLeague.addSeason(seasonYears);
-        UIController.printMessage("The season was created successfully");
+        UIController.showNotification("The season was created successfully");
         return true;
 //        }
 //        UIController.printMessage("The season creation failed");
@@ -101,13 +97,13 @@ public class ARController {
         if (leagues == null || leagues.isEmpty()) {
             throw new Exception("There are no leagues");
         }
-        UIController.printMessage("Choose a League Number");
+        List<String> leaguesList = new ArrayList<>();
         for (int i = 0; i < leagues.size(); i++) {
-            UIController.printMessage(i + ". " + leagues.get(i).getName());
+            leaguesList.add(leagues.get(i).getName());
         }
         int Index;
         do {
-            Index = UIController.receiveInt();
+            Index = UIController.receiveInt("Choose a League Number",leaguesList);
         } while (!(Index >= 0 && Index < leagues.size()));
 
         return leagues.get(Index);
@@ -124,13 +120,13 @@ public class ARController {
         if (seasons == null || seasons.isEmpty()) {
             throw new Exception("There are no seasons in the league");
         }
-        UIController.printMessage("Choose a Season Number");
+        List<String> seasonsList = new ArrayList<>();
         for (int i = 0; i < seasons.size(); i++) {
-            UIController.printMessage(i + ". " + seasons.get(i).getYears());
+            seasonsList.add(seasons.get(i).getYears());
         }
         int Index;
         do {
-            Index = UIController.receiveInt();
+            Index = UIController.receiveInt("Choose a Season Number",seasonsList);
         } while (!(Index >= 0 && Index < seasons.size()));
 
         return seasons.get(Index);
@@ -154,26 +150,25 @@ public class ARController {
         do {
             refereeUser = EntityManager.getInstance().getUser(newRefereeUsername);
             if (refereeUser == null) {
-                UIController.printMessage("Could not find a user by the given username\nPlease try again");
+                UIController.showNotification("Could not find a user by the given username\nPlease try again");
                 newRefereeUsername = getUsernameFromUser("referee");
             }
         } while (refereeUser == null);
         //A user has been identified.
 
-        UIController.printMessage("Enter the new referee's training:");
-        String training = UIController.receiveString();
+        String training = UIController.receiveString("Enter the new referee's training:");
 
         boolean succeeded = false;
         try {
             succeeded = ARRole.addReferee(refereeUser, training);
         } catch (RoleExistsAlreadyException e) {
-            UIController.printMessage("The user chosen is already a referee");
+            UIController.showNotification("The user chosen is already a referee");
             return false;
         }
 
         if (succeeded) {
             //TODO: Send notification to newRefereeUser
-            UIController.printMessage("The referee has been added successfully");
+            UIController.showNotification("The referee has been added successfully");
         }
         return true;
     }
@@ -194,12 +189,12 @@ public class ARController {
         try {
             chosenUser = getRefereeByChoice();
         } catch (Exception e) {
-            UIController.printMessage(e.getMessage());
+            UIController.showNotification(e.getMessage());
             return false;
         }
 
         if(ARRole.removeReferee(chosenUser)) {
-            UIController.printMessage("The referee has been removed successfully");
+            UIController.showNotification("The referee has been removed successfully");
             return true;
         }
         return false;
@@ -215,13 +210,14 @@ public class ARController {
         if (referees.isEmpty()) {
             throw new Exception("There are no referees");
         }
-        UIController.printMessage("Choose a referee number from the list:");
+
+        List<String> refereesList = new ArrayList<>();
         for (int i = 0; i < referees.size(); i++) {
-            UIController.printMessage(i + ". " + referees.get(i).getName());
+            refereesList.add(referees.get(i).getName());
         }
         int index;
         do {
-            index = UIController.receiveInt();
+            index = UIController.receiveInt("Choose a referee number from the list:",refereesList);
         } while (!(index >= 0 && index < referees.size()));
 
         return referees.get(index);
@@ -243,7 +239,7 @@ public class ARController {
         try {
             chosenLeague = getLeagueByChoice();
         } catch (Exception e) {
-            UIController.printMessage(e.getMessage() + "\nPlease add a league before assigning a referee");
+            UIController.showNotification(e.getMessage() + "\nPlease add a league before assigning a referee");
             return false;
         }
 
@@ -251,7 +247,7 @@ public class ARController {
         try {
             chosenSeason = getSeasonByChoice(chosenLeague);
         } catch (Exception e) {
-            UIController.printMessage(e.getMessage() + "\nPlease add a season before assigning a referee");
+            UIController.showNotification(e.getMessage() + "\nPlease add a season before assigning a referee");
             return false;
         }
 
@@ -259,7 +255,7 @@ public class ARController {
         try {
             chosenRefereeUser = getRefereeByChoice();
         } catch (Exception e) {
-            UIController.printMessage(e.getMessage());
+            UIController.showNotification(e.getMessage());
             return false;
         }
         Referee refereeRole = (Referee)chosenRefereeUser.getRole(RoleTypes.REFEREE);
@@ -268,11 +264,11 @@ public class ARController {
         try {
             ARRole.assignRefereeToSeason(chosenSeason,refereeRole);
         } catch (Exception e) {
-            UIController.printMessage(e.getMessage());
+            UIController.showNotification(e.getMessage());
             return false;
         }
 
-        UIController.printMessage("The referee has been assigned to the season successfully");
+        UIController.showNotification("The referee has been assigned to the season successfully");
         return true;
     }
 
@@ -290,8 +286,7 @@ public class ARController {
         }
         AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
 
-        UIController.printMessage("Enter the new team's name:");
-        String teamName = UIController.receiveString();
+        String teamName = UIController.receiveString("Enter the new team's name:");
 
         boolean teamExists = EntityManager.getInstance().doesTeamExists(teamName);
         if (teamExists) {
@@ -307,7 +302,7 @@ public class ARController {
         //delegate the operation responsibility to AssociationRepresentative
         boolean succeeded = ARRole.addTeam(teamName, newTeamOwnerUser);
         if (succeeded) {
-            UIController.printMessage("The team has been created successfully");
+            UIController.showNotification("The team " + teamName + " has been created successfully");
         }
         return succeeded;
     }

@@ -125,11 +125,13 @@ public class TeamController {
 
         }
 
-        List<Object> objects = new ArrayList<>();
-        objects.addAll(allAssetsTeam);
+        List<String> objects = new ArrayList<>();
+        for (Asset asset :
+                allAssetsTeam) {
+            objects.add(asset.getAssetName());
+        }
         //User choose which asset he wants to modify
-        UIController.printMessage("Choose asset to Modify: ");
-        int assetIndex = TeamController.choosePropertiesUI(objects);
+        int assetIndex = TeamController.choosePropertiesUI("Choose asset to Modify: ",objects);
         List<String> properties = allAssetsTeam.get(assetIndex).getProperties();
         if (properties.size() == 0) {
 
@@ -139,8 +141,7 @@ public class TeamController {
         objects = new ArrayList<>();
         objects.addAll(properties);
         //choosePropertiesToModify
-        UIController.printMessage("Choose Property Number to modify");
-        int propertyIndexToModify = TeamController.choosePropertiesUI(objects);
+        int propertyIndexToModify = TeamController.choosePropertiesUI("Choose Property Number to modify",objects);
         if (allAssetsTeam.get(assetIndex).isListProperty(properties.get(propertyIndexToModify))) {
             int action = actionToDo();
             if (action == 0) {
@@ -165,14 +166,15 @@ public class TeamController {
            // In case the user wants to modify EnumProperty - choose which new property he wants to change.
         } else if (allAssetsTeam.get(assetIndex).isEnumProperty(properties.get(propertyIndexToModify))) {
             List<Enum> allEnumValues = allAssetsTeam.get(assetIndex).getAllValues(properties.get(propertyIndexToModify));
-            UIController.printMessage("Choose Property new value ");
             objects = new ArrayList<>();
-            objects.addAll(allEnumValues);
-            int propertyNewValueIndex = choosePropertiesUI(objects);
+            for (Enum e :
+                    allEnumValues) {
+                objects.add(e.name());
+            }
+            int propertyNewValueIndex = choosePropertiesUI("Choose Property new value ",objects);
             return allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify), allEnumValues.get(propertyNewValueIndex).toString());
         } else if (allAssetsTeam.get(assetIndex).isStringProperty(properties.get(propertyIndexToModify))) {
-            UIController.printMessage("Enter new value: ");
-            String newValue = UIController.receiveString();
+            String newValue = UIController.receiveString("Enter new value: ");
             return allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify), newValue);
         }
         return false;
@@ -196,11 +198,14 @@ public class TeamController {
         if (allValue.size() == 0) {
             return false;
         }
+
         //add attribute from property list
-        UIController.printMessage("Choose Property to add ");
-        List<Object> objects = new ArrayList<>();
-        objects.addAll(allValue);
-        int indexToAdd = choosePropertiesUI(objects);
+        List<String> objects = new ArrayList<>();
+        for (Enum e :
+                allValue) {
+            objects.add(e.name());
+        }
+        int indexToAdd = choosePropertiesUI("Choose Property to add ",objects);
         return asset.addProperty(propertyName, allValue.get(indexToAdd), team);
     }
 
@@ -217,28 +222,28 @@ public class TeamController {
         if (enumList == null || enumList.size() == 0) {
             return false;
         }
+
+
         //remove attribute from property list
-        UIController.printMessage("Choose Property to remove ");
-        List<Object> objects = new ArrayList<>();
-        objects.addAll(enumList);
-        int indexToRemove = choosePropertiesUI(objects);
+        List<String> objects = new ArrayList<>();
+        for (Enum e :
+                enumList) {
+            objects.add(e.name());
+        }
+        int indexToRemove = choosePropertiesUI("Choose Property to remove ",objects);
         return asset.removeProperty(propertyName, enumList.get(indexToRemove), team);
     }
-
-
 
 
     /**
      * @param properties - list of all properties
      * @return propertyIndex -int- the user wants to modify
      */
-    private static int choosePropertiesUI(List<Object> properties) {
-        for (int i = 0; i < properties.size(); i++) {
-            UIController.printMessage(i + 1 + ". " + properties.get(i));
-        }
+    private static int choosePropertiesUI(String msg, List<String> properties) {
+
         int propertyIndex;
         do {
-            propertyIndex = UIController.receiveInt() - 1;
+            propertyIndex = UIController.receiveInt(msg,properties);
         } while (!(propertyIndex >= 0 && propertyIndex < properties.size()));
 
         return propertyIndex;
@@ -252,12 +257,12 @@ public class TeamController {
      * @return 0 - if to add value , 1 - if to remove value
      */
     private static int actionToDo() {
-        UIController.printMessage("Choose which action: ");
-        UIController.printMessage("1. Add");
-        UIController.printMessage("2. Remove");
+        List<String> actions = new ArrayList<>();
+        actions.add("Add");
+        actions.add("Remove");
         int propertyIndex;
         do {
-            propertyIndex = UIController.receiveInt() - 1;
+            propertyIndex = UIController.receiveInt("Choose which action: ",actions);
         } while (!(propertyIndex >= 0 && propertyIndex <= 1));
 
         return propertyIndex;
@@ -382,10 +387,10 @@ public class TeamController {
                 if(tmRole == null || tmRole.getSystemUser() == null
                         || EntityManager.getInstance().getUser(tmRole.getSystemUser().getUsername()) == null) {
                     //the user deleted entirely from the system
-                    UIController.printMessage("Could not restore permissions of lost team manager");
+                    UIController.showNotification("Could not restore permissions of lost team manager");
                 }
                 else {//The user exists but no longer have the role team-manager
-                    UIController.printMessage("Could not restore permissions of the team manager: " +
+                    UIController.showNotification("Could not restore permissions of the team manager: " +
                             tmRole.getSystemUser().getName());
                 }
             }
