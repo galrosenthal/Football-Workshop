@@ -126,7 +126,7 @@ public class Controller {
             UIController.printMessage(i+". " + teamOwner.getSystemUser().getName());
         }
 
-        String username = UIController.receiveString();  
+        String username = UIController.receiveString();
         return username;
     }
 
