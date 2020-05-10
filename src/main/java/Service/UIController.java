@@ -1,8 +1,16 @@
 package Service;
 
 import GUI.FootballMain;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.server.Command;
+import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinSession;
 
 import java.util.Collection;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 import static java.lang.Thread.sleep;
 
@@ -10,6 +18,7 @@ public class UIController {
 
     private static boolean isTest = false;
     private static int selector = 0; //latest = 10
+
 
     public static void setSelector(int selector) {
         UIController.selector = selector;
@@ -40,21 +49,62 @@ public class UIController {
      * @param messageToDisplay a message to display to the user
      * @return
      */
-    public static String receiveString(String messageToDisplay, Collection<String>... valuesToChooseFrom) {
+    public static String receiveString(String messageToDisplay,Collection<String>... valuesToChooseFrom) {
         if (!isTest) {
             StringBuilder line = null;
-            FootballMain.popupWindow(messageToDisplay, "string", line, valuesToChooseFrom);
-//            while (line == null)
+            UI lastUI = UI.getCurrent();
+            VaadinSession se = VaadinSession.getCurrent();
+//            Thread t = new Thread(() ->
 //            {
-//                try {
-//                    //waiting for the user to close the dialog
-//                    sleep(1);
-//                }
-//                catch (Exception e)
-//                {
-//                    e.printStackTrace();
-//                }
+//                UI.setCurrent(lastUI);
+//                VaadinSession.setCurrent(se);
+//                VaadinSession.getCurrent().lock();
+//                FootballMain.showDialog(messageToDisplay, "string", line, valuesToChooseFrom);
+//            });
+//            t.setName("SHOW DIALOG");
+//            t.start();
+//            FutureTask<String> task1 = new FutureTask<String>(new Callable<String>() {
+//                @Override
+//                public String call() throws Exception {
+//                    FootballMain.showDialog(messageToDisplay, "string", line, valuesToChooseFrom);
+//                    return line.toString();
+//                };
+//            });
+            Future<Void> returnValue = lastUI.access(() -> FootballMain.showDialog(messageToDisplay, "string", line, valuesToChooseFrom));
+
+            while (!returnValue.isDone())
+            {
+                try {
+                    System.out.println("Waiting");
+                    //waiting for the user to close the dialog
+                    sleep(100);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+//            try
+//            {
+//                t.join();
 //            }
+//            catch (Exception e)
+//            {
+//                e.printStackTrace();
+//            }
+            while (line == null)
+            {
+                try {
+                    //waiting for the user to close the dialog
+                    sleep(100);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println(line.toString());
             return line.toString();
 
         } else {
@@ -241,7 +291,7 @@ public class UIController {
         String choice = "";
         if (!isTest) {
             do {
-                choice = UIController.receiveString(message);
+                choice = UIController.receiveString(message, null);
             } while (!(choice.equals("y") || choice.equals("n")));
 
             if (choice.equals("y")) {
@@ -258,7 +308,7 @@ public class UIController {
     }
     public static String getUsernameFromUser(String msg) {
 
-        String username = UIController.receiveString("Enter new " + msg + " Username:");
+        String username = UIController.receiveString("Enter new " + msg + " Username:", null);
         return username;
 
     }

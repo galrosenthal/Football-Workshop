@@ -158,7 +158,7 @@ public class TeamController {
             int propertyNewValueIndex = choosePropertiesUI("Choose Property new value ",objects);
             return allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify), allEnumValues.get(propertyNewValueIndex).toString());
         } else if (allAssetsTeam.get(assetIndex).isStringProperty(properties.get(propertyIndexToModify))) {
-            String newValue = UIController.receiveString("Enter new value: ");
+            String newValue = UIController.receiveString("Enter new value: ", null);
             return allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify), newValue);
         }
         return false;

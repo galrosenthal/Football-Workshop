@@ -45,6 +45,7 @@ import java.util.List;
 @CssImport(value = "./styles/menu-buttons.css", themeFor = "vaadin-button")
 public class FootballMain extends AppLayout implements RouterLayout{
 
+    private static boolean waitingForUI = false;
     private final Button logoutButton;
     private final Button loginBtn;
     private final Button signupBtn;
@@ -55,7 +56,6 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
     public FootballMain() {
 // Header of the menu (the navbar)
-
 
         // menu toggle
         final DrawerToggle drawerToggle = new DrawerToggle();
@@ -228,28 +228,74 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
     public static void popupWindow(String msg, String receiveType,StringBuilder returnedValue ,Collection<String>... displayValues)
     {
+        Thread t = new Thread(() -> {
+            waitingForUI = true;
+            showDialog(msg,receiveType,returnedValue,displayValues); //create and add dialog to mainwindow
+
+        });
+        t.setName("SHOW DIALOG");
+        t.start();
+//        //Sleep until Dialog is shown AND! added to the MainWindow. Repaint request will be generated automatically by vaadin...
+        while(isWaitingForRepaint()){
+            try {
+                Thread.sleep(100);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+
+
+
+
+    }
+
+    private static boolean isWaitingForRepaint() {
+        return waitingForUI;
+    }
+
+
+    public static void showDialog(String msg, String receiveType,StringBuilder returnedValue ,Collection<String>... displayValues)
+    {
+//        UI lastUI = UI.getCurrent();
+//        UI anotherUI = new UI();
 
         Dialog newWindow = new Dialog();
+//        UI.setCurrent(anotherUI);
+//        anotherUI.add(newWindow);
+//        lastUI.getSession().addUI(anotherUI);
+//        anotherUI.navigate("www.google.com");
+//        anotherUI.getPage().reload();
+//        anotherUI.setVisible(true);
+        newWindow.setVisible(true);
         VerticalLayout vl = new VerticalLayout();
-        newWindow.setCloseOnOutsideClick(false);
         newWindow.setCloseOnEsc(false);
 
+        TextField tf = new TextField();
         ComboBox<String> values = new ComboBox<>();
         Button close = new Button("Submit");
         close.addClickListener(e -> {
-
+            waitingForUI = false;
+            if(receiveType.equals("string"))
+            {
+                setReturnedValue(returnedValue,tf.getValue());
+            }
+            else if(receiveType.equals("int"))
+            {
+                setReturnedValue(returnedValue,values.getValue());
+            }
             newWindow.close();
+//            UI.setCurrent(lastUI);
         });
 
         Label lbl = new Label(msg);
         vl.add(lbl);
         if(receiveType.equals("string"))
         {
-            TextField tf = new TextField();
             vl.add(tf);
-            tf.addValueChangeListener(e->{
-                setReturnedValue(returnedValue, e.getValue());
-            });
+
 
         }
         else if(receiveType.equals("int"))
@@ -258,9 +304,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 values.setItems(displayValues[0]);
                 values.setClearButtonVisible(true);
                 vl.add(values);
-                values.addValueChangeListener(e-> {
-                    setReturnedValue(returnedValue, e.getValue());
-                });
+
             }
         }
 
@@ -270,9 +314,8 @@ public class FootballMain extends AppLayout implements RouterLayout{
         newWindow.add(vl);
         newWindow.open();
 
-
-
     }
+
 
     private static void setReturnedValue(StringBuilder returnedValue, String valueToSet) {
         returnedValue = new StringBuilder(valueToSet);

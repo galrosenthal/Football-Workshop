@@ -4,6 +4,7 @@ import Domain.EntityManager;
 import Domain.Exceptions.*;
 import Domain.Users.*;
 import GUI.FootballMain;
+import com.vaadin.flow.component.Component;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -159,7 +160,7 @@ public class MainController {
     }
 
 
-    public static void registerNewTeam(String username)
+    public static void registerNewTeam(String username , Component view)
     {
         SystemUser associationUser = EntityManager.getInstance().getUser(username);
         if(associationUser == null)

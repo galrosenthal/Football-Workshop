@@ -110,7 +110,7 @@ public class Coach extends PartOfTeam {
         String valueOfProperty = "";
         if(property.equalsIgnoreCase(teamJobString))
         {
-            valueOfProperty = UIController.receiveString("what is the Coach JobTitle?");
+            valueOfProperty = UIController.receiveString("what is the Coach JobTitle?", null);
         }
         else if(property.equalsIgnoreCase(qualificationString))
         {
