@@ -35,7 +35,8 @@ public class UIController {
      */
     public static void showNotification(String notification) {
         if (!isTest) {
-            FootballMain.showNotification(notification);
+            UI lastUI = UI.getCurrent();
+            lastUI.access(()->FootballMain.showNotification(notification));
         }
         else
         {
@@ -51,49 +52,14 @@ public class UIController {
      */
     public static String receiveString(String messageToDisplay,Collection<String>... valuesToChooseFrom) {
         if (!isTest) {
-            StringBuilder line = null;
+            StringBuilder line = new StringBuilder();
             UI lastUI = UI.getCurrent();
+            Thread t = Thread.currentThread();
             VaadinSession se = VaadinSession.getCurrent();
-//            Thread t = new Thread(() ->
-//            {
-//                UI.setCurrent(lastUI);
-//                VaadinSession.setCurrent(se);
-//                VaadinSession.getCurrent().lock();
-//                FootballMain.showDialog(messageToDisplay, "string", line, valuesToChooseFrom);
-//            });
-//            t.setName("SHOW DIALOG");
-//            t.start();
-//            FutureTask<String> task1 = new FutureTask<String>(new Callable<String>() {
-//                @Override
-//                public String call() throws Exception {
-//                    FootballMain.showDialog(messageToDisplay, "string", line, valuesToChooseFrom);
-//                    return line.toString();
-//                };
-//            });
-            Future<Void> returnValue = lastUI.access(() -> FootballMain.showDialog(messageToDisplay, "string", line, valuesToChooseFrom));
 
-            while (!returnValue.isDone())
-            {
-                try {
-                    System.out.println("Waiting");
-                    //waiting for the user to close the dialog
-                    sleep(100);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
+            Future<Void> returnValue = lastUI.access(() -> FootballMain.showDialog(messageToDisplay, "string", line,t ,valuesToChooseFrom));
 
-//            try
-//            {
-//                t.join();
-//            }
-//            catch (Exception e)
-//            {
-//                e.printStackTrace();
-//            }
-            while (line == null)
+            while (line.length() == 0)
             {
                 try {
                     //waiting for the user to close the dialog
@@ -213,20 +179,25 @@ public class UIController {
 
     public static int receiveInt(String messageToDisplay, Collection<String>... valuesToDisplay) {
         if (!isTest) {
-            StringBuilder result = null;
-            FootballMain.popupWindow(messageToDisplay,"int", result ,valuesToDisplay);
-            while (result == null)
+            StringBuilder line = new StringBuilder();
+            UI lastUI = UI.getCurrent();
+            Thread t = Thread.currentThread();
+            VaadinSession se = VaadinSession.getCurrent();
+
+            Future<Void> returnValue = lastUI.access(() -> FootballMain.showDialog(messageToDisplay, "string", line,t ,valuesToDisplay));
+
+            while (line.length() == 0)
             {
                 try {
                     //waiting for the user to close the dialog
-                    sleep(1);
+                    sleep(100);
                 }
                 catch (Exception e)
                 {
                     e.printStackTrace();
                 }
             }
-            int resultValue= Integer.parseInt(result.toString());
+            int resultValue= Integer.parseInt(line.toString());
 
 
             return resultValue;
@@ -291,7 +262,7 @@ public class UIController {
         String choice = "";
         if (!isTest) {
             do {
-                choice = UIController.receiveString(message, null);
+                choice = UIController.receiveString(message);
             } while (!(choice.equals("y") || choice.equals("n")));
 
             if (choice.equals("y")) {
@@ -308,7 +279,7 @@ public class UIController {
     }
     public static String getUsernameFromUser(String msg) {
 
-        String username = UIController.receiveString("Enter new " + msg + " Username:", null);
+        String username = UIController.receiveString("Enter new " + msg + " Username:");
         return username;
 
     }

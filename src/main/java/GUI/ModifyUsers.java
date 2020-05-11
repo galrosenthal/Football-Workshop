@@ -6,15 +6,12 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.html.Main;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinService;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -133,8 +130,13 @@ public class ModifyUsers extends FlexLayout {
            }
         });
 
+        ComboBox<String> allTeams = new ComboBox<>("Teams selection");
+        allTeams.setItems(MainController.getAllTeamsByName());
+        allTeams.setClearButtonVisible(true);
+        verticalLayout.add(allTeams);
 
         add(verticalLayout);
+
     }
 
     private Component buildModifyInfo() {

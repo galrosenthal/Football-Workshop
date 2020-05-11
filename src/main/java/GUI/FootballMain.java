@@ -24,6 +24,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.server.VaadinService;
@@ -181,22 +182,9 @@ public class FootballMain extends AppLayout implements RouterLayout{
         createNavItems();
 
         // User can quickly activate logout with Ctrl+L
-        attachEvent.getUI().addShortcutListener(() -> logout(), Key.KEY_L,
+        attachEvent.getUI().addShortcutListener(this::logout, Key.KEY_L,
                 KeyModifier.CONTROL);
 
-//        // add the admin view menu item if user has admin role
-//        final AccessControl accessControl = AccessControlFactory.getInstance()
-//                .createAccessControl();
-//        if (accessControl.isUserInRole(AccessControl.ADMIN_ROLE_NAME)) {
-//
-//            // Create extra navigation target for admins
-//            registerAdminViewIfApplicable(accessControl);
-//
-//            // The link can only be created now, because the RouterLink checks
-//            // that the target is valid.
-//            addToDrawer(createMenuLink(AdminView.class, AdminView.VIEW_NAME,
-//                    VaadinIcon.DOCTOR.create()));
-//        }
 
         // Finally, add logout button for all users
         addToDrawer(logoutButton);
@@ -218,7 +206,9 @@ public class FootballMain extends AppLayout implements RouterLayout{
             else if(msg.toLowerCase().contains("fail") ||
                     msg.toLowerCase().contains("error") ||
                     msg.toLowerCase().contains("wrong") ||
-                    msg.toLowerCase().contains("incorrect"))
+                    msg.toLowerCase().contains("incorrect") ||
+                    msg.toLowerCase().contains("could not") ||
+                    msg.toLowerCase().contains("already exists"))
             {
                 notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
@@ -226,49 +216,28 @@ public class FootballMain extends AppLayout implements RouterLayout{
         }
     }
 
-    public static void popupWindow(String msg, String receiveType,StringBuilder returnedValue ,Collection<String>... displayValues)
+
+    /**
+     * This function is poping up a dialog window to the user,
+     * asking is to do something in a <i>msg</i> and setting the user response
+     * into the <i>returnedValue</i> variable.
+     * The function also receives a type to use with (string/int) and shows a textField or ComboBox respectivly
+     * Also the function should receive the Thread that started it <i>calledThread</i>
+     * and if there are any values that the user should choose from (in case of type int) this function can
+     * get a Collection<String> displayValues
+     * @param msg the message to show the user
+     * @param receiveType the type of the calling function (string/int)
+     * @param returnedValue the StringBuilder object to fill in the response from the user
+     * @param callingThread the Thread that called this function
+     * @param displayValues the Values to show the user, used as an Array of collection.
+     */
+    public static void showDialog(String msg, String receiveType,StringBuilder returnedValue, Thread callingThread ,Collection<String>... displayValues)
     {
-        Thread t = new Thread(() -> {
-            waitingForUI = true;
-            showDialog(msg,receiveType,returnedValue,displayValues); //create and add dialog to mainwindow
 
-        });
-        t.setName("SHOW DIALOG");
-        t.start();
-//        //Sleep until Dialog is shown AND! added to the MainWindow. Repaint request will be generated automatically by vaadin...
-        while(isWaitingForRepaint()){
-            try {
-                Thread.sleep(100);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-
-
-
-
-
-    }
-
-    private static boolean isWaitingForRepaint() {
-        return waitingForUI;
-    }
-
-
-    public static void showDialog(String msg, String receiveType,StringBuilder returnedValue ,Collection<String>... displayValues)
-    {
-//        UI lastUI = UI.getCurrent();
-//        UI anotherUI = new UI();
 
         Dialog newWindow = new Dialog();
-//        UI.setCurrent(anotherUI);
-//        anotherUI.add(newWindow);
-//        lastUI.getSession().addUI(anotherUI);
-//        anotherUI.navigate("www.google.com");
-//        anotherUI.getPage().reload();
-//        anotherUI.setVisible(true);
+        newWindow.setCloseOnOutsideClick(false);
+        newWindow.setCloseOnEsc(false);
         newWindow.setVisible(true);
         VerticalLayout vl = new VerticalLayout();
         newWindow.setCloseOnEsc(false);
@@ -276,17 +245,28 @@ public class FootballMain extends AppLayout implements RouterLayout{
         TextField tf = new TextField();
         ComboBox<String> values = new ComboBox<>();
         Button close = new Button("Submit");
+        close.setEnabled(false);
         close.addClickListener(e -> {
             waitingForUI = false;
             if(receiveType.equals("string"))
             {
-                setReturnedValue(returnedValue,tf.getValue());
+                returnedValue.append(tf.getValue());
             }
             else if(receiveType.equals("int"))
             {
-                setReturnedValue(returnedValue,values.getValue());
+                int value = 0, index = 0;
+                for (String listValue :
+                        displayValues[0]) {
+                    if(values.getValue().equals(listValue))
+                    {
+                        value = index;
+                    }
+                    index++;
+                }
+                returnedValue.append(value);
             }
             newWindow.close();
+            callingThread.interrupt();
 //            UI.setCurrent(lastUI);
         });
 
@@ -295,7 +275,18 @@ public class FootballMain extends AppLayout implements RouterLayout{
         if(receiveType.equals("string"))
         {
             vl.add(tf);
-
+            tf.setPlaceholder("Team Name");
+            tf.setValueChangeMode(ValueChangeMode.EAGER);
+            tf.addValueChangeListener(e -> {
+                if(!e.getValue().isEmpty())
+                {
+                    close.setEnabled(true);
+                }
+                else
+                {
+                    close.setEnabled(false);
+                }
+            });
 
         }
         else if(receiveType.equals("int"))
@@ -304,6 +295,16 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 values.setItems(displayValues[0]);
                 values.setClearButtonVisible(true);
                 vl.add(values);
+                values.addValueChangeListener(e -> {
+                    if(!e.getValue().isEmpty())
+                    {
+                        close.setEnabled(true);
+                    }
+                    else
+                    {
+                        close.setEnabled(false);
+                    }
+                });
 
             }
         }
@@ -316,11 +317,6 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
     }
 
-
-    private static void setReturnedValue(StringBuilder returnedValue, String valueToSet) {
-        returnedValue = new StringBuilder(valueToSet);
-
-    }
 }
 
 

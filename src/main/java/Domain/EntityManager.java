@@ -17,6 +17,7 @@ import Domain.Game.Stadium;
 import Service.UIController;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
@@ -409,7 +410,17 @@ public class EntityManager {
 
     }
 
+
     public List<SystemUser> getAllUsers() {
         return allUsers;
+    }
+
+
+    /**
+     * Get a list of all Teams by thier name
+     * @return List<String of all the teams names
+     */
+    public List<Team> getAllTeams() {
+        return allTeams;
     }
 }

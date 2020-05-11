@@ -19,8 +19,8 @@ public class ARControls extends VerticalLayout {
     public static final String VIEW_NAME = "AR Controls";
     public ARControls() {
         setSizeFull();
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setAlignItems(Alignment.CENTER);
+        setJustifyContentMode(JustifyContentMode.START);
+        setAlignItems(Alignment.START);
         buildUI();
     }
 
@@ -31,15 +31,16 @@ public class ARControls extends VerticalLayout {
 
             UI lastUI = UI.getCurrent();
             VaadinSession se = VaadinSession.getCurrent();
-            Component view = this;
             String username = (String) VaadinService.getCurrentRequest().getWrappedSession().getAttribute("username");
             Thread t = new Thread(() -> {
                UI.setCurrent(lastUI);
                VaadinSession.setCurrent(se);
-               MainController.registerNewTeam(username, view);
+               MainController.registerNewTeam(username);
+
             });
             t.setName("CREATE NEW TEAM");
             t.start();
+
         });
 
         add(regNewTeam);

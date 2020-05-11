@@ -2,8 +2,8 @@ package Service;
 
 import Domain.EntityManager;
 import Domain.Exceptions.*;
+import Domain.Game.Team;
 import Domain.Users.*;
-import GUI.FootballMain;
 import com.vaadin.flow.component.Component;
 
 import java.text.SimpleDateFormat;
@@ -14,6 +14,12 @@ import java.util.List;
 public class MainController {
 
 
+    /**
+     * execute the login flow in the system
+     * @param username
+     * @param password
+     * @return true if the user successfully loginned to the system
+     */
     public static boolean login(String username, String password)
     {
 
@@ -25,11 +31,17 @@ public class MainController {
         catch (UsernameOrPasswordIncorrectException e)
         {
             e.printStackTrace();
+            UIController.showNotification(e.getMessage());
             return false;
         }
     }
 
 
+    /**
+     *
+     * @param username the username to get all its roles
+     * @return list of all the roles of the user by name
+     */
     public static List<String> getUserRoles(String username)
     {
         SystemUser currentUser = EntityManager.getInstance().getUser(username);
@@ -74,10 +86,18 @@ public class MainController {
         }
     }
 
+    /**
+     * verifies if a user exists by its username
+     * @param username the username to validate
+     * @return true if the user exists in the system
+     */
     public static boolean isUserExists(String username) {
         return EntityManager.getInstance().getUser(username) != null;
     }
 
+    /**
+     * @return list of all the users in the system by their name
+     */
     public static List<String> getAllUsersByUsername() {
         List<String> allRegisteredUsers = new ArrayList<>();
         for (SystemUser su :
@@ -87,6 +107,9 @@ public class MainController {
         return allRegisteredUsers;
     }
 
+    /**
+     * @return list of all the roletypes available in the system
+     */
     public static List<String> getRoleTypes() {
         List<String> allRoles = new ArrayList<>();
         for (RoleTypes rt :
@@ -100,6 +123,13 @@ public class MainController {
         return allRoles;
     }
 
+    /**
+     * This function gets a String of Role type and a String array of all the details relevant for this role.
+     * The username should be the first value of the String array allRelevantDetails[0]
+     * @param roleType the type of the new role
+     * @param allRelevantDetails the Array of Strings of details relevant for the role
+     * @return true if the role was successfuly added to the user
+     */
     public static boolean addRoleToUser(String roleType, String... allRelevantDetails)
     {
         if(allRelevantDetails.length == 0)
@@ -160,7 +190,12 @@ public class MainController {
     }
 
 
-    public static void registerNewTeam(String username , Component view)
+    /**
+     * This function gets the username of the user asking to register a new Team
+     * and starts the flow of registering a new User
+     * @param username the username of the user who asked to register a new Team
+     */
+    public static void registerNewTeam(String username)
     {
         SystemUser associationUser = EntityManager.getInstance().getUser(username);
         if(associationUser == null)
@@ -174,9 +209,23 @@ public class MainController {
         catch (TeamAlreadyExistsException | UserNotFoundException e )
         {
             e.printStackTrace();
-            FootballMain.showNotification("Something Went wrong please try again");
+            UIController.showNotification(e.getMessage());
         }
     }
 
 
+    /**
+     * Get a list of all Teams by thier name
+     * @return List<String of all the teams names
+     */
+    public static List<String> getAllTeamsByName() {
+        List<Team> allTeams = EntityManager.getInstance().getAllTeams();
+        List<String> teamsByName = new ArrayList<>();
+        for (Team t :
+                allTeams) {
+            teamsByName.add(t.getTeamName());
+        }
+
+        return teamsByName;
+    }
 }
