@@ -57,13 +57,29 @@ public class UIController {
             Thread t = Thread.currentThread();
             VaadinSession se = VaadinSession.getCurrent();
 
-            Future<Void> returnValue = lastUI.access(() -> FootballMain.showDialog(messageToDisplay, "string", line,t ,valuesToChooseFrom));
+            Future<Void> returnValue = se.access(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                FootballMain.showDialog(messageToDisplay, "string", line,t ,valuesToChooseFrom);
+                System.out.println("Closed Dialog");
+            });
+
+            try
+            {
+                returnValue.get();
+                System.out.println("Prints Void");
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
 
             while (line.length() == 0)
             {
                 try {
                     //waiting for the user to close the dialog
-                    sleep(100);
+                    sleep(1000);
+//                    System.out.println("Waiting for the user input");
                 }
                 catch (Exception e)
                 {
@@ -184,8 +200,22 @@ public class UIController {
             Thread t = Thread.currentThread();
             VaadinSession se = VaadinSession.getCurrent();
 
-            Future<Void> returnValue = lastUI.access(() -> FootballMain.showDialog(messageToDisplay, "string", line,t ,valuesToDisplay));
+            Future<Void> returnValue = se.access(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                FootballMain.showDialog(messageToDisplay, "int", line,t ,valuesToDisplay);
+                System.out.println("Closed Dialog");
+            });
 
+            try
+            {
+                returnValue.get();
+                System.out.println("Prints Void");
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
             while (line.length() == 0)
             {
                 try {

@@ -1,6 +1,7 @@
 package GUI;
 
 import Service.MainController;
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -135,9 +136,32 @@ public class ModifyUsers extends FlexLayout {
         allTeams.setClearButtonVisible(true);
         verticalLayout.add(allTeams);
 
+        ComboBox<String> allLeagues = new ComboBox<>("League selection");
+        allLeagues.setItems(MainController.getAllLeaguesByName());
+        allLeagues.setClearButtonVisible(true);
+        verticalLayout.add(allLeagues);
+
+        ComboBox<String> seasonOfLeague = new ComboBox<>("Season selection");
+        seasonOfLeague.setVisible(false);
+        verticalLayout.add(seasonOfLeague);
+
+        allLeagues.addValueChangeListener(e -> {
+            if(e.getValue() != null)
+            {
+                seasonOfLeague.setItems(MainController.getSeasonFromLeague(e.getValue()));
+                seasonOfLeague.setVisible(true);
+            }
+            else
+            {
+                seasonOfLeague.setVisible(false);
+            }
+        });
+
         add(verticalLayout);
 
     }
+
+
 
     private Component buildModifyInfo() {
         VerticalLayout modifyInfo = new VerticalLayout();

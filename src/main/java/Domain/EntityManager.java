@@ -423,4 +423,15 @@ public class EntityManager {
     public List<Team> getAllTeams() {
         return allTeams;
     }
+
+    public League getLeagueByName(String leagueName) {
+        for (League lg :
+                allLeagues) {
+            if(lg.getName().equals(leagueName)){
+                return lg;
+            }
+        }
+
+        return null;
+    }
 }

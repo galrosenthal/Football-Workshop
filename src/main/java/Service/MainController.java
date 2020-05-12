@@ -2,12 +2,15 @@ package Service;
 
 import Domain.EntityManager;
 import Domain.Exceptions.*;
+import Domain.Game.League;
+import Domain.Game.Season;
 import Domain.Game.Team;
 import Domain.Users.*;
 import com.vaadin.flow.component.Component;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -227,5 +230,113 @@ public class MainController {
         }
 
         return teamsByName;
+    }
+
+    public static void addNewLeague(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.addLeague(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static void addSeasonToLeague(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.addSeasonToLeague(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static List<String> getAllLeaguesByName() {
+        List<String> allLeagues = new ArrayList<>();
+        for (League lg :
+                EntityManager.getInstance().getLeagues()) {
+            allLeagues.add(lg.getName());
+        }
+        return allLeagues;
+    }
+
+    public static List<String> getSeasonFromLeague(String leagueName)
+    {
+        League lg = EntityManager.getInstance().getLeagueByName(leagueName);
+        List<String> leagueSeasons = new ArrayList<>();
+        if(lg != null)
+        {
+            for (Season s :
+                    lg.getSeasons()) {
+                leagueSeasons.add(s.getYears());
+            }
+        }
+        return leagueSeasons;
+    }
+
+    public static void addReferee(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.addReferee(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static void removeReferee(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.removeReferee(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static void assignReferee(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.assignReferee(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
     }
 }
