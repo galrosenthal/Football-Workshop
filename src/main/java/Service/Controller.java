@@ -22,8 +22,8 @@ public class Controller {
         //access DB
         //extract system admins
 
-        String username = UIController.receiveString("Please enter a system administrator username: ");
-        String password = UIController.receiveString("Please enter your password: ");
+        String username = UIController.receiveString("Please enter a system administrator username: ",null);
+        String password = UIController.receiveString("Please enter your password: ", null);
 
         //Retrieve system user
         SystemUser admin = null;
@@ -198,7 +198,7 @@ public class Controller {
     }
 
     private static String getNameFromUser(String msg) {
-        String username = UIController.receiveString(msg);
+        String username = UIController.receiveString(msg, null);
         return username;
     }
 

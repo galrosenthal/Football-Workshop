@@ -10,6 +10,7 @@ import Domain.Users.AssociationRepresentative;
 import Domain.Users.Referee;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
+import com.vaadin.flow.component.Component;
 
 import java.util.ArrayList;
 import java.util.List;

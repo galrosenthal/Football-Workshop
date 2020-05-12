@@ -1,8 +1,16 @@
 package Service;
 
 import GUI.FootballMain;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.server.Command;
+import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinSession;
 
 import java.util.Collection;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 import static java.lang.Thread.sleep;
 
@@ -10,6 +18,7 @@ public class UIController {
 
     private static boolean isTest = false;
     private static int selector = 0; //latest = 10
+
 
     public static void setSelector(int selector) {
         UIController.selector = selector;
@@ -31,7 +40,8 @@ public class UIController {
      */
     public static void showNotification(String notification) {
         if (!isTest) {
-            FootballMain.showNotification(notification);
+            UI lastUI = UI.getCurrent();
+            lastUI.access(()->FootballMain.showNotification(notification));
         }
         else
         {
@@ -45,21 +55,27 @@ public class UIController {
      * @param messageToDisplay a message to display to the user
      * @return
      */
-    public static String receiveString(String messageToDisplay, Collection<String>... valuesToChooseFrom) {
+    public static String receiveString(String messageToDisplay,Collection<String>... valuesToChooseFrom) {
         if (!isTest) {
-            StringBuilder line = null;
-            FootballMain.popupWindow(messageToDisplay, "string", line, valuesToChooseFrom);
-//            while (line == null)
-//            {
-//                try {
-//                    //waiting for the user to close the dialog
-//                    sleep(1);
-//                }
-//                catch (Exception e)
-//                {
-//                    e.printStackTrace();
-//                }
-//            }
+            StringBuilder line = new StringBuilder();
+            UI lastUI = UI.getCurrent();
+            Thread t = Thread.currentThread();
+            VaadinSession se = VaadinSession.getCurrent();
+
+            Future<Void> returnValue = lastUI.access(() -> FootballMain.showDialog(messageToDisplay, "string", line,t ,valuesToChooseFrom));
+
+            while (line.length() == 0)
+            {
+                try {
+                    //waiting for the user to close the dialog
+                    sleep(100);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println(line.toString());
             return line.toString();
 
         } else {
@@ -184,20 +200,25 @@ public class UIController {
 
     public static int receiveInt(String messageToDisplay, Collection<String>... valuesToDisplay) {
         if (!isTest) {
-            StringBuilder result = null;
-            FootballMain.popupWindow(messageToDisplay,"int", result ,valuesToDisplay);
-            while (result == null)
+            StringBuilder line = new StringBuilder();
+            UI lastUI = UI.getCurrent();
+            Thread t = Thread.currentThread();
+            VaadinSession se = VaadinSession.getCurrent();
+
+            Future<Void> returnValue = lastUI.access(() -> FootballMain.showDialog(messageToDisplay, "string", line,t ,valuesToDisplay));
+
+            while (line.length() == 0)
             {
                 try {
                     //waiting for the user to close the dialog
-                    sleep(1);
+                    sleep(100);
                 }
                 catch (Exception e)
                 {
                     e.printStackTrace();
                 }
             }
-            int resultValue= Integer.parseInt(result.toString());
+            int resultValue= Integer.parseInt(line.toString());
 
 
             return resultValue;

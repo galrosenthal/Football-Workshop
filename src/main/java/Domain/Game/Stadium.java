@@ -98,7 +98,7 @@ public class Stadium implements Asset{
         String stringProp = "";
         if(property.equalsIgnoreCase(namePropertyString))
         {
-            stringProp = UIController.receiveString("Please Enter Stadium name");
+            stringProp = UIController.receiveString("Please Enter Stadium name", null);
             changeProperty(property,stringProp);
         }
 
