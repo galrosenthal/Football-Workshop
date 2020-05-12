@@ -18,6 +18,11 @@ public class UIController {
     public static void setIsTest(boolean isTest) {
         UIController.isTest = isTest;
     }
+    public static void printMessage(String msg) {
+        //  if (!isTest) {
+        System.out.println(msg);
+        //  }
+    }
 
     /**
      * This Function is showing a notification to the user

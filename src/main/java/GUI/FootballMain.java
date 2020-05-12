@@ -5,6 +5,7 @@ import GUI.About.AboutView;
 import GUI.RoleRelatedViews.AssociationRepresentative.ARControls;
 import Service.MainController;
 import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -31,7 +32,9 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+import sun.java2d.opengl.WGLSurfaceData;
 
+import java.awt.*;
 import java.util.Collection;
 import java.util.List;
 
@@ -48,7 +51,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
     private final Button logoutButton;
     private final Button loginBtn;
     private final Button signupBtn;
-
+    static boolean  okToContinue = false;
     private final static String USERNAME_ATTRIBUTE_NAME = "username";
 
 
@@ -127,7 +130,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
         if(userRoles.contains("SYSTEM_ADMIN"))
         {
             addToDrawer(createMenuLink(ModifyUsers.class, ModifyUsers.VIEW_NAME,
-                VaadinIcon.EDIT.create()));
+                    VaadinIcon.EDIT.create()));
 
         }
 
@@ -228,49 +231,70 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
     public static void popupWindow(String msg, String receiveType,StringBuilder returnedValue ,Collection<String>... displayValues)
     {
-
         Dialog newWindow = new Dialog();
+
         VerticalLayout vl = new VerticalLayout();
         newWindow.setCloseOnOutsideClick(false);
         newWindow.setCloseOnEsc(false);
 
         ComboBox<String> values = new ComboBox<>();
         Button close = new Button("Submit");
-        close.addClickListener(e -> {
+        close.addClickListener(e ->
+
+        {
 
             newWindow.close();
+
+        });
+        newWindow.addDialogCloseActionListener(e ->
+
+        {
+            okToContinue = true;
         });
 
         Label lbl = new Label(msg);
         vl.add(lbl);
-        if(receiveType.equals("string"))
-        {
+        if (receiveType.equals("string")) {
             TextField tf = new TextField();
             vl.add(tf);
-            tf.addValueChangeListener(e->{
+            tf.addValueChangeListener(e -> {
                 setReturnedValue(returnedValue, e.getValue());
             });
 
-        }
-        else if(receiveType.equals("int"))
-        {
-            if(displayValues.length > 0) {
+        } else if (receiveType.equals("int")) {
+            if (displayValues.length > 0) {
                 values.setItems(displayValues[0]);
                 values.setClearButtonVisible(true);
                 vl.add(values);
-                values.addValueChangeListener(e-> {
+                values.addValueChangeListener(e -> {
                     setReturnedValue(returnedValue, e.getValue());
                 });
             }
         }
 
 
-
         vl.add(close);
         newWindow.add(vl);
-        newWindow.open();
+        Thread t = new Thread(() ->{
+                newWindow.open();
+        });
 
+        t.run();
 
+        while (newWindow.isOpened()){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        //        while(!okToContinue){
+        //            try {
+        //                Thread.sleep(100);
+        //            } catch (InterruptedException e) {
+        //                e.printStackTrace();
+        //            }
+        //        }
 
     }
 
