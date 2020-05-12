@@ -2,12 +2,8 @@ package GUI.RoleRelatedViews.AssociationRepresentative;
 
 import GUI.FootballMain;
 import Service.MainController;
-import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -146,12 +142,6 @@ public class ARControls extends VerticalLayout {
         add(addNewLeague);
     }
 
-//    @Override
-//    protected void onAttach(AttachEvent attachEvent) {
-//        if (MainController.getAllLeaguesByName().size() > 0) {
-//            addSeasonToLeague.setEnabled(true);
-//        }
-//    }
 
     private void createDefineGamesPolicyButton() {
         Button defineGamePolicy = new Button("Define Games Policy");
