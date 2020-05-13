@@ -1,8 +1,10 @@
 package Domain.Users;
 
 import Domain.EntityManager;
+import Domain.Exceptions.ExistsAlreadyException;
 import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Financials.AssociationFinancialRecordLog;
+import Domain.Game.PointsPolicy;
 import Domain.Game.Team;
 import Domain.Game.Season;
 
@@ -17,6 +19,7 @@ public class AssociationRepresentative extends Role {
 
     /**
      * Creates a new League.
+     *
      * @param leagueName - String - A unique league name
      * @return - boolean - True if a new league was created successfully, else false
      * @throws Exception - throws if a league already exists with the given leagueName
@@ -53,7 +56,8 @@ public class AssociationRepresentative extends Role {
 
     /**
      * Creates a new team.
-     * @param teamName - String - A unique team name
+     *
+     * @param teamName         - String - A unique team name
      * @param newTeamOwnerUser - SystemUser - The user who is chosen to be the team owner of the new team.
      * @return - boolean - True if a new team was created successfully, else false
      */
@@ -62,8 +66,7 @@ public class AssociationRepresentative extends Role {
         TeamOwner teamOwner;
         if (newTeamOwnerRole == null) {
             teamOwner = new TeamOwner(newTeamOwnerUser);
-        }
-        else{
+        } else {
             teamOwner = (TeamOwner) newTeamOwnerRole;
         }
         teamOwner.setAppointedOwner(this.getSystemUser());
@@ -75,9 +78,10 @@ public class AssociationRepresentative extends Role {
 
     /**
      * Creates a new team. Responsible only for creating and adding a new team, doesn't do any farther checks.
+     *
      * @param teamName - String - the team's name.
-     * @param to -TeamOwner - The team's owner.
-     * @return   The new Team that was created.
+     * @param to       -TeamOwner - The team's owner.
+     * @return The new Team that was created.
      */
     private Team createNewTeam(String teamName, TeamOwner to) {
         Team team = new Team(teamName, to);
@@ -87,6 +91,7 @@ public class AssociationRepresentative extends Role {
 
     /**
      * Removes the referee role from a given user.
+     *
      * @param chosenUser - SystemUser - a user with a Referee role to be removed.
      * @return - boolean - true if the Referee role was removed successfully, else false
      */
@@ -116,5 +121,27 @@ public class AssociationRepresentative extends Role {
             chosenSeason.assignReferee(refereeRole);
             refereeRole.assignToSeason(chosenSeason);
         }
+    }
+
+    /**
+     * Adds a new points policy using the given parameters.
+     * Adds only if the arguments are correct and if an identical policy doesn't exist yet.
+     *
+     * @param victoryPoints - int - the amount of points earned for a victory - positive integer
+     * @param lossPoints    - int - the amount of points lost for a loss - negative integer or zero
+     * @param tiePoints     - int - the amount of points earned/lost for a tie - integer
+     * @throws Exception - IllegalArgumentException - if the wrong arguments were passed, ExistsAlreadyException - if the policy already exists
+     */
+    public void addPointsPolicy(int victoryPoints, int lossPoints, int tiePoints) throws Exception {
+        if (victoryPoints <= 0) {
+            throw new IllegalArgumentException("The victory points most be positive");
+        } else if (lossPoints > 0) {
+            throw new IllegalArgumentException("The loss points most be negative or zero");
+        }
+        if (EntityManager.getInstance().doesPointsPolicyExists(victoryPoints, lossPoints, tiePoints)) {
+            throw new ExistsAlreadyException("This Points policy already exists");
+        }
+        PointsPolicy newPointsPolicy = new PointsPolicy(victoryPoints, lossPoints, tiePoints);
+        EntityManager.getInstance().addPointsPolicy(newPointsPolicy);
     }
 }

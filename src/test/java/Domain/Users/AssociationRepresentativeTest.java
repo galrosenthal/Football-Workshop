@@ -1,6 +1,7 @@
 package Domain.Users;
 
 import Domain.EntityManager;
+import Domain.Exceptions.ExistsAlreadyException;
 import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Game.League;
 import Domain.Game.Season;
@@ -231,6 +232,67 @@ public class AssociationRepresentativeTest {
             assertEquals("This referee is already assigned to the chosen season", e.getMessage());
         }
     }
+
+
+    @Test
+    public void addPointsPolicyITest() {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        try {
+            aR.addPointsPolicy(-1,0,0);
+            Assert.fail();
+        } catch (Exception e) {
+            assertEquals("The victory points most be positive", e.getMessage());
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+    }
+
+    @Test
+    public void addPointsPolicy2ITest() {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        try {
+            aR.addPointsPolicy(1,1,0);
+            Assert.fail();
+        } catch (Exception e) {
+            assertEquals("The loss points most be negative or zero", e.getMessage());
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+    }
+    @Test
+    public void addPointsPolicy3ITest() {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        try {
+            aR.addPointsPolicy(1,0,0);
+        } catch (Exception e) {
+
+        }
+        try {
+            aR.addPointsPolicy(1,0,0);
+            Assert.fail();
+        } catch (Exception e) {
+            assertEquals("This Points policy already exists", e.getMessage());
+            assertTrue(e instanceof ExistsAlreadyException);
+        }
+    }
+
+    @Test
+    public void addPointsPolicy4ITest() {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        boolean succeeded = true;
+        try {
+            aR.addPointsPolicy(1,0,0);
+        } catch (Exception e) {
+            succeeded=false;
+        }
+        assertTrue(succeeded);
+        assertTrue(EntityManager.getInstance().getPointsPolicy(1,0,0)!=null);
+        assertTrue(EntityManager.getInstance().doesPointsPolicyExists(1,0,0));
+    }
+
+
 
     @After
     public void tearDown() {

@@ -115,6 +115,7 @@ public class ARController {
 
     /**
      * Receives the user's selection of a season from a given league.
+     *
      * @param league - League - a league with the desired season
      * @return - Season - the selected season
      * @throws Exception - throws if there are no seasons in the league
@@ -198,7 +199,7 @@ public class ARController {
             return false;
         }
 
-        if(ARRole.removeReferee(chosenUser)) {
+        if (ARRole.removeReferee(chosenUser)) {
             UIController.printMessage("The referee has been removed successfully");
             return true;
         }
@@ -207,6 +208,7 @@ public class ARController {
 
     /**
      * receives a system user selection from the user.
+     *
      * @return - SystemUser - a referee chosen by the user
      * @throws Exception - "There are no referees"
      */
@@ -262,11 +264,11 @@ public class ARController {
             UIController.printMessage(e.getMessage());
             return false;
         }
-        Referee refereeRole = (Referee)chosenRefereeUser.getRole(RoleTypes.REFEREE);
+        Referee refereeRole = (Referee) chosenRefereeUser.getRole(RoleTypes.REFEREE);
 
 
         try {
-            ARRole.assignRefereeToSeason(chosenSeason,refereeRole);
+            ARRole.assignRefereeToSeason(chosenSeason, refereeRole);
         } catch (Exception e) {
             UIController.printMessage(e.getMessage());
             return false;
@@ -279,12 +281,13 @@ public class ARController {
 
     /**
      * Controls the flow of Creating a new team.
+     *
      * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
      * @return - boolean - True if a new team was created successfully, else false
      * @throws TeamAlreadyExistsException
      * @throws UserNotFoundException
      */
-    public static boolean registerNewTeam(SystemUser systemUser) throws TeamAlreadyExistsException,UserNotFoundException  {
+    public static boolean registerNewTeam(SystemUser systemUser) throws TeamAlreadyExistsException, UserNotFoundException {
         if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
             return false;
         }
@@ -311,4 +314,35 @@ public class ARController {
         }
         return succeeded;
     }
+
+
+    /**
+     * Controls the flow of adding a new points policy
+     *
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - boolean - True if a  new points policy have been created successfully, else false
+     */
+    public static boolean addPointsPolicy(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        UIController.printMessage("points (gain) for VICTORY (positive integer)");
+        int victoryPoints = UIController.receiveInt();
+        UIController.printMessage("points (loss) for LOSS (negative integer or zero)");
+        int lossPoints = UIController.receiveInt();
+        UIController.printMessage("points (gain) for TIE (integer)");
+        int tiePoints = UIController.receiveInt();
+        try {
+            ARRole.addPointsPolicy(victoryPoints, lossPoints, tiePoints);
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage());
+            return false;
+        }
+
+        UIController.printMessage("The referee has been assigned to the season successfully");
+        return true;
+    }
+
+
 }
