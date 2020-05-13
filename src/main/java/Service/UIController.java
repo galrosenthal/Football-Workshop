@@ -36,7 +36,8 @@ public class UIController {
     public static void showNotification(String notification) {
         if (!isTest) {
             UI lastUI = UI.getCurrent();
-            lastUI.access(()->FootballMain.showNotification(notification));
+            VaadinSession se = VaadinSession.getCurrent();
+            se.access(()->FootballMain.showNotification(notification));
         }
         else
         {
