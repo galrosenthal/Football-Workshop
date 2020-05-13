@@ -171,7 +171,8 @@ public class UIController {
                 return 0;
             }else if(selector == 61120 || selector == 6623 || selector == 6622 || selector == 6612 || selector == 6611
         || selector == 6621 || selector ==66151 || selector == 66144|| selector == 66143 || selector ==6625
-             || selector==66163 || selector ==66251 ){
+             || selector==66163 || selector ==66251 || selector == 91125 || selector == 91225 ||
+                    selector == 91131 || selector == 91231){
                 return 0;
             }
             else if (selector == 6132 || selector == 6133 || selector == 6134 || selector == 61341 || selector == 6135 || selector == 6136 || selector == 6137 || selector == 6138 || selector == 61383 || selector == 61381 || selector == 61310) {
@@ -189,11 +190,70 @@ public class UIController {
                 if (selector == 61382)
                     selector = 61383;
                 return 2;
-            }else if(selector == 6139)
-            {
+            }else if(selector == 6139) {
                 setSelector(61310);
                 return 0;
             }else if(selector == 632 || selector == 633 || selector == 634 || selector == 635){
+                return 0;
+            }
+            else if(selector == 9111){
+                setSelector(91112);
+                return 0;
+            }
+            else if(selector == 91112){
+                setSelector(91113);
+                return 0;
+            }
+            else if(selector == 91113){
+                setSelector(91114);
+                return 1;
+            }
+            else if(selector == 91114 || selector == 91214 || selector == 911263 || selector == 911322
+                    || selector == 912322){
+                return -1;
+            }
+            else if(selector == 9121){
+                setSelector(91212);
+                return 0;
+            }
+            else if(selector == 91212){
+                setSelector(91213);
+                return 0;
+            }
+            else if(selector == 91213){
+                setSelector(91214);
+                return 1;
+            }
+            else if(selector == 91126){
+                setSelector(911262);
+                return 0;
+            }
+            else if(selector == 911262){
+                setSelector(911263);
+                return 0;
+            }
+            else if(selector == 91226){
+                setSelector(912262);
+                return 0;
+            }
+            else if(selector == 912262){
+                setSelector(912263);
+                return 0;
+            }
+            else if(selector == 91132){
+                setSelector(911321);
+                return 0;
+            }
+            else if(selector == 911321){
+                setSelector(911322);
+                return 0;
+            }
+            else if(selector == 91232){
+                setSelector(912321);
+                return 0;
+            }
+            else if(selector == 912321){
+                setSelector(912322);
                 return 0;
             }
             else {

@@ -4,6 +4,7 @@ import Domain.EntityManager;
 import Domain.Exceptions.AssetsNotExistsException;
 import Domain.Exceptions.TeamAlreadyExistsException;
 import Domain.Exceptions.UserNotFoundException;
+import Domain.Game.Season;
 import Domain.Users.*;
 import Domain.Game.League;
 import Domain.Users.AssociationRepresentative;
@@ -165,7 +166,7 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser));
         EntityManager.getInstance().addUser(systemUser);
-        EntityManager.getInstance().addLeague("Premier League");
+        EntityManager.getInstance().addLeague(new League("Premier League"));
         UIController.setIsTest(true);
         UIController.setSelector(6);
         //Duplicated league creation
@@ -372,7 +373,7 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser));
         EntityManager.getInstance().addUser(systemUser);
-        EntityManager.getInstance().addLeague("Premier League");
+        EntityManager.getInstance().addLeague(new League("Premier League"));
         UIController.setIsTest(true);
         UIController.setSelector(921); //0 , "2020/21", "2020/21", "2021/22"
 
@@ -389,7 +390,7 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser));
         EntityManager.getInstance().addUser(systemUser);
-        EntityManager.getInstance().addLeague("Premier League");
+        EntityManager.getInstance().addLeague(new League("Premier League"));
         UIController.setIsTest(true);
         UIController.setSelector(921); //0 , "2020/21", "2020/21", "2021/22"
 
@@ -619,7 +620,7 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         new AssociationRepresentative(systemUser);
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague("Premier League");
+        EntityManager.getInstance().addLeague(new League("Premier League"));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
         SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
@@ -639,7 +640,7 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         new AssociationRepresentative(systemUser);
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague("Premier League");
+        EntityManager.getInstance().addLeague(new League("Premier League"));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
         SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
@@ -785,5 +786,64 @@ public class AcceptanceTests {
         catch (UserNotFoundException e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 9.11.a
+     */
+    @Test
+    public void addTeamsToSeasonATest(){
+        SystemUser arSystemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(arSystemUser);
+        new TeamOwner(arSystemUser);
+        TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        Team team1 = new Team("Hapoel Beit Shan", toRole);
+        Team team2 = new Team("Hapoel Beer Sheva", toRole);
+        League league = new League("Ligat ul");
+        league.addSeason("2020/21");
+        Season season = league.getLatestSeason();
+        assertNotNull(season);
+        assertEquals("2020/21", season.getYears());
+        EntityManager.getInstance().addTeam(team1);
+        EntityManager.getInstance().addTeam(team2);
+        EntityManager.getInstance().addLeague(league);
+        UIController.setSelector(9111);
+        assertTrue(ARController.addTeamsToSeason(arSystemUser));
+        assertEquals(2, season.getTeams().size());
+        assertEquals(1, team1.getSeasons().size());
+        assertEquals(1, team2.getSeasons().size());
+    }
+
+    /**
+     * 9.12.a
+     */
+    @Test
+    public void removeTeamsFromSeasonATest() {
+        SystemUser arSystemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(arSystemUser);
+        new TeamOwner(arSystemUser);
+        TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        Team team1 = new Team("Hapoel Beit Shan", toRole);
+        Team team2 = new Team("Hapoel Beer Sheva", toRole);
+        League league = new League("Ligat ul");
+        league.addSeason("2020/21");
+        Season season = league.getLatestSeason();
+        assertNotNull(season);
+        assertEquals("2020/21", season.getYears());
+        season.addTeam(team1);
+        season.addTeam(team2);
+        team1.addSeason(season);
+        team2.addSeason(season);
+        EntityManager.getInstance().addTeam(team1);
+        EntityManager.getInstance().addTeam(team2);
+        EntityManager.getInstance().addLeague(league);
+        assertEquals(2, season.getTeams().size());
+        assertEquals(1, team1.getSeasons().size());
+        assertEquals(1, team2.getSeasons().size());
+        UIController.setSelector(9121);
+        assertTrue(ARController.removeTeamsFromSeason(arSystemUser));
+        assertEquals(0, season.getTeams().size());
+        assertEquals(0, team1.getSeasons().size());
+        assertEquals(0, team2.getSeasons().size());
     }
 }
