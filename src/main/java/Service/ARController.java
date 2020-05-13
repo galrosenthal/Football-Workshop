@@ -7,12 +7,14 @@ import Domain.Exceptions.TeamAlreadyExistsException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.League;
 import Domain.Game.Season;
+import Domain.Game.Team;
 import Domain.Users.AssociationRepresentative;
 import Domain.Users.Referee;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
 import Domain.Users.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static Service.UIController.*;
@@ -310,5 +312,138 @@ public class ARController {
             UIController.printMessage("The team has been created successfully");
         }
         return succeeded;
+    }
+
+    /**
+     * Controls the flow of adding teams to season.
+     * @param systemUser SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return boolean - True if new teams were assigned successfully to the chosen league's latest season, else false
+     */
+    public static boolean addTeamsToSeason(SystemUser systemUser){
+        return addRemoveTeamsToSeason(systemUser, "add");
+    }
+
+    /**
+     * Controls the flow of removing teams from season.
+     * @param systemUser SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return boolean - True if teams were removed successfully from the chosen league's latest season, else false
+     */
+    public static boolean removeTeamsFromSeason(SystemUser systemUser){
+        return addRemoveTeamsToSeason(systemUser, "remove");
+    }
+
+
+    private static boolean addRemoveTeamsToSeason(SystemUser systemUser, String action){
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+
+        League chosenLeague = null;
+        try {
+            chosenLeague = getLeagueThatHasntStartedByChoice();
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage());
+            return false;
+        }
+
+        Season currLeagueSeason = chosenLeague.getLatestSeason();
+        List<Team> chosenTeams = null;
+        try {
+            if(action.equals("add"))
+                chosenTeams = getTeamsBySeasonByChoice(currLeagueSeason, "not in season");
+            else // "remove"
+                chosenTeams = getTeamsBySeasonByChoice(currLeagueSeason, "in season");
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage());
+            return false;
+        }
+
+        //delegate the operation responsibility to AssociationRepresentative
+        boolean succeeded;
+        if(action.equals("add"))
+             succeeded = ARRole.assignTeamsToSeason(chosenTeams, currLeagueSeason);
+        else  // "remove"
+            succeeded = ARRole.removeTeamsFromSeason(chosenTeams, currLeagueSeason);
+        if (succeeded) {
+            if(action.equals("add"))
+                UIController.printMessage("The teams have been successfully assigned to the league's latest season");
+            else  // "remove"
+                UIController.printMessage("The teams have been successfully removed from the league's latest season");
+        }
+        return succeeded;
+    }
+
+    private static List<Team> getTeamsBySeasonByChoice(Season season, String action) throws Exception {
+        List<Team> teams = EntityManager.getInstance().getTeams();
+        if (teams == null || teams.isEmpty()) {
+            throw new Exception("There are no teams");
+        }
+        List<Team> teamsInSeason = season.getTeams();
+        List<Team> teamChoices = new ArrayList<>();
+        for(Team teamInSys : teams){
+            if(action.equals("not in season")) {
+                if (!teamsInSeason.contains(teamInSys))
+                    teamChoices.add(teamInSys);
+            }
+            else { //"in season"
+                if (teamsInSeason.contains(teamInSys))
+                    teamChoices.add(teamInSys);
+            }
+        }
+        if(teamChoices.isEmpty()){
+            if(action.equals("not in season"))
+                 throw new Exception("There are no teams that do not belong already to the chosen league's latest season");
+            else //"in season"
+                throw new Exception("There are no teams that belong to the chosen league's latest season");
+        }
+
+        if(action.equals("not in season"))
+        UIController.printMessage("Choose Team numbers from the list of " +
+                "teams that do not belong to the chosen league's latest season." +
+                "\nWhen you are done, type -1");
+        else //"in season"
+            UIController.printMessage("Choose Team numbers from the list of " +
+                    "teams that belong to the chosen league's latest season." +
+                    "\nWhen you are done, type -1");
+        List<Team> chosenTeams = new ArrayList<>();
+        for (int i = 0; i < teamChoices.size(); i++) {
+            UIController.printMessage(i + ". " + teamChoices.get(i).getTeamName());
+        }
+        int index = UIController.receiveInt();
+        while(index != -1){
+            if(index >= 0 && index < teamChoices.size()){
+                chosenTeams.add(teamChoices.get(index));
+            }
+            index = UIController.receiveInt();
+        }
+        return chosenTeams;
+    }
+
+    private static League getLeagueThatHasntStartedByChoice() throws Exception {
+        List<League> leagues = EntityManager.getInstance().getLeagues();
+        if (leagues == null || leagues.isEmpty()) {
+            throw new Exception("There are no leagues");
+        }
+        List<League> leaguesChoices = new ArrayList<>();
+        for (int i = 0; i < leagues.size(); i++) {
+            if (leagues.get(i).getLatestSeason() != null && !leagues.get(i).getLatestSeason().getIsUnderway())
+                leaguesChoices.add(leagues.get(i));
+        }
+        if(leaguesChoices.isEmpty()){
+            throw new Exception("There are no leagues that their latest season hasn't started");
+        }
+
+        UIController.printMessage("Choose a League Number from the list of " +
+                "leagues that their latest season hasn't started");
+        for (int i = 0; i < leaguesChoices.size(); i++) {
+            UIController.printMessage(i + ". " + leaguesChoices.get(i).getName());
+        }
+        int Index;
+        do {
+            Index = UIController.receiveInt();
+        } while (!(Index >= 0 && Index < leaguesChoices.size()));
+
+        return leaguesChoices.get(Index);
     }
 }
