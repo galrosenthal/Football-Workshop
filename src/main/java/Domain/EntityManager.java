@@ -294,17 +294,6 @@ public class EntityManager {
         return this.allLeagues.remove(leagueToRemove);
     }
 
-    /**
-     * Adds a new league. Responsible only for creating and adding a new league, doesn't do any farther checks.
-     * @param leagueName - String - A unique leagueName
-     */
-    public void addLeague(String leagueName) {
-        League league = new League(leagueName);
-        allLeagues.add(league);
-    }
-
-
-
     public void clearAll() {
         allStadiums = new ArrayList<>();
         allLeagues = new HashSet<>();

@@ -166,7 +166,7 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser));
         EntityManager.getInstance().addUser(systemUser);
-        EntityManager.getInstance().addLeague("Premier League");
+        EntityManager.getInstance().addLeague(new League("Premier League"));
         UIController.setIsTest(true);
         UIController.setSelector(6);
         //Duplicated league creation
@@ -373,7 +373,7 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser));
         EntityManager.getInstance().addUser(systemUser);
-        EntityManager.getInstance().addLeague("Premier League");
+        EntityManager.getInstance().addLeague(new League("Premier League"));
         UIController.setIsTest(true);
         UIController.setSelector(921); //0 , "2020/21", "2020/21", "2021/22"
 
@@ -390,7 +390,7 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser));
         EntityManager.getInstance().addUser(systemUser);
-        EntityManager.getInstance().addLeague("Premier League");
+        EntityManager.getInstance().addLeague(new League("Premier League"));
         UIController.setIsTest(true);
         UIController.setSelector(921); //0 , "2020/21", "2020/21", "2021/22"
 
@@ -620,7 +620,7 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         new AssociationRepresentative(systemUser);
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague("Premier League");
+        EntityManager.getInstance().addLeague(new League("Premier League"));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
         SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
@@ -640,7 +640,7 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         new AssociationRepresentative(systemUser);
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague("Premier League");
+        EntityManager.getInstance().addLeague(new League("Premier League"));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
         SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");

@@ -3,6 +3,7 @@ package Domain.Users;
 import Domain.EntityManager;
 import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Financials.AssociationFinancialRecordLog;
+import Domain.Game.League;
 import Domain.Game.Team;
 import Domain.Game.Season;
 
@@ -28,8 +29,8 @@ public class AssociationRepresentative extends Role {
             throw new Exception("League with the same name already exists");
         }
         //Adding a new league
-        EntityManager.getInstance().addLeague(leagueName);
-
+        League league = new League(leagueName);
+        EntityManager.getInstance().addLeague(league);
         return true;
     }
 

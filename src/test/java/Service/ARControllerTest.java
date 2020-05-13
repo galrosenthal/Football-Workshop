@@ -89,7 +89,7 @@ public class ARControllerTest {
     public void addSeasonToLeague2ITest() {
         //success no re-tries test
         SystemUser systemUser = getSystemUserAR();
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
 
         UIController.setSelector(921); //0 , "2020/21","2021/22"
 
@@ -106,7 +106,7 @@ public class ARControllerTest {
     public void addSeasonToLeague3ITest() {
         //duplicated creation attempt failure and then change input and success.
         SystemUser systemUser = getSystemUserAR();
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         UIController.setSelector(921); //0 , "2020/21", "2020/21", "2021/22"
 
         assertTrue(ARController.addSeasonToLeague(systemUser));
@@ -124,7 +124,7 @@ public class ARControllerTest {
     public void addSeasonToLeague4ITest() {
         //success after wrong format
         SystemUser systemUser = getSystemUserAR();
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         UIController.setSelector(924); //0 , "wrong Format","2021/22"
 
         assertTrue(ARController.addSeasonToLeague(systemUser));
@@ -318,7 +318,7 @@ public class ARControllerTest {
     public void assignReferee3UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         /*
         Expected: Choose a League Number
                   0. newLeagueName
@@ -332,7 +332,7 @@ public class ARControllerTest {
     public void assignRefereeITest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         /*
@@ -364,7 +364,7 @@ public class ARControllerTest {
     public void assignReferee5ITest() {
         SystemUser systemUser = getSystemUserAR();
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         /*
         Expected: Choose a League Number
                   0. newLeagueName
@@ -379,7 +379,7 @@ public class ARControllerTest {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         UIController.setSelector(0);
         AssociationRepresentativeStub.setSelector(1);
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
@@ -394,7 +394,7 @@ public class ARControllerTest {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         UIController.setSelector(0);
         AssociationRepresentativeStub.setSelector(0);
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
@@ -410,7 +410,7 @@ public class ARControllerTest {
     public void assignReferee2ITest() {
         SystemUser systemUser = getSystemUserAR();
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
@@ -425,7 +425,7 @@ public class ARControllerTest {
         SystemUser systemUser = getSystemUserAR();
         UIController.setSelector(0);
 
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
