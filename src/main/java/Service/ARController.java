@@ -1,19 +1,19 @@
 package Service;
 
-import Domain.Controllers.TeamController;
 import Domain.EntityManager;
 import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Exceptions.TeamAlreadyExistsException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.League;
 import Domain.Game.PointsPolicy;
+import Domain.Game.SchedulingPolicy;
 import Domain.Game.Season;
 import Domain.Users.AssociationRepresentative;
 import Domain.Users.Referee;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
-import Domain.Users.*;
 
+import java.util.Date;
 import java.util.List;
 
 import static Service.UIController.*;
@@ -426,6 +426,72 @@ public class ARController {
         return true;
     }
 
+
+    /**
+     * Activates a scheduling policy to a chosen season.
+     *
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - boolean - True if the scheduling process was assigned successfully, else false
+     */
+    public static boolean activateSchedulingPolicy(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        //League selection
+        League chosenLeague = null;
+        try {
+            chosenLeague = getLeagueByChoice();
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage() + "\nPlease add a league before activating a schedulin policy");
+            return false;
+        }
+        //Season selection
+        Season chosenSeason = null;
+        try {
+            chosenSeason = getSeasonByChoice(chosenLeague);
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage() + "\nPlease add a season before setting a points policy");
+            return false;
+        }
+        //override
+        boolean override = true;
+        if (chosenSeason.scheduled()){
+            override = UIController.receiveChoice("Caution: this season already have a schedule.\nRe-activating scheduling policy will cause the previous schedule to be over-written");
+        }
+        if(!override){
+            return false;
+        }
+        //Date selection
+        Date startDate = UIController.receiveDate("Please chose a date for the first game:");
+        //Scheduling policy selection
+        SchedulingPolicy schedulingPolicy = getSchedulingPolicyByChoice();
+
+        try {
+            ARRole.activateSchedulingPolicy(chosenSeason, schedulingPolicy, startDate);
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage());
+            return false;
+        }
+
+        UIController.printMessage("The chosen points policy was set successfully");
+        return true;
+    }
+
+    private static SchedulingPolicy getSchedulingPolicyByChoice() {
+        SchedulingPolicy.getDefaultSchedulingPolicy();
+        List<SchedulingPolicy> schedulingPolicies = EntityManager.getInstance().getSchedulingPolicies();
+        UIController.printMessage("Choose a points policy number from the list:");
+        for (int i = 0; i < schedulingPolicies.size(); i++) {
+            UIController.printMessage(i + ". " + schedulingPolicies.get(i).toString());
+        }
+        int index;
+        do {
+            index = UIController.receiveInt();
+        } while (!(index >= 0 && index < schedulingPolicies.size()));
+
+        return schedulingPolicies.get(index);
+    }
 
 
 }

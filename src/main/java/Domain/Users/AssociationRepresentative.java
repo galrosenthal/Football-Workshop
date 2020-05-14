@@ -8,7 +8,9 @@ import Domain.Game.PointsPolicy;
 import Domain.Game.SchedulingPolicy;
 import Domain.Game.Team;
 import Domain.Game.Season;
+import Service.UIController;
 
+import java.util.Date;
 import java.util.List;
 
 public class AssociationRepresentative extends Role {
@@ -179,5 +181,12 @@ public class AssociationRepresentative extends Role {
         }
         SchedulingPolicy newSchedulingPolicy = new SchedulingPolicy(gamesPerSeason, gamesPerDay, minRest);
         EntityManager.getInstance().addSchedulingPolicy(newSchedulingPolicy);
+    }
+
+    public void activateSchedulingPolicy(Season chosenSeason, SchedulingPolicy schedulingPolicy, Date startDate) throws Exception {
+        if(chosenSeason.hasStarted()){
+            throw new Exception("Activating a scheduling policy after a season has started is forbidden");
+        }
+        chosenSeason.scheduleGames(schedulingPolicy,startDate);
     }
 }

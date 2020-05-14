@@ -12,8 +12,6 @@ public class Season {
     private List<Team> teams;
     private List<Referee> referees;
     private List<Game> games;
-
-    private SchedulingPolicy schedulingPolicy;
     private PointsPolicy pointsPolicy;
 
     /**
@@ -29,7 +27,6 @@ public class Season {
         this.referees = new ArrayList<>();
         this.games = new ArrayList<>();
         this.pointsPolicy = PointsPolicy.getDefaultPointsPolicy();
-        this.schedulingPolicy = SchedulingPolicy.getDefaultSchedulingPolicy();
     }
 
     /**
@@ -41,6 +38,7 @@ public class Season {
         int[] yearsInt = splitYearsInt(years);
         return Year.parse("" + yearsInt[0] + yearsInt[2]);
     }
+
 
     /**
      * Getter for the years field.
@@ -241,5 +239,35 @@ public class Season {
 
     public PointsPolicy getPointsPolicy() {
         return pointsPolicy;
+    }
+
+    /**
+     * Checks if this season have scheduled games.
+     * @return - boolean - true if this season have scheduled games, else false
+     */
+    public boolean scheduled() {
+        if(games.isEmpty()){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Generates a new schedule and create new games based on it
+     * @param schedulingPolicy
+     * @param startDate
+     * @throws Exception
+     */
+    public void scheduleGames(SchedulingPolicy schedulingPolicy, Date startDate) throws Exception {
+        List<ScheduleMatch> scheduleMatches = schedulingPolicy.generateSchedule(startDate, this.teams, this.referees);
+        //Delete previous games
+        this.games = new ArrayList<>();
+        //TODO:Maybe delete games from DB?
+        //Create games based on schedule
+        for (int i = 0; i < scheduleMatches.size(); i++) {
+            ScheduleMatch scheduleMatch = scheduleMatches.get(i);
+            Game game = new Game(scheduleMatch.getStadium(),scheduleMatch.getHomeTeam(),scheduleMatch.getAwayTeam(),scheduleMatch.getMatchDate(),scheduleMatch.getReferees());
+            this.games.add(game);
+        }
     }
 }

@@ -505,4 +505,8 @@ public class EntityManager {
             //TODO: Update DB?
         }
     }
+
+    public List<SchedulingPolicy> getSchedulingPolicies() {
+        return schedulingPolicies;
+    }
 }

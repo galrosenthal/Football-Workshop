@@ -1,5 +1,6 @@
 package Service;
 
+import java.util.Date;
 import java.util.Scanner;
 
 public class UIController {
@@ -237,5 +238,16 @@ public class UIController {
         String username = UIController.receiveString();
         return username;
 
+    }
+
+    public static Date receiveDate(String s) {
+        if(!isTest){
+            //TODO: fill
+        }else {
+            if(selector ==0){
+                return new Date(2020,01,01);
+            }
+        }
+        return  null;
     }
 }

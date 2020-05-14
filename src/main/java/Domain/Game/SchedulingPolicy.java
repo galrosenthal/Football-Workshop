@@ -1,7 +1,11 @@
 package Domain.Game;
 
 import Domain.EntityManager;
+import Domain.Users.Referee;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public class SchedulingPolicy {
@@ -56,5 +60,29 @@ public class SchedulingPolicy {
     @Override
     public int hashCode() {
         return Objects.hash(gamesPerSeason, gamesPerDay, minimumRestDays);
+    }
+
+    /**
+     * Generates a schedule starting from the given start date
+     * @param startDate - Date - the starting date of the schedule
+     * @param teams - List<Team> - the teams
+     * @param referees - List<Referee> - the referees
+     * @return - List<ScheduleMatch> - the matches schedule
+     * @throws Exception - throws if //todo: fill
+     */
+    public List<ScheduleMatch> generateSchedule(Date startDate, List<Team> teams, List<Referee> referees) throws Exception {
+        //TODO: add more checks
+        if(teams==null ||teams.isEmpty() || referees==null || referees.isEmpty()){
+            throw new Exception("There is something wrong with the season's participants");
+        }else if (false){ //TODO: Add checks on referee types
+
+        }else if (false){ //TODO: Add checks on Teams
+
+        }
+        //TODO:Generate schedule
+
+
+        return new ArrayList<>();
+
     }
 }
