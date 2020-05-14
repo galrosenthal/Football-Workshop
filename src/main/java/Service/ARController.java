@@ -1,10 +1,13 @@
 package Service;
 
+import Domain.Controllers.TeamController;
 import Domain.EntityManager;
 import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Exceptions.TeamAlreadyExistsException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.League;
+import Domain.Game.PointsPolicy;
+import Domain.Game.SchedulingPolicy;
 import Domain.Game.Season;
 import Domain.Game.Team;
 import Domain.Users.AssociationRepresentative;
@@ -14,6 +17,7 @@ import Domain.Users.SystemUser;
 import com.vaadin.flow.component.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static Service.UIController.*;
@@ -451,4 +455,183 @@ public class ARController {
 
         return EntityManager.getInstance().getLeagueByName(leaguesChoices.get(Index));
     }
+
+
+    /**
+     * Controls the flow of adding a new points policy
+     *
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - boolean - True if a  new points policy have been created successfully, else false
+     */
+    public static boolean addPointsPolicy(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        UIController.printMessage("points (gain) for VICTORY (positive integer):");
+        int victoryPoints = UIController.receiveInt();
+        UIController.printMessage("points (loss) for LOSS (negative integer or zero):");
+        int lossPoints = UIController.receiveInt();
+        UIController.printMessage("points (gain) for TIE (integer):");
+        int tiePoints = UIController.receiveInt();
+        try {
+            ARRole.addPointsPolicy(victoryPoints, lossPoints, tiePoints);
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage());
+            return false;
+        }
+
+        UIController.printMessage("The new points policy has been added successfully");
+        return true;
+    }
+
+
+    /**
+     * Sets a points policy to a chosen season.
+     *
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - boolean - True if a points policy was assigned successfully, else false
+     */
+    public static boolean setPointsPolicy(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        //League selection
+        League chosenLeague = null;
+        try {
+            chosenLeague = getLeagueByChoice();
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage() + "\nPlease add a league before setting a points policy");
+            return false;
+        }
+
+        Season chosenSeason = null;
+        try {
+            chosenSeason = getSeasonByChoice(chosenLeague);
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage() + "\nPlease add a season before setting a points policy");
+            return false;
+        }
+
+        PointsPolicy pointsPolicy = getPointsPolicyByChoice();
+
+        ARRole.setPointsPolicy(chosenSeason, pointsPolicy);
+
+        UIController.printMessage("The chosen points policy was set successfully");
+        return true;
+    }
+
+    private static PointsPolicy getPointsPolicyByChoice() {
+        PointsPolicy.getDefaultPointsPolicy();
+        List<PointsPolicy> pointsPolicies = EntityManager.getInstance().getPointsPolicies();
+        UIController.printMessage("Choose a points policy number from the list:");
+        for (int i = 0; i < pointsPolicies.size(); i++) {
+            UIController.printMessage(i + ". " + pointsPolicies.get(i).toString());
+        }
+        int index;
+        do {
+            index = UIController.receiveInt();
+        } while (!(index >= 0 && index < pointsPolicies.size()));
+
+        return pointsPolicies.get(index);
+    }
+
+    /**
+     * Controls the flow of adding a new scheduling policy
+     *
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - boolean - True if a  new points policy have been created successfully, else false
+     */
+    public static boolean addSchedulingPolicy(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+
+        UIController.printMessage("Number of games for each team per season:");
+        int gamesPerSeason = UIController.receiveInt();
+        UIController.printMessage("Number of games on the same day:");
+        int gamesPerDay = UIController.receiveInt();
+        UIController.printMessage("Minimum rest days between games:");
+        int minRest = UIController.receiveInt();
+        try {
+            ARRole.addSchedulingPolicy(gamesPerSeason, gamesPerDay, minRest);
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage());
+            return false;
+        }
+
+        UIController.printMessage("The new scheduling policy has been added successfully");
+        return true;
+    }
+
+
+    /**
+     * Activates a scheduling policy to a chosen season.
+     *
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - boolean - True if the scheduling process was assigned successfully, else false
+     */
+    public static boolean activateSchedulingPolicy(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        //League selection
+        League chosenLeague = null;
+        try {
+            chosenLeague = getLeagueByChoice();
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage() + "\nPlease add a league before activating a schedulin policy");
+            return false;
+        }
+        //Season selection
+        Season chosenSeason = null;
+        try {
+            chosenSeason = getSeasonByChoice(chosenLeague);
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage() + "\nPlease add a season before setting a points policy");
+            return false;
+        }
+        //override
+        boolean override = true;
+        if (chosenSeason.scheduled()){
+            override = UIController.receiveChoice("Caution: this season already have a schedule.\nRe-activating scheduling policy will cause the previous schedule to be over-written");
+        }
+        if(!override){
+            return false;
+        }
+        //Date selection
+        Date startDate = UIController.receiveDate("Please chose a date for the first game:");
+        //Scheduling policy selection
+        SchedulingPolicy schedulingPolicy = getSchedulingPolicyByChoice();
+
+        try {
+            ARRole.activateSchedulingPolicy(chosenSeason, schedulingPolicy, startDate);
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage());
+            return false;
+        }
+
+        UIController.printMessage("The chosen points policy was set successfully");
+        return true;
+    }
+
+    private static SchedulingPolicy getSchedulingPolicyByChoice() {
+        SchedulingPolicy.getDefaultSchedulingPolicy();
+        List<SchedulingPolicy> schedulingPolicies = EntityManager.getInstance().getSchedulingPolicies();
+        UIController.printMessage("Choose a points policy number from the list:");
+        for (int i = 0; i < schedulingPolicies.size(); i++) {
+            UIController.printMessage(i + ". " + schedulingPolicies.get(i).toString());
+        }
+        int index;
+        do {
+            index = UIController.receiveInt();
+        } while (!(index >= 0 && index < schedulingPolicies.size()));
+
+        return schedulingPolicies.get(index);
+    }
+
+
 }
