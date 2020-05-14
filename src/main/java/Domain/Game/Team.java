@@ -32,6 +32,8 @@ public class Team {
         teamName = new String(anotherTeam.teamName);
         playersAndCoaches = new HashSet<>(anotherTeam.playersAndCoaches);
         status = TeamStatus.OPEN;
+        seasons = new ArrayList<>();
+
     }
 
     public Team() {
@@ -50,6 +52,7 @@ public class Team {
         teamManagers = new ArrayList<>();
         stadiums = new ArrayList<>();
         status = TeamStatus.OPEN;
+        seasons = new ArrayList<>();
         this.teamName = teamName;
     }
 
@@ -181,7 +184,8 @@ public class Team {
         return teamOwners.equals(team.teamOwners) &&
                 teamManagers.equals(team.teamManagers) &&
                 stadiums.equals(team.stadiums)&&
-                playersAndCoaches.equals(team.playersAndCoaches);
+                playersAndCoaches.equals(team.playersAndCoaches)&&
+                teamName.equals(team.teamName);
 //        return this.teamOwners.size() == team.teamOwners.size() &&
 //               this.teamManagers.size() == team.teamManagers.size() &&
 //                this.stadiums.size() == team.stadiums.size() &&
@@ -556,13 +560,23 @@ public class Team {
         return  currentSeason;
     }
 
+    public List<Season> getSeasons() {
+        return seasons;
+    }
+
     public  boolean addSeason(Season season){
         if(!seasons.contains(season)){
             seasons.add(season);
             return true;
         }
-
         return false;
+    }
+
+    public  boolean removeSeason(Season season){
+        if(!seasons.contains(season)){
+            return false;
+        }
+        return seasons.remove(season);
     }
 
     private boolean removePlayerOrCoach(PartOfTeam playerOrCoach)

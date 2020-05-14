@@ -3,6 +3,7 @@ package Domain.Users;
 import Domain.EntityManager;
 import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Financials.AssociationFinancialRecordLog;
+import Domain.Game.League;
 import Domain.Game.Team;
 import Domain.Game.Season;
 
@@ -28,8 +29,8 @@ public class AssociationRepresentative extends Role {
             throw new Exception("League with the same name already exists");
         }
         //Adding a new league
-        EntityManager.getInstance().addLeague(leagueName);
-
+        League league = new League(leagueName);
+        EntityManager.getInstance().addLeague(league);
         return true;
     }
 
@@ -117,4 +118,37 @@ public class AssociationRepresentative extends Role {
             refereeRole.assignToSeason(chosenSeason);
         }
     }
+
+    /**
+     * Assign teams to season
+     * @param chosenTeams The teams to assign.
+     * @param season The season to assign the teams to.
+     * @return false if no teams were assigned to the season, else true.
+     */
+    public boolean assignTeamsToSeason(List<Team> chosenTeams, Season season){
+        if(chosenTeams == null || chosenTeams.isEmpty())
+            return false;
+        for(Team team : chosenTeams) {
+            season.addTeam(team);
+            team.addSeason(season);
+        }
+        return true;
+    }
+
+    /**
+     * Remove teams from season
+     * @param chosenTeams The teams to remove.
+     * @param season The season to remove the teams from.
+     * @return false if no teams were removed from the season, else true.
+     */
+    public boolean removeTeamsFromSeason(List<Team> chosenTeams, Season season){
+        if(chosenTeams == null || chosenTeams.isEmpty())
+            return false;
+        for(Team team : chosenTeams) {
+            season.removeTeam(team);
+            team.removeSeason(season);
+        }
+        return true;
+    }
+
 }

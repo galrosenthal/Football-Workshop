@@ -26,4 +26,19 @@ public class LeagueStub extends League {
             return super.getSeasons();
         }
     }
+
+    public void setSelector(int selector) {
+        this.selector = selector;
+    }
+
+    @Override
+    public Season getLatestSeason() {
+        if(selector == 91123 || selector == 91223){
+            return null;
+        }
+        else if(selector == 91124 || selector == 91224){
+            return new SeasonStub(this,"2020/21");
+        }
+        return super.getLatestSeason();
+    }
 }
