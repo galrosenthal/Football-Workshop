@@ -338,7 +338,7 @@ public class ARController {
         try {
             chosenLeague = getLeagueThatHasntStartedByChoice();
         } catch (Exception e) {
-            UIController.printMessage(e.getMessage());
+            UIController.showNotification(e.getMessage());
             return false;
         }
 
@@ -350,7 +350,7 @@ public class ARController {
             else // "remove"
                 chosenTeams = getTeamsBySeasonByChoice(currLeagueSeason, "in season");
         } catch (Exception e) {
-            UIController.printMessage(e.getMessage());
+            UIController.showNotification(e.getMessage());
             return false;
         }
 
@@ -362,9 +362,9 @@ public class ARController {
             succeeded = ARRole.removeTeamsFromSeason(chosenTeams, currLeagueSeason);
         if (succeeded) {
             if(action.equals("add"))
-                UIController.printMessage("The teams have been successfully assigned to the league's latest season");
+                UIController.showNotification("The teams have been successfully assigned to the league's latest season");
             else  // "remove"
-                UIController.printMessage("The teams have been successfully removed from the league's latest season");
+                UIController.showNotification("The teams have been successfully removed from the league's latest season");
         }
         return succeeded;
     }
@@ -375,15 +375,18 @@ public class ARController {
             throw new Exception("There are no teams");
         }
         List<Team> teamsInSeason = season.getTeams();
-        List<Team> teamChoices = new ArrayList<>();
+
+        // Display teamChoices to the user, so he can select a multiple teams
+        // and return the list of the chosen teams
+        List<String> teamChoices = new ArrayList<>();
         for(Team teamInSys : teams){
             if(action.equals("not in season")) {
                 if (!teamsInSeason.contains(teamInSys))
-                    teamChoices.add(teamInSys);
+                    teamChoices.add(teamInSys.getTeamName());
             }
             else { //"in season"
                 if (teamsInSeason.contains(teamInSys))
-                    teamChoices.add(teamInSys);
+                    teamChoices.add(teamInSys.getTeamName());
             }
         }
         if(teamChoices.isEmpty()){
@@ -392,26 +395,35 @@ public class ARController {
             else //"in season"
                 throw new Exception("There are no teams that belong to the chosen league's latest season");
         }
-
+        String messageToShow = "";
         if(action.equals("not in season"))
-        UIController.printMessage("Choose Team numbers from the list of " +
-                "teams that do not belong to the chosen league's latest season." +
-                "\nWhen you are done, type -1");
+        {
+            messageToShow = "Choose Team numbers from the list of " +
+                    "teams that do not belong to the chosen league's latest season." +
+                    "\nWhen you are done, type -1";
+        }
         else //"in season"
-            UIController.printMessage("Choose Team numbers from the list of " +
+        {
+            messageToShow = "Choose Team numbers from the list of " +
                     "teams that belong to the chosen league's latest season." +
-                    "\nWhen you are done, type -1");
+                    "\nWhen you are done, type -1";
+        }
         List<Team> chosenTeams = new ArrayList<>();
-        for (int i = 0; i < teamChoices.size(); i++) {
-            UIController.printMessage(i + ". " + teamChoices.get(i).getTeamName());
+//        for (int i = 0; i < teamChoices.size(); i++) {
+//            UIController.showNotification(i + ". " + teamChoices.get(i).getTeamName());
+//        }
+        String selectedTeams = UIController.receiveString(messageToShow,teamChoices);
+        String[] selectedTeamsArray = selectedTeams.split(";");
+        for (String teamName :
+                selectedTeamsArray) {
+            chosenTeams.add(EntityManager.getInstance().getTeam(teamName));
         }
-        int index = UIController.receiveInt();
-        while(index != -1){
-            if(index >= 0 && index < teamChoices.size()){
-                chosenTeams.add(teamChoices.get(index));
-            }
-            index = UIController.receiveInt();
-        }
+//        while(index != -1){
+//            if(index >= 0 && index < teamChoices.size()){
+//                chosenTeams.add(teamChoices.get(index));
+//            }
+//            index = UIController.receiveInt();
+//        }
         return chosenTeams;
     }
 
@@ -420,25 +432,23 @@ public class ARController {
         if (leagues == null || leagues.isEmpty()) {
             throw new Exception("There are no leagues");
         }
-        List<League> leaguesChoices = new ArrayList<>();
+        List<String> leaguesChoices = new ArrayList<>();
         for (int i = 0; i < leagues.size(); i++) {
             if (leagues.get(i).getLatestSeason() != null && !leagues.get(i).getLatestSeason().getIsUnderway())
-                leaguesChoices.add(leagues.get(i));
+                leaguesChoices.add(leagues.get(i).getName());
         }
         if(leaguesChoices.isEmpty()){
             throw new Exception("There are no leagues that their latest season hasn't started");
         }
 
-        UIController.printMessage("Choose a League Number from the list of " +
+        String messeage = ("Choose a League Number from the list of " +
                 "leagues that their latest season hasn't started");
-        for (int i = 0; i < leaguesChoices.size(); i++) {
-            UIController.printMessage(i + ". " + leaguesChoices.get(i).getName());
-        }
+//        int selectedLeague = UIController.receiveInt(messeage, leaguesChoices);
         int Index;
         do {
-            Index = UIController.receiveInt();
+            Index = UIController.receiveInt(messeage, leaguesChoices);
         } while (!(Index >= 0 && Index < leaguesChoices.size()));
 
-        return leaguesChoices.get(Index);
+        return EntityManager.getInstance().getLeagueByName(leaguesChoices.get(Index));
     }
 }
