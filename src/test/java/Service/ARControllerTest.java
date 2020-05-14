@@ -3,11 +3,9 @@ package Service;
 import Domain.EntityManager;
 import Domain.Exceptions.TeamAlreadyExistsException;
 import Domain.Exceptions.UserNotFoundException;
-import Domain.Game.League;
-import Domain.Game.TeamStub;
+import Domain.Game.*;
 import Domain.Users.*;
 import org.junit.*;
-import Domain.Game.Season;
 import Domain.Users.*;
 import org.junit.After;
 import org.junit.Before;
@@ -91,7 +89,7 @@ public class ARControllerTest {
     public void addSeasonToLeague2ITest() {
         //success no re-tries test
         SystemUser systemUser = getSystemUserAR();
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
 
         UIController.setSelector(921); //0 , "2020/21","2021/22"
 
@@ -108,7 +106,7 @@ public class ARControllerTest {
     public void addSeasonToLeague3ITest() {
         //duplicated creation attempt failure and then change input and success.
         SystemUser systemUser = getSystemUserAR();
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         UIController.setSelector(921); //0 , "2020/21", "2020/21", "2021/22"
 
         assertTrue(ARController.addSeasonToLeague(systemUser));
@@ -126,7 +124,7 @@ public class ARControllerTest {
     public void addSeasonToLeague4ITest() {
         //success after wrong format
         SystemUser systemUser = getSystemUserAR();
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         UIController.setSelector(924); //0 , "wrong Format","2021/22"
 
         assertTrue(ARController.addSeasonToLeague(systemUser));
@@ -320,7 +318,7 @@ public class ARControllerTest {
     public void assignReferee3UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         /*
         Expected: Choose a League Number
                   0. newLeagueName
@@ -334,7 +332,7 @@ public class ARControllerTest {
     public void assignRefereeITest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         /*
@@ -366,7 +364,7 @@ public class ARControllerTest {
     public void assignReferee5ITest() {
         SystemUser systemUser = getSystemUserAR();
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         /*
         Expected: Choose a League Number
                   0. newLeagueName
@@ -381,7 +379,7 @@ public class ARControllerTest {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         UIController.setSelector(0);
         AssociationRepresentativeStub.setSelector(1);
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
@@ -396,7 +394,7 @@ public class ARControllerTest {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         UIController.setSelector(0);
         AssociationRepresentativeStub.setSelector(0);
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
@@ -412,7 +410,7 @@ public class ARControllerTest {
     public void assignReferee2ITest() {
         SystemUser systemUser = getSystemUserAR();
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
@@ -427,7 +425,7 @@ public class ARControllerTest {
         SystemUser systemUser = getSystemUserAR();
         UIController.setSelector(0);
 
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
@@ -520,6 +518,149 @@ public class ARControllerTest {
         assertTrue(usrToBeOwner.isType(RoleTypes.TEAM_OWNER));
         assertEquals(1, toRole.getOwnedTeams().size());
     }
+
+    @Test
+    public void addTeamsToSeasonUTest(){
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 91121);
+        //not ar
+        assertFalse(ARController.addTeamsToSeason(systemUser));
+        SystemUser arSystemUser = new SystemUserStub("stubUsername", "stub", 91122); //AR
+        //"There are no leagues"
+        assertFalse(ARController.addTeamsToSeason(arSystemUser));
+
+        LeagueStub leagueStub = new LeagueStub("stubLeg", 91123);
+        EntityManager.getInstance().addLeague(leagueStub);
+        //"There are no leagues that their latest season hasn't started"
+        assertFalse(ARController.addTeamsToSeason(arSystemUser));
+
+        leagueStub.setSelector(91124); // now there is latest season that hasn't started
+        UIController.setSelector(91125); // choose 0 (the league)
+        //"There are no teams"
+        assertFalse(ARController.addTeamsToSeason(arSystemUser));
+
+        TeamStub teamStub = new TeamStub(91126);
+        EntityManager.getInstance().addTeam(teamStub);
+        UIController.setSelector(91126);
+        //success
+        assertTrue(ARController.addTeamsToSeason(arSystemUser));
+
+    }
+
+    @Test
+    public void addTeamsToSeasonITest(){
+        SystemUser arSystemUser = getSystemUserAR();
+        new TeamOwner(arSystemUser);
+        TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        Team team1 = new Team("Hapoel Beit Shan", toRole);
+        Team team2 = new Team("Hapoel Beer Sheva", toRole);
+        //"There are no leagues"
+        assertFalse(ARController.addTeamsToSeason(arSystemUser));
+        League league = new League("Ligat ul");
+        league.addSeason("2019/20");
+        Season season = league.getLatestSeason();
+        EntityManager.getInstance().addTeam(team1);
+        EntityManager.getInstance().addTeam(team2);
+        EntityManager.getInstance().addLeague(league);
+        assertNotNull(season);
+        assertEquals("2019/20", season.getYears());
+        season.startSeason();
+        //"There are no leagues that their latest season hasn't started"
+        assertFalse(ARController.addTeamsToSeason(arSystemUser));
+
+        league.addSeason("2020/21");
+        Season newSeason = league.getLatestSeason();
+        assertNotNull(newSeason);
+        assertEquals("2020/21", newSeason.getYears());
+        newSeason.addTeam(team1);
+        newSeason.addTeam(team2);
+        team1.addSeason(newSeason);
+        team2.addSeason(newSeason);
+        UIController.setSelector(91131); //choose 0 for league
+        //"There are no teams that do not belong already to the chosen league's latest season"
+        assertFalse(ARController.addTeamsToSeason(arSystemUser));
+
+        newSeason.removeTeam(team1);
+        team1.removeSeason(newSeason);
+        assertEquals(1, newSeason.getTeams().size());
+        assertEquals(0, team1.getSeasons().size());
+        UIController.setSelector(91132); // 0 for league, then 0 and -1
+        //successfully added team1 to newSeason
+        assertTrue(ARController.addTeamsToSeason(arSystemUser));
+        assertEquals(2, newSeason.getTeams().size());
+        assertEquals(1, team1.getSeasons().size());
+    }
+
+
+
+    @Test
+    public void removeTeamsFromSeasonUTest(){
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 91221);
+        //not ar
+        assertFalse(ARController.removeTeamsFromSeason(systemUser));
+        SystemUser arSystemUser = new SystemUserStub("stubUsername", "stub", 91222); //AR
+        //"There are no leagues"
+        assertFalse(ARController.removeTeamsFromSeason(arSystemUser));
+
+        LeagueStub leagueStub = new LeagueStub("stubLeg", 91223);
+        EntityManager.getInstance().addLeague(leagueStub);
+        //"There are no leagues that their latest season hasn't started"
+        assertFalse(ARController.removeTeamsFromSeason(arSystemUser));
+
+        leagueStub.setSelector(91224); // now there is latest season that hasn't started
+        UIController.setSelector(91225); // choose 0 (the league)
+        //"There are no teams"
+        assertFalse(ARController.removeTeamsFromSeason(arSystemUser));
+
+        TeamStub teamStub = new TeamStub(91226);
+        EntityManager.getInstance().addTeam(teamStub);
+        UIController.setSelector(91226);
+        //"There are no teams that belong to the chosen league's latest season"
+        assertFalse(ARController.removeTeamsFromSeason(arSystemUser));
+    }
+
+    @Test
+    public void removeTeamsFromSeasonITest(){
+        SystemUser arSystemUser = getSystemUserAR();
+        new TeamOwner(arSystemUser);
+        TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        Team team1 = new Team("Hapoel Beit Shan", toRole);
+        Team team2 = new Team("Hapoel Beer Sheva", toRole);
+        //"There are no leagues"
+        assertFalse(ARController.removeTeamsFromSeason(arSystemUser));
+        League league = new League("Ligat ul");
+        league.addSeason("2019/20");
+        Season season = league.getLatestSeason();
+        EntityManager.getInstance().addTeam(team1);
+        EntityManager.getInstance().addTeam(team2);
+        EntityManager.getInstance().addLeague(league);
+        assertNotNull(season);
+        assertEquals("2019/20", season.getYears());
+        season.startSeason();
+        //"There are no leagues that their latest season hasn't started"
+        assertFalse(ARController.removeTeamsFromSeason(arSystemUser));
+
+        league.addSeason("2020/21");
+        Season newSeason = league.getLatestSeason();
+        assertNotNull(newSeason);
+        assertEquals("2020/21", newSeason.getYears());
+        UIController.setSelector(91231); //choose 0 for league
+        //"There are no teams that belong to the chosen league's latest season"
+        assertFalse(ARController.removeTeamsFromSeason(arSystemUser));
+
+        newSeason.addTeam(team1);
+        newSeason.addTeam(team2);
+        team1.addSeason(newSeason);
+        team2.addSeason(newSeason);
+
+        assertEquals(2, newSeason.getTeams().size());
+        assertEquals(1, team1.getSeasons().size());
+        UIController.setSelector(91232); // 0 for league, then 0 and -1
+        //successfully removed team1 from newSeason
+        assertTrue(ARController.removeTeamsFromSeason(arSystemUser));
+        assertEquals(1, newSeason.getTeams().size());
+        assertEquals(0, team1.getSeasons().size());
+    }
+
 
     @After
     public void tearDown() throws Exception {

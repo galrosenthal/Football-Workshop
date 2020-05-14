@@ -1,5 +1,6 @@
 package Domain;
 
+import Domain.Game.League;
 import Domain.Users.Referee;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
@@ -23,15 +24,15 @@ public class EntityManagerTest {
     @Test
     public void addLeagueUTestUTest() {
         assertFalse(EntityManager.getInstance().doesLeagueExists("League Name"));
-        EntityManager.getInstance().addLeague("League Name");
+        EntityManager.getInstance().addLeague(new League("League Name"));
         assertTrue(EntityManager.getInstance().doesLeagueExists("League Name"));
         EntityManager.getInstance().removeLeagueByName("League Name");
     }
 
     @Test
     public void removeLeagueByNameUTest() {
-        EntityManager.getInstance().addLeague("League Name1");
-        EntityManager.getInstance().addLeague("League Name2");
+        EntityManager.getInstance().addLeague(new League("League Name1"));
+        EntityManager.getInstance().addLeague(new League("League Name2"));
         assertTrue(EntityManager.getInstance().removeLeagueByName("League Name2"));
         assertFalse(EntityManager.getInstance().doesLeagueExists("League Name2"));
         assertFalse(EntityManager.getInstance().removeLeagueByName("League Name2"));

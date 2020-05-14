@@ -1,5 +1,7 @@
 package Domain.Game;
 
+import java.util.List;
+
 public class SeasonStub extends Season{
 
     /**
