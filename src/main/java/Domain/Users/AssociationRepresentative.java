@@ -144,4 +144,16 @@ public class AssociationRepresentative extends Role {
         PointsPolicy newPointsPolicy = new PointsPolicy(victoryPoints, lossPoints, tiePoints);
         EntityManager.getInstance().addPointsPolicy(newPointsPolicy);
     }
+
+    /**
+     * Sets the points policy of the given season to be the points policy given
+     *
+     * @param chosenSeason - Season - the season to changed its points policy
+     * @param pointsPolicy - PointsPolicy - the new points policy
+     */
+    public void setPointsPolicy(Season chosenSeason, PointsPolicy pointsPolicy) {
+        if (chosenSeason != null && pointsPolicy != null) {
+            chosenSeason.setPointsPolicy(pointsPolicy);
+        }
+    }
 }

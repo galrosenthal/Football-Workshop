@@ -87,4 +87,9 @@ public class PointsPolicy {
     public int hashCode() {
         return Objects.hash(victoryPoints, lossPoints, tiePoints);
     }
+
+    @Override
+    public String toString() {
+        return "victoryPoints=" + victoryPoints + ", lossPoints=" + lossPoints +", tiePoints=" + tiePoints;
+    }
 }

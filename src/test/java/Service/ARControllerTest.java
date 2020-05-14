@@ -535,6 +535,7 @@ public class ARControllerTest {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 0);
         assertFalse(ARController.addPointsPolicy(systemUser));
     }
+
     @Test
     public void addPointsPolicyITest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
@@ -542,6 +543,7 @@ public class ARControllerTest {
         AssociationRepresentativeStub.setSelector(9511);
         assertFalse(ARController.addPointsPolicy(systemUser));
     }
+
     @Test
     public void addPointsPolicy2ITest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
@@ -549,6 +551,7 @@ public class ARControllerTest {
         AssociationRepresentativeStub.setSelector(9512);
         assertFalse(ARController.addPointsPolicy(systemUser));
     }
+
     @Test
     public void addPointsPolicy3ITest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
@@ -556,15 +559,17 @@ public class ARControllerTest {
         AssociationRepresentativeStub.setSelector(9513);
         assertFalse(ARController.addPointsPolicy(systemUser));
     }
+
     @Test
     public void addPointsPolicy4ITest() {
         //success
         SystemUser systemUser = getSystemUserAR();
         UIController.setSelector(9511);//1,-1,0
         assertTrue(ARController.addPointsPolicy(systemUser));
-        assertTrue(EntityManager.getInstance().doesPointsPolicyExists(1,-1,0));
-        assertNotNull(EntityManager.getInstance().getPointsPolicy(1,-1,0));
+        assertTrue(EntityManager.getInstance().doesPointsPolicyExists(1, -1, 0));
+        assertNotNull(EntityManager.getInstance().getPointsPolicy(1, -1, 0));
     }
+
     @Test
     public void addPointsPolicy5ITest() {
         //duplicated policy
@@ -582,12 +587,74 @@ public class ARControllerTest {
         assertFalse(ARController.addPointsPolicy(systemUser));
         //The victory points most be positive
     }
+
     @Test
     public void addPointsPolicy7ITest() {
         SystemUser systemUser = getSystemUserAR();
         UIController.setSelector(9514);//1,1,-1
         assertFalse(ARController.addPointsPolicy(systemUser));
         //The loss points most be negative or zero
+    }
+
+    @Test
+    public void setPointsPolicyUTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 0);
+        assertFalse(ARController.setPointsPolicy(systemUser));
+    }
+
+    @Test
+    public void setPointsPolicyITest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+        assertFalse(ARController.setPointsPolicy(systemUser));
+    }
+
+    @Test
+    public void setPointsPolicy2ITest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+        UIController.setSelector(0);
+        EntityManager.getInstance().addLeague("newLeagueName");
+        assertFalse(ARController.setPointsPolicy(systemUser));
+    }
+
+    @Test
+    public void setPointsPolicy3ITest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+        UIController.setSelector(0);
+        EntityManager.getInstance().addLeague("newLeagueName");
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2020/21");
+        assertTrue(ARController.setPointsPolicy(systemUser));
+        assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(3, 0, 1));
+    }
+
+    @Test
+    public void setPointsPolicy4ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        UIController.setSelector(0);
+        EntityManager.getInstance().addLeague("newLeagueName");
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2020/21");
+        assertTrue(ARController.setPointsPolicy(systemUser));
+        assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(3, 0, 1));
+    }
+    @Test
+    public void setPointsPolicy5ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        EntityManager.getInstance().addLeague("newLeagueName");
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2020/21");
+
+        AssociationRepresentative aR = (AssociationRepresentative)systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        try {
+            aR.addPointsPolicy(1,-1,0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(3, 0, 1));
+        UIController.setSelector(9521);
+        assertTrue(ARController.setPointsPolicy(systemUser));
+        assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(1, -1, 0));
     }
 
 

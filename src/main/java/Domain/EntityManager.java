@@ -451,4 +451,8 @@ public class EntityManager {
             //TODO: Update DB?
         }
     }
+
+    public List<PointsPolicy> getPointsPolicies() {
+        return this.pointsPolicies;
+    }
 }

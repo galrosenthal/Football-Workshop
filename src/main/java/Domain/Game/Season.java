@@ -230,4 +230,11 @@ public class Season {
         return teamsPoints;
     }
 
+    public void setPointsPolicy(PointsPolicy pointsPolicy) {
+        this.pointsPolicy = pointsPolicy;
+    }
+
+    public PointsPolicy getPointsPolicy() {
+        return pointsPolicy;
+    }
 }

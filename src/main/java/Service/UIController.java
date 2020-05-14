@@ -189,10 +189,14 @@ public class UIController {
             {
                 setSelector(9511);
                 return 0;
-            }else if(selector == 9514)  //Tie points
+            }else if(selector == 9514)
             {
                 setSelector(9511);
                 return 1;
+            }else if(selector == 9521)  //0,0,1
+            {
+                setSelector(9513);
+                return 0;
             }else {
                 //random number to crash test that were not checked
                 return 123812;

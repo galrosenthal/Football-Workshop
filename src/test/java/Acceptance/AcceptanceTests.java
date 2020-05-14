@@ -749,6 +749,33 @@ public class AcceptanceTests {
          */
     }
 
+    /**
+     * 9.5.2.a
+     * Main success scenario - A points policy was changed in a season.
+     */
+    @Test
+    public void setPointsPolicyATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        EntityManager.getInstance().addLeague("Premier League");
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2019/20");
+
+        AssociationRepresentative aR = (AssociationRepresentative)systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        try {
+            aR.addPointsPolicy(1,-1,0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(3, 0, 1));
+        UIController.setSelector(9521);
+        assertTrue(ARController.setPointsPolicy(systemUser));
+        assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(1, -1, 0));
+        /*
+        Expected: The chosen points policy was set successfully
+         */
+    }
 
     @After
     public void tearDown() throws Exception {

@@ -6,6 +6,7 @@ import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Exceptions.TeamAlreadyExistsException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.League;
+import Domain.Game.PointsPolicy;
 import Domain.Game.Season;
 import Domain.Users.AssociationRepresentative;
 import Domain.Users.Referee;
@@ -207,7 +208,7 @@ public class ARController {
     }
 
     /**
-     * receives a system user selection from the user.
+     * receives a referee selection from the user.
      *
      * @return - SystemUser - a referee chosen by the user
      * @throws Exception - "There are no referees"
@@ -342,6 +343,58 @@ public class ARController {
 
         UIController.printMessage("The new points policy has been added successfully");
         return true;
+    }
+
+
+    /**
+     * Sets a points policy to a chosen season.
+     *
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - boolean - True if a points policy was assigned successfully, else false
+     */
+    public static boolean setPointsPolicy(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        //League selection
+        League chosenLeague = null;
+        try {
+            chosenLeague = getLeagueByChoice();
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage() + "\nPlease add a league before setting a points policy");
+            return false;
+        }
+
+        Season chosenSeason = null;
+        try {
+            chosenSeason = getSeasonByChoice(chosenLeague);
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage() + "\nPlease add a season before setting a points policy");
+            return false;
+        }
+
+        PointsPolicy pointsPolicy = getPointsPolicyByChoice();
+
+        ARRole.setPointsPolicy(chosenSeason, pointsPolicy);
+
+        UIController.printMessage("The chosen points policy was set successfully");
+        return true;
+    }
+
+    private static PointsPolicy getPointsPolicyByChoice() {
+        PointsPolicy.getDefaultPointsPolicy();
+        List<PointsPolicy> pointsPolicies = EntityManager.getInstance().getPointsPolicies();
+        UIController.printMessage("Choose a points policy number from the list:");
+        for (int i = 0; i < pointsPolicies.size(); i++) {
+            UIController.printMessage(i + ". " + pointsPolicies.get(i).toString());
+        }
+        int index;
+        do {
+            index = UIController.receiveInt();
+        } while (!(index >= 0 && index < pointsPolicies.size()));
+
+        return pointsPolicies.get(index);
     }
 
 
