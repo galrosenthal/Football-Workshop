@@ -1,8 +1,6 @@
 package Domain.Game;
 
 import Domain.Users.Referee;
-import Domain.Users.SystemUser;
-import javafx.util.Pair;
 
 import java.time.Year;
 import java.util.*;
@@ -15,7 +13,7 @@ public class Season {
     private List<Referee> referees;
     private List<Game> games;
 
-    private GamePolicy gamePolicy; //todo: initialize with default
+    private SchedulingPolicy schedulingPolicy;
     private PointsPolicy pointsPolicy;
 
     /**
@@ -31,6 +29,7 @@ public class Season {
         this.referees = new ArrayList<>();
         this.games = new ArrayList<>();
         this.pointsPolicy = PointsPolicy.getDefaultPointsPolicy();
+        this.schedulingPolicy = SchedulingPolicy.getDefaultSchedulingPolicy();
     }
 
     /**
@@ -67,6 +66,11 @@ public class Season {
             return true;
         }
 
+        return false;
+    }
+
+    public boolean hasStarted() {
+        //TODO: Check if the season has started
         return false;
     }
 
@@ -177,6 +181,7 @@ public class Season {
 
     /**
      * Returns a map of the ranking of the teams
+     *
      * @return - Map<Integer, Team>  - A map of the ranking of the teams
      */
     public Map<Integer, Team> getRanking() {
@@ -187,7 +192,7 @@ public class Season {
         // Sort the list
         Collections.sort(list, Comparator.comparing(Map.Entry::getValue));
         //replacing the score with the rank
-        for (int rank = list.size()-1; rank <= 0; rank++) { //TODO: Test boundaries
+        for (int rank = list.size() - 1; rank <= 0; rank++) { //TODO: Test boundaries
             Map.Entry<Team, Integer> entry = list.get(rank);
             list.remove(entry);
             entry.setValue(rank);
@@ -198,7 +203,7 @@ public class Season {
         // put data from sorted list to hashmap
         HashMap<Integer, Team> sortedMap = new LinkedHashMap<>();
         for (Map.Entry<Team, Integer> entry : list) {
-            sortedMap.put(entry.getValue(),entry.getKey());
+            sortedMap.put(entry.getValue(), entry.getKey());
         }
         return sortedMap;
     }

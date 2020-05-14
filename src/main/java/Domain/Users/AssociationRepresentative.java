@@ -5,6 +5,7 @@ import Domain.Exceptions.ExistsAlreadyException;
 import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Financials.AssociationFinancialRecordLog;
 import Domain.Game.PointsPolicy;
+import Domain.Game.SchedulingPolicy;
 import Domain.Game.Team;
 import Domain.Game.Season;
 
@@ -155,5 +156,28 @@ public class AssociationRepresentative extends Role {
         if (chosenSeason != null && pointsPolicy != null) {
             chosenSeason.setPointsPolicy(pointsPolicy);
         }
+    }
+
+    /**
+     * Adds a new scheduling policy using the given parameters.
+     * Adds only if the arguments are correct and if an identical policy doesn't exist yet.
+     *
+     * @param gamesPerSeason - int - The number of games for each team per season - positive integer
+     * @param gamesPerDay    - int - The number of games on the same day - positive integer
+     * @param minRest        - int - The minimum rest days between games - non-negative integer
+     */
+    public void addSchedulingPolicy(int gamesPerSeason, int gamesPerDay, int minRest) throws Exception {
+        if (gamesPerSeason <= 0) {
+            throw new IllegalArgumentException("The number of games for each team per season must be positive integer");
+        } else if (gamesPerDay <= 0) {
+            throw new IllegalArgumentException("The number of games on the same day must be positive integer");
+        } else if (minRest < 0) {
+            throw new IllegalArgumentException("The minimum rest days between games must be non-negative integer");
+        }
+        if (EntityManager.getInstance().doesSchedulingPolicyExists(gamesPerSeason, gamesPerDay, minRest)) {
+            throw new ExistsAlreadyException("This points policy already exists");
+        }
+        SchedulingPolicy newSchedulingPolicy = new SchedulingPolicy(gamesPerSeason, gamesPerDay, minRest);
+        EntityManager.getInstance().addSchedulingPolicy(newSchedulingPolicy);
     }
 }

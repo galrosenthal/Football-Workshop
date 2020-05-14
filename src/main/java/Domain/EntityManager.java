@@ -26,6 +26,7 @@ public class EntityManager {
     private List<Stadium> allStadiums;
     private HashSet<League> allLeagues;
     private List<PointsPolicy> pointsPolicies;
+    private List<SchedulingPolicy> schedulingPolicies;
 
     private EntityManager() {
         allUsers = new ArrayList<>();
@@ -33,6 +34,7 @@ public class EntityManager {
         allTeams = new ArrayList<>();
         allStadiums = new ArrayList<>();
         pointsPolicies = new ArrayList<>();
+        schedulingPolicies = new ArrayList<>();
     }
 
     /**
@@ -308,6 +310,7 @@ public class EntityManager {
         allUsers = new ArrayList<>();
         allTeams = new ArrayList<>();
         pointsPolicies = new ArrayList<>();
+        schedulingPolicies = new ArrayList<>();
     }
 
     /**
@@ -408,7 +411,7 @@ public class EntityManager {
     }
 
     /**
-     * Checks if a points policy already exists
+     * Checks if a points policy already exists with the same values
      *
      * @param victoryPoints - int
      * @param lossPoints    - int
@@ -426,6 +429,7 @@ public class EntityManager {
 
     /**
      * Returns a points policy matching the given parameters
+     *
      * @param victoryPoints - int
      * @param lossPoints    - int
      * @param tiePoints     - int
@@ -454,5 +458,45 @@ public class EntityManager {
 
     public List<PointsPolicy> getPointsPolicies() {
         return this.pointsPolicies;
+    }
+
+    /**
+     * Checks if a scheduling policy already exists with the same values
+     *
+     * @param gamesPerSeason - int
+     * @param gamesPerDay - int
+     * @param minRest - int
+     * @return - boolean - true if a policy with the same given values already exists, else false
+     */
+    public boolean doesSchedulingPolicyExists(int gamesPerSeason, int gamesPerDay, int minRest) {
+        for (SchedulingPolicy schedulingPolicy : this.schedulingPolicies) {
+            if (schedulingPolicy.equals(gamesPerSeason, gamesPerDay, minRest)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns a scheduling policy matching the given parameters
+     * @param gamesPerSeason - int
+     * @param gamesPerDay - int
+     * @param minRest - int
+     * @return - SchedulingPolicy - A scheduling policy matching the given parameters
+     */
+    public SchedulingPolicy getSchedulingPolicy(int gamesPerSeason, int gamesPerDay, int minRest) {
+        for (SchedulingPolicy schedulingPolicy : this.schedulingPolicies) {
+            if (schedulingPolicy.equals(gamesPerSeason, gamesPerDay, minRest)) {
+                return schedulingPolicy;
+            }
+        }
+        return null;
+    }
+
+    public void addSchedulingPolicy(SchedulingPolicy newSchedulingPolicy) {
+        if (newSchedulingPolicy != null) {
+            this.schedulingPolicies.add(newSchedulingPolicy);
+            //TODO: Update DB?
+        }
     }
 }

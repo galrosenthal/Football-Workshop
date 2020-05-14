@@ -397,5 +397,35 @@ public class ARController {
         return pointsPolicies.get(index);
     }
 
+    /**
+     * Controls the flow of adding a new scheduling policy
+     *
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - boolean - True if a  new points policy have been created successfully, else false
+     */
+    public static boolean addSchedulingPolicy(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+
+        UIController.printMessage("Number of games for each team per season:");
+        int gamesPerSeason = UIController.receiveInt();
+        UIController.printMessage("Number of games on the same day:");
+        int gamesPerDay = UIController.receiveInt();
+        UIController.printMessage("Minimum rest days between games:");
+        int minRest = UIController.receiveInt();
+        try {
+            ARRole.addSchedulingPolicy(gamesPerSeason, gamesPerDay, minRest);
+        } catch (Exception e) {
+            UIController.printMessage(e.getMessage());
+            return false;
+        }
+
+        UIController.printMessage("The new scheduling policy has been added successfully");
+        return true;
+    }
+
+
 
 }
