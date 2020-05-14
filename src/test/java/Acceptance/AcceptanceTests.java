@@ -655,11 +655,6 @@ public class AcceptanceTests {
     }
 
 
-    @After
-    public void tearDown() throws Exception {
-        EntityManager.getInstance().clearAll();
-    }
-
     /**
      * 9.10.a
      */
@@ -720,5 +715,43 @@ public class AcceptanceTests {
         catch (UserNotFoundException e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 9.5.1.a
+     * Main success scenario - A new points policy is created.
+     */
+    @Test
+    public void addPointsPolicyATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        UIController.setSelector(9511);//1,-1,0
+        assertTrue(ARController.addPointsPolicy(systemUser));
+        assertTrue(EntityManager.getInstance().doesPointsPolicyExists(1,-1,0));
+        assertNotNull(EntityManager.getInstance().getPointsPolicy(1,-1,0));
+        /*
+        Expected: The new points policy has been added successfully
+         */
+    }
+    /**
+     * 9.5.1.b
+     * failure scenario - A points policy
+     */
+    @Test
+    public void addPointsPolicy2ATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        UIController.setSelector(9511); //1,-1,0
+        assertTrue(ARController.addPointsPolicy(systemUser));
+        assertFalse(ARController.addPointsPolicy(systemUser));
+        /*
+        Expected: This points policy already exists
+         */
+    }
+
+
+    @After
+    public void tearDown() throws Exception {
+        EntityManager.getInstance().clearAll();
     }
 }

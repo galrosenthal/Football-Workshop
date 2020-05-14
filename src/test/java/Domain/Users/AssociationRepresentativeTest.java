@@ -272,7 +272,7 @@ public class AssociationRepresentativeTest {
             aR.addPointsPolicy(1,0,0);
             Assert.fail();
         } catch (Exception e) {
-            assertEquals("This Points policy already exists", e.getMessage());
+            assertEquals("This points policy already exists", e.getMessage());
             assertTrue(e instanceof ExistsAlreadyException);
         }
     }

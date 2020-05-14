@@ -139,7 +139,7 @@ public class AssociationRepresentative extends Role {
             throw new IllegalArgumentException("The loss points most be negative or zero");
         }
         if (EntityManager.getInstance().doesPointsPolicyExists(victoryPoints, lossPoints, tiePoints)) {
-            throw new ExistsAlreadyException("This Points policy already exists");
+            throw new ExistsAlreadyException("This points policy already exists");
         }
         PointsPolicy newPointsPolicy = new PointsPolicy(victoryPoints, lossPoints, tiePoints);
         EntityManager.getInstance().addPointsPolicy(newPointsPolicy);

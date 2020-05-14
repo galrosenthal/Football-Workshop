@@ -327,11 +327,11 @@ public class ARController {
             return false;
         }
         AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
-        UIController.printMessage("points (gain) for VICTORY (positive integer)");
+        UIController.printMessage("points (gain) for VICTORY (positive integer):");
         int victoryPoints = UIController.receiveInt();
-        UIController.printMessage("points (loss) for LOSS (negative integer or zero)");
+        UIController.printMessage("points (loss) for LOSS (negative integer or zero):");
         int lossPoints = UIController.receiveInt();
-        UIController.printMessage("points (gain) for TIE (integer)");
+        UIController.printMessage("points (gain) for TIE (integer):");
         int tiePoints = UIController.receiveInt();
         try {
             ARRole.addPointsPolicy(victoryPoints, lossPoints, tiePoints);
@@ -340,7 +340,7 @@ public class ARController {
             return false;
         }
 
-        UIController.printMessage("The referee has been assigned to the season successfully");
+        UIController.printMessage("The new points policy has been added successfully");
         return true;
     }
 

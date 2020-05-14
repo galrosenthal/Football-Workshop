@@ -177,6 +177,22 @@ public class UIController {
             {
                 setSelector(61310);
                 return 0;
+            }else if(selector == 9511) //victory points
+            {
+                setSelector(9512);
+                return 1;
+            }else if(selector == 9512) //Loss points
+            {
+                setSelector(9513);
+                return -1;
+            }else if(selector == 9513)  //Tie points
+            {
+                setSelector(9511);
+                return 0;
+            }else if(selector == 9514)  //Tie points
+            {
+                setSelector(9511);
+                return 1;
             }else {
                 //random number to crash test that were not checked
                 return 123812;
