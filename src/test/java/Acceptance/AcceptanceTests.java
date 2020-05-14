@@ -735,7 +735,7 @@ public class AcceptanceTests {
     }
     /**
      * 9.5.1.b
-     * failure scenario - A points policy
+     * failure scenario - A points policy with the same values already exists
      */
     @Test
     public void addPointsPolicy2ATest() {
@@ -776,6 +776,39 @@ public class AcceptanceTests {
         Expected: The chosen points policy was set successfully
          */
     }
+
+    /**
+     * 9.6.a
+     * Main success scenario - A new scheduling policy is created.
+     */
+    @Test
+    public void addSchedulingPolicyATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        UIController.setSelector(962);//1,1,1,..
+        assertTrue(ARController.addSchedulingPolicy(systemUser));
+        assertTrue(EntityManager.getInstance().doesSchedulingPolicyExists(1, 1, 1));
+        assertNotNull(EntityManager.getInstance().getSchedulingPolicy(1, 1, 1));
+        /*
+        Expected: The new scheduling policy has been added successfully
+         */
+    }
+    /**
+     * 9.6.b
+     * failure scenario - A scheduling policy with the same values already exists
+     */
+    @Test
+    public void addSchedulingPolicy2ATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        UIController.setSelector(962); //1,1,1,...
+        assertTrue(ARController.addSchedulingPolicy(systemUser));
+        assertFalse(ARController.addSchedulingPolicy(systemUser));
+        /*
+        Expected: This scheduling policy already exists
+         */
+    }
+
 
     @After
     public void tearDown() throws Exception {

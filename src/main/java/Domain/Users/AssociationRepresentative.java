@@ -175,7 +175,7 @@ public class AssociationRepresentative extends Role {
             throw new IllegalArgumentException("The minimum rest days between games must be non-negative integer");
         }
         if (EntityManager.getInstance().doesSchedulingPolicyExists(gamesPerSeason, gamesPerDay, minRest)) {
-            throw new ExistsAlreadyException("This points policy already exists");
+            throw new ExistsAlreadyException("This scheduling policy already exists");
         }
         SchedulingPolicy newSchedulingPolicy = new SchedulingPolicy(gamesPerSeason, gamesPerDay, minRest);
         EntityManager.getInstance().addSchedulingPolicy(newSchedulingPolicy);

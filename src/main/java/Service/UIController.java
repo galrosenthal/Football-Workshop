@@ -179,24 +179,31 @@ public class UIController {
                 return 0;
             }else if(selector == 9511) //victory points
             {
-                setSelector(9512);
+                setSelector(9512);//1,-1,0,1,...
                 return 1;
             }else if(selector == 9512) //Loss points
             {
-                setSelector(9513);
+                setSelector(9513);//-1,0,1,-1,..
                 return -1;
             }else if(selector == 9513)  //Tie points
             {
-                setSelector(9511);
+                setSelector(9511); //0,1,-1,0,..
                 return 0;
             }else if(selector == 9514)
             {
-                setSelector(9511);
+                setSelector(9511);//1,1,-1
                 return 1;
-            }else if(selector == 9521)  //0,0,1
+            }else if(selector == 9521)  //0,-1,1
             {
                 setSelector(9513);
                 return 0;
+            }else if(selector == 961)  //0,1,1
+            {
+                setSelector(9514);
+                return 0;
+            }else if(selector == 962)
+            {
+                return 1;
             }else {
                 //random number to crash test that were not checked
                 return 123812;

@@ -464,8 +464,8 @@ public class EntityManager {
      * Checks if a scheduling policy already exists with the same values
      *
      * @param gamesPerSeason - int
-     * @param gamesPerDay - int
-     * @param minRest - int
+     * @param gamesPerDay    - int
+     * @param minRest        - int
      * @return - boolean - true if a policy with the same given values already exists, else false
      */
     public boolean doesSchedulingPolicyExists(int gamesPerSeason, int gamesPerDay, int minRest) {
@@ -479,9 +479,10 @@ public class EntityManager {
 
     /**
      * Returns a scheduling policy matching the given parameters
+     *
      * @param gamesPerSeason - int
-     * @param gamesPerDay - int
-     * @param minRest - int
+     * @param gamesPerDay    - int
+     * @param minRest        - int
      * @return - SchedulingPolicy - A scheduling policy matching the given parameters
      */
     public SchedulingPolicy getSchedulingPolicy(int gamesPerSeason, int gamesPerDay, int minRest) {
@@ -493,6 +494,11 @@ public class EntityManager {
         return null;
     }
 
+    /**
+     * Receives a new scheduling policy and adds it
+     *
+     * @param newSchedulingPolicy - SchedulingPolicy - a scheduling policy to be added
+     */
     public void addSchedulingPolicy(SchedulingPolicy newSchedulingPolicy) {
         if (newSchedulingPolicy != null) {
             this.schedulingPolicies.add(newSchedulingPolicy);

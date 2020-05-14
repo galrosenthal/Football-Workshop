@@ -658,6 +658,56 @@ public class ARControllerTest {
     }
 
 
+    @Test
+    public void addSchedulingPolicyUTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 0);
+        assertFalse(ARController.addSchedulingPolicy(systemUser));
+    }
+
+    @Test
+    public void addSchedulingPolicyITest() {
+        //success
+        SystemUser systemUser = getSystemUserAR();
+        UIController.setSelector(962);//1,1,1,..
+        assertTrue(ARController.addSchedulingPolicy(systemUser));
+        assertTrue(EntityManager.getInstance().doesSchedulingPolicyExists(1, 1, 1));
+        assertNotNull(EntityManager.getInstance().getSchedulingPolicy(1, 1, 1));
+    }
+
+    @Test
+    public void addSchedulingPolicy2ITest() {
+        //duplicated policy
+        SystemUser systemUser = getSystemUserAR();
+        UIController.setSelector(962); //1,1,1,...
+        assertTrue(ARController.addSchedulingPolicy(systemUser));
+        assertFalse(ARController.addSchedulingPolicy(systemUser));
+        //This scheduling policy already exists
+    }
+
+    @Test
+    public void addSchedulingPolicy3ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        UIController.setSelector(961);//0,1,1
+        assertFalse(ARController.addSchedulingPolicy(systemUser));
+        //The number of games for each team per season must be positive integer
+    }
+
+    @Test
+    public void addSchedulingPolicy4ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        UIController.setSelector(9511);//1,-1,0
+        assertFalse(ARController.addSchedulingPolicy(systemUser));
+        //The number of games on the same day must be positive integer
+    }
+    @Test
+    public void addSchedulingPolicy5ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        UIController.setSelector(9514);//1,1,-1
+        assertFalse(ARController.addSchedulingPolicy(systemUser));
+        //The minimum rest days between games must be non-negative integer
+    }
+
+
     @After
     public void tearDown() throws Exception {
         EntityManager.getInstance().clearAll();
