@@ -15,7 +15,7 @@ public class CSVEditorTest {
 
     @Test
     public void readTableFromCSV() {
-        Table table = CSVEditor.readTableFromCSV("resources/Tables/SystemUsers.csv");
+        Table table = CSVEditor.readTableFromCSV("src/main/resources/Tables/SystemUsers.csv");
         System.out.println(table);
     }
 
@@ -29,9 +29,9 @@ public class CSVEditorTest {
         table = TableTest.initTestTable(table);
         assertTrue(table.size() == 10);
 
-        CSVEditor.writeTableToCSV(table, "resources/Tables/testTable.csv");
+        CSVEditor.writeTableToCSV(table, "src/main/resources/Tables/testTable.csv");
 
-        File file = new File("resources/Tables/testTable.csv");
+        File file = new File("src/main/resources/Tables/testTable.csv");
         assertTrue(file.exists());
         try {
             BasicFileAttributes fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);

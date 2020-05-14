@@ -4,11 +4,10 @@ package Service;
 import Domain.Controllers.TeamController;
 import Domain.Game.Team;
 import Domain.Game.TeamStatus;
-import Domain.Users.Role;
-import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
 import Domain.Users.TeamOwner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +29,7 @@ public class TOController {
             if (closeOrReopen.equals("close")) {
                 chosenTeam = Controller.getTeamByChoice(myTeamOwner);
                 if (chosenTeam.getStatus() != TeamStatus.OPEN) {
-                    UIController.printMessage("Cannot perform action on closed team.");
+                    UIController.showNotification("Cannot perform action on closed team.");
                     return false; //cannot perform action on closed team.
                 }
             }
@@ -42,7 +41,7 @@ public class TOController {
         boolean choice = UIController.receiveChoice("Are you sure you want to "+closeOrReopen+" the team \""+
                 chosenTeam.getTeamName()+"\"? y/n");
         if (!choice){
-            UIController.printMessage("No teams were "+closeOrReopen+"ed");
+            UIController.showNotification("No teams were "+closeOrReopen+"ed");
             return false;
         }
 
@@ -53,7 +52,7 @@ public class TOController {
             TeamController.closeTeam(chosenTeam);
         }
 
-        UIController.printMessage("Team \""+chosenTeam.getTeamName()+"\" " + closeOrReopen+"ed successfully");
+        UIController.showNotification("Team \""+chosenTeam.getTeamName()+"\" " + closeOrReopen+"ed successfully");
         return true;
     }
 
@@ -80,15 +79,15 @@ public class TOController {
 
     private static Team getClosedTeamByChoice(TeamOwner myTeamOwner) {
         List<Team> myTeams = myTeamOwner.getOwnedTeams();
-        UIController.printMessage("Choose a Team Number");
+        List<String> closedTeamsList = new ArrayList<>();
         for (int i = 0; i < myTeams.size() ; i++) {
             if(myTeams.get(i).getStatus() == TeamStatus.CLOSED)
-                UIController.printMessage(i + ". " + myTeams.get(i).getTeamName()+" (closed)");
+                closedTeamsList.add(myTeams.get(i).getTeamName()+" (closed)");
         }
         int teamIndex;
 
         do{
-            teamIndex = UIController.receiveInt();
+            teamIndex = UIController.receiveInt("Choose a Team Number",closedTeamsList);
         }while (!(teamIndex >= 0 && teamIndex < myTeams.size()));
 
         return myTeams.get(teamIndex);

@@ -31,6 +31,12 @@ public class AssetStub implements Asset {
     }
 
     @Override
+    public String getAssetName()
+    {
+        return "AssetStub";
+    }
+
+    @Override
     public boolean addTeam(Team team, TeamOwner teamOwner) {
         return false;
     }

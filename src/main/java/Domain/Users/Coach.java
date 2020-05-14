@@ -28,6 +28,12 @@ public class Coach extends PartOfTeam {
     }
 
     @Override
+    public String getAssetName()
+    {
+        return this.systemUser.getUsername();
+    }
+
+    @Override
     public List<String> getProperties() {
         List<String> properties = new ArrayList<>();
         properties.add(teamJobString);
@@ -104,8 +110,7 @@ public class Coach extends PartOfTeam {
         String valueOfProperty = "";
         if(property.equalsIgnoreCase(teamJobString))
         {
-            UIController.printMessage("what is the Coach JobTitle?");
-            valueOfProperty = UIController.receiveString();
+            valueOfProperty = UIController.receiveString("what is the Coach JobTitle?", null);
         }
         else if(property.equalsIgnoreCase(qualificationString))
         {
@@ -121,18 +126,17 @@ public class Coach extends PartOfTeam {
     }
 
     private int getEnumIndex() {
-        UIController.printMessage("Please Choose a qualification for the coach:");
 
-        int i = 0;
+        List<String> coachQualificationsList = new ArrayList<>();
         for (CoachQualification qlf: CoachQualification.values())
         {
-            UIController.printMessage(i++ +". " + qlf.toString());
+            coachQualificationsList.add(qlf.name());
         }
 
         int index;
 
         do{
-            index = UIController.receiveInt();
+            index = UIController.receiveInt("Please Choose a qualification for the coach:",coachQualificationsList);
         }while (!(index >= 0 && index < PlayerFieldJobs.values().length));
 
 
