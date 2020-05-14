@@ -54,6 +54,7 @@ public class TOController {
         }
 
         UIController.printMessage("Team \""+chosenTeam.getTeamName()+"\" " + closeOrReopen+"ed successfully");
+        myTeamOwner.closeReopenTeam(chosenTeam);
         return true;
     }
 

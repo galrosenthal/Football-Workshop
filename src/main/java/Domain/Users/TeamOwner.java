@@ -136,6 +136,12 @@ public class TeamOwner extends Role {
     }
 
 
-
-
+    /*notify Team Owner - removal */
+    public void removeTeamOwnerNotify(TeamOwner teamOwner)
+    {
+        EntityManager entityManager = EntityManager.getInstance();
+        List<SystemUser> systemUsers = new ArrayList<>();
+        systemUsers.add(teamOwner.getSystemUser());
+        entityManager.notifyObserver(systemUsers);
+    }
 }

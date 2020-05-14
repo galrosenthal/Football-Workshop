@@ -12,7 +12,7 @@ public class AllSubscribers implements Observer {
 
     private static AllSubscribers allSubscribersInstance = null;
 
-    //all online users!
+    //all online users! todo: get all users!!
     private List<SystemUser> systemUsers;
 
 
@@ -47,6 +47,7 @@ public class AllSubscribers implements Observer {
         systemUsers.add(systemUser);
     }
     //remove user after logout
+    //fixme! need to add logout function - UC
     public void logout(SystemUser systemUser)
     {
         systemUsers.remove(systemUser);
