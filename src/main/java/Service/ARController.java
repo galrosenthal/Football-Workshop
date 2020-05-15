@@ -482,13 +482,12 @@ public class ARController {
         String messageToShow = "";
         if (action.equals("not in season")) {
             messageToShow = "Choose Team numbers from the list of " +
-                    "teams that do not belong to the chosen league's latest season." +
-                    "\nWhen you are done, type -1";
-        } else //"in season"
+                    "teams that do not belong to the chosen league's latest season.";
+        }
+        else //"in season"
         {
             messageToShow = "Choose Team numbers from the list of " +
-                    "teams that belong to the chosen league's latest season." +
-                    "\nWhen you are done, type -1";
+                    "teams that belong to the chosen league's latest season.";
         }
         List<Team> chosenTeams = new ArrayList<>();
 //        for (int i = 0; i < teamChoices.size(); i++) {
