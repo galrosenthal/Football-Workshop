@@ -15,6 +15,7 @@ import Domain.Game.Stadium;
 import Service.UIController;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
@@ -26,6 +27,16 @@ public class EntityManager {
     private List<Stadium> allStadiums;
     private HashSet<League> allLeagues;
     private List<PointsPolicy> pointsPolicies;
+
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
+
+    private boolean loggedIn = false;
 
     private EntityManager() {
         allUsers = new ArrayList<>();
@@ -43,7 +54,11 @@ public class EntityManager {
     public static EntityManager getInstance() {
         if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
+            SystemUser a = new SystemUser("admin","Aa123456","admin");
+            a.addNewRole(new SystemAdmin(a));
+            a.addNewRole(new AssociationRepresentative(a));
         }
+
         return entityManagerInstance;
     }
 
@@ -107,6 +122,10 @@ public class EntityManager {
 
     public List<League> getLeagues() {
         return new ArrayList<League>(allLeagues);
+    }
+
+    public List<Team> getTeams() {
+        return new ArrayList<Team>(allTeams);
     }
 
     /**
@@ -239,6 +258,20 @@ public class EntityManager {
     }
 
     /**
+     * Adds a given League to the league's list of the system.
+     * @param league league to add
+     * @return true if successfully added the League to the system.
+     */
+    public boolean addLeague(League league) {
+        if (!(this.allLeagues.contains(league))) {
+            this.allLeagues.add(league);
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
      * Adds a given Stadium to the stadium's list of the system.
      *
      * @param stadium Stadium to add
@@ -290,17 +323,6 @@ public class EntityManager {
         }
         return this.allLeagues.remove(leagueToRemove);
     }
-
-    /**
-     * Adds a new league. Responsible only for creating and adding a new league, doesn't do any farther checks.
-     *
-     * @param leagueName - String - A unique leagueName
-     */
-    public void addLeague(String leagueName) {
-        League league = new League(leagueName);
-        allLeagues.add(league);
-    }
-
 
     public void clearAll() {
         allStadiums = new ArrayList<>();
@@ -357,6 +379,12 @@ public class EntityManager {
         throw new UsernameOrPasswordIncorrectException("Username or Password was incorrect!");
     }
 
+    /**
+     * This Function is used to authenticate the username with its password
+     * @param userWithUsrNm the SystemUser of the username from the entity manager
+     * @param pswrd the password recieved from the UI
+     * @return true if the password is correct and the user is able to login
+     */
     private boolean authenticate(SystemUser userWithUsrNm, String pswrd) {
         if (userWithUsrNm.getPassword().equals(pswrd)) {
             return true;
@@ -402,9 +430,34 @@ public class EntityManager {
         SystemUser newUser = new SystemUser(usrNm, pswrd, name);
         addUser(newUser);
 
-        UIController.printMessage("Successful sign up. Welcome, " + usrNm);
+
         return newUser;
 
+    }
+
+
+    public List<SystemUser> getAllUsers() {
+        return allUsers;
+    }
+
+
+    /**
+     * Get a list of all Teams by thier name
+     * @return List<String of all the teams names
+     */
+    public List<Team> getAllTeams() {
+        return allTeams;
+    }
+
+    public League getLeagueByName(String leagueName) {
+        for (League lg :
+                allLeagues) {
+            if(lg.getName().equals(leagueName)){
+                return lg;
+            }
+        }
+
+        return null;
     }
 
     /**
