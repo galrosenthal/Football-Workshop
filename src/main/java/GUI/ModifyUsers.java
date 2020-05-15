@@ -1,8 +1,9 @@
 package GUI;
 
 import Service.MainController;
-import com.vaadin.flow.component.AttachEvent;
+import Service.UIController;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -13,6 +14,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinSession;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -144,6 +147,23 @@ public class ModifyUsers extends FlexLayout {
         ComboBox<String> seasonOfLeague = new ComboBox<>("Season selection");
         seasonOfLeague.setVisible(false);
         verticalLayout.add(seasonOfLeague);
+
+        Button testMultipleInputs = new Button("Open Multiple Inputs");
+        testMultipleInputs.addClickListener(e -> {
+            UI lastUI = UI.getCurrent();
+            VaadinSession se = VaadinSession.getCurrent();
+            VaadinService srvc = VaadinService.getCurrent();
+            String username = (String) VaadinService.getCurrentRequest().getWrappedSession().getAttribute("username");
+            Thread t = new Thread(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                VaadinService.setCurrent(srvc);
+                MainController.testMultiple();
+            });
+            t.setName("TEST_THREAD");
+            t.start();
+        });
+        verticalLayout.add(testMultipleInputs);
 
         allLeagues.addValueChangeListener(e -> {
             if(e.getValue() != null)

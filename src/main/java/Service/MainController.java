@@ -471,4 +471,8 @@ public class MainController {
             UIController.showNotification(e.getMessage());
         }
     }
+
+    public static void testMultiple() {
+        UIController.receiveStringFromMultipleInputs("test1;test2");
+    }
 }

@@ -5,6 +5,7 @@ import GUI.About.AboutView;
 import GUI.RoleRelatedViews.AssociationRepresentative.ARControls;
 import GUI.RoleRelatedViews.TeamOwner.TOControls;
 import Service.MainController;
+import Service.UIController;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -34,7 +35,6 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
-import org.hibernate.validator.internal.engine.messageinterpolation.parser.ELState;
 
 import java.util.Collection;
 import java.util.List;
@@ -49,7 +49,6 @@ import java.util.List;
 @CssImport(value = "./styles/menu-buttons.css", themeFor = "vaadin-button")
 public class FootballMain extends AppLayout implements RouterLayout{
 
-    private static boolean waitingForUI = false;
     private final Button logoutButton;
     private final Button loginBtn;
     private final Button signupBtn;
@@ -253,34 +252,44 @@ public class FootballMain extends AppLayout implements RouterLayout{
         newWindow.setVisible(true);
         VerticalLayout vl = new VerticalLayout();
         newWindow.setCloseOnEsc(false);
+        int numOfInputs = msg.split(UIController.STRING_DELIMETER).length;
+        TextField[] textFieldsArray = new TextField[numOfInputs];
 
-        TextField tf = new TextField();
         ComboBox<String> valuesForInt = new ComboBox<>();
         MultiSelectListBox<String> valuesForString = new MultiSelectListBox<>();
 
-        Button close = new Button("Submit");
-        close.setEnabled(false);
-        close.addClickListener(e -> {
-            waitingForUI = false;
-            if(receiveType.equals("string"))
+        Button submit = new Button("Submit");
+        Button cancel = new Button("Cancel");
+
+        cancel.addClickListener(e -> {
+            newWindow.close();
+            returnedValue.append(UIController.CANCEL_TASK_VALUE);
+            callingThread.interrupt();
+        });
+
+        submit.setEnabled(false);
+        submit.addClickListener(e -> {
+            if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_STRING))
             {
                 if(displayValues.length <= 0)
                 {
-                    returnedValue.append(tf.getValue());
+                    returnedValue.append(textFieldsArray[0].getValue());
 
                 }
                 else
                 {
-                    String resultDelimeter = ";";
+                    String resultDelimeter = UIController.STRING_DELIMETER;
                     StringBuilder valuesSelected = new StringBuilder();
                     for (String value :
                             valuesForString.getSelectedItems()) {
-                        valuesSelected.append(resultDelimeter).append(value);
+                        valuesSelected.append(value).append(resultDelimeter);
                     }
+                    // Remove the last ';' from the string value
+                    valuesSelected.setLength(valuesSelected.length()-1);
                     returnedValue.append(valuesSelected);
                 }
             }
-            else if(receiveType.equals("int"))
+            else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_INT))
             {
                 int value = 0, index = 0;
                 for (String listValue :
@@ -298,32 +307,24 @@ public class FootballMain extends AppLayout implements RouterLayout{
 //            UI.setCurrent(lastUI);
         });
 
-        Label lbl = new Label(msg);
-        vl.add(lbl);
-        if(receiveType.equals("string"))
+
+        if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_STRING))
         {
+            String[] messages = msg.split(UIController.STRING_DELIMETER);
             if(displayValues.length <= 0) {
-                vl.add(tf);
-                tf.setValueChangeMode(ValueChangeMode.EAGER);
-                tf.addValueChangeListener(e -> {
-                    if (!e.getValue().isEmpty()) {
-                        close.setEnabled(true);
-                    } else {
-                        close.setEnabled(false);
-                    }
-                });
+                createMultiInputs(vl, numOfInputs, textFieldsArray, submit, messages);
             }
             else
             {
                 vl.add(valuesForString);
                 valuesForString.setItems(displayValues[0]);
-
-
             }
 
         }
-        else if(receiveType.equals("int"))
+        else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_INT))
         {
+            Label lbl = new Label(msg);
+            vl.add(lbl);
             if(displayValues.length > 0) {
                 valuesForInt.setItems(displayValues[0]);
                 valuesForInt.setClearButtonVisible(true);
@@ -331,24 +332,46 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 valuesForInt.addValueChangeListener(e -> {
                     if(!e.getValue().isEmpty())
                     {
-                        close.setEnabled(true);
+                        submit.setEnabled(true);
                     }
                     else
                     {
-                        close.setEnabled(false);
+                        submit.setEnabled(false);
                     }
                 });
 
             }
 
         }
+        else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS))
+        {
+            String[] messages = msg.split(UIController.STRING_DELIMETER);
+            createMultiInputs(vl,numOfInputs,textFieldsArray,submit, messages);
+        }
 
 
-
-        vl.add(close);
+        HorizontalLayout buttons = new HorizontalLayout();
+        buttons.add(submit,cancel);
+        vl.add(buttons);
         newWindow.add(vl);
         newWindow.open();
 
+    }
+
+    private static void createMultiInputs(VerticalLayout vl, int numOfInputs, TextField[] textFieldsArray, Button close, String[] messagesToDisplay) {
+        for (int i = 0; i < numOfInputs; i++) {
+            textFieldsArray[i] = new TextField();
+            textFieldsArray[i].setLabel(messagesToDisplay[i]);
+            textFieldsArray[i].setValueChangeMode(ValueChangeMode.EAGER);
+            textFieldsArray[i].addValueChangeListener(e -> {
+                if (!e.getValue().isEmpty()) {
+                    close.setEnabled(true);
+                } else {
+                    close.setEnabled(false);
+                }
+            });
+            vl.add(textFieldsArray[i]);
+        }
     }
 
 }
