@@ -1,13 +1,13 @@
 # Add 'User-Related' label to any changes within 'Domain.Users' folder or any subfolders
 Domain-Related:
-  - System/src/main/java/Domain/**/*
+  - src/main/java/Domain/**/*
 
 DB-Related:
-  - System/src/main/java/DB/**/*
+  - src/main/java/DB/**/*
 
 GUI-Related:
-  - System/src/main/java/GUI/**/*
+  - src/main/java/GUI/**/*
 
 Service-Related:
-  - System/src/main/java/Service/**/*
+  - src/main/java/Service/**/*
 
