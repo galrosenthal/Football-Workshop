@@ -25,6 +25,7 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -44,6 +45,7 @@ import java.util.List;
  * The main layout. Contains the navigation menu.
  */
 @Theme(value = Lumo.class)
+@Push
 @PWA(name = "Football", shortName = "Football", enableInstallPrompt = false)
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/menu-buttons.css", themeFor = "vaadin-button")
@@ -109,6 +111,8 @@ public class FootballMain extends AppLayout implements RouterLayout{
         logoutButton.addClickListener(e -> logout());
         logoutButton.getElement().setAttribute("title", "Logout (Ctrl+L)");
     }
+
+
 
     private void createNavItems() {
         WrappedSession userSession = VaadinService.getCurrentRequest().getWrappedSession();
@@ -242,122 +246,143 @@ public class FootballMain extends AppLayout implements RouterLayout{
      * @param callingThread the Thread that called this function
      * @param displayValues the Values to show the user, used as an Array of collection.
      */
-    public static void showDialog(String msg, String receiveType,StringBuilder returnedValue, Thread callingThread ,Collection<String>... displayValues)
+    public static void showDialog(UI lastUI, String msg, String receiveType,StringBuilder returnedValue, Thread callingThread ,Collection<String>... displayValues)
     {
 
+        lastUI.access(() -> {
+            Dialog newWindow = new Dialog();
+            newWindow.setCloseOnOutsideClick(false);
+            newWindow.setCloseOnEsc(false);
+            newWindow.setVisible(true);
+            VerticalLayout vl = new VerticalLayout();
+            newWindow.setCloseOnEsc(false);
+            int numOfInputs = msg.split(UIController.STRING_DELIMETER).length;
+            TextField[] textFieldsArray = new TextField[numOfInputs];
 
-        Dialog newWindow = new Dialog();
-        newWindow.setCloseOnOutsideClick(false);
-        newWindow.setCloseOnEsc(false);
-        newWindow.setVisible(true);
-        VerticalLayout vl = new VerticalLayout();
-        newWindow.setCloseOnEsc(false);
-        int numOfInputs = msg.split(UIController.STRING_DELIMETER).length;
-        TextField[] textFieldsArray = new TextField[numOfInputs];
+            ComboBox<String> valuesForInt = new ComboBox<>();
+            MultiSelectListBox<String> valuesForString = new MultiSelectListBox<>();
 
-        ComboBox<String> valuesForInt = new ComboBox<>();
-        MultiSelectListBox<String> valuesForString = new MultiSelectListBox<>();
+            Button submit = new Button("Submit");
+            Button cancel = new Button("Cancel");
 
-        Button submit = new Button("Submit");
-        Button cancel = new Button("Cancel");
+            cancel.addClickListener(e -> {
+                newWindow.close();
+                returnedValue.append(UIController.CANCEL_TASK_VALUE);
+                callingThread.interrupt();
+            });
 
-        cancel.addClickListener(e -> {
-            newWindow.close();
-            returnedValue.append(UIController.CANCEL_TASK_VALUE);
-            callingThread.interrupt();
-        });
-
-        submit.setEnabled(false);
-        submit.addClickListener(e -> {
-            if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_STRING))
-            {
-                if(displayValues.length <= 0)
+            submit.setEnabled(false);
+            submit.addClickListener(e -> {
+                if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_STRING))
                 {
-                    returnedValue.append(textFieldsArray[0].getValue());
-
-                }
-                else
-                {
-                    String resultDelimeter = UIController.STRING_DELIMETER;
-                    StringBuilder valuesSelected = new StringBuilder();
-                    for (String value :
-                            valuesForString.getSelectedItems()) {
-                        valuesSelected.append(value).append(resultDelimeter);
-                    }
-                    // Remove the last ';' from the string value
-                    valuesSelected.setLength(valuesSelected.length()-1);
-                    returnedValue.append(valuesSelected);
-                }
-            }
-            else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_INT))
-            {
-                int value = 0, index = 0;
-                for (String listValue :
-                        displayValues[0]) {
-                    if(valuesForInt.getValue().equals(listValue))
+                    if(displayValues.length <= 0)
                     {
-                        value = index;
-                    }
-                    index++;
-                }
-                returnedValue.append(value);
-            }
-            newWindow.close();
-            callingThread.interrupt();
-//            UI.setCurrent(lastUI);
-        });
+                        returnedValue.append(textFieldsArray[0].getValue());
 
-
-        if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_STRING))
-        {
-            String[] messages = msg.split(UIController.STRING_DELIMETER);
-            if(displayValues.length <= 0) {
-                createMultiInputs(vl, numOfInputs, textFieldsArray, submit, messages);
-            }
-            else
-            {
-                vl.add(valuesForString);
-                valuesForString.setItems(displayValues[0]);
-            }
-
-        }
-        else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_INT))
-        {
-            Label lbl = new Label(msg);
-            vl.add(lbl);
-            if(displayValues.length > 0) {
-                valuesForInt.setItems(displayValues[0]);
-                valuesForInt.setClearButtonVisible(true);
-                vl.add(valuesForInt);
-                valuesForInt.addValueChangeListener(e -> {
-                    if(!e.getValue().isEmpty())
-                    {
-                        submit.setEnabled(true);
                     }
                     else
                     {
-                        submit.setEnabled(false);
+                        String resultDelimeter = UIController.STRING_DELIMETER;
+                        StringBuilder valuesSelected = new StringBuilder();
+                        for (String value :
+                                valuesForString.getSelectedItems()) {
+                            valuesSelected.append(value).append(resultDelimeter);
+                        }
+                        // Remove the last ';' from the string value
+                        valuesSelected.setLength(valuesSelected.length()-1);
+                        returnedValue.append(valuesSelected);
                     }
-                });
+                }
+                else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_INT))
+                {
+                    int value = 0, index = 0;
+                    for (String listValue :
+                            displayValues[0]) {
+                        if(valuesForInt.getValue().equals(listValue))
+                        {
+                            value = index;
+                        }
+                        index++;
+                    }
+                    returnedValue.append(value);
+                }
+                else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS))
+                {
+                    for (int i = 0; i < textFieldsArray.length; i++) {
+                        returnedValue.append(textFieldsArray[i].getValue()).append(UIController.STRING_DELIMETER);
+                    }
+                    returnedValue.setLength(returnedValue.length()-1);
+                }
+                newWindow.close();
+                callingThread.interrupt();
+//            UI.setCurrent(lastUI);
+            });
+
+
+            if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_STRING))
+            {
+                String[] messages = msg.split(UIController.STRING_DELIMETER);
+                if(displayValues.length <= 0) {
+                    createMultiInputs(vl, numOfInputs, textFieldsArray, submit, messages);
+                }
+                else
+                {
+                    vl.add(valuesForString);
+                    valuesForString.setItems(displayValues[0]);
+                }
 
             }
+            else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_INT))
+            {
+                Label lbl = new Label(msg);
+                vl.add(lbl);
+                if(displayValues.length > 0) {
+                    valuesForInt.setItems(displayValues[0]);
+                    valuesForInt.setClearButtonVisible(true);
+                    vl.add(valuesForInt);
+                    valuesForInt.addValueChangeListener(e -> {
+                        if(!e.getValue().isEmpty())
+                        {
+                            submit.setEnabled(true);
+                        }
+                        else
+                        {
+                            submit.setEnabled(false);
+                        }
+                    });
 
-        }
-        else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS))
-        {
-            String[] messages = msg.split(UIController.STRING_DELIMETER);
-            createMultiInputs(vl,numOfInputs,textFieldsArray,submit, messages);
-        }
+                }
+
+            }
+            else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS))
+            {
+                String[] messages = msg.split(UIController.STRING_DELIMETER);
+                createMultiInputs(vl,numOfInputs,textFieldsArray,submit, messages);
+            }
 
 
-        HorizontalLayout buttons = new HorizontalLayout();
-        buttons.add(submit,cancel);
-        vl.add(buttons);
-        newWindow.add(vl);
-        newWindow.open();
+            HorizontalLayout buttons = new HorizontalLayout();
+            buttons.add(submit,cancel);
+            vl.add(buttons);
+            newWindow.add(vl);
+            newWindow.open();
+            lastUI.push();
+        });
+
 
     }
 
+
+
+    /**
+     * This function is adding {@code numOfInputs} text field to the Dialog window
+     * each has a Label from the {@code messagesToDisplay} in the correct order
+     * @param vl the layout to add the Text Fields into
+     * @param numOfInputs the number of inputs to create
+     * @param textFieldsArray the array of Text Fields which is empty
+     * @param close button of submit, needs to be removed,
+     * @param messagesToDisplay the array of messages splitted from the received message
+     */
     private static void createMultiInputs(VerticalLayout vl, int numOfInputs, TextField[] textFieldsArray, Button close, String[] messagesToDisplay) {
         for (int i = 0; i < numOfInputs; i++) {
             textFieldsArray[i] = new TextField();

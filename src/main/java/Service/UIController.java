@@ -68,19 +68,9 @@ public class UIController {
             Future<Void> returnValue = se.access(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
-                FootballMain.showDialog(messageToDisplay, SEND_TYPE_FOR_GUI_STRING, line,t ,valuesToChooseFrom);
+                FootballMain.showDialog(lastUI, messageToDisplay, SEND_TYPE_FOR_GUI_STRING, line,t ,valuesToChooseFrom);
                 System.out.println("Closed Dialog");
             });
-
-            try
-            {
-                returnValue.get();
-                System.out.println("Prints Void");
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
 
             while (line.length() == 0)
             {
@@ -232,22 +222,12 @@ public class UIController {
             Future<Void> returnValue = se.access(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
-                FootballMain.showDialog(messagesToDisplay, SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS, line,t ,valuesToChooseFrom);
-                se.access(() -> {
-                    se.refreshTransients(VaadinService.getCurrentRequest().getWrappedSession(),srvc);
+                FootballMain.showDialog(lastUI, messagesToDisplay, SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS, line,t ,valuesToChooseFrom);
+                lastUI.access(()-> {
+                    lastUI.push();
                 });
                 System.out.println("Closed Dialog");
             });
-
-            try
-            {
-                returnValue.get();
-                System.out.println("Prints Void");
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
 
             while (line.length() == 0)
             {
@@ -295,19 +275,11 @@ public class UIController {
             Future<Void> returnValue = se.access(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
-                FootballMain.showDialog(messageToDisplay, SEND_TYPE_FOR_GUI_INT, line,t ,valuesToDisplay);
+                FootballMain.showDialog(lastUI, messageToDisplay, SEND_TYPE_FOR_GUI_INT, line,t ,valuesToDisplay);
                 System.out.println("Closed Dialog");
             });
 
-            try
-            {
-                returnValue.get();
-                System.out.println("Prints Void");
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+
             while (line.length() == 0)
             {
                 try {

@@ -148,23 +148,6 @@ public class ModifyUsers extends FlexLayout {
         seasonOfLeague.setVisible(false);
         verticalLayout.add(seasonOfLeague);
 
-        Button testMultipleInputs = new Button("Open Multiple Inputs");
-        testMultipleInputs.addClickListener(e -> {
-            UI lastUI = UI.getCurrent();
-            VaadinSession se = VaadinSession.getCurrent();
-            VaadinService srvc = VaadinService.getCurrent();
-            String username = (String) VaadinService.getCurrentRequest().getWrappedSession().getAttribute("username");
-            Thread t = new Thread(() -> {
-                UI.setCurrent(lastUI);
-                VaadinSession.setCurrent(se);
-                VaadinService.setCurrent(srvc);
-                MainController.testMultiple();
-            });
-            t.setName("TEST_THREAD");
-            t.start();
-        });
-        verticalLayout.add(testMultipleInputs);
-
         allLeagues.addValueChangeListener(e -> {
             if(e.getValue() != null)
             {

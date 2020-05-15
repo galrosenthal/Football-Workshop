@@ -472,7 +472,4 @@ public class MainController {
         }
     }
 
-    public static void testMultiple() {
-        UIController.receiveStringFromMultipleInputs("test1;test2");
-    }
 }
