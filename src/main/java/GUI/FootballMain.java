@@ -3,6 +3,7 @@ package GUI;
 
 import GUI.About.AboutView;
 import GUI.RoleRelatedViews.AssociationRepresentative.ARControls;
+import GUI.RoleRelatedViews.TeamOwner.TOControls;
 import Service.MainController;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -138,6 +139,12 @@ public class FootballMain extends AppLayout implements RouterLayout{
                     VaadinIcon.USER.create()));
         }
 
+        if(userRoles.contains("TEAM_OWNER"))
+        {
+            addToDrawer(createMenuLink(TOControls.class, TOControls.VIEW_NAME,
+                    VaadinIcon.USER.create()));
+        }
+
     }
 
     private void logout() {
@@ -208,7 +215,10 @@ public class FootballMain extends AppLayout implements RouterLayout{
                     msg.toLowerCase().contains("wrong") ||
                     msg.toLowerCase().contains("incorrect") ||
                     msg.toLowerCase().contains("could not") ||
-                    msg.toLowerCase().contains("already exists"))
+                    msg.toLowerCase().contains("already exists") ||
+                    msg.toLowerCase().contains("there is no") ||
+                    msg.toLowerCase().contains("there was no") ||
+                    msg.toLowerCase().contains("there are no"))
             {
                 notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
@@ -275,7 +285,6 @@ public class FootballMain extends AppLayout implements RouterLayout{
         if(receiveType.equals("string"))
         {
             vl.add(tf);
-            tf.setPlaceholder("Team Name");
             tf.setValueChangeMode(ValueChangeMode.EAGER);
             tf.addValueChangeListener(e -> {
                 if(!e.getValue().isEmpty())
@@ -307,6 +316,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 });
 
             }
+
         }
 
 

@@ -27,11 +27,6 @@ public class UIController {
     public static void setIsTest(boolean isTest) {
         UIController.isTest = isTest;
     }
-    public static void printMessage(String msg) {
-        //  if (!isTest) {
-        System.out.println(msg);
-        //  }
-    }
 
     /**
      * This Function is showing a notification to the user
@@ -41,7 +36,8 @@ public class UIController {
     public static void showNotification(String notification) {
         if (!isTest) {
             UI lastUI = UI.getCurrent();
-            lastUI.access(()->FootballMain.showNotification(notification));
+            VaadinSession se = VaadinSession.getCurrent();
+            se.access(()->FootballMain.showNotification(notification));
         }
         else
         {
@@ -62,13 +58,29 @@ public class UIController {
             Thread t = Thread.currentThread();
             VaadinSession se = VaadinSession.getCurrent();
 
-            Future<Void> returnValue = lastUI.access(() -> FootballMain.showDialog(messageToDisplay, "string", line,t ,valuesToChooseFrom));
+            Future<Void> returnValue = se.access(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                FootballMain.showDialog(messageToDisplay, "string", line,t ,valuesToChooseFrom);
+                System.out.println("Closed Dialog");
+            });
+
+            try
+            {
+                returnValue.get();
+                System.out.println("Prints Void");
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
 
             while (line.length() == 0)
             {
                 try {
                     //waiting for the user to close the dialog
-                    sleep(100);
+                    sleep(1000);
+//                    System.out.println("Waiting for the user input");
                 }
                 catch (Exception e)
                 {
@@ -168,22 +180,6 @@ public class UIController {
             else if(selector == 9102){
                 return "stubTeam9102";
             }
-            else if(selector == 631){
-                selector = 632;
-                return "Hapoel Ta";
-            }
-            else if(selector == 632){
-                return "gal";
-            }
-            else if(selector == 633){
-                return "merav";
-            }
-            else if(selector == 634){
-                return "nir";
-            }
-            else if(selector == 635){
-                return "ifatch";
-            }
             else
                 return null;
         }
@@ -205,8 +201,22 @@ public class UIController {
             Thread t = Thread.currentThread();
             VaadinSession se = VaadinSession.getCurrent();
 
-            Future<Void> returnValue = lastUI.access(() -> FootballMain.showDialog(messageToDisplay, "string", line,t ,valuesToDisplay));
+            Future<Void> returnValue = se.access(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                FootballMain.showDialog(messageToDisplay, "int", line,t ,valuesToDisplay);
+                System.out.println("Closed Dialog");
+            });
 
+            try
+            {
+                returnValue.get();
+                System.out.println("Prints Void");
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
             while (line.length() == 0)
             {
                 try {
@@ -249,8 +259,9 @@ public class UIController {
             }else if(selector == 61119){
                 return 0;
             }else if(selector == 61120 || selector == 6623 || selector == 6622 || selector == 6612 || selector == 6611
-                    || selector == 6621 || selector ==66151 || selector == 66144|| selector == 66143 || selector ==6625
-                    || selector==66163 || selector ==66251 ){
+        || selector == 6621 || selector ==66151 || selector == 66144|| selector == 66143 || selector ==6625
+             || selector==66163 || selector ==66251 || selector == 91125 || selector == 91225 ||
+                    selector == 91131 || selector == 91231){
                 return 0;
             }
             else if (selector == 6132 || selector == 6133 || selector == 6134 || selector == 61341 || selector == 6135 || selector == 6136 || selector == 6137 || selector == 6138 || selector == 61383 || selector == 61381 || selector == 61310) {
@@ -268,11 +279,68 @@ public class UIController {
                 if (selector == 61382)
                     selector = 61383;
                 return 2;
-            }else if(selector == 6139)
-            {
+            }else if(selector == 6139) {
                 setSelector(61310);
                 return 0;
-            }else if(selector == 632 || selector == 633 || selector == 634 || selector == 635){
+            }
+            else if(selector == 9111){
+                setSelector(91112);
+                return 0;
+            }
+            else if(selector == 91112){
+                setSelector(91113);
+                return 0;
+            }
+            else if(selector == 91113){
+                setSelector(91114);
+                return 1;
+            }
+            else if(selector == 91114 || selector == 91214 || selector == 911263 || selector == 911322
+                    || selector == 912322){
+                return -1;
+            }
+            else if(selector == 9121){
+                setSelector(91212);
+                return 0;
+            }
+            else if(selector == 91212){
+                setSelector(91213);
+                return 0;
+            }
+            else if(selector == 91213){
+                setSelector(91214);
+                return 1;
+            }
+            else if(selector == 91126){
+                setSelector(911262);
+                return 0;
+            }
+            else if(selector == 911262){
+                setSelector(911263);
+                return 0;
+            }
+            else if(selector == 91226){
+                setSelector(912262);
+                return 0;
+            }
+            else if(selector == 912262){
+                setSelector(912263);
+                return 0;
+            }
+            else if(selector == 91132){
+                setSelector(911321);
+                return 0;
+            }
+            else if(selector == 911321){
+                setSelector(911322);
+                return 0;
+            }
+            else if(selector == 91232){
+                setSelector(912321);
+                return 0;
+            }
+            else if(selector == 912321){
+                setSelector(912322);
                 return 0;
             }
             else {

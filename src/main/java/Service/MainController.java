@@ -2,12 +2,15 @@ package Service;
 
 import Domain.EntityManager;
 import Domain.Exceptions.*;
+import Domain.Game.League;
+import Domain.Game.Season;
 import Domain.Game.Team;
 import Domain.Users.*;
 import com.vaadin.flow.component.Component;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -227,5 +230,245 @@ public class MainController {
         }
 
         return teamsByName;
+    }
+
+    /**
+     * This Function is used by Association Representative to add a new league to the system
+     * @param username the AR username
+     */
+    public static void addNewLeague(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.addLeague(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    /**
+     * This Function is used by Association Representative to add a new Season to league in the system
+     * @param username the AR username
+     */
+    public static void addSeasonToLeague(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.addSeasonToLeague(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    /**
+     * This Function is used by the GUI to get all of the leagues names
+     */
+    public static List<String> getAllLeaguesByName() {
+        List<String> allLeagues = new ArrayList<>();
+        for (League lg :
+                EntityManager.getInstance().getLeagues()) {
+            allLeagues.add(lg.getName());
+        }
+        return allLeagues;
+    }
+
+    /**
+     * This Function is used by the GUI to get all of the Season names of a specific league
+     * @param leagueName the name of the league to retrieve its seasons
+     */
+    public static List<String> getSeasonFromLeague(String leagueName)
+    {
+        League lg = EntityManager.getInstance().getLeagueByName(leagueName);
+        List<String> leagueSeasons = new ArrayList<>();
+        if(lg != null)
+        {
+            for (Season s :
+                    lg.getSeasons()) {
+                leagueSeasons.add(s.getYears());
+            }
+        }
+        return leagueSeasons;
+    }
+
+    /**
+     * This Function is used by Association Representative to add a new Referee to the system
+     * @param username the AR username
+     */
+    public static void addReferee(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.addReferee(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    /**
+     * This Function is used by Association Representative to remove a Referee from the system
+     * @param username the AR username
+     */
+    public static void removeReferee(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.removeReferee(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    /**
+     * This Function is used by Association Representative to assign a referee to a Season in the system
+     * @param username the AR username
+     */
+    public static void assignReferee(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.assignReferee(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    /**
+     * This Function is used by Team Owner to close a team
+     * @param username the TO username
+     */
+    public static void closeTeam(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            TOController.closeTeam(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    /**
+     * This Function is used by Team Owner to reopen a closed team
+     * @param username the TO username
+     */
+    public static void reopenTeam(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            TOController.reopenTeam(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    /**
+     * This Function is used by Team Owner to add another Team Owner to a team
+     * @param username the username of the user who asked to preform this action
+     */
+    public static void addAnotherTeamOwner(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            Controller.addTeamOwner(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    /**
+     * This Function is used by Team Owner to add a Team Asset
+     * @param username the TO username
+     */
+    public static void addTeamAsset(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            Controller.addAsset(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    /**
+     * This Function is used by Team Owner to modify a Team Asset Parameters
+     * @param username the TO username
+     */
+    public static void modifyTeamAsset(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            Controller.modifyTeamAssetDetails(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
     }
 }

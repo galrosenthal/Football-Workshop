@@ -5,13 +5,11 @@ import DB.Table;
 import Domain.Exceptions.UsernameAlreadyExistsException;
 import Domain.Exceptions.UsernameOrPasswordIncorrectException;
 import Domain.Exceptions.WeakPasswordException;
-import Domain.Game.League;
-import Domain.Game.Stadium;
+import Domain.Game.*;
 import Domain.Users.Role;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
 import Domain.Game.Stadium;
-import Domain.Game.Team;
 import Domain.Users.*;
 import Domain.Game.Stadium;
 import Service.UIController;
@@ -122,6 +120,10 @@ public class EntityManager {
 
     public List<League> getLeagues() {
         return new ArrayList<League>(allLeagues);
+    }
+
+    public List<Team> getTeams() {
+        return new ArrayList<Team>(allTeams);
     }
 
     /**
@@ -245,6 +247,20 @@ public class EntityManager {
     }
 
     /**
+     * Adds a given League to the league's list of the system.
+     * @param league league to add
+     * @return true if successfully added the League to the system.
+     */
+    public boolean addLeague(League league) {
+        if (!(this.allLeagues.contains(league))) {
+            this.allLeagues.add(league);
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
      * Adds a given Stadium to the stadium's list of the system.
      * @param stadium Stadium to add
      * @return true if successfully added the Stadium to the system.
@@ -292,17 +308,6 @@ public class EntityManager {
         }
         return this.allLeagues.remove(leagueToRemove);
     }
-
-    /**
-     * Adds a new league. Responsible only for creating and adding a new league, doesn't do any farther checks.
-     * @param leagueName - String - A unique leagueName
-     */
-    public void addLeague(String leagueName) {
-        League league = new League(leagueName);
-        allLeagues.add(league);
-    }
-
-
 
     public void clearAll() {
         allStadiums = new ArrayList<>();
@@ -422,5 +427,16 @@ public class EntityManager {
      */
     public List<Team> getAllTeams() {
         return allTeams;
+    }
+
+    public League getLeagueByName(String leagueName) {
+        for (League lg :
+                allLeagues) {
+            if(lg.getName().equals(leagueName)){
+                return lg;
+            }
+        }
+
+        return null;
     }
 }

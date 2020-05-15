@@ -1,5 +1,7 @@
 package Domain.Game;
 
+import Domain.Users.SystemUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,4 +73,28 @@ public class League {
         this.seasons.add(season);
         return true;
     }
+
+    /**
+     * Get the latest season of the league.
+     * @return the latest season of the league.
+     */
+    public Season getLatestSeason(){
+        if(seasons == null || seasons.isEmpty())
+            return null;
+        Season latestSeason = seasons.get(0);
+        for(Season s : seasons){
+            if(s.getYear().isAfter(latestSeason.getYear()))
+                latestSeason = s;
+        }
+        return latestSeason;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof League)) return false;
+        League that = (League) o;
+        return this.getName().equals(that.getName());
+    }
+
 }

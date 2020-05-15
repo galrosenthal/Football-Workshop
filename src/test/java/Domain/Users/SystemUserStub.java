@@ -43,7 +43,8 @@ public class SystemUserStub extends SystemUser{
     }
 
     public boolean isType(RoleTypes roleType) {
-        if(selector == 0 || selector == 4 || selector == 66141 || selector == 66161 || selector == 9101)
+        if(selector == 0 || selector == 4 || selector == 66141 || selector == 66161
+                || selector == 9101 || selector == 91121 || selector == 91221)
         {
             return false;
         }
@@ -66,7 +67,8 @@ public class SystemUserStub extends SystemUser{
         } else if( selector == 3){
             return null;
         }
-        else if( selector == 5 || selector == 9102 || selector == 9103 || selector == 9104){
+        else if( selector == 5 || selector == 9102 || selector == 9103 || selector == 9104 || selector == 91122
+                || selector == 91222){
             return new AssociationRepresentativeStub(this);
         }else if(selector == 6111)
         {
