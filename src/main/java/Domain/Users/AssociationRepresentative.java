@@ -215,7 +215,7 @@ public class AssociationRepresentative extends Role {
     }
 
     public void activateSchedulingPolicy(Season chosenSeason, SchedulingPolicy schedulingPolicy, Date startDate) throws Exception {
-        if(chosenSeason.hasStarted()){
+        if(chosenSeason.getIsUnderway()){
             throw new Exception("Activating a scheduling policy after a season has started is forbidden");
         }
         chosenSeason.scheduleGames(schedulingPolicy,startDate);

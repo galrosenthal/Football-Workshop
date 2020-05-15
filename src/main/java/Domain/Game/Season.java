@@ -68,9 +68,10 @@ public class Season {
         return false;
     }
 
-    public boolean hasStarted() {
+  /*  public boolean hasStarted() {
         //TODO: Check if the season has started
         return getIsUnderway();
+    }*/
     public boolean removeTeam(Team team) {
         if (!teams.contains(team)) {
             return false;

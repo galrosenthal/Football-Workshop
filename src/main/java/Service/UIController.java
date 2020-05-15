@@ -344,8 +344,9 @@ public class UIController {
                 setSelector(912322);
                 return 0;
             }
-            else {
-            }else if(selector == 9511) //victory points
+          //  else {
+           // }
+            else if(selector == 9511) //victory points
             {
                 setSelector(9512);//1,-1,0,1,...
                 return 1;
