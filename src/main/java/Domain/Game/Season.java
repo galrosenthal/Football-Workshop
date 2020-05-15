@@ -2,10 +2,10 @@ package Domain.Game;
 
 import Domain.Users.Referee;
 import Domain.Users.SystemUser;
+import javafx.util.Pair;
 
 import java.time.Year;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Season {
 
@@ -13,9 +13,10 @@ public class Season {
     private String years; //name
     private List<Team> teams;
     private List<Referee> referees;
+    private List<Game> games;
     private boolean isUnderway; //whether the season has started
     private GamePolicy gamePolicy; //todo: initialize with default
-    private PointsPolicy pointsPolicy; //todo: initialize with default
+    private PointsPolicy pointsPolicy;
 
     /**
      * Constructor
@@ -28,6 +29,8 @@ public class Season {
         this.teams = new ArrayList<>();
         this.years = years;
         this.referees = new ArrayList<>();
+        this.games = new ArrayList<>();
+        this.pointsPolicy = PointsPolicy.getDefaultPointsPolicy();
         this.isUnderway = false;
     }
 
@@ -80,9 +83,10 @@ public class Season {
 
     /**
      * Returns the number of referees assigned to this season
+     *
      * @return - int - the number of referees assigned to this season
      */
-    public int refereesSize(){
+    public int refereesSize() {
         return this.referees.size();
     }
 
@@ -195,5 +199,68 @@ public class Season {
         if (!(o instanceof Season)) return false;
         Season that = (Season) o;
         return this.getYears().equals(that.getYears()) && this.league.equals(that.league);
+    }
+
+    /**
+     * Returns a map of the ranking of the teams
+     * @return - Map<Integer, Team>  - A map of the ranking of the teams
+     */
+    public Map<Integer, Team> getRanking() {
+        Map<Team, Integer> teamsPoints = getTeamsPoints();
+        // Create a list from elements of HashMap
+        List<Map.Entry<Team, Integer>> list = new ArrayList<>(teamsPoints.entrySet());
+
+        // Sort the list
+        Collections.sort(list, Comparator.comparing(Map.Entry::getValue));
+        //replacing the score with the rank
+        for (int rank = list.size()-1; rank <= 0; rank++) { //TODO: Test boundaries
+            Map.Entry<Team, Integer> entry = list.get(rank);
+            list.remove(entry);
+            entry.setValue(rank);
+            list.add(entry);
+        }
+        Collections.sort(list, Comparator.comparing(Map.Entry::getValue));
+
+        // put data from sorted list to hashmap
+        HashMap<Integer, Team> sortedMap = new LinkedHashMap<>();
+        for (Map.Entry<Team, Integer> entry : list) {
+            sortedMap.put(entry.getValue(),entry.getKey());
+        }
+        return sortedMap;
+    }
+
+    /**
+     * Returns a map of all the teams in the season and their points
+     *
+     * @return - Map<Team, Integer> - team -> team's points
+     */
+    public Map<Team, Integer> getTeamsPoints() {
+        //init
+        Map<Team, Integer> teamsPoints = new HashMap<>();
+        for (Team team : this.teams) {
+            teamsPoints.put(team, 0);
+        }
+
+        for (Game game : this.games) {
+            if (game.hasFinished()) {
+                Points gamePoints = pointsPolicy.getPoints(game);
+                int homePoints = teamsPoints.get(gamePoints.getHomeTeam());
+                int awayPoints = teamsPoints.get(gamePoints.getAwayTeam());
+                int newHomePoints = homePoints + gamePoints.getHomeTeamPoints();
+                int newAwayPoints = awayPoints + gamePoints.getAwayTeamPoints();
+                //Inserting the updated points
+                teamsPoints.put(gamePoints.getHomeTeam(), newHomePoints);
+                teamsPoints.put(gamePoints.getAwayTeam(), newAwayPoints);
+            }
+        }
+        return teamsPoints;
+    }
+
+    public void setPointsPolicy(PointsPolicy pointsPolicy) {
+        this.pointsPolicy = pointsPolicy;
+    }
+
+    public PointsPolicy getPointsPolicy() {
+        return pointsPolicy;
     }
 }

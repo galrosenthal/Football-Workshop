@@ -1,11 +1,13 @@
 package Domain;
 
 import Domain.Game.League;
+import Domain.Game.PointsPolicy;
 import Domain.Users.Referee;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
 import Domain.Users.SystemUserStub;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
@@ -55,6 +57,30 @@ public class EntityManagerTest {
         assertTrue(referees.size()==1);
         assertTrue(referees.get(0).isType(RoleTypes.REFEREE));
     }
+
+    @Test
+    public void doesPointsPolicyExistsITest() {
+        assertFalse(EntityManager.getInstance().doesPointsPolicyExists(1,-1,0));
+    }
+
+    @Test
+    public void addPointsPolicyITest() {
+        assertFalse(EntityManager.getInstance().doesPointsPolicyExists(1,-1,0));
+        EntityManager.getInstance().addPointsPolicy(new PointsPolicy(1,-1,0));
+        assertTrue(EntityManager.getInstance().doesPointsPolicyExists(1,-1,0));
+    }
+
+    @Test
+    public void addPointsPolicy2ITest() {
+        assertFalse(EntityManager.getInstance().doesPointsPolicyExists(1,-1,0));
+        PointsPolicy pointsPolicy = new PointsPolicy(1,-1,0);
+        EntityManager.getInstance().addPointsPolicy(pointsPolicy);
+        assertTrue(EntityManager.getInstance().getPointsPolicy(1,-1,0).equals(pointsPolicy));
+        assertNull(EntityManager.getInstance().getPointsPolicy(1,-1,1));
+    }
+
+
+
 
     @After
     public void tearDown() throws Exception {

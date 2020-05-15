@@ -145,53 +145,58 @@ public class ARControllerTest {
     @Test
     public void addReferee2UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 5);
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 9311));
         AssociationRepresentativeStub.setSelector(0);
         UIController.setSelector(9311);
 
         assertFalse(ARController.addReferee(systemUser));
     }
+
     @Test
     public void addReferee3UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 5);
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 9311));
         AssociationRepresentativeStub.setSelector(0);
         UIController.setSelector(9312);
 
         assertFalse(ARController.addReferee(systemUser));
     }
+
     @Test
     public void addReferee4UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 5);
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 9311));
         AssociationRepresentativeStub.setSelector(1);
         UIController.setSelector(9311);
 
         assertTrue(ARController.addReferee(systemUser));
     }
+
     @Test
     public void addReferee5UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 5);
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 9311));
         AssociationRepresentativeStub.setSelector(1);
         UIController.setSelector(9312);
 
         assertTrue(ARController.addReferee(systemUser));
     }
+
     @Test
     public void addRefereeITest() {
         SystemUser systemUser = getSystemUserAR();
 
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",93131));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 93131));
         UIController.setSelector(9311);
 
         assertTrue(ARController.addReferee(systemUser));
     }
+
     @Test
     public void addReferee2ITest() {
         SystemUser systemUser = getSystemUserAR();
 
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",93132));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 93132));
         UIController.setSelector(9311);
 
         assertFalse(ARController.addReferee(systemUser));
@@ -207,9 +212,10 @@ public class ARControllerTest {
 
         assertNotNull(refereeUser);
         assertTrue(refereeUser.isType(RoleTypes.REFEREE));
-        Referee refRole = (Referee)refereeUser.getRole(RoleTypes.REFEREE);
+        Referee refRole = (Referee) refereeUser.getRole(RoleTypes.REFEREE);
         assertTrue(refRole.getTraining().equals("VAR"));
     }
+
     @Test
     public void addReferee4ITest() {
         SystemUser systemUser = getSystemUserAR();
@@ -220,14 +226,15 @@ public class ARControllerTest {
 
         assertNotNull(refereeUser);
         assertTrue(refereeUser.isType(RoleTypes.REFEREE));
-        Referee refRole = (Referee)refereeUser.getRole(RoleTypes.REFEREE);
+        Referee refRole = (Referee) refereeUser.getRole(RoleTypes.REFEREE);
         assertTrue(refRole.getTraining().equals("VAR"));
     }
+
     @Test
     public void addReferee5ITest() {
         SystemUser systemUser = getSystemUserAR();
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
-        new Referee(refereeUser,"training");
+        new Referee(refereeUser, "training");
 
         UIController.setSelector(9311);
         //The user is already a referee
@@ -251,16 +258,17 @@ public class ARControllerTest {
     public void removeReferee3UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         AssociationRepresentativeStub.setSelector(0);
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 9311));
         UIController.setSelector(9321);
 
         assertFalse(ARController.removeReferee(systemUser));
     }
+
     @Test
     public void removeReferee4UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         AssociationRepresentativeStub.setSelector(1);
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 9311));
         UIController.setSelector(9321);
 
         assertTrue(ARController.removeReferee(systemUser));
@@ -270,7 +278,7 @@ public class ARControllerTest {
     public void removeRefereeITest() {
         SystemUser systemUser = getSystemUserAR();
 
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 9311));
         UIController.setSelector(9321);
 
         assertTrue(ARController.removeReferee(systemUser));
@@ -298,13 +306,13 @@ public class ARControllerTest {
     }
 
 
-    @Test //ITEST
+    @Test
     public void assignRefereeUTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 0);
         assertFalse(ARController.assignReferee(systemUser));
     }
 
-    @Test //ITEST
+    @Test
     public void assignReferee2UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         /*
@@ -344,6 +352,7 @@ public class ARControllerTest {
          */
         assertFalse(ARController.assignReferee(systemUser));
     }
+
     @Test
     public void assignReferee3ITest() {
         SystemUser systemUser = new SystemUser("username", "name");
@@ -389,6 +398,7 @@ public class ARControllerTest {
          */
         assertTrue(ARController.assignReferee(systemUser));
     }
+
     @Test
     public void assignReferee7ITest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
@@ -420,6 +430,7 @@ public class ARControllerTest {
          */
         assertTrue(ARController.assignReferee(systemUser));
     }
+
     @Test
     public void assignReferee8ITest() {
         SystemUser systemUser = getSystemUserAR();
@@ -455,8 +466,7 @@ public class ARControllerTest {
         try {
             ARController.registerNewTeam(arSystemUser);
             Assert.fail();
-        }
-        catch (TeamAlreadyExistsException e){
+        } catch (TeamAlreadyExistsException e) {
             e.printStackTrace();
         }
     }
@@ -468,8 +478,7 @@ public class ARControllerTest {
         try {
             ARController.registerNewTeam(arSystemUser);
             Assert.fail();
-        }
-        catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -477,7 +486,7 @@ public class ARControllerTest {
     @Test
     public void registerNewTeam4UTest() throws TeamAlreadyExistsException, UserNotFoundException {
         SystemUser arSystemUser = new SystemUserStub("stubUsername", "stub", 9104); //AR
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "toName",91041));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "toName", 91041));
         UIController.setSelector(91041);
         assertTrue(ARController.registerNewTeam(arSystemUser));
     }
@@ -485,7 +494,7 @@ public class ARControllerTest {
     @Test
     public void registerNewTeamITest() throws TeamAlreadyExistsException, UserNotFoundException {
         SystemUser systemUser = getSystemUserAR();
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "toName",91051));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "toName", 91051));
         UIController.setSelector(91051);
         assertTrue(ARController.registerNewTeam(systemUser));
     }
@@ -659,6 +668,134 @@ public class ARControllerTest {
         assertTrue(ARController.removeTeamsFromSeason(arSystemUser));
         assertEquals(1, newSeason.getTeams().size());
         assertEquals(0, team1.getSeasons().size());
+    }
+
+
+    @Test
+    public void addPointsPolicyUTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 0);
+        assertFalse(ARController.addPointsPolicy(systemUser));
+    }
+
+    @Test
+    public void addPointsPolicyITest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+        UIController.setSelector(9511);//1,-1,0
+        AssociationRepresentativeStub.setSelector(9511);
+        assertFalse(ARController.addPointsPolicy(systemUser));
+    }
+
+    @Test
+    public void addPointsPolicy2ITest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+        UIController.setSelector(9511);//1,-1,0
+        AssociationRepresentativeStub.setSelector(9512);
+        assertFalse(ARController.addPointsPolicy(systemUser));
+    }
+
+    @Test
+    public void addPointsPolicy3ITest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+        UIController.setSelector(9511);//1,-1,0
+        AssociationRepresentativeStub.setSelector(9513);
+        assertFalse(ARController.addPointsPolicy(systemUser));
+    }
+
+    @Test
+    public void addPointsPolicy4ITest() {
+        //success
+        SystemUser systemUser = getSystemUserAR();
+        UIController.setSelector(9511);//1,-1,0
+        assertTrue(ARController.addPointsPolicy(systemUser));
+        assertTrue(EntityManager.getInstance().doesPointsPolicyExists(1, -1, 0));
+        assertNotNull(EntityManager.getInstance().getPointsPolicy(1, -1, 0));
+    }
+
+    @Test
+    public void addPointsPolicy5ITest() {
+        //duplicated policy
+        SystemUser systemUser = getSystemUserAR();
+        UIController.setSelector(9511); //1,-1,0
+        assertTrue(ARController.addPointsPolicy(systemUser));
+        assertFalse(ARController.addPointsPolicy(systemUser));
+        //This Points policy already exists
+    }
+
+    @Test
+    public void addPointsPolicy6ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        UIController.setSelector(9512);//-1,0,1
+        assertFalse(ARController.addPointsPolicy(systemUser));
+        //The victory points most be positive
+    }
+
+    @Test
+    public void addPointsPolicy7ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        UIController.setSelector(9514);//1,1,-1
+        assertFalse(ARController.addPointsPolicy(systemUser));
+        //The loss points most be negative or zero
+    }
+
+    @Test
+    public void setPointsPolicyUTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 0);
+        assertFalse(ARController.setPointsPolicy(systemUser));
+    }
+
+    @Test
+    public void setPointsPolicyITest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+        assertFalse(ARController.setPointsPolicy(systemUser));
+    }
+
+    @Test
+    public void setPointsPolicy2ITest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+        UIController.setSelector(0);
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
+        assertFalse(ARController.setPointsPolicy(systemUser));
+    }
+
+    @Test
+    public void setPointsPolicy3ITest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
+        UIController.setSelector(0);
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2020/21");
+        assertTrue(ARController.setPointsPolicy(systemUser));
+        assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(3, 0, 1));
+    }
+
+    @Test
+    public void setPointsPolicy4ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        UIController.setSelector(0);
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2020/21");
+        assertTrue(ARController.setPointsPolicy(systemUser));
+        assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(3, 0, 1));
+    }
+    @Test
+    public void setPointsPolicy5ITest() {
+        SystemUser systemUser = getSystemUserAR();
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2020/21");
+
+        AssociationRepresentative aR = (AssociationRepresentative)systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        try {
+            aR.addPointsPolicy(1,-1,0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(3, 0, 1));
+        UIController.setSelector(9521);
+        assertTrue(ARController.setPointsPolicy(systemUser));
+        assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(1, -1, 0));
     }
 
 

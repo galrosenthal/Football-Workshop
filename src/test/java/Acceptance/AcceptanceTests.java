@@ -656,11 +656,6 @@ public class AcceptanceTests {
     }
 
 
-    @After
-    public void tearDown() throws Exception {
-        EntityManager.getInstance().clearAll();
-    }
-
     /**
      * 9.10.a
      */
@@ -721,6 +716,71 @@ public class AcceptanceTests {
         catch (UserNotFoundException e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 9.5.1.a
+     * Main success scenario - A new points policy is created.
+     */
+    @Test
+    public void addPointsPolicyATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        UIController.setSelector(9511);//1,-1,0
+        assertTrue(ARController.addPointsPolicy(systemUser));
+        assertTrue(EntityManager.getInstance().doesPointsPolicyExists(1,-1,0));
+        assertNotNull(EntityManager.getInstance().getPointsPolicy(1,-1,0));
+        /*
+        Expected: The new points policy has been added successfully
+         */
+    }
+    /**
+     * 9.5.1.b
+     * failure scenario - A points policy
+     */
+    @Test
+    public void addPointsPolicy2ATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        UIController.setSelector(9511); //1,-1,0
+        assertTrue(ARController.addPointsPolicy(systemUser));
+        assertFalse(ARController.addPointsPolicy(systemUser));
+        /*
+        Expected: This points policy already exists
+         */
+    }
+
+    /**
+     * 9.5.2.a
+     * Main success scenario - A points policy was changed in a season.
+     */
+    @Test
+    public void setPointsPolicyATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        EntityManager.getInstance().addLeague(new League("Premier League"));
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2019/20");
+
+        AssociationRepresentative aR = (AssociationRepresentative)systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        try {
+            aR.addPointsPolicy(1,-1,0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(3, 0, 1));
+        UIController.setSelector(9521);
+        assertTrue(ARController.setPointsPolicy(systemUser));
+        assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(1, -1, 0));
+        /*
+        Expected: The chosen points policy was set successfully
+         */
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        EntityManager.getInstance().clearAll();
     }
 
     /**

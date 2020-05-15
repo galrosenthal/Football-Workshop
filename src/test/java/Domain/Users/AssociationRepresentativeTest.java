@@ -1,8 +1,11 @@
 package Domain.Users;
 
 import Domain.EntityManager;
+import Domain.Exceptions.ExistsAlreadyException;
 import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Game.League;
+import Domain.Game.Points;
+import Domain.Game.PointsPolicy;
 import Domain.Game.Season;
 import org.junit.After;
 import org.junit.Assert;
@@ -128,7 +131,7 @@ public class AssociationRepresentativeTest {
         new Referee(newRefereeUser, "refTraining");
 
         Referee referee = (Referee) newRefereeUser.getRole(RoleTypes.REFEREE);
-        Season season = new Season(new League("noName"),"2020/21");
+        Season season = new Season(new League("noName"), "2020/21");
         season.assignReferee(referee);
         referee.assignToSeason(season);
 
@@ -231,6 +234,90 @@ public class AssociationRepresentativeTest {
             assertEquals("This referee is already assigned to the chosen season", e.getMessage());
         }
     }
+
+
+    @Test
+    public void addPointsPolicyITest() {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        try {
+            aR.addPointsPolicy(-1, 0, 0);
+            Assert.fail();
+        } catch (Exception e) {
+            assertEquals("The victory points most be positive", e.getMessage());
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+    }
+
+    @Test
+    public void addPointsPolicy2ITest() {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        try {
+            aR.addPointsPolicy(1, 1, 0);
+            Assert.fail();
+        } catch (Exception e) {
+            assertEquals("The loss points most be negative or zero", e.getMessage());
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+    }
+
+    @Test
+    public void addPointsPolicy3ITest() {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        try {
+            aR.addPointsPolicy(1, 0, 0);
+        } catch (Exception e) {
+
+        }
+        try {
+            aR.addPointsPolicy(1, 0, 0);
+            Assert.fail();
+        } catch (Exception e) {
+            assertEquals("This points policy already exists", e.getMessage());
+            assertTrue(e instanceof ExistsAlreadyException);
+        }
+    }
+
+    @Test
+    public void addPointsPolicy4ITest() {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        boolean succeeded = true;
+        try {
+            aR.addPointsPolicy(1, 0, 0);
+        } catch (Exception e) {
+            succeeded = false;
+        }
+        assertTrue(succeeded);
+        assertTrue(EntityManager.getInstance().getPointsPolicy(1, 0, 0) != null);
+        assertTrue(EntityManager.getInstance().doesPointsPolicyExists(1, 0, 0));
+    }
+
+    @Test
+    public void setPointsPolicyITest() {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        Season season = new Season(new League("noName"), "2020/21");
+        PointsPolicy pointsPolicy = new PointsPolicy(1, -1, 0);
+
+        assertTrue(season.getPointsPolicy().equals(PointsPolicy.getDefaultPointsPolicy()));
+        aR.setPointsPolicy(season, pointsPolicy);
+        assertTrue(season.getPointsPolicy().equals(pointsPolicy));
+    }
+
+    @Test
+    public void setPointsPolicy2ITest() {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        Season season = new Season(new League("noName"), "2020/21");
+
+        assertTrue(season.getPointsPolicy().equals(PointsPolicy.getDefaultPointsPolicy()));
+        aR.setPointsPolicy(season, null);
+        assertTrue(season.getPointsPolicy().equals(PointsPolicy.getDefaultPointsPolicy()));
+    }
+
 
     @After
     public void tearDown() {
