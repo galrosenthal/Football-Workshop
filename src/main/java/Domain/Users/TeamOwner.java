@@ -1,12 +1,14 @@
 package Domain.Users;
 
+import Domain.Alert;
 import Domain.EntityManager;
 import Domain.Game.Team;
+import Domain.Subject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TeamOwner extends Role {
+public class TeamOwner extends Role implements Subject {
 
     private List<Team> ownedTeams;
     private SystemUser appointedOwner; /** The team owner who appointed -this- team owner */
@@ -116,9 +118,9 @@ public class TeamOwner extends Role {
     /*notify teamOwners  and TeamMangers and systemAdmins - close team or reopen team*/
     public void closeReopenTeam(Team team , String closeOrReopen)
     {
-        EntityManager entityManager = EntityManager.getInstance();
         List<TeamOwner> teamOwners = new ArrayList<>();
         List<TeamManager> teamManagers = new ArrayList<>();
+        EntityManager entityManager = EntityManager.getInstance();
         List<SystemAdmin> SystemAdmins = entityManager.getSystemAdmins();
         List<SystemUser> systemUsers = new ArrayList<>();
         teamOwners.addAll(team.getTeamOwners());
@@ -133,17 +135,22 @@ public class TeamOwner extends Role {
             systemUsers.add(SystemAdmins.get(i).getSystemUser());
         }
         String alert = team.getTeamName()+" has been"+ closeOrReopen;
-        entityManager.notifyObserver(systemUsers, alert);
+        notifyObserver(systemUsers, alert);
     }
 
 
     /*notify Team Owner - removal */
     public void removeTeamOwnerNotify(TeamOwner teamOwner , Team team)
     {
-        EntityManager entityManager = EntityManager.getInstance();
         List<SystemUser> systemUsers = new ArrayList<>();
         systemUsers.add(teamOwner.getSystemUser());
         String alert = teamOwner.getSystemUser().getUsername()+" has been remove from been owner in"+ team.getTeamName();
-        entityManager.notifyObserver(systemUsers , alert);
+        notifyObserver(systemUsers , alert);
+    }
+
+    @Override
+    public void notifyObserver(List<SystemUser> systemUsers, String alert) {
+        Alert alertInstance = Alert.getInstance();
+        alertInstance.update(systemUsers , alert);
     }
 }

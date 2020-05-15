@@ -62,12 +62,13 @@ public class AllSubscribers implements Observer {
     }
 
     @Override
-    public void update(List<SystemUser> systemUsers)
+    public void update(List<SystemUser> systemUsers , String alert)
     {
         for (int i = 0; i < systemUsers.size(); i++) {
             //todo: alert!
             WrappedSession session = this.systemUsers.get(systemUsers.get(i).getUsername());
             //session
+            UIController.showPopupWindow(session , alert);
         }
     }
 }

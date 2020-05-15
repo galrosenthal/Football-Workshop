@@ -1,14 +1,17 @@
 package Domain.Reports;
 
+import Domain.Alert;
 import Domain.EntityManager;
 import Domain.Game.Game;
+import Domain.Game.Score;
+import Domain.Subject;
 import Domain.Users.Referee;
 import Domain.Users.SystemUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameReport extends Report{
+public class GameReport extends Report implements Subject {
 
     Game game;
     List<SystemUser> fans;
@@ -56,9 +59,9 @@ public class GameReport extends Report{
      * notify fans when game score has been updated
      *
      */
-    public void setScore() {
+    public void setScore(Score score) {
         //notify fans!
-        notifyFans("Score has been update: ");
+        notifyFans("Score has been update: "+ score);
 
     }
 
@@ -68,13 +71,12 @@ public class GameReport extends Report{
      */
     private void notifyReferees(String alert)
     {
-        EntityManager entityManager = EntityManager.getInstance();
         List<SystemUser> systemUsers = new ArrayList<>();
         List<Referee> referees = new ArrayList<>();
         for (int i = 0; i < referees.size(); i++) {
             systemUsers.add(referees.get(i).getSystemUser());
         }
-        entityManager.notifyObserver(systemUsers , alert);
+        notifyObserver(systemUsers , alert);
     }
 
     /**
@@ -82,8 +84,14 @@ public class GameReport extends Report{
      */
     private void notifyFans(String alert)
     {
-        EntityManager entityManager = EntityManager.getInstance();
-        entityManager.notifyObserver(fans , alert);
+        notifyObserver(fans , alert);
+
     }
 
+    @Override
+    public void notifyObserver(List<SystemUser> systemUsers, String alert) {
+        Alert alertInstance = Alert.getInstance();
+        alertInstance.update(systemUsers , alert);
+
+    }
 }

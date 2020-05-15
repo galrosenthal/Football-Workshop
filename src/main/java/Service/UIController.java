@@ -6,6 +6,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.Command;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.WrappedSession;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
@@ -381,5 +382,10 @@ public class UIController {
         String username = UIController.receiveString("Enter new " + msg + " Username:");
         return username;
 
+    }
+
+    public static void showPopupWindow(WrappedSession session, String alert) {
+
+        //todo: GUI - maybe need to be observer for mvvm model
     }
 }

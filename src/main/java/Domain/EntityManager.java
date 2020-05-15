@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-public class EntityManager implements Subject{
+public class EntityManager{
     private static EntityManager entityManagerInstance = null;
 
     private List<SystemUser> allUsers;
@@ -463,30 +463,6 @@ public class EntityManager implements Subject{
         return null;
     }
 
-    public void notifyObserver(List<SystemUser> systemUsers , String alert) {
-        AllSubscribers allSubscribers = AllSubscribers.getInstance();
-        List<String> onlineSystemUsers = allSubscribers.getSystemUsers();
-        List<SystemUser> updateSystemUsers = new ArrayList<>();
-        for (int i = 0; i < systemUsers.size() ; i++) {
-            /*In case system user online*/
-            if(onlineSystemUsers.contains(systemUsers.get(i).getUsername()))
-            {
-                updateSystemUsers.add(systemUsers.get(i));
-            }
-            //todo: save alert on db
-        }
-        allSubscribers.update(updateSystemUsers);
-    }
-
-    @Override
-    public void register(Observer o) {
-
-    }
-
-    @Override
-    public void unregister(Observer o) {
-
-    }
 /*
     public List<Referee> getAllRefereesPerGame(Game game) {
         //need to import referees table

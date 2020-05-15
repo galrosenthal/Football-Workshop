@@ -1,5 +1,6 @@
 package Domain.Users;
 
+import Domain.Alert;
 import Domain.EntityManager;
 import Domain.Game.Team;
 import Domain.UserComplaints;
@@ -17,7 +18,7 @@ public class SystemAdmin extends Role  {
     /*notify teamOwners  and TeamMangers - close team Permanently*/
     public void closeTeamPermanently(Team team)
     {
-        EntityManager entityManager = EntityManager.getInstance();
+        Alert alertInstance = Alert.getInstance();
         List<TeamOwner> teamOwners = new ArrayList<>();
         List<TeamManager> teamManagers = new ArrayList<>();
         List<SystemUser> systemUsers = new ArrayList<>();
@@ -30,6 +31,6 @@ public class SystemAdmin extends Role  {
             systemUsers.add(teamManagers.get(i).getSystemUser());
         }
         String alert = team.getTeamName()+" close permanently";
-        entityManager.notifyObserver(systemUsers, alert);
+        alertInstance.notifyObserver(systemUsers, alert);
     }
 }
