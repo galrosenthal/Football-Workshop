@@ -7,6 +7,7 @@ import Domain.Game.Season;
 import Domain.Game.Team;
 import Domain.Users.*;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.server.VaadinSession;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -470,6 +471,10 @@ public class MainController {
             e.printStackTrace();
             UIController.showNotification(e.getMessage());
         }
+    }
+
+    public static void testAlert(VaadinSession se) {
+        UIController.showAlert("Mother of god", se);
     }
 
 }
