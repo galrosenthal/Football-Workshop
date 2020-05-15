@@ -1,7 +1,9 @@
 package Service;
 
 import Domain.Game.Game;
+import Domain.Logger.Card;
 import Domain.Logger.Event;
+import Domain.Logger.RedCard;
 import Domain.Users.Referee;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
@@ -28,11 +30,24 @@ public class RefereeController {
         //Show existing events
         showExistingEvents(chosenGame);
 
+        //Get new event type
         String eventType = getEventTypeByChoice();
-
-        switch (eventType){
+        switch (eventType) {
             case "Red Card":
-                
+                //Card card = new RedCard();
+                break;
+            case "Yellow Card":
+                break;
+            case "Goal":
+                break;
+            case "Offside":
+                break;
+            case "Penalty":
+                break;
+            case "Switch Players":
+                break;
+            case "Injury":
+                break;
         }
 
         return true;
@@ -41,9 +56,9 @@ public class RefereeController {
     public static void showExistingEvents(Game chosenGame) {
         List<String> gameEventsStringList = chosenGame.getGameEventsStringList();
         StringBuilder stringBuilder = new StringBuilder();
-        if(gameEventsStringList.isEmpty()){
+        if (gameEventsStringList.isEmpty()) {
             stringBuilder.append("the chosen game doesn't have events yet");
-        }else {
+        } else {
             stringBuilder.append("the chosen game already have the following events:");
             for (String string : gameEventsStringList) {
                 stringBuilder.append(string + "\n");
