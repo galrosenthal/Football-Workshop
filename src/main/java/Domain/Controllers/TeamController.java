@@ -280,21 +280,22 @@ public class TeamController {
      */
     private static boolean isAlreadyOwnedAnotherTeamInSeason(Team teamToOwn, TeamOwner ownerToCheck) {
 
-        Season currentSeason = teamToOwn.getCurrentSeason();
+        List<Season> currentSeasons = teamToOwn.getCurrentSeasons();
         //If the team not assigned yet to a season
-        if(currentSeason == null){
+        if(currentSeasons == null){
             return false;
         }
+        for (Season currentSeason : currentSeasons) {
+            List<Team> teamsInSeason = currentSeason.getTeams();
+            if (teamsInSeason.size() == 0) {
+                return false;
+            }
+            for (Team team : teamsInSeason) {
+                List<TeamOwner> teamOwners = team.getTeamOwners();
 
-        List<Team> teamsInSeason = currentSeason.getTeams();
-        if (teamsInSeason.size() == 0) {
-            return false;
-        }
-        for (Team team : teamsInSeason) {
-            List<TeamOwner> teamOwners = team.getTeamOwners();
-
-            if (teamOwners.contains(ownerToCheck)) {
-                return true;
+                if (teamOwners.contains(ownerToCheck)) {
+                    return true;
+                }
             }
         }
         return false;

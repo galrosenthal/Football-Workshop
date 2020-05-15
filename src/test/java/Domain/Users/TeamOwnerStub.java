@@ -63,24 +63,4 @@ public class TeamOwnerStub extends TeamOwner {
             return false;
         }
     }
-
-    @Override
-    public boolean addTeamToOwn(Team teamToOwn) {
-        return super.addTeamToOwn(teamToOwn);
-    }
-
-    @Override
-    public SystemUser getAppointedOwner() {
-        return super.getAppointedOwner();
-    }
-
-    @Override
-    public boolean setAppointedOwner(SystemUser appointedOwner) {
-        return super.setAppointedOwner(appointedOwner);
-    }
-
-    @Override
-    public String toString() {
-        return super.toString();
-    }
 }

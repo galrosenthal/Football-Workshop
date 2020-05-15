@@ -118,15 +118,10 @@ public class Controller {
      * @return the chosen user
      */
     private static String getUserOwnerSelection(Team chosenTeam) {
-        List<TeamOwner> teamOwners = chosenTeam.getTeamOwners();
+        List<String> teamOwners = chosenTeam.getTeamOwnersString();
         int i=0;
 
-        UIController.printMessage("Choose a Team Owner Number:");
-        for (TeamOwner teamOwner : teamOwners){
-            UIController.printMessage(i+". " + teamOwner.getSystemUser().getName());
-        }
-
-        String username = UIController.receiveString("Choose a Team Owner Number:");
+        String username = UIController.receiveString("Choose a Team Owner Number:",teamOwners);
         return username;
     }
 
