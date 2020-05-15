@@ -443,9 +443,14 @@ public class UIController {
     }
 
     public static void showAlert(VaadinSession session, String alert) {
-
-        session.access(() -> {
-            FootballMain.showAlert(alert);
-        });
+        if(!isTest) {
+            session.access(() -> {
+                FootballMain.showAlert(alert);
+            });
+        }
+        else
+        {
+            System.out.println("Alert: " + alert);
+        }
     }
 }
