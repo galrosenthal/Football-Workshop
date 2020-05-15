@@ -3,6 +3,7 @@ package GUI;
 
 import GUI.About.AboutView;
 import GUI.RoleRelatedViews.AssociationRepresentative.ARControls;
+import GUI.RoleRelatedViews.Referee.RefereeControls;
 import GUI.RoleRelatedViews.TeamOwner.TOControls;
 import Service.MainController;
 import com.vaadin.flow.component.*;
@@ -142,6 +143,11 @@ public class FootballMain extends AppLayout implements RouterLayout{
         if(userRoles.contains("TEAM_OWNER"))
         {
             addToDrawer(createMenuLink(TOControls.class, TOControls.VIEW_NAME,
+                    VaadinIcon.USER.create()));
+        }
+
+        if(userRoles.contains("REFEREE")){
+            addToDrawer(createMenuLink(RefereeControls.class, RefereeControls.VIEW_NAME,
                     VaadinIcon.USER.create()));
         }
 
