@@ -28,4 +28,20 @@ public class Game {
     public void setStadium(Stadium stadium) {
         this.stadium = stadium;
     }
+
+
+    /**
+     * Returns true if the game has finished
+     *
+     * @return - boolean - true if the game has finished, else false
+     */
+    public boolean hasFinished() {
+        //TODO: Check dates or game status
+        return true;
+    }
+
+    public List<String> getGameEventsStringList(){
+        return this.eventsLogger.getEventsStringList();
+    }
+
 }

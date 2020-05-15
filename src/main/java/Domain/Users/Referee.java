@@ -79,4 +79,8 @@ public class Referee extends Role {
         }
         return false;
     }
+
+    public List<Game> getGames() {
+        return this.games;
+    }
 }
