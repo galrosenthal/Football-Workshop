@@ -442,11 +442,11 @@ public class UIController {
 
     }
 
+    public static void showPopupWindow(WrappedSession session, String alert) {
 
-    public static void showAlert(String message, VaadinSession userSession)
-    {
-        userSession.access(() -> {
-            FootballMain.showAlert(message);
+        //todo: GUI - maybe need to be observer for mvvm model
+        session.access(() -> {
+            FootballMain.showAlert(alert);
         });
     }
 }

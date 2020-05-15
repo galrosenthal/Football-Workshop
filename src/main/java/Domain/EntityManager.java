@@ -12,6 +12,8 @@ import Domain.Users.SystemUser;
 import Domain.Game.Stadium;
 import Domain.Users.*;
 import Domain.Game.Stadium;
+import Service.AllSubscribers;
+import Service.Observer;
 import Service.UIController;
 
 import java.util.ArrayList;
@@ -19,13 +21,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-public class EntityManager {
+public class EntityManager{
     private static EntityManager entityManagerInstance = null;
 
     private List<SystemUser> allUsers;
     private List<Team> allTeams;
     private List<Stadium> allStadiums;
     private HashSet<League> allLeagues;
+    private List<SystemAdmin> systemAdmins;
+
 
     public boolean isLoggedIn() {
         return loggedIn;
@@ -42,6 +46,7 @@ public class EntityManager {
         allLeagues = new HashSet<>();
         allTeams = new ArrayList<>();
         allStadiums = new ArrayList<>();
+        systemAdmins = new ArrayList<>();
     }
 
     /**
@@ -167,6 +172,16 @@ public class EntityManager {
         }
         return null;
     }
+
+
+    /**
+     * Returns all system admins
+     * @return List<SystemAdmin> SystemAdmin
+     */
+    public List<SystemAdmin> getSystemAdmins() {
+        return systemAdmins;
+    }
+
 
     /**
      * Checks if a team with a name that matches the given name already exists.
@@ -447,4 +462,22 @@ public class EntityManager {
 
         return null;
     }
+
+/*
+    public List<Referee> getAllRefereesPerGame(Game game) {
+        //need to import referees table
+        List<Referee> referees = new ArrayList<>();
+
+        for (int i = 0; i < this.allUsers.size(); i++) {
+            Role role= allUsers.get(i).getRole(RoleTypes.REFEREE);
+            if(role != null)
+            {
+                Referee referee = (Referee) role;
+                if(referee.get)
+            }
+        }
+        return referees;
+    }
+
+ */
 }
