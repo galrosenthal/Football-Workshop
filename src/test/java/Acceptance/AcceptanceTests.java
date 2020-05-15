@@ -455,7 +455,7 @@ public class AcceptanceTests {
         }
         catch (UserNotFoundException e)
         {
-            UIController.printMessage(e.getMessage());
+            UIController.showNotification(e.getMessage());
             assertEquals("Could not find user elevy",e.getMessage());
         }
 

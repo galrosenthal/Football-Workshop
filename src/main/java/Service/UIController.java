@@ -1,11 +1,24 @@
 package Service;
 
-import java.util.Scanner;
+import GUI.FootballMain;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.server.Command;
+import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinSession;
+
+import java.util.Collection;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+
+import static java.lang.Thread.sleep;
 
 public class UIController {
 
     private static boolean isTest = false;
     private static int selector = 0; //latest = 10
+
 
     public static void setSelector(int selector) {
         UIController.selector = selector;
@@ -15,20 +28,70 @@ public class UIController {
         UIController.isTest = isTest;
     }
 
-    public static void printMessage(String msg) {
-        //  if (!isTest) {
-        System.out.println(msg);
-        //  }
+    /**
+     * This Function is showing a notification to the user
+     * do not use for messaging the user
+     * @param notification the message to include in the notification
+     */
+    public static void showNotification(String notification) {
+        if (!isTest) {
+            UI lastUI = UI.getCurrent();
+            VaadinSession se = VaadinSession.getCurrent();
+            se.access(()->FootballMain.showNotification(notification));
+        }
+        else
+        {
+            System.out.println(notification);
+        }
     }
 
-    public static String receiveString() {
+    /**
+     * This function is receieving a string from the user
+     * in the production this function will call a popup window with the message for the user
+     * @param messageToDisplay a message to display to the user
+     * @return
+     */
+    public static String receiveString(String messageToDisplay,Collection<String>... valuesToChooseFrom) {
         if (!isTest) {
-            Scanner sc = new Scanner(System.in);
+            StringBuilder line = new StringBuilder();
+            UI lastUI = UI.getCurrent();
+            Thread t = Thread.currentThread();
+            VaadinSession se = VaadinSession.getCurrent();
 
-            String line = sc.nextLine();
+            Future<Void> returnValue = se.access(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                FootballMain.showDialog(messageToDisplay, "string", line,t ,valuesToChooseFrom);
+                System.out.println("Closed Dialog");
+            });
 
-            return line;
+            try
+            {
+                returnValue.get();
+                System.out.println("Prints Void");
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
+            while (line.length() == 0)
+            {
+                try {
+                    //waiting for the user to close the dialog
+                    sleep(1000);
+//                    System.out.println("Waiting for the user input");
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println(line.toString());
+            return line.toString();
+
         } else {
+            printMessageAndValuesForTest(messageToDisplay, valuesToChooseFrom);;
             if (selector == 0) {
                 return "Not a username";
             } else if (selector == 1) {
@@ -110,8 +173,8 @@ public class UIController {
                     selector = 91032;
                 else if (selector == 9103)
                     selector = 910311;
-                    else
-                     selector = 91012; // avi cohen
+                else
+                    selector = 91012; // avi cohen
                 return "Hapoel Beit Shan";
             }
             else if(selector == 9102){
@@ -138,13 +201,55 @@ public class UIController {
         }
     }
 
-    public static int receiveInt() {
-        if (!isTest) {
-            Scanner sc = new Scanner(System.in);
-            int integer = sc.nextInt();
+    private static void printMessageAndValuesForTest(String messageToDisplay, Collection<String>... valuesToChooseFrom) {
+        System.out.println(messageToDisplay);
+        int indexForCount = 1;
+        for (String value :
+                valuesToChooseFrom[0]) {
+            System.out.println(indexForCount++ + ". " + value);
+        }
+    }
 
-            return integer;
+    public static int receiveInt(String messageToDisplay, Collection<String>... valuesToDisplay) {
+        if (!isTest) {
+            StringBuilder line = new StringBuilder();
+            UI lastUI = UI.getCurrent();
+            Thread t = Thread.currentThread();
+            VaadinSession se = VaadinSession.getCurrent();
+
+            Future<Void> returnValue = se.access(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                FootballMain.showDialog(messageToDisplay, "int", line,t ,valuesToDisplay);
+                System.out.println("Closed Dialog");
+            });
+
+            try
+            {
+                returnValue.get();
+                System.out.println("Prints Void");
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            while (line.length() == 0)
+            {
+                try {
+                    //waiting for the user to close the dialog
+                    sleep(100);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            int resultValue= Integer.parseInt(line.toString());
+
+
+            return resultValue;
         } else {
+            printMessageAndValuesForTest(messageToDisplay,valuesToDisplay);
             if (selector == 0 || selector == 1 || selector == 2 || selector == 6117 || selector == 6118 || selector == 921 || selector ==922 || selector==924 || selector ==9321) {
                 return 0;
             } else if(selector == 61111){
@@ -264,11 +369,10 @@ public class UIController {
     }
 
     public static boolean receiveChoice(String message) {
-        UIController.printMessage(message);
         String choice = "";
         if (!isTest) {
             do {
-                choice = UIController.receiveString();
+                choice = UIController.receiveString(message);
             } while (!(choice.equals("y") || choice.equals("n")));
 
             if (choice.equals("y")) {
@@ -284,9 +388,8 @@ public class UIController {
         }
     }
     public static String getUsernameFromUser(String msg) {
-        UIController.printMessage("Enter new " + msg + " Username:");
 
-        String username = UIController.receiveString();
+        String username = UIController.receiveString("Enter new " + msg + " Username:");
         return username;
 
     }

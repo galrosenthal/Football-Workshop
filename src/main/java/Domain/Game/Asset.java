@@ -8,6 +8,9 @@ public interface Asset {
 
     List<String> getProperties();
 
+
+    String getAssetName();
+
     /**
      *
      * @param team

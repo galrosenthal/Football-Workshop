@@ -32,6 +32,13 @@ public class Stadium implements Asset{
         return properties;
     }
 
+
+    @Override
+    public String getAssetName()
+    {
+        return getName();
+    }
+
     @Override
     public boolean changeProperty(String property, String toChange)
     {
@@ -91,9 +98,7 @@ public class Stadium implements Asset{
         String stringProp = "";
         if(property.equalsIgnoreCase(namePropertyString))
         {
-            UIController.printMessage("Please Enter Stadium name");
-
-            stringProp = UIController.receiveString();
+            stringProp = UIController.receiveString("Please Enter Stadium name", null);
             changeProperty(property,stringProp);
         }
 
