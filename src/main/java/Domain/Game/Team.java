@@ -25,6 +25,16 @@ public class Team {
         return teamOwners;
     }
 
+    public List<String> getTeamOwnersString() {
+        List<String> teamOwnersString = new ArrayList<>();
+
+        for (TeamOwner to : teamOwners){
+            teamOwnersString.add(to.toString());
+        }
+
+        return teamOwnersString;
+    }
+
     public Team(Team anotherTeam) {
         teamManagers = new ArrayList<>(anotherTeam.teamManagers);
         teamOwners = new ArrayList<>(anotherTeam.teamOwners);
@@ -131,7 +141,7 @@ public class Team {
         if(teamOwner == null || status != TeamStatus.OPEN){
             return false;
         }
-        if(teamOwner.getType() == RoleTypes.TEAM_OWNER){
+        if(teamOwner.getType() == RoleTypes.TEAM_OWNER && !teamOwners.contains(teamOwner)){
             return teamOwners.add((TeamOwner)teamOwner);
         }
 
@@ -543,7 +553,7 @@ public class Team {
      * Finds the season is now playing and returns it
      * @return the current season
      */
-    public Season getCurrentSeason(){
+    private Season getCurrentSeason(){
         Season currentSeason;
 
         if(seasons.size() == 0){
@@ -557,6 +567,27 @@ public class Team {
         }
 
         return  currentSeason;
+    }
+
+    /**
+     * Finds the seasons is now playing, and returns all the seasons in the same year
+     * @return the current seasons
+     */
+    public List<Season> getCurrentSeasons(){
+        List<Season> currentSeasons= new ArrayList<>();
+        Season currentSeason = getCurrentSeason();
+
+        if(seasons.size() == 0){
+            return null;
+        }
+
+        for (Season s: seasons){
+            if(s.getYear().equals(currentSeason.getYear())){
+                currentSeasons.add(s);
+            }
+        }
+
+        return  currentSeasons;
     }
 
     public List<Season> getSeasons() {

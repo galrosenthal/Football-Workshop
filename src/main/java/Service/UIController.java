@@ -188,6 +188,22 @@ public class UIController {
             else if(selector == 9102){
                 return "stubTeam9102";
             }
+            else if(selector == 631){
+                selector = 632;
+                return "Hapoel Ta";
+            }
+            else if(selector == 632){
+                return "gal";
+            }
+            else if(selector == 633){
+                return "merav";
+            }
+            else if(selector == 634){
+                return "nir";
+            }
+            else if(selector == 635){
+                return "ifatch";
+            }
             else
                 return null;
         }
@@ -291,6 +307,8 @@ public class UIController {
                 return 2;
             }else if(selector == 6139) {
                 setSelector(61310);
+                return 0;
+            }else if(selector == 632 || selector == 633 || selector == 634 || selector == 635){
                 return 0;
             }
             else if(selector == 9111){
