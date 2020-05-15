@@ -457,18 +457,15 @@ public class EntityManager implements Subject{
 
     public void notifyObserver(List<SystemUser> systemUsers , String alert) {
         AllSubscribers allSubscribers = AllSubscribers.getInstance();
-        List<SystemUser> onlineSystemUsers = allSubscribers.getSystemUsers();
+        List<String> onlineSystemUsers = allSubscribers.getSystemUsers();
         List<SystemUser> updateSystemUsers = new ArrayList<>();
         for (int i = 0; i < systemUsers.size() ; i++) {
             /*In case system user online*/
-            if(onlineSystemUsers.contains(systemUsers.get(i)))
+            if(onlineSystemUsers.contains(systemUsers.get(i).getUsername()))
             {
                 updateSystemUsers.add(systemUsers.get(i));
             }
-            else
-            {
-                //todo: save alert on db
-            }
+            //todo: save alert on db
         }
         allSubscribers.update(updateSystemUsers);
     }

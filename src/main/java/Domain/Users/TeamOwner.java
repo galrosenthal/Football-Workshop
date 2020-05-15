@@ -114,7 +114,7 @@ public class TeamOwner extends Role {
 
 
     /*notify teamOwners  and TeamMangers and systemAdmins - close team or reopen team*/
-    public void closeReopenTeam(Team team)
+    public void closeReopenTeam(Team team , String closeOrReopen)
     {
         EntityManager entityManager = EntityManager.getInstance();
         List<TeamOwner> teamOwners = new ArrayList<>();
@@ -132,16 +132,18 @@ public class TeamOwner extends Role {
         for (int i = 0; i <SystemAdmins.size() ; i++) {
             systemUsers.add(SystemAdmins.get(i).getSystemUser());
         }
-        entityManager.notifyObserver(systemUsers);
+        String alert = team.getTeamName()+" has been"+ closeOrReopen;
+        entityManager.notifyObserver(systemUsers, alert);
     }
 
 
     /*notify Team Owner - removal */
-    public void removeTeamOwnerNotify(TeamOwner teamOwner)
+    public void removeTeamOwnerNotify(TeamOwner teamOwner , Team team)
     {
         EntityManager entityManager = EntityManager.getInstance();
         List<SystemUser> systemUsers = new ArrayList<>();
         systemUsers.add(teamOwner.getSystemUser());
-        entityManager.notifyObserver(systemUsers);
+        String alert = teamOwner.getSystemUser().getUsername()+" has been remove from been owner in"+ team.getTeamName();
+        entityManager.notifyObserver(systemUsers , alert);
     }
 }

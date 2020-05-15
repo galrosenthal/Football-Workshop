@@ -15,7 +15,7 @@ public class AllSubscribers implements Observer {
 
     private static AllSubscribers allSubscribersInstance = null;
 
-    private Map<SystemUser , WrappedSession> systemUsers;
+    private Map<String , WrappedSession> systemUsers;
 
 
 
@@ -26,9 +26,9 @@ public class AllSubscribers implements Observer {
         this.systemUsers = new HashMap<>();
     }
 
-    public List<SystemUser> getSystemUsers() {
-        List<SystemUser> systemUsers = new ArrayList<>();
-        for(SystemUser systemUserKey: this.systemUsers.keySet())
+    public List<String> getSystemUsers() {
+        List<String> systemUsers = new ArrayList<>();
+        for(String systemUserKey: this.systemUsers.keySet())
         {
             systemUsers.add(systemUserKey);
         }
@@ -50,9 +50,9 @@ public class AllSubscribers implements Observer {
 
     //add user after login
     //todo: check if after signUp - user is login????
-    public void login(SystemUser systemUser)
+    public void login(String systemUser, WrappedSession session)
     {
-        systemUsers.put(systemUser, null);
+        systemUsers.put(systemUser, session);
     }
     //remove user after logout
     //fixme! need to add logout function - UC
@@ -66,9 +66,8 @@ public class AllSubscribers implements Observer {
     {
         for (int i = 0; i < systemUsers.size(); i++) {
             //todo: alert!
-            WrappedSession session = this.systemUsers.get(systemUsers.get(i));
-            //session.
+            WrappedSession session = this.systemUsers.get(systemUsers.get(i).getUsername());
+            //session
         }
     }
-
 }

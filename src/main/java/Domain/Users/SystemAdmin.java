@@ -29,6 +29,7 @@ public class SystemAdmin extends Role  {
         for (int i = 0; i <teamManagers.size() ; i++) {
             systemUsers.add(teamManagers.get(i).getSystemUser());
         }
-        entityManager.notifyObserver(systemUsers);
+        String alert = team.getTeamName()+" close permanently";
+        entityManager.notifyObserver(systemUsers, alert);
     }
 }

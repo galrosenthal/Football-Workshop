@@ -201,7 +201,6 @@ public class Controller {
      */
     public static SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException {
         SystemUser SystemUser =  EntityManager.getInstance().login(usrNm, pswrd);
-        AllSubscribers.getInstance().login(SystemUser);
         return SystemUser;
     }
 

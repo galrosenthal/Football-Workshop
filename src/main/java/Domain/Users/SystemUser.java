@@ -5,6 +5,7 @@ import Domain.EntityManager;
 import Domain.Game.Game;
 import Domain.UserComplaints;
 import javafx.beans.Observable;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,6 +112,10 @@ public class SystemUser extends User implements Fan {
         }
         return false;
     }
+
+
+
+
 
     @Override
     public boolean equals(Object o) {

@@ -2,6 +2,7 @@ package GUI.Login;
 
 import Domain.EntityManager;
 import GUI.FootballMain;
+import Service.AllSubscribers;
 import Service.MainController;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -104,6 +105,7 @@ public class LoginScreen extends FlexLayout {
             else{
                 currentSession.setAttribute("username", event.getUsername());
                 getUI().get().navigate("");
+                AllSubscribers.getInstance().login(event.getUsername(),currentSession);
             }
 
         } else {
