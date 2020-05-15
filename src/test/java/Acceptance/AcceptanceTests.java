@@ -817,7 +817,7 @@ public class AcceptanceTests {
     public void setPointsPolicyATest() {
         SystemUser systemUser = new SystemUser("username", "name");
         new AssociationRepresentative(systemUser);
-        EntityManager.getInstance().addLeague("Premier League");
+        EntityManager.getInstance().addLeague(new League("Premier League"));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
 
