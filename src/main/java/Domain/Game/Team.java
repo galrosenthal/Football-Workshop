@@ -25,6 +25,16 @@ public class Team {
         return teamOwners;
     }
 
+    public List<String> getTeamOwnersString() {
+        List<String> teamOwnersString = new ArrayList<>();
+
+        for (TeamOwner to : teamOwners){
+            teamOwnersString.add(to.toString());
+        }
+
+        return teamOwnersString;
+    }
+
     public Team(Team anotherTeam) {
         teamManagers = new ArrayList<>(anotherTeam.teamManagers);
         teamOwners = new ArrayList<>(anotherTeam.teamOwners);
