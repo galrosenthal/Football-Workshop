@@ -47,8 +47,8 @@ public class GameReport extends Report{
     public void getGameDate() {
         if(java.time.LocalDate.now().equals(this.game.getGameDate())) {
             //notify referees and fans
-            notifyReferees();
-            notifyFans();
+            notifyReferees("Game has been started");
+            notifyFans("Game has been started");
         }
     }
 
@@ -58,7 +58,7 @@ public class GameReport extends Report{
      */
     public void setScore() {
         //notify fans!
-        notifyFans();
+        notifyFans("Score has been update: ");
 
     }
 
@@ -66,7 +66,7 @@ public class GameReport extends Report{
     /**
      * notify referees
      */
-    private void notifyReferees()
+    private void notifyReferees(String alert)
     {
         EntityManager entityManager = EntityManager.getInstance();
         List<SystemUser> systemUsers = new ArrayList<>();
@@ -74,16 +74,16 @@ public class GameReport extends Report{
         for (int i = 0; i < referees.size(); i++) {
             systemUsers.add(referees.get(i).getSystemUser());
         }
-        entityManager.notifyObserver(systemUsers);
+        entityManager.notifyObserver(systemUsers , alert);
     }
 
     /**
      * notify fans
      */
-    private void notifyFans()
+    private void notifyFans(String alert)
     {
         EntityManager entityManager = EntityManager.getInstance();
-        entityManager.notifyObserver(fans);
+        entityManager.notifyObserver(fans , alert);
     }
 
 }

@@ -4,13 +4,14 @@ package Domain.Users;
 import Domain.EntityManager;
 import Domain.Game.Game;
 import Domain.UserComplaints;
+import javafx.beans.Observable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 
-public class SystemUser extends User implements Fan{
+public class SystemUser extends User implements Fan {
 
     private List<Role> roles;
     private List<UserComplaints> complaints;
@@ -18,6 +19,7 @@ public class SystemUser extends User implements Fan{
     protected String username;
     private String password;
     private String name;
+
 
     @Override
     public boolean removePageFromFollow() {

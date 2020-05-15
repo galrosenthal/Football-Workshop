@@ -409,7 +409,7 @@ public class EntityManager implements Subject{
 
     }
 
-    public void notifyObserver(List<SystemUser> systemUsers) {
+    public void notifyObserver(List<SystemUser> systemUsers , String alert) {
         AllSubscribers allSubscribers = AllSubscribers.getInstance();
         List<SystemUser> onlineSystemUsers = allSubscribers.getSystemUsers();
         List<SystemUser> updateSystemUsers = new ArrayList<>();
