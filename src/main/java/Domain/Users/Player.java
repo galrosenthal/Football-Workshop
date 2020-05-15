@@ -1,6 +1,5 @@
 package Domain.Users;
 
-import Domain.Game.Asset;
 import Domain.Game.Team;
 import Service.UIController;
 
@@ -30,6 +29,13 @@ public class Player extends PartOfTeam{
             this.playerTeams.add(playTeam);
         }
         return false;
+    }
+
+
+    @Override
+    public String getAssetName()
+    {
+        return this.systemUser.getUsername();
     }
 
     @Override
@@ -105,18 +111,17 @@ public class Player extends PartOfTeam{
     }
 
     private int getEnumIndex() {
-        UIController.printMessage("Please Choose a field Job for the Player:");
 
-        int i = 0;
+        List<String> playerJobsList = new ArrayList<>();
         for (PlayerFieldJobs pfj: PlayerFieldJobs.values())
         {
-            UIController.printMessage(i++ +". " + pfj.toString());
+            playerJobsList.add(pfj.name());
         }
 
         int index;
 
         do{
-            index = UIController.receiveInt();
+            index = UIController.receiveInt("Please Choose a field Job for the Player:",playerJobsList);
         }while (!(index >= 0 && index < PlayerFieldJobs.values().length));
 
 

@@ -42,6 +42,12 @@ public class TeamManager extends Role implements Asset {
         return false;
     }
 
+    @Override
+    public String getAssetName()
+    {
+        return this.systemUser.getUsername();
+    }
+
     private boolean addPermission(Team team , TeamManagerPermissions permission)
     {
         return false;

@@ -11,9 +11,8 @@ import Domain.Game.TeamAsset;
 import Domain.Game.TeamStatus;
 import Domain.Users.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import static Service.UIController.getUsernameFromUser;
-
 import static Service.UIController.getUsernameFromUser;
 
 public class Controller {
@@ -23,20 +22,18 @@ public class Controller {
         //access DB
         //extract system admins
 
-        UIController.printMessage("Please enter a system administrator username: ");
-        String username = UIController.receiveString();
-        UIController.printMessage("Please enter your password: ");
-        String password = UIController.receiveString();
+        String username = UIController.receiveString("Please enter a system administrator username: ",null);
+        String password = UIController.receiveString("Please enter your password: ", null);
 
         //Retrieve system user
         SystemUser admin = null;
         try {
             admin = Controller.login(username, password);
         } catch (Exception e) {
-            UIController.printMessage("Username or Password was incorrect!!!!!");
+            UIController.showNotification("Username or Password was incorrect!!!!!");
             e.printStackTrace();
         }
-        UIController.printMessage("Successful login. Welcome back, " + admin.getName());
+        UIController.showNotification("Successful login. Welcome back, " + admin.getName());
         //system boot choice
         boolean choice = UIController.receiveChoice("Would you like to boot the system? y/n");
         if (!choice) {
@@ -46,7 +43,7 @@ public class Controller {
         //Establishing connections to external financial system
 
         //Establishing connections to external tax system
-        UIController.printMessage("The system was booted successfully");
+        UIController.showNotification("The system was booted successfully");
         return true;
     }
 
@@ -62,7 +59,7 @@ public class Controller {
         Team chosenTeam = getTeamByChoice(myTeamOwner);
 
         if(chosenTeam.getStatus() != TeamStatus.OPEN) {
-            UIController.printMessage("Cannot perform action on closed team.");
+            UIController.showNotification("Error: Cannot perform action on closed team.");
             return false; //cannot perform action on closed team.
         }
 
@@ -99,19 +96,19 @@ public class Controller {
         {
             return null;
         }
-        UIController.printMessage("Choose a Team Number");
+        List<String> teamsToShow = new ArrayList<>();
         for (int i = 0; i < myTeams.size() ; i++) {
             if(myTeams.get(i).getStatus() == TeamStatus.CLOSED)
-                 UIController.printMessage(i + ". " + myTeams.get(i).getTeamName()+" (closed)");
+                 teamsToShow.add(myTeams.get(i).getTeamName()+" (closed)");
             else if(myTeams.get(i).getStatus() == TeamStatus.PERMENENTLY_CLOSED)
-                UIController.printMessage(i + ". " + myTeams.get(i).getTeamName()+" (closed forever)");
+                teamsToShow.add(myTeams.get(i).getTeamName()+" (closed forever)");
             else //open
-                UIController.printMessage(i + ". " + myTeams.get(i).getTeamName());
+                teamsToShow.add(myTeams.get(i).getTeamName());
         }
         int teamIndex;
 
         do {
-            teamIndex = UIController.receiveInt();
+            teamIndex = UIController.receiveInt("Choose a Team ", teamsToShow);
         } while (!(teamIndex >= 0 && teamIndex < myTeams.size()));
 
         return myTeams.get(teamIndex);
@@ -148,22 +145,21 @@ public class Controller {
     }
 
     private static String getNameFromUser(String msg) {
-        UIController.printMessage(msg);
-        String username = UIController.receiveString();
+        String username = UIController.receiveString(msg, null);
         return username;
     }
 
 
     private static TeamAsset getAssetTypeFromUser() {
-        UIController.printMessage("Choose Asset Type: ");
+        List<String> assetTypes = new ArrayList<>();
         for (int i = 0; i < TeamAsset.values().length; i++) {
-            UIController.printMessage(i + ". " + TeamAsset.values()[i]);
+            assetTypes.add(TeamAsset.values()[i].name());
         }
 
         int assetIndex;
 
         do{
-            assetIndex = UIController.receiveInt();
+            assetIndex = UIController.receiveInt("Choose Asset Type: ");
         }while (!(assetIndex >= 0 && assetIndex < TeamAsset.values().length));
 
         return TeamAsset.values()[assetIndex];
@@ -189,7 +185,7 @@ public class Controller {
         boolean isSuccess = TeamController.editAssets(chosenTeam);
 
         if(isSuccess)
-            UIController.printMessage("The action completed successfully");
+            UIController.showNotification("The action completed successfully");
 
         return isSuccess;
     }

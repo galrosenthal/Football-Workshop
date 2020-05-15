@@ -1,5 +1,7 @@
 package GUI;
 
+import Domain.EntityManager;
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.UI;
@@ -11,6 +13,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.WrappedSession;
 
 @Route(value = "Welcome", layout = FootballMain.class)
 @RouteAlias(value = "", layout = FootballMain.class)
@@ -41,8 +45,25 @@ public class Welcome extends FlexLayout
         next.addClickListener(event -> {
             getUI().get().navigate("About");
         });
+        next.setVisible(false);
 
         content.add(next);
 
+    }
+
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        super.onAttach(attachEvent);
+        WrappedSession userSession = VaadinService.getCurrentRequest().getWrappedSession();
+
+        //This is just a button disable for fun not needed!
+        if(userSession.getAttribute("username") != null)
+        {
+            next.setVisible(true);
+        }
+        else
+        {
+            next.setVisible(false);
+        }
     }
 }
