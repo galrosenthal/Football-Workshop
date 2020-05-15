@@ -47,7 +47,38 @@ public class UIController {
     }
 
     /**
-     * This function is receieving a string from the user
+     * Receiving multiple inputs from the user.
+     * @param msgsToDisplay String which contains the message to put for each input,
+     *                      with the delimiter ";" between each message
+     * @return String - The inputs from the user to each input, with the delimiter ";" between each input
+     */
+    public static String receiveStringFromMultipleInputs(String msgsToDisplay){
+        if(isTest){
+            if(selector == 9511 || selector == 9521){
+                return "1;-1;0";
+            }
+            else if(selector == 962){
+                return "1;1;1";
+            }
+            else if (selector == 9514){
+                return "1;1;-1";
+            }
+            else if(selector == 9512){
+                return "-1;0;1";
+            }
+            else if (selector == 961){
+                return "0;1;1";
+            }
+            else{
+                return "-2,1,a"; // not legal
+            }
+        }
+        else
+            return null;
+    }
+
+    /**
+     * This function is receiving a string from the user
      * in the production this function will call a popup window with the message for the user
      * @param messageToDisplay a message to display to the user
      * @return
@@ -379,10 +410,10 @@ public class UIController {
             {
                 setSelector(9513);//-1,0,1,-1,..
                 return -1;
-            }else if(selector == 9513)  //Tie points
+            }else if(selector == 9513)
             {
-                setSelector(9511); //0,1,-1,0,..
-                return 0;
+                setSelector(9511);
+                return 1;
             }else if(selector == 9514)
             {
                 setSelector(9511);//1,1,-1

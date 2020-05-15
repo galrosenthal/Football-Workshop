@@ -750,7 +750,7 @@ public class ARControllerTest {
     public void setPointsPolicy2ITest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         assertFalse(ARController.setPointsPolicy(systemUser));
     }
 
@@ -758,7 +758,7 @@ public class ARControllerTest {
     public void setPointsPolicy3ITest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         assertTrue(ARController.setPointsPolicy(systemUser));
@@ -769,7 +769,7 @@ public class ARControllerTest {
     public void setPointsPolicy4ITest() {
         SystemUser systemUser = getSystemUserAR();
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         assertTrue(ARController.setPointsPolicy(systemUser));
@@ -778,7 +778,7 @@ public class ARControllerTest {
     @Test
     public void setPointsPolicy5ITest() {
         SystemUser systemUser = getSystemUserAR();
-        EntityManager.getInstance().addLeague("newLeagueName");
+        EntityManager.getInstance().addLeague(new League("newLeagueName"));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
 

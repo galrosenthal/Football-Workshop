@@ -1,6 +1,5 @@
 package Service;
 
-import Domain.Controllers.TeamController;
 import Domain.EntityManager;
 import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Exceptions.TeamAlreadyExistsException;
@@ -14,7 +13,6 @@ import Domain.Users.AssociationRepresentative;
 import Domain.Users.Referee;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
-import com.vaadin.flow.component.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -457,7 +455,6 @@ public class ARController {
 
     /**
      * Controls the flow of adding a new points policy
-     *
      * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
      * @return - boolean - True if a  new points policy have been created successfully, else false
      */
@@ -466,21 +463,42 @@ public class ARController {
             return false;
         }
         AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
-        UIController.printMessage("points (gain) for VICTORY (positive integer):");
-        int victoryPoints = UIController.receiveInt();
-        UIController.printMessage("points (loss) for LOSS (negative integer or zero):");
-        int lossPoints = UIController.receiveInt();
-        UIController.printMessage("points (gain) for TIE (integer):");
-        int tiePoints = UIController.receiveInt();
+        String msg = "Enter points for VICTORY (positive integer);Enter points for LOSS (negative integer or zero);" +
+                "Enter points for TIE (integer)";
+        String selectedPoints = UIController.receiveStringFromMultipleInputs(msg);
+        String[] selectedPointsArray = selectedPoints.split(";");
+        String victoryPointsString = selectedPointsArray[0];
+        String lossPointsString = selectedPointsArray[1];
+        String tiePointsString = selectedPointsArray[2];
+
+        if(!validateStringIsInteger(victoryPointsString)
+              || !validateStringIsInteger(lossPointsString)
+              || !validateStringIsInteger(tiePointsString)){
+            UIController.showNotification("error, invalid input. Please enter valid inputs.");
+            return false;
+        }
+        //Now we know that the inputs are legal
+        int victoryPoints = Integer.parseInt(victoryPointsString);
+        int lossPoints = Integer.parseInt(lossPointsString);
+        int tiePoints = Integer.parseInt(tiePointsString);
         try {
             ARRole.addPointsPolicy(victoryPoints, lossPoints, tiePoints);
         } catch (Exception e) {
-            UIController.printMessage(e.getMessage());
+            UIController.showNotification(e.getMessage());
             return false;
         }
 
-        UIController.printMessage("The new points policy has been added successfully");
+        UIController.showNotification("The new points policy has been added successfully");
         return true;
+    }
+
+    private static boolean validateStringIsInteger(String value) {
+        try {
+           Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
 
@@ -498,39 +516,34 @@ public class ARController {
         //League selection
         League chosenLeague = null;
         try {
-            chosenLeague = getLeagueByChoice();
+            chosenLeague = getLeagueThatHasntStartedByChoice();
         } catch (Exception e) {
-            UIController.printMessage(e.getMessage() + "\nPlease add a league before setting a points policy");
+            UIController.showNotification(e.getMessage());
             return false;
         }
 
-        Season chosenSeason = null;
-        try {
-            chosenSeason = getSeasonByChoice(chosenLeague);
-        } catch (Exception e) {
-            UIController.printMessage(e.getMessage() + "\nPlease add a season before setting a points policy");
-            return false;
-        }
+        Season chosenSeason = chosenLeague.getLatestSeason();
 
         PointsPolicy pointsPolicy = getPointsPolicyByChoice();
 
         ARRole.setPointsPolicy(chosenSeason, pointsPolicy);
 
-        UIController.printMessage("The chosen points policy was set successfully");
+        UIController.showNotification("The chosen points policy was set successfully");
         return true;
     }
 
     private static PointsPolicy getPointsPolicyByChoice() {
         PointsPolicy.getDefaultPointsPolicy();
         List<PointsPolicy> pointsPolicies = EntityManager.getInstance().getPointsPolicies();
-        UIController.printMessage("Choose a points policy number from the list:");
+        List<String> pointsPoliciesChoices = new ArrayList<>();
         for (int i = 0; i < pointsPolicies.size(); i++) {
-            UIController.printMessage(i + ". " + pointsPolicies.get(i).toString());
+            pointsPoliciesChoices.add(pointsPolicies.get(i).toString());
         }
+        String messeage = "Choose a points policy from the list:";
         int index;
         do {
-            index = UIController.receiveInt();
-        } while (!(index >= 0 && index < pointsPolicies.size()));
+            index = UIController.receiveInt(messeage, pointsPoliciesChoices);
+        } while (!(index >= 0 && index < pointsPoliciesChoices.size()));
 
         return pointsPolicies.get(index);
     }
@@ -546,21 +559,34 @@ public class ARController {
             return false;
         }
         AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        String msg = "Enter Number of games for each team per season;" +
+                "Enter maximum number of games on the same day;" +
+                "Enter minimum rest days between games";
+        String selectedParams = UIController.receiveStringFromMultipleInputs(msg);
+        String[] selectedParamsArray = selectedParams.split(";");
+        String gamesPerSeasonString = selectedParamsArray[0];
+        String gamesPerDayString = selectedParamsArray[1];
+        String minRestString = selectedParamsArray[2];
 
-        UIController.printMessage("Number of games for each team per season:");
-        int gamesPerSeason = UIController.receiveInt();
-        UIController.printMessage("Number of games on the same day:");
-        int gamesPerDay = UIController.receiveInt();
-        UIController.printMessage("Minimum rest days between games:");
-        int minRest = UIController.receiveInt();
+        if(!validateStringIsInteger(gamesPerSeasonString)
+                || !validateStringIsInteger(gamesPerDayString)
+                || !validateStringIsInteger(minRestString)){
+            UIController.showNotification("error, invalid input. Please enter valid inputs.");
+            return false;
+        }
+        //Now we know that the inputs are legal
+        int gamesPerSeason = Integer.parseInt(gamesPerSeasonString);
+        int gamesPerDay = Integer.parseInt(gamesPerDayString);
+        int minRest = Integer.parseInt(minRestString);
+
         try {
             ARRole.addSchedulingPolicy(gamesPerSeason, gamesPerDay, minRest);
         } catch (Exception e) {
-            UIController.printMessage(e.getMessage());
+            UIController.showNotification(e.getMessage());
             return false;
         }
 
-        UIController.printMessage("The new scheduling policy has been added successfully");
+        UIController.showNotification("The new scheduling policy has been added successfully");
         return true;
     }
 
@@ -579,19 +605,13 @@ public class ARController {
         //League selection
         League chosenLeague = null;
         try {
-            chosenLeague = getLeagueByChoice();
+            chosenLeague = getLeagueThatHasntStartedByChoice();
         } catch (Exception e) {
-            UIController.printMessage(e.getMessage() + "\nPlease add a league before activating a schedulin policy");
+            UIController.showNotification(e.getMessage());
             return false;
         }
-        //Season selection
-        Season chosenSeason = null;
-        try {
-            chosenSeason = getSeasonByChoice(chosenLeague);
-        } catch (Exception e) {
-            UIController.printMessage(e.getMessage() + "\nPlease add a season before setting a points policy");
-            return false;
-        }
+
+        Season chosenSeason = chosenLeague.getLatestSeason();
         //override
         boolean override = true;
         if (chosenSeason.scheduled()){
@@ -608,25 +628,26 @@ public class ARController {
         try {
             ARRole.activateSchedulingPolicy(chosenSeason, schedulingPolicy, startDate);
         } catch (Exception e) {
-            UIController.printMessage(e.getMessage());
+            UIController.showNotification(e.getMessage());
             return false;
         }
 
-        UIController.printMessage("The chosen points policy was set successfully");
+        UIController.showNotification("The chosen points policy was set successfully");
         return true;
     }
 
     private static SchedulingPolicy getSchedulingPolicyByChoice() {
         SchedulingPolicy.getDefaultSchedulingPolicy();
         List<SchedulingPolicy> schedulingPolicies = EntityManager.getInstance().getSchedulingPolicies();
-        UIController.printMessage("Choose a points policy number from the list:");
+        List<String> schedulingPoliciesChoices = new ArrayList<>();
         for (int i = 0; i < schedulingPolicies.size(); i++) {
-            UIController.printMessage(i + ". " + schedulingPolicies.get(i).toString());
+            schedulingPoliciesChoices.add(schedulingPolicies.get(i).toString());
         }
+        String messeage = "Choose a scheduling policy from the list:";
         int index;
         do {
-            index = UIController.receiveInt();
-        } while (!(index >= 0 && index < schedulingPolicies.size()));
+            index = UIController.receiveInt(messeage, schedulingPoliciesChoices);
+        } while (!(index >= 0 && index < schedulingPoliciesChoices.size()));
 
         return schedulingPolicies.get(index);
     }
