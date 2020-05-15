@@ -1,14 +1,14 @@
 package Domain.Users;
 
 import Domain.Alert;
-import Domain.EntityManager;
 import Domain.Game.Team;
+import Domain.Subject;
 import Domain.UserComplaints;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SystemAdmin extends Role  {
+public class SystemAdmin extends Role implements Subject {
     private List<UserComplaints> complaintsToReview;
     public SystemAdmin(SystemUser systemUser) {
         super(RoleTypes.SYSTEM_ADMIN,systemUser);
@@ -18,7 +18,6 @@ public class SystemAdmin extends Role  {
     /*notify teamOwners  and TeamMangers - close team Permanently*/
     public void closeTeamPermanently(Team team)
     {
-        Alert alertInstance = Alert.getInstance();
         List<TeamOwner> teamOwners = new ArrayList<>();
         List<TeamManager> teamManagers = new ArrayList<>();
         List<SystemUser> systemUsers = new ArrayList<>();
@@ -31,6 +30,13 @@ public class SystemAdmin extends Role  {
             systemUsers.add(teamManagers.get(i).getSystemUser());
         }
         String alert = team.getTeamName()+" close permanently";
-        alertInstance.notifyObserver(systemUsers, alert);
+        notifyObserver(systemUsers, alert);
+    }
+
+    @Override
+    public void notifyObserver(List<SystemUser> systemUsers, String alert) {
+        Alert alertInstance = Alert.getInstance();
+        alertInstance.update(systemUsers, alert);
+
     }
 }
