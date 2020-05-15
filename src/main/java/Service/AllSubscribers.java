@@ -2,7 +2,7 @@ package Service;
 
 
 import Domain.Users.SystemUser;
-import com.vaadin.flow.server.WrappedSession;
+import com.vaadin.flow.server.VaadinSession;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ public class AllSubscribers implements Observer {
 
     private static AllSubscribers allSubscribersInstance = null;
 
-    private Map<String , WrappedSession> systemUsers;
+    private Map<String , VaadinSession> systemUsers;
 
 
 
@@ -50,7 +50,7 @@ public class AllSubscribers implements Observer {
 
     //add user after login
     //todo: check if after signUp - user is login????
-    public void login(String systemUser, WrappedSession session)
+    public void login(String systemUser, VaadinSession session)
     {
         systemUsers.put(systemUser, session);
     }
@@ -66,9 +66,9 @@ public class AllSubscribers implements Observer {
     {
         for (int i = 0; i < systemUsers.size(); i++) {
             //todo: alert!
-            WrappedSession session = this.systemUsers.get(systemUsers.get(i).getUsername());
+            VaadinSession session = this.systemUsers.get(systemUsers.get(i).getUsername());
             //session
-            UIController.showPopupWindow(session , alert);
+            UIController.showAlert(session , alert);
         }
     }
 }

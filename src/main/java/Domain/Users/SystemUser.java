@@ -4,8 +4,6 @@ package Domain.Users;
 import Domain.EntityManager;
 import Domain.Game.Game;
 import Domain.UserComplaints;
-import javafx.beans.Observable;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -133,7 +133,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
 
     private void createNavItems() {
-        WrappedSession userSession = VaadinService.getCurrentRequest().getWrappedSession();
+        VaadinSession userSession = VaadinSession.getCurrent();
         if(userSession == null || userSession.getAttribute(USERNAME_ATTRIBUTE_NAME) == null  )
         {
             System.out.println("No Session acquired");
@@ -171,8 +171,8 @@ public class FootballMain extends AppLayout implements RouterLayout{
     }
 
     private void logout() {
-        WrappedSession userSession = VaadinService.getCurrentRequest().getWrappedSession();
-        userSession.removeAttribute(USERNAME_ATTRIBUTE_NAME);
+        VaadinSession userSession = VaadinSession.getCurrent();
+        userSession.setAttribute(USERNAME_ATTRIBUTE_NAME, null);
         getUI().get().navigate("");
         getUI().get().getPage().reload();
 
@@ -201,7 +201,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
 
-        WrappedSession userSession = VaadinService.getCurrentRequest().getWrappedSession();
+        VaadinSession userSession = VaadinSession.getCurrent();
         if(userSession.getAttribute(USERNAME_ATTRIBUTE_NAME) != null  )
         {
             loginBtn.setVisible(false);
