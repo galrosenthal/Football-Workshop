@@ -52,7 +52,7 @@ public class EntityManager {
     public static EntityManager getInstance() {
         if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
-            SystemUser a = new SystemUser("admin","Aa123456","admin");
+            SystemUser a = new SystemUser("Administrator","Aa123456","admin");
             a.addNewRole(new SystemAdmin(a));
             a.addNewRole(new AssociationRepresentative(a));
         }
@@ -310,10 +310,18 @@ public class EntityManager {
     }
 
     public void clearAll() {
+        clearAllUsers();
         allStadiums = new ArrayList<>();
         allLeagues = new HashSet<>();
         allUsers = new ArrayList<>();
         allTeams = new ArrayList<>();
+    }
+
+    private void clearAllUsers() {
+        for (SystemUser user :
+                allUsers) {
+            user = null;
+        }
     }
 
     /**

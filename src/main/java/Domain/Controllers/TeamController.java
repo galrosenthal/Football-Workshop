@@ -174,7 +174,7 @@ public class TeamController {
             int propertyNewValueIndex = choosePropertiesUI("Choose Property new value ",objects);
             return allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify), allEnumValues.get(propertyNewValueIndex).toString());
         } else if (allAssetsTeam.get(assetIndex).isStringProperty(properties.get(propertyIndexToModify))) {
-            String newValue = UIController.receiveString("Enter new value: ", null);
+            String newValue = UIController.receiveString("Enter new value: ");
             return allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify), newValue);
         }
         return false;
@@ -244,6 +244,7 @@ public class TeamController {
         int propertyIndex;
         do {
             propertyIndex = UIController.receiveInt(msg,properties);
+            propertyIndex -= 1;
         } while (!(propertyIndex >= 0 && propertyIndex < properties.size()));
 
         return propertyIndex;
@@ -263,6 +264,7 @@ public class TeamController {
         int propertyIndex;
         do {
             propertyIndex = UIController.receiveInt("Choose which action: ",actions);
+            propertyIndex -= 1;
         } while (!(propertyIndex >= 0 && propertyIndex <= 1));
 
         return propertyIndex;

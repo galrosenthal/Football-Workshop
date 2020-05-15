@@ -19,6 +19,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
@@ -34,6 +35,7 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+import org.hibernate.validator.internal.engine.messageinterpolation.parser.ELState;
 
 import java.util.Collection;
 import java.util.List;
@@ -259,21 +261,37 @@ public class FootballMain extends AppLayout implements RouterLayout{
         newWindow.setCloseOnEsc(false);
 
         TextField tf = new TextField();
-        ComboBox<String> values = new ComboBox<>();
+        ComboBox<String> valuesForInt = new ComboBox<>();
+        MultiSelectListBox<String> valuesForString = new MultiSelectListBox<>();
+
         Button close = new Button("Submit");
         close.setEnabled(false);
         close.addClickListener(e -> {
             waitingForUI = false;
             if(receiveType.equals("string"))
             {
-                returnedValue.append(tf.getValue());
+                if(displayValues.length <= 0)
+                {
+                    returnedValue.append(tf.getValue());
+
+                }
+                else
+                {
+                    String resultDelimeter = ";";
+                    StringBuilder valuesSelected = new StringBuilder();
+                    for (String value :
+                            valuesForString.getSelectedItems()) {
+                        valuesSelected.append(resultDelimeter).append(value);
+                    }
+                    returnedValue.append(valuesSelected);
+                }
             }
             else if(receiveType.equals("int"))
             {
                 int value = 0, index = 0;
                 for (String listValue :
                         displayValues[0]) {
-                    if(values.getValue().equals(listValue))
+                    if(valuesForInt.getValue().equals(listValue))
                     {
                         value = index;
                     }
@@ -290,27 +308,33 @@ public class FootballMain extends AppLayout implements RouterLayout{
         vl.add(lbl);
         if(receiveType.equals("string"))
         {
-            vl.add(tf);
-            tf.setValueChangeMode(ValueChangeMode.EAGER);
-            tf.addValueChangeListener(e -> {
-                if(!e.getValue().isEmpty())
-                {
-                    close.setEnabled(true);
-                }
-                else
-                {
-                    close.setEnabled(false);
-                }
-            });
+            if(displayValues.length <= 0) {
+                vl.add(tf);
+                tf.setValueChangeMode(ValueChangeMode.EAGER);
+                tf.addValueChangeListener(e -> {
+                    if (!e.getValue().isEmpty()) {
+                        close.setEnabled(true);
+                    } else {
+                        close.setEnabled(false);
+                    }
+                });
+            }
+            else
+            {
+                vl.add(valuesForString);
+                valuesForString.setItems(displayValues[0]);
+
+
+            }
 
         }
         else if(receiveType.equals("int"))
         {
             if(displayValues.length > 0) {
-                values.setItems(displayValues[0]);
-                values.setClearButtonVisible(true);
-                vl.add(values);
-                values.addValueChangeListener(e -> {
+                valuesForInt.setItems(displayValues[0]);
+                valuesForInt.setClearButtonVisible(true);
+                vl.add(valuesForInt);
+                valuesForInt.addValueChangeListener(e -> {
                     if(!e.getValue().isEmpty())
                     {
                         close.setEnabled(true);
