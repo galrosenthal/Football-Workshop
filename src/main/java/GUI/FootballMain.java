@@ -125,8 +125,8 @@ public class FootballMain extends AppLayout implements RouterLayout{
         logoutButton.getElement().setAttribute("title", "Logout (Ctrl+L)");
     }
 
-    public static void showAlert(String message) {
-        UI.getCurrent().access(() -> {
+    public static void showAlert(String message,UI seUI) {
+        seUI.access(() -> {
             Dialog alertWindow = new Dialog();
             VerticalLayout alertView = new VerticalLayout();
             Label msg = new Label(message);
@@ -138,9 +138,9 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
             alertWindow.add(alertView);
             alertWindow.setCloseOnOutsideClick(false);
+//            UI.getCurrent().access(alertWindow::open);
             alertWindow.open();
-
-            UI.getCurrent().push();
+            seUI.push();
         });
     }
 
@@ -185,6 +185,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
     private void logout() {
         VaadinSession userSession = VaadinSession.getCurrent();
+        MainController.logout((String)userSession.getAttribute(USERNAME_ATTRIBUTE_NAME));
         userSession.setAttribute(USERNAME_ATTRIBUTE_NAME, null);
         getUI().get().navigate("");
         getUI().get().getPage().reload();

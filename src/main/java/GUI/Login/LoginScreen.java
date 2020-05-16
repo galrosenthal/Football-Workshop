@@ -4,7 +4,9 @@ import Domain.EntityManager;
 import GUI.FootballMain;
 import Service.AllSubscribers;
 import Service.MainController;
+import Service.UIController;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H1;
@@ -105,9 +107,16 @@ public class LoginScreen extends FlexLayout {
                 return;
             }
             else{
+                if(session.getAttribute("username") != null)
+                {
+                    FootballMain.showNotification("Cannot login from 2 browsers simultaneously");
+                    return;
+                }
                 session.setAttribute("username", event.getUsername());
-                getUI().get().navigate("");
-                AllSubscribers.getInstance().login(event.getUsername(),session);
+                UI currSessionUI = getUI().get();
+                currSessionUI.navigate("");
+
+                AllSubscribers.getInstance().login(event.getUsername(),currSessionUI);
             }
 
         } else {

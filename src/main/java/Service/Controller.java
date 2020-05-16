@@ -2,10 +2,7 @@ package Service;
 
 import Domain.Controllers.TeamController;
 import Domain.EntityManager;
-import Domain.Exceptions.NoTeamExistsException;
-import Domain.Exceptions.UsernameAlreadyExistsException;
-import Domain.Exceptions.UsernameOrPasswordIncorrectException;
-import Domain.Exceptions.WeakPasswordException;
+import Domain.Exceptions.*;
 import Domain.Game.Team;
 import Domain.Game.TeamAsset;
 import Domain.Game.TeamStatus;
@@ -247,7 +244,7 @@ public class Controller {
      * @return The user in the system with those credentials.
      * @throws UsernameOrPasswordIncorrectException If user name or password are incorrect.
      */
-    public static SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException {
+    public static SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException, AlreadyLoggedInUser {
         SystemUser SystemUser =  EntityManager.getInstance().login(usrNm, pswrd);
         return SystemUser;
     }

@@ -438,10 +438,11 @@ public class UIController {
 
     }
 
-    public static void showAlert(VaadinSession session, String alert) {
+    public static void showAlert(UI sessionUI, String alert) {
         if(!isTest) {
-            session.access(() -> {
-                FootballMain.showAlert(alert);
+            sessionUI.access(() -> {
+                FootballMain.showAlert(alert,sessionUI);
+                sessionUI.push();
             });
         }
         else

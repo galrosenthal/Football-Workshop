@@ -163,7 +163,7 @@ public class ModifyUsers extends FlexLayout {
                 {
                     exception.printStackTrace();
                 }
-                MainController.testAlert(se);
+                MainController.testAlert(lastUI);
             });
             t.setName("Alert Testing");
             t.start();

@@ -6,6 +6,7 @@ import Domain.Game.League;
 import Domain.Game.Season;
 import Domain.Game.Team;
 import Domain.Users.*;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
 
 import java.text.SimpleDateFormat;
@@ -30,7 +31,7 @@ public class MainController {
             UIController.showNotification("Login Successfully");
             return true;
         }
-        catch (UsernameOrPasswordIncorrectException e)
+        catch (UsernameOrPasswordIncorrectException | AlreadyLoggedInUser e)
         {
             e.printStackTrace();
             UIController.showNotification(e.getMessage());
@@ -485,7 +486,7 @@ public class MainController {
         }
     }
 
-    public static void testAlert(VaadinSession se) {
+    public static void testAlert(UI se) {
         UIController.showAlert( se,"Mother of god");
     }
 
@@ -529,5 +530,10 @@ public class MainController {
             e.printStackTrace();
             UIController.showNotification(e.getMessage());
         }
+    }
+
+    public static void logout(String username) {
+        SystemUser logoutUser = EntityManager.getInstance().getUser(username);
+        EntityManager.getInstance().logout(logoutUser);
     }
 }

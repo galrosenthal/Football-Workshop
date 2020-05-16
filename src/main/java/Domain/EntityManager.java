@@ -2,6 +2,7 @@ package Domain;
 
 import DB.DBManager;
 import DB.Table;
+import Domain.Exceptions.AlreadyLoggedInUser;
 import Domain.Exceptions.UsernameAlreadyExistsException;
 import Domain.Exceptions.UsernameOrPasswordIncorrectException;
 import Domain.Exceptions.WeakPasswordException;
@@ -16,10 +17,7 @@ import Service.AllSubscribers;
 import Service.Observer;
 import Service.UIController;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class EntityManager{
     private static EntityManager entityManagerInstance = null;
@@ -29,6 +27,9 @@ public class EntityManager{
     private List<Stadium> allStadiums;
     private HashSet<League> allLeagues;
     private List<SystemAdmin> systemAdmins;
+    private boolean loggedIn = false;
+    private HashMap<SystemUser, Boolean> loggedInMap;
+
 
 
     public boolean isLoggedIn() {
@@ -39,14 +40,13 @@ public class EntityManager{
         this.loggedIn = loggedIn;
     }
 
-    private boolean loggedIn = false;
-
     private EntityManager() {
         allUsers = new ArrayList<>();
         allLeagues = new HashSet<>();
         allTeams = new ArrayList<>();
         allStadiums = new ArrayList<>();
         systemAdmins = new ArrayList<>();
+        loggedInMap = new HashMap<>();
     }
 
     /**
@@ -57,9 +57,10 @@ public class EntityManager{
     public static EntityManager getInstance() {
         if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
-            SystemUser a = new SystemUser("Administrator","Aa123456","admin");
-            a.addNewRole(new SystemAdmin(a));
-            a.addNewRole(new AssociationRepresentative(a));
+            SystemUser admin = new SystemUser("Administrator","Aa123456","admin");
+            SystemUser arnav = new SystemUser("arnav","Aa123456","arnav");
+            admin.addNewRole(new SystemAdmin(admin));
+            admin.addNewRole(new AssociationRepresentative(admin));
         }
 
         return entityManagerInstance;
@@ -370,13 +371,18 @@ public class EntityManager{
      * @return The user in the system with those credentials.
      * @throws UsernameOrPasswordIncorrectException If user name or password are incorrect.
      */
-    public SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException {
+    public SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException,AlreadyLoggedInUser {
         SystemUser userWithUsrNm = getUser(usrNm);
+        if(loggedInMap.containsKey(userWithUsrNm))
+        {
+            throw new AlreadyLoggedInUser("Error: The user " + usrNm + " is already logged in");
+        }
         if(userWithUsrNm == null) //User name does not exists.
             throw new UsernameOrPasswordIncorrectException("Username or Password was incorrect!");
 
         //User name exists, checking password.
         if(authenticate(userWithUsrNm, pswrd)){
+            loggedInMap.put(userWithUsrNm,true);
             return userWithUsrNm;
         }
 
@@ -461,6 +467,11 @@ public class EntityManager{
         }
 
         return null;
+    }
+
+    public void logout(SystemUser logoutUser) {
+        loggedInMap.put(logoutUser,false);
+
     }
 
 /*
