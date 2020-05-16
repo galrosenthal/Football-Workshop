@@ -373,7 +373,7 @@ public class EntityManager{
      */
     public SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException,AlreadyLoggedInUser {
         SystemUser userWithUsrNm = getUser(usrNm);
-        if(loggedInMap.containsKey(userWithUsrNm))
+        if(loggedInMap.containsKey(userWithUsrNm) && loggedInMap.get(userWithUsrNm))
         {
             throw new AlreadyLoggedInUser("Error: The user " + usrNm + " is already logged in");
         }

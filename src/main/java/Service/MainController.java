@@ -535,5 +535,6 @@ public class MainController {
     public static void logout(String username) {
         SystemUser logoutUser = EntityManager.getInstance().getUser(username);
         EntityManager.getInstance().logout(logoutUser);
+        AllSubscribers.getInstance().logout(username);
     }
 }

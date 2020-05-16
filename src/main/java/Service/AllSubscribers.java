@@ -57,7 +57,7 @@ public class AllSubscribers implements Observer {
     }
     //remove user after logout
     //fixme! need to add logout function - UC
-    public void logout(SystemUser systemUser)
+    public void logout(String systemUser)
     {
         systemUsers.remove(systemUser);
     }
