@@ -1,15 +1,22 @@
 package DB;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class DBHandlerTest {
 
+    DBHandler db;
+
+    @Before
     @Test
     public void DBHandler()
     {
-        DBHandler db = new DBHandler();
+         db = new DBHandler();
+         assertTrue(db.dslCheck());
+        assertFalse(db.dslCheckFalse());
+
     }
 
 }
