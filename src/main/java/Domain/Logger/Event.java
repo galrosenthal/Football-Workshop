@@ -4,6 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Event {
+
+    protected int minute;
+
+    public Event(int minute) {
+        this.minute = minute;
+    }
+
+    public int getMinute() {
+        return minute;
+    }
+
     public static List<String> getEventsTypes() {
         List<String> eventTypes = new ArrayList<>();
         eventTypes.add("Red Card");
@@ -14,5 +25,10 @@ public class Event {
         eventTypes.add("Switch Players");
         eventTypes.add("Injury");
         return eventTypes;
+    }
+
+    @Override
+    public String toString() {
+        return "minute=" + minute;
     }
 }

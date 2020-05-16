@@ -4,10 +4,18 @@ import Domain.Users.Player;
 
 public class Injury extends Event {
     private Player injuredPlayer;
-    private int minute;
 
     public Injury(Player injuredPlayer, int minute) {
+        super(minute);
         this.injuredPlayer = injuredPlayer;
-        this.minute = minute;
+    }
+
+    public Player getInjuredPlayer() {
+        return injuredPlayer;
+    }
+
+    @Override
+    public String toString() {
+        return "Injury injuredPlayer=" + injuredPlayer.getAssetName() +" "+super.toString();
     }
 }

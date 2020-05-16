@@ -7,12 +7,28 @@ public class SwitchPlayers extends Event {
     private Team team;
     private Player enteringPlayer;
     private Player exitingPlayer;
-    private int minute;
 
     public SwitchPlayers(Team team, Player enteringPlayer, Player exitingPlayer, int minute) {
+        super(minute);
         this.team = team;
         this.enteringPlayer = enteringPlayer;
         this.exitingPlayer = exitingPlayer;
-        this.minute = minute;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public Player getEnteringPlayer() {
+        return enteringPlayer;
+    }
+
+    public Player getExitingPlayer() {
+        return exitingPlayer;
+    }
+
+    @Override
+    public String toString() {
+        return "SwitchPlayers team=" + team.getTeamName() +", enteringPlayer=" + enteringPlayer.getAssetName() +", exitingPlayer=" + exitingPlayer.getAssetName() +" "+super.toString();
     }
 }

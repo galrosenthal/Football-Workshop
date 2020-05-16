@@ -5,14 +5,13 @@ import Domain.Game.Team;
 public class Goal extends Event {
     private Team scoringTeam;
     private Team scoredOnTeam;
-    private int goalMinute;
     //todo:Add Player who scored
 
 
     public Goal(Team scoringTeam, Team scoredOnTeam, int goalMinute) {
+        super(goalMinute);
         this.scoringTeam = scoringTeam;
         this.scoredOnTeam = scoredOnTeam;
-        this.goalMinute = goalMinute;
     }
 
     public Team getScoringTeam() {
@@ -23,7 +22,9 @@ public class Goal extends Event {
         return scoredOnTeam;
     }
 
-    public int getGoalMinute() {
-        return goalMinute;
+
+    @Override
+    public String toString() {
+        return "Goal scoringTeam=" + scoringTeam.getTeamName() + ", scoredOnTeam=" + scoredOnTeam.getTeamName() +" "+super.toString();
     }
 }

@@ -4,10 +4,18 @@ import Domain.Game.Team;
 
 public class Offside extends Event {
     private Team teamWhoCommitted;
-    private int offsideMinute;
 
     public Offside(Team teamWhoCommitted, int offsideMinute) {
+        super(offsideMinute);
         this.teamWhoCommitted = teamWhoCommitted;
-        this.offsideMinute = offsideMinute;
+    }
+
+    public Team getTeamWhoCommitted() {
+        return teamWhoCommitted;
+    }
+
+    @Override
+    public String toString() {
+        return "Offside teamWhoCommitted=" + teamWhoCommitted.getTeamName() +" "+super.toString();
     }
 }

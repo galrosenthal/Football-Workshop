@@ -17,6 +17,7 @@ public class Game {
     private Date gameDate;
     private List<Referee> referees; // - maybe array?
     private EventsLogger eventsLogger;
+    private boolean hasFinished;
     //TODO: should be more properties
 
     public Game(Stadium stadium, Team homeTeam, Team awayTeam, Date gameDate, List<Referee> referees) {
@@ -26,6 +27,7 @@ public class Game {
         this.gameDate = gameDate;
         this.referees = referees;
         this.eventsLogger = new EventsLogger();
+        this.hasFinished = false;
         //TODO: Add to EntityManager?
     }
 
@@ -66,7 +68,7 @@ public class Game {
      */
     public boolean hasFinished() {
         //TODO: Check dates or game status
-        return true;
+        return hasFinished;
     }
 
 
@@ -208,10 +210,10 @@ public class Game {
         if ((!teamWhoCommitted.equals(homeTeam)) && (!teamWhoCommitted.equals(awayTeam))) {
             throw new IllegalArgumentException("The given team doesn't play in this game");
         }
-        if ((!this.homeTeam.getTeamPlayers().contains(enteringPlayer)) && (!this.awayTeam.getTeamPlayers().contains(enteringPlayer))) {
+        if ((!teamWhoCommitted.getTeamPlayers().contains(enteringPlayer))) {
             throw new IllegalArgumentException("The given entering Player doesn't play in this game");
         }
-        if ((!this.homeTeam.getTeamPlayers().contains(exitingPlayer)) && (!this.awayTeam.getTeamPlayers().contains(exitingPlayer))) {
+        if ((!teamWhoCommitted.getTeamPlayers().contains(exitingPlayer))) {
             throw new IllegalArgumentException("The given exiting Player doesn't play in this game");
         }
         if (minute < 0) {
@@ -235,5 +237,23 @@ public class Game {
             throw new IllegalArgumentException("minute must be positive integer");
         }
         this.eventsLogger.logInjuryEvent(player, minute);
+    }
+
+
+    public void setHasFinished(boolean hasFinished) {
+        this.hasFinished = hasFinished;
+    }
+
+    public void addReferee(Referee referee) {
+        this.referees.add(referee);
+    }
+
+    @Override
+    public String toString() {
+        return "Game{" +
+                "stadium=" + stadium.getName() +
+                ", homeTeam=" + homeTeam.getTeamName() +
+                ", awayTeam=" + awayTeam.getTeamName() +
+                ", gameDate=" + gameDate + '}';
     }
 }

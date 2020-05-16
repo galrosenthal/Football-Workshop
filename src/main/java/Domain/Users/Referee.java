@@ -71,9 +71,9 @@ public class Referee extends Role {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj != null && obj instanceof Referee){
-            Referee other = (Referee)obj;
-            if(this==other || this.systemUser.equals(other.systemUser)){
+        if (obj != null && obj instanceof Referee) {
+            Referee other = (Referee) obj;
+            if (this == other || this.systemUser.equals(other.systemUser)) {
                 return true;
             }
         }
@@ -82,5 +82,9 @@ public class Referee extends Role {
 
     public List<Game> getGames() {
         return this.games;
+    }
+
+    public void addGame(Game game) {
+        this.games.add(game);
     }
 }

@@ -161,26 +161,21 @@ public class UIController {
                 return "NOTaUSERNAME";
             } else if (selector == 9313) { //training
                 return "VAR";
-            }
-            else if (selector == 91011 || selector == 91021 || selector == 91031 || selector == 9103
-                    || selector == 91041  || selector == 91051 || selector == 91052 || selector == 91053 || selector == 912321 || selector == 911321) { //team name
-                if(selector == 91031 )
+            } else if (selector == 91011 || selector == 91021 || selector == 91031 || selector == 9103
+                    || selector == 91041 || selector == 91051 || selector == 91052 || selector == 91053 || selector == 912321 || selector == 911321) { //team name
+                if (selector == 91031)
                     selector = 91032;
                 else if (selector == 9103)
                     selector = 910311;
                 else
                     selector = 91012; // avi cohen
                 return "Hapoel Beit Shan";
-            }
-            else if(selector == 91112 || selector == 91212 ){
+            } else if (selector == 91112 || selector == 91212) {
 //                setSelector(91213);
                 return "Hapoel Beit Shan;Hapoel Beer Sheva";
-            }
-            else if (selector == 911262)
-            {
+            } else if (selector == 911262) {
                 return "stubTeam91126";
-            }
-            else if(selector == 9102){
+            } else if (selector == 9102) {
                 return "stubTeam9102";
             } else
                 return null;
@@ -190,7 +185,7 @@ public class UIController {
     private static void printMessageAndValuesForTest(String messageToDisplay, Collection<String>... valuesToChooseFrom) {
         System.out.println(messageToDisplay);
         int indexForCount = 1;
-        if(valuesToChooseFrom.length > 0){
+        if (valuesToChooseFrom.length > 0) {
             for (String value :
                     valuesToChooseFrom[0]) {
                 System.out.println(indexForCount++ + ". " + value);
@@ -262,10 +257,10 @@ public class UIController {
                 return 0;
             } else if (selector == 61119) {
                 return 0;
-            }else if(selector == 61120 || selector == 6623 || selector == 6622 || selector == 6612 || selector == 6611
-                    || selector == 6621 || selector ==66151 || selector == 66144|| selector == 66143 || selector ==6625
-                    || selector==66163 || selector ==66251 || selector == 91125 || selector == 91225 ||
-                    selector == 91131 || selector == 91231){
+            } else if (selector == 61120 || selector == 6623 || selector == 6622 || selector == 6612 || selector == 6611
+                    || selector == 6621 || selector == 66151 || selector == 66144 || selector == 66143 || selector == 6625
+                    || selector == 66163 || selector == 66251 || selector == 91125 || selector == 91225 ||
+                    selector == 91131 || selector == 91231) {
                 return 0;
             } else if (selector == 6132 || selector == 6133 || selector == 6134 || selector == 61341 || selector == 6135 || selector == 6136 || selector == 6137 || selector == 6138 || selector == 61383 || selector == 61381 || selector == 61310) {
                 if (selector == 6134) {
@@ -300,9 +295,7 @@ public class UIController {
             } else if (selector == 9121) {
                 setSelector(91212);
                 return 0;
-            }
-
-            else if(selector == 91213){
+            } else if (selector == 91213) {
                 setSelector(91214);
                 return 1;
             } else if (selector == 91126) {
@@ -348,6 +341,66 @@ public class UIController {
             {
                 setSelector(9513);
                 return 0;
+            } else if (selector == 1031)  //0,0,0,1 - success
+            {
+                setSelector(9521);
+                return 0;
+            } else if (selector == 1032)  //0,1,0,1
+            {
+                setSelector(1033);
+                return 0;
+            } else if (selector == 1033)  //1,0,1
+            {
+                setSelector(1034);
+                return 1;
+            } else if (selector == 1034)  //0,1
+            {
+                setSelector(1035);
+                return 0;
+            } else if (selector == 1035)  //1
+            {
+                //setSelector(1035);
+                return 1;
+            } else if (selector == 1036)  //0,2,1,0,1
+            {
+                setSelector(1037);
+                return 0;
+            } else if (selector == 1037)  //2,1,0,1
+            {
+                setSelector(1033);
+                return 2;
+            } else if (selector == 1038)  //0,3,0,1
+            {
+                setSelector(1039);
+                return 0;
+            } else if (selector == 1039)  //3,0,1
+            {
+                setSelector(1034);
+                return 3;
+            } else if (selector == 10310)  //0,4,0,1
+            {
+                setSelector(10311);
+                return 0;
+            } else if (selector == 10311)  //4,0,1
+            {
+                setSelector(1034);
+                return 4;
+            } else if (selector == 10312)  //0,5,0,1,0,1
+            {
+                setSelector(10313);
+                return 0;
+            } else if (selector == 10313)  //5,0,1,0,1
+            {
+                setSelector(1032);
+                return 5;
+            } else if (selector == 10314)  //0,6,0,1
+            {
+                setSelector(10315);
+                return 0;
+            } else if (selector == 10315)  //6,0,1
+            {
+                setSelector(1034);
+                return 6;
             } else {
                 //random number to crash test that were not checked
                 return 123812;

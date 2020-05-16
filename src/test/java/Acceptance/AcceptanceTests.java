@@ -4,22 +4,19 @@ import Domain.EntityManager;
 import Domain.Exceptions.AssetsNotExistsException;
 import Domain.Exceptions.TeamAlreadyExistsException;
 import Domain.Exceptions.UserNotFoundException;
-import Domain.Game.Season;
+import Domain.Game.*;
+import Domain.Logger.Event;
+import Domain.Logger.Injury;
 import Domain.Users.*;
-import Domain.Game.League;
 import Domain.Users.AssociationRepresentative;
 import Domain.Users.SystemAdmin;
 import Domain.Users.SystemUser;
-import Domain.Game.Team;
-import Domain.Game.TeamStatus;
-import Service.ARController;
-import Service.Controller;
-import Service.TOController;
-import Service.UIController;
+import Service.*;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -778,11 +775,6 @@ public class AcceptanceTests {
          */
     }
 
-    @After
-    public void tearDown() throws Exception {
-        EntityManager.getInstance().clearAll();
-    }
-
     /**
      * 9.11.a
      */
@@ -840,5 +832,47 @@ public class AcceptanceTests {
         assertEquals(0, season.getTeams().size());
         assertEquals(0, team1.getSeasons().size());
         assertEquals(0, team2.getSeasons().size());
+    }
+
+    /**
+     * 10.3.a
+     * Main success scenario - A new Injury event is created.
+     */
+    @Test
+    public void updateGameEventsATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        systemUser.addNewRole(new Referee(systemUser,"VAR"));
+        Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
+
+        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
+        new AssociationRepresentative(arSystemUser);
+        new TeamOwner(arSystemUser);
+        TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        Team firstTeam = new Team("Hapoel Beit Shan", toRole);
+        Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
+
+        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen"),new Date(2001, 01, 01));
+        firstTeam.addTeamPlayer(toRole,player1);
+
+        game.addReferee(referee);
+        referee.addGame(game);
+
+        UIController.setSelector(10314); //0,6,0,1
+        assertTrue(RefereeController.updateGameEvents(systemUser));
+        //The new Penalty has been added successfully
+        Event event = game.getEventsLogger().getGameEvents().get(0);
+        assertTrue(event instanceof Injury);
+        assertTrue(((Injury) event).getMinute()==1);
+        assertTrue(((Injury) event).getInjuredPlayer().equals(player1));
+        /*
+        Expected: The new Injury has been added successfully
+         */
+    }
+
+
+    @After
+    public void tearDown() throws Exception {
+        EntityManager.getInstance().clearAll();
     }
 }

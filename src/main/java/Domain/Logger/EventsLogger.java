@@ -88,7 +88,7 @@ public class EventsLogger {
      * @param minute           - int - The minute the event happened
      */
     public void logPenaltyEvent(Team teamWhoCommitted, int minute) {
-        this.gameEvents.add(new Offside(teamWhoCommitted, minute));
+        this.gameEvents.add(new Penalty(teamWhoCommitted, minute));
     }
 
     /**
@@ -111,5 +111,9 @@ public class EventsLogger {
      */
     public void logInjuryEvent(Player player, int minute) {
         this.gameEvents.add(new Injury(player, minute));
+    }
+
+    public List<Event> getGameEvents() {
+        return gameEvents;
     }
 }
