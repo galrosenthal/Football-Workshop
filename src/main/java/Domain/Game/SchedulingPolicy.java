@@ -81,9 +81,9 @@ public class SchedulingPolicy {
             if(team.getStadiums() == null || team.getStadiums().isEmpty()){
                 throw new Exception("error, there are teams with no stadiums, like \""+team.getTeamName()+"\"");
             }
-        /*    if(team.getTeamPlayers().size() < 11){
+            if(team.getTeamPlayers().size() < 11){
                 throw new Exception("error, there are teams with less than 11 players, like \""+team.getTeamName()+"\"");
-            }*/
+            }
         }
         //shuffle the teams list in order to get random results in each activation.
         Collections.shuffle(teams);
@@ -150,13 +150,20 @@ public class SchedulingPolicy {
         Set<Team> teamsAsSet = new LinkedHashSet<>();
         teamsAsSet.addAll(teams);
         Set<List<Team>> cartesianPairsOfTeams = Sets.cartesianProduct(teamsAsSet,teamsAsSet);
+        int forFlipping = 0;
         for(List<Team> teamList : cartesianPairsOfTeams){
             Team team1 = teamList.get(0);
             Team team2 = teamList.get(1);
             if(!team1.equals(team2)){
                 PairOfTeams pot = new PairOfTeams(team1, team2);
                if(!isPairExistsInList(pairedTeams,pot)) {
-                   pairedTeams.add(pot);
+                   if(forFlipping % 2 == 0) {
+                       pairedTeams.add(pot);
+                   }
+                   else{ //flip
+                       pairedTeams.add(new PairOfTeams(team2, team1));
+                   }
+                   forFlipping ++;
                }
             }
         }
@@ -253,7 +260,7 @@ public class SchedulingPolicy {
         int currIndexInRefs = 0;
         while(!copyOfSchedule.isEmpty()){
             List<ScheduleMatch> matchesInSameDay = getAndRemoveMatchesInTheSameDay(copyOfSchedule);
-            int numOfRefsForEachMatch = referees.size()/matchesInSameDay.size();
+            int numOfRefsForEachMatch = Math.min(4, referees.size()/matchesInSameDay.size());
             for(ScheduleMatch match : matchesInSameDay) {
                 for (int i = 1; i <= numOfRefsForEachMatch; i++) {
                     Referee refToCheck = referees.get(currIndexInRefs);
@@ -309,6 +316,18 @@ public class SchedulingPolicy {
             schedule.remove(scheduleMatch);
         }
         return matchesInTheSameDay;
+    }
+
+    public int getGamesPerSeason() {
+        return gamesPerSeason;
+    }
+
+    public int getGamesPerDay() {
+        return gamesPerDay;
+    }
+
+    public int getMinimumRestDays() {
+        return minimumRestDays;
     }
 
     /**

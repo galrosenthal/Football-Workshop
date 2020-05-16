@@ -931,37 +931,6 @@ public class AcceptanceTests {
          */
     }
 
-    @Test
-    public void testSchedulePolicyAlg() throws Exception {
-        SchedulingPolicy sp = new SchedulingPolicy(1,4,7);
-        Team team1 = new TeamStub(1);
-        team1.addStadium(new StadiumStub("studium1","loc1"));
-        Team team2 = new TeamStub(2);
-        team2.addStadium(new StadiumStub("studium2","loc2"));
-        Team team3 = new TeamStub(3);
-        team3.addStadium(new StadiumStub("studium3","loc3"));
-        Team team4 = new TeamStub(4);
-        team4.addStadium(new StadiumStub("studium4","loc4"));
-        Team team5 = new TeamStub(5);
-        team5.addStadium(new StadiumStub("studium5","loc5"));
-        Team team6 = new TeamStub(6);
-        team6.addStadium(new StadiumStub("studium6","loc6"));
-        List<Team> teams = new ArrayList<>();
-        teams.add(team1);
-        teams.add(team2);
-        teams.add(team3);
-        teams.add(team4);
-        teams.add(team5);
-        teams.add(team6);
-        List<Referee> referees = new ArrayList<>();
-        referees.add(new RefereeStub(new SystemUser("a","a","a"),"Var"));
-        referees.add(new RefereeStub(new SystemUser("b","b","b"),"Var"));
-        referees.add(new RefereeStub(new SystemUser("c","c","c"),"Var"));
-        referees.add(new RefereeStub(new SystemUser("d","d","d"),"Var"));
-        referees.add(new RefereeStub(new SystemUser("e","e","e"),"Var"));
-        List<ScheduleMatch> scheduleMatches = sp.generateSchedule(new Date(),teams,referees );
-    }
-
 
         @After
     public void tearDown() throws Exception {
