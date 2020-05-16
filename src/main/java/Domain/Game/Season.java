@@ -215,7 +215,7 @@ public class Season {
         // Sort the list
         Collections.sort(list, Comparator.comparing(Map.Entry::getValue));
         //replacing the score with the rank
-        for (int rank = list.size() - 1; rank <= 0; rank++) { //TODO: Test boundaries
+        for (int rank = list.size() - 1; rank >= 0; rank--) { //TODO: Test boundaries
             Map.Entry<Team, Integer> entry = list.get(rank);
             list.remove(entry);
             entry.setValue(rank);

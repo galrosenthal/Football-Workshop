@@ -107,7 +107,7 @@ public class ARController {
         }
         int Index;
         do {
-            Index = UIController.receiveInt("Choose a League Number",leaguesList);
+            Index = UIController.receiveInt("Choose a League",leaguesList);
         } while (!(Index >= 0 && Index < leagues.size()));
 
         return leagues.get(Index);
@@ -130,7 +130,7 @@ public class ARController {
         }
         int Index;
         do {
-            Index = UIController.receiveInt("Choose a Season Number",seasonsList);
+            Index = UIController.receiveInt("Choose a Season",seasonsList);
         } while (!(Index >= 0 && Index < seasons.size()));
 
         return seasons.get(Index);
@@ -221,7 +221,7 @@ public class ARController {
         }
         int index;
         do {
-            index = UIController.receiveInt("Choose a referee number from the list:",refereesList);
+            index = UIController.receiveInt("Choose a referee from the list:",refereesList);
         } while (!(index >= 0 && index < referees.size()));
 
         return referees.get(index);
@@ -400,12 +400,12 @@ public class ARController {
         String messageToShow = "";
         if(action.equals("not in season"))
         {
-            messageToShow = "Choose Team numbers from the list of " +
+            messageToShow = "Choose Teams from the list of " +
                     "teams that do not belong to the chosen league's latest season.";
         }
         else //"in season"
         {
-            messageToShow = "Choose Team numbers from the list of " +
+            messageToShow = "Choose Teams from the list of " +
                     "teams that belong to the chosen league's latest season.";
         }
         List<Team> chosenTeams = new ArrayList<>();
@@ -441,7 +441,7 @@ public class ARController {
             throw new Exception("There are no leagues that their latest season hasn't started");
         }
 
-        String messeage = ("Choose a League Number from the list of " +
+        String messeage = ("Choose a League from the list of " +
                 "leagues that their latest season hasn't started");
 //        int selectedLeague = UIController.receiveInt(messeage, leaguesChoices);
         int Index;
@@ -559,7 +559,7 @@ public class ARController {
             return false;
         }
         AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
-        String msg = "Enter Number of games for each team per season;" +
+        String msg = "Enter Number of games each team will face other team;" +
                 "Enter maximum number of games on the same day;" +
                 "Enter minimum rest days between games";
         String selectedParams = UIController.receiveStringFromMultipleInputs(msg);
