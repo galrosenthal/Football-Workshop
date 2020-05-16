@@ -655,6 +655,71 @@ public class AcceptanceTests {
         assertFalse(ARController.assignReferee(systemUser));
     }
 
+    /**
+     * Removes one team owner
+     * @throws TeamAlreadyExistsException
+     * @throws UserNotFoundException
+     */
+    @Test
+    public void removeTeamOwner1ATest() throws TeamAlreadyExistsException, UserNotFoundException {
+        SystemUser arSystemUser = new SystemUser("oran", "oran");
+        SystemUser toSystemUser = new SystemUser("gal", "gal");
+        SystemUser to2SystemUser = new SystemUser("merav", "merav");
+        new AssociationRepresentative(arSystemUser);
+        UIController.setSelector(631);
+        ARController.registerNewTeam(arSystemUser);
+        UIController.setSelector(633);
+        Controller.addTeamOwner(toSystemUser);
+        assertTrue(Controller.removeTeamOwner(to2SystemUser));
+        assertEquals(EntityManager.getInstance().getTeam("Hapoel Ta").getTeamOwners().size(),1);
+    }
+
+
+    /**
+     * Removes recursively two team owners
+     * @throws TeamAlreadyExistsException
+     * @throws UserNotFoundException
+     */
+    @Test
+    public void removeTeamOwner2ATest() throws TeamAlreadyExistsException, UserNotFoundException {
+        SystemUser arSystemUser = new SystemUser("oran", "oran");
+        SystemUser toSystemUser = new SystemUser("gal", "gal");
+        SystemUser to2SystemUser = new SystemUser("merav", "merav");
+        SystemUser to3SystemUser = new SystemUser("nir", "nir");
+        new AssociationRepresentative(arSystemUser);
+        UIController.setSelector(631);
+        ARController.registerNewTeam(arSystemUser);
+        UIController.setSelector(633);
+        Controller.addTeamOwner(toSystemUser);
+        UIController.setSelector(634);
+        Controller.addTeamOwner(to2SystemUser);
+        UIController.setSelector(633);
+        assertTrue(Controller.removeTeamOwner(toSystemUser));
+        assertEquals(EntityManager.getInstance().getTeam("Hapoel Ta").getTeamOwners().size(),1);
+    }
+
+    /**
+     * Exception by given a user doesnt exist
+     * @throws TeamAlreadyExistsException
+     * @throws UserNotFoundException
+     */
+    @Test
+    public void removeTeamOwner3ATest() throws TeamAlreadyExistsException, UserNotFoundException {
+        try {
+            SystemUser arSystemUser = new SystemUser("oran", "oran");
+            SystemUser toSystemUser = new SystemUser("gal", "gal");
+            SystemUser to2SystemUser = new SystemUser("merav", "merav");
+            new AssociationRepresentative(arSystemUser);
+            UIController.setSelector(631);
+            ARController.registerNewTeam(arSystemUser);
+            UIController.setSelector(635);
+            Controller.addTeamOwner(toSystemUser);
+            Controller.removeTeamOwner(to2SystemUser);
+        }
+        catch (Exception e){
+            assertEquals("Could not find a user by the given username",e.getMessage());
+        }
+    }
 
     @After
     public void tearDown() throws Exception {

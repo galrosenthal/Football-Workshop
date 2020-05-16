@@ -17,13 +17,22 @@ import java.util.List;
 public class TeamController {
 
 
+    /**
+     * Adding new team owner to the relevant team. The method checks that the current team owner - owner is
+     * a owner in the team, the new owner has system user and he isn't a team owner of any the in the same season.
+     * @param username - the user we want to add as team owner to the team
+     * @param teamToOwn - the team we want to own her a new team owner
+     * @param owner - the current owner of the team
+     * @return true if the the operation succeed
+     * @throws Exception
+     */
     public static boolean addTeamOwner(String username, Team teamToOwn, TeamOwner owner)
     throws Exception{
 
         List<TeamOwner> teamOwners = teamToOwn.getTeamOwners();
 
         if (!teamOwners.contains(owner)) {
-            throw new Exception("Only the owner of this team can add a new owner");
+            throw new NotATeamOwner("Only the owner of this team can add a new owner");
         }
         SystemUser newTeamOwnerUser = EntityManager.getInstance().getUser(username);
 
@@ -35,7 +44,10 @@ public class TeamController {
         TeamOwner teamOwner;
         if (newTeamOwnerRole == null) {
             teamOwner = new TeamOwner(newTeamOwnerUser);
-        } else {
+            newTeamOwnerUser.addNewRole(teamOwner);
+        }
+        else
+        {
 
             teamOwner = (TeamOwner) newTeamOwnerRole;
             if (teamOwners.contains(teamOwner)) {
@@ -43,13 +55,17 @@ public class TeamController {
             }
 
             if (isAlreadyOwnedAnotherTeamInSeason(teamToOwn, teamOwner)) {
-                throw new Exception("This User is already a team owner of a different team in same league");
+                throw new OwnedTeamInLeague("This User is already a team owner of a different team in same league");
             }
 
         }
 
+
         teamOwner.addTeamToOwn(teamToOwn);
-        teamToOwn.addTeamOwner(teamOwner);
+
+        if(teamToOwn.addTeamOwner(teamOwner)){
+            teamOwner.setAppointedOwner(owner.getSystemUser());
+        }
 
 
         return true;
@@ -262,19 +278,22 @@ public class TeamController {
      */
     private static boolean isAlreadyOwnedAnotherTeamInSeason(Team teamToOwn, TeamOwner ownerToCheck) {
 
-        Season currentSeason = teamToOwn.getCurrentSeason();
-        if (currentSeason == null) {
+        List<Season> currentSeasons = teamToOwn.getCurrentSeasons();
+        //If the team not assigned yet to a season
+        if(currentSeasons == null){
             return false;
         }
-        List<Team> teamsInSeason = currentSeason.getTeams();
-        if (teamsInSeason.size() == 0) {
-            return false;
-        }
-        for (Team team : teamsInSeason) {
-            List<TeamOwner> teamOwners = team.getTeamOwners();
+        for (Season currentSeason : currentSeasons) {
+            List<Team> teamsInSeason = currentSeason.getTeams();
+            if (teamsInSeason.size() == 0) {
+                return false;
+            }
+            for (Team team : teamsInSeason) {
+                List<TeamOwner> teamOwners = team.getTeamOwners();
 
-            if (teamOwners.contains(ownerToCheck)) {
-                return true;
+                if (teamOwners.contains(ownerToCheck)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -392,5 +411,75 @@ public class TeamController {
                 EntityManager.getInstance().getUser(role.getSystemUser().getUsername())!= null)
             return true;
         return false;
+    }
+
+    /**
+     * Removes the owner form the team he owned, the method checks the owner to remove is one of the owners of the team the method recieved
+     * @param username to remove
+     * @param team who owned for removal
+     * @param owner who made the action
+     * @return
+     * @throws UserNotFoundException
+     * @throws NotATeamOwner
+     */
+    public static boolean removeTeamOwner(String username, Team team, TeamOwner owner) throws Exception {
+        List<TeamOwner> teamOwners = team.getTeamOwners();
+
+        if (!teamOwners.contains(owner)) {
+            throw new NotATeamOwner("Only the owner of this team can remove owner");
+        }
+        SystemUser newTeamOwnerUser = EntityManager.getInstance().getUser(username);
+
+        if (newTeamOwnerUser == null) {
+            throw new UserNotFoundException("Could not find a user by the given username");
+        }
+
+        Role TeamOwnerRole = newTeamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner teamOwner = (TeamOwner)TeamOwnerRole;
+
+        if(!teamOwners.contains(teamOwner)){
+            throw new NotATeamOwner("The user is not a owner of this team");
+        }
+
+        List<TeamOwner> teamOwnersToRemove= allTeamOwnersToRemove(teamOwner,teamOwners);
+
+        //Remove the teamOwner and all the team owners his appointed
+        for (TeamOwner toRemove:
+                teamOwnersToRemove) {
+            team.removeTeamOwner(toRemove);
+        }
+
+        return true;
+    }
+
+    /**
+     * The method returns all the team owners we owned by the team owner the user want to remove
+     * @param teamOwner - the appointed owner
+     * @return list of all the owners the teamOwner appointed
+     */
+    private static List<TeamOwner> allTeamOwnersToRemove(TeamOwner teamOwner,List<TeamOwner> teamOwners) {
+        List<TeamOwner> teamOwnersToCheck = new ArrayList<>();
+        List<TeamOwner> teamOwnersToRemove = new ArrayList<>();
+
+        teamOwnersToCheck.add(teamOwner);
+        teamOwnersToRemove.add(teamOwner);
+
+        //Remove the desired owner
+
+
+        while(teamOwnersToCheck.size() != 0){
+            TeamOwner teamOwnerToCheck = teamOwnersToCheck.remove(0);
+
+            for (TeamOwner ownerOfTeam: teamOwners){
+
+                // Change the if to representative once it will complete
+                if(ownerOfTeam.getAppointedOwner()!= null && ownerOfTeam.getAppointedOwner().equals(teamOwnerToCheck.getSystemUser())){
+                    teamOwnersToCheck.add(ownerOfTeam);
+                    teamOwnersToRemove.add(ownerOfTeam);
+                }
+            }
+        }
+
+        return teamOwnersToRemove;
     }
 }

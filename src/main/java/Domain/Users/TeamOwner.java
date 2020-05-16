@@ -103,8 +103,7 @@ public class TeamOwner extends Role implements Subject {
         if (this == o) return true;
         if (!(o instanceof TeamOwner)) return false;
         TeamOwner teamOwner = (TeamOwner) o;
-        return ownedTeams.equals(teamOwner.ownedTeams) &&
-                this.getSystemUser().equals(teamOwner.getSystemUser());
+        return this.getSystemUser().equals(teamOwner.getSystemUser());
     }
 
     @Override
