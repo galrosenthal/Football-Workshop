@@ -10,6 +10,8 @@ import Domain.Game.TeamAsset;
 import Domain.Users.*;
 import Service.UIController;
 import Domain.Exceptions.*;
+import com.vaadin.flow.component.UI;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -242,7 +244,6 @@ public class TeamController {
         int propertyIndex;
         do {
             propertyIndex = UIController.receiveInt(msg,properties);
-            propertyIndex -= 1;
         } while (!(propertyIndex >= 0 && propertyIndex < properties.size()));
 
         return propertyIndex;
@@ -262,7 +263,6 @@ public class TeamController {
         int propertyIndex;
         do {
             propertyIndex = UIController.receiveInt("Choose which action: ",actions);
-            propertyIndex -= 1;
         } while (!(propertyIndex >= 0 && propertyIndex <= 1));
 
         return propertyIndex;

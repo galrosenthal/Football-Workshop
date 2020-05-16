@@ -420,7 +420,14 @@ public class MainController {
         }
         try
         {
-            Controller.addTeamOwner(associationUser);
+            if(Controller.addTeamOwner(associationUser))
+            {
+                UIController.showNotification("The new Team Owner added Successfully");
+            }
+            else
+            {
+                UIController.showNotification("Failed to add another Team Owner");
+            }
         }
         catch (Exception e )
         {
@@ -441,7 +448,14 @@ public class MainController {
         }
         try
         {
-            Controller.addAsset(associationUser);
+            if(Controller.addAsset(associationUser))
+            {
+                UIController.showNotification("Asset Added Successfully");
+            }
+            else
+            {
+                UIController.showNotification("Could not add the Asset");
+            }
         }
         catch (Exception e )
         {
@@ -455,14 +469,14 @@ public class MainController {
      * @param username the TO username
      */
     public static void modifyTeamAsset(String username) {
-        SystemUser associationUser = EntityManager.getInstance().getUser(username);
-        if(associationUser == null)
+        SystemUser teamOwnerUser = EntityManager.getInstance().getUser(username);
+        if(teamOwnerUser == null)
         {
             return;
         }
         try
         {
-            Controller.modifyTeamAssetDetails(associationUser);
+            Controller.modifyTeamAssetDetails(teamOwnerUser);
         }
         catch (Exception e )
         {
@@ -475,4 +489,45 @@ public class MainController {
         UIController.showAlert( se,"Mother of god");
     }
 
+    /**
+     * Starts the Flow of adding teams to a season
+     * @param username the AR user who asked for the addition
+     */
+    public static void addTeamsToSeason(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.addTeamsToSeason(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    /**
+     * Starts the Flow of removing teams from a season
+     * @param username the AR user who asked for the removal
+     */
+    public static void removeTeamsFromSeason(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.removeTeamsFromSeason(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
 }

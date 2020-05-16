@@ -24,6 +24,7 @@ public class UIController {
     public static final String STRING_DELIMETER = ";";
     public static final String SEND_TYPE_FOR_GUI_STRING = "string";
     public static final String SEND_TYPE_FOR_GUI_INT = "int";
+    public static final String SEND_TYPE_FOR_GUI_DATE = "date";
     public static final String SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS = "multiple";
     public static final String CANCEL_TASK_VALUE = "canceled";
 
@@ -120,8 +121,6 @@ public class UIController {
             }  else if (selector == 924) {//10
                 selector = 923;
                 return "wrong Format";
-            } else if (selector == 6117) {
-                return "01/11/1199";
             } else if (selector == 6118) {
                 return "CoachJob";
             } else if (selector == 6119) {
@@ -131,8 +130,6 @@ public class UIController {
                 return "StadiumName";
             } else if (selector == 6136 || selector == 6137) {
                 return "Test ";
-            } else if (selector == 6132) {
-                return "11/11/2011";
             } else if (selector == 61113) {
                 return "test";
             }else if(selector == 61114){
@@ -140,13 +137,9 @@ public class UIController {
             }else if (selector == 61116) {
                 setSelector(61117);
                 return "anotherUser";
-            } else if (selector == 61117) {
-                return "01/11/1199";
             }else if(selector == 61118){
                 setSelector(61119);
                 return "elevy";
-            } else if(selector == 61119){
-                return "01/11/1199";
             }else if (selector == 61310) {
                 return "AESSEAL";
             } else if (selector == 921) {//7
@@ -331,21 +324,24 @@ public class UIController {
                     selector == 91131 || selector == 91231){
                 return 0;
             }
-            else if (selector == 6132 || selector == 6133 || selector == 6134 || selector == 61341 || selector == 6135 || selector == 6136 || selector == 6137 || selector == 6138 || selector == 61383 || selector == 61381 || selector == 61310) {
+            else if (selector == 6132 || selector == 6133 || selector == 6134 || selector == 6136 || selector == 6137  || selector == 61341   || selector == 6135 || selector == 61310
+                    || selector == 6138 || selector == 61383 || selector == 61381)
+            {
                 if (selector == 6134) {
                     selector = 61341;
-                } else if (selector == 61341) {
+                }else if (selector == 61341) {
                     selector = 61342;
-                } else if (selector == 6138) {
+                }else if (selector == 6138) {
                     selector = 61381;
                 } else if (selector == 61381) {
                     selector = 61382;
                 }
-                return 1;
-            } else if (selector == 61342 || selector == 61382) {
+                return 0;
+            }
+            else if (selector == 61342 || selector == 61382) {
                 if (selector == 61382)
                     selector = 61383;
-                return 2;
+                return 1;
             }else if(selector == 6139) {
                 setSelector(61310);
                 return 0;
@@ -452,5 +448,63 @@ public class UIController {
         {
             System.out.println("Alert: " + alert);
         }
+    }
+
+    public static String receiveDate(String messageToDisplay, Collection<String>... valuesToDisplay) {
+        if (!isTest) {
+            StringBuilder line = new StringBuilder();
+            UI lastUI = UI.getCurrent();
+            Thread t = Thread.currentThread();
+            VaadinSession se = VaadinSession.getCurrent();
+
+            Future<Void> returnValue = se.access(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                FootballMain.showDialog(lastUI, messageToDisplay, SEND_TYPE_FOR_GUI_DATE, line,t ,valuesToDisplay);
+                System.out.println("Closed Dialog");
+            });
+
+
+            while (line.length() == 0)
+            {
+                try {
+                    //waiting for the user to close the dialog
+                    sleep(100);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            if(line.toString().equals(CANCEL_TASK_VALUE))
+            {
+                throw new CancellationException();
+            }
+            // the returned date format is yyyy-MM-dd
+            // reverse the value to be dd/MM/yyyy
+
+            return reverseDateFormat(line.toString());
+        } else {
+            printMessageAndValuesForTest(messageToDisplay, valuesToDisplay);
+            if(selector == 61119)
+            {
+                return "01/11/1199";
+            }
+            else if (selector == 6117) {
+                return "01/11/1199";
+            } else if (selector == 61117) {
+                return "01/11/1199";
+            } else if (selector == 6132) {
+                return "11/11/2011";
+            }
+            return null;
+        }
+    }
+
+    private static String reverseDateFormat(String dateInWrongFormat) {
+        StringBuilder date = new StringBuilder();
+        String[] dateSplitted = dateInWrongFormat.split("-");
+        date.append(dateSplitted[2]).append("/").append(dateSplitted[1]).append("/").append(dateSplitted[0]);
+        return date.toString();
     }
 }

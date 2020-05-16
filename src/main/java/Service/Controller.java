@@ -207,7 +207,7 @@ public class Controller {
         int assetIndex;
 
         do{
-            assetIndex = UIController.receiveInt("Choose Asset Type: ");
+            assetIndex = UIController.receiveInt("Choose Asset Type: ", assetTypes);
         }while (!(assetIndex >= 0 && assetIndex < TeamAsset.values().length));
 
         return TeamAsset.values()[assetIndex];

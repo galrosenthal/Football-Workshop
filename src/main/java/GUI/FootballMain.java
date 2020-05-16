@@ -12,6 +12,7 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Image;
@@ -37,6 +38,8 @@ import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 
@@ -69,6 +72,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
         // image, logo
         final HorizontalLayout top = new HorizontalLayout();
+        top.setWidth("100%");
         top.setDefaultVerticalComponentAlignment(Alignment.CENTER);
         top.setClassName("menu-header");
 
@@ -88,15 +92,24 @@ public class FootballMain extends AppLayout implements RouterLayout{
             getUI().get().navigate("Registration");
         });
 
+        HorizontalLayout left = new HorizontalLayout();
+        left.setWidth("80%");
+        left.add(image,title);
+
+
+
         final HorizontalLayout buttons = new HorizontalLayout();
+//        buttons.setWidth("100%");
         buttons.setDefaultVerticalComponentAlignment(Alignment.CENTER);
         buttons.setAlignItems(Alignment.END);
         buttons.add(loginBtn,signupBtn);
-        buttons.setAlignSelf(Alignment.STRETCH);
+//        buttons.setAlignSelf(Alignment.STRETCH);
 
-        top.add(image, title);
-        top.add(title);
-        top.addAndExpand(buttons);
+        HorizontalLayout right = new HorizontalLayout();
+        right.setAlignItems(Alignment.END);
+        right.add(buttons);
+
+        top.addAndExpand(left,right);
 
         addToNavbar(top);
 
@@ -280,6 +293,9 @@ public class FootballMain extends AppLayout implements RouterLayout{
             ComboBox<String> valuesForInt = new ComboBox<>();
             MultiSelectListBox<String> valuesForString = new MultiSelectListBox<>();
 
+            DatePicker picker = new DatePicker();
+
+
             Button submit = new Button("Submit");
             Button cancel = new Button("Cancel");
 
@@ -331,6 +347,10 @@ public class FootballMain extends AppLayout implements RouterLayout{
                     }
                     returnedValue.setLength(returnedValue.length()-1);
                 }
+                else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_DATE))
+                {
+                    returnedValue.append(picker.getValue().toString());
+                }
                 newWindow.close();
                 callingThread.interrupt();
 //            UI.setCurrent(lastUI);
@@ -347,6 +367,16 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 {
                     vl.add(valuesForString);
                     valuesForString.setItems(displayValues[0]);
+                    valuesForString.addValueChangeListener(e -> {
+                       if(valuesForString.getSelectedItems().size() > 0)
+                       {
+                           submit.setEnabled(true);
+                       }
+                       else
+                       {
+                           submit.setEnabled(false);
+                       }
+                    });
                 }
 
             }
@@ -376,6 +406,21 @@ public class FootballMain extends AppLayout implements RouterLayout{
             {
                 String[] messages = msg.split(UIController.STRING_DELIMETER);
                 createMultiInputs(vl,numOfInputs,textFieldsArray,submit, messages);
+            }
+            else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_DATE))
+            {
+                vl.add(picker);
+                picker.setLabel(msg);
+                picker.addValueChangeListener(e -> {
+                   if(picker.getValue() != null)
+                   {
+                       submit.setEnabled(true);
+                   }
+                   else
+                   {
+                       submit.setEnabled(false);
+                   }
+                });
             }
 
 

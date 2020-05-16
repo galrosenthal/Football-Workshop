@@ -674,6 +674,7 @@ public class TeamControllerTest {
 
     @Test
     public void reopenTeam2UTest(){
+        UIController.setIsTest(true);
         TeamStub teamStub = new TeamStub(66271);
         SystemUserStub su1 = new SystemUserStub("rosengal", "gal",662721);
         PlayerStub p1 = (PlayerStub)su1.getRole(RoleTypes.PLAYER);

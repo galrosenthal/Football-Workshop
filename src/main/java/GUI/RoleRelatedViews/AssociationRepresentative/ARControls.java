@@ -33,6 +33,50 @@ public class ARControls extends VerticalLayout {
         createAddRefereeButton();
         createRemoveRefereeButton();
         createAssignRefereeButton();
+        createAddTeamsToSeasonButton();
+        createRemoveTeamsFromSeasonButton();
+    }
+
+    private void createRemoveTeamsFromSeasonButton() {
+        String buttonTaskName = "Remove Teams To Season";
+        Button removeTeamsFromSeason = new Button(buttonTaskName);
+        removeTeamsFromSeason.addClickListener(e -> {
+
+            UI lastUI = UI.getCurrent();
+            VaadinSession se = VaadinSession.getCurrent();
+            String username = getUsernameFromSession();
+            Thread t = new Thread(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                MainController.removeTeamsFromSeason(username);
+            });
+            t.setName(buttonTaskName.toUpperCase());
+            t.start();
+
+        });
+
+        add(removeTeamsFromSeason);
+    }
+
+    private void createAddTeamsToSeasonButton() {
+        String buttonTaskName = "Add Teams To Season";
+        Button addTeamsToSeason = new Button(buttonTaskName);
+        addTeamsToSeason.addClickListener(e -> {
+
+            UI lastUI = UI.getCurrent();
+            VaadinSession se = VaadinSession.getCurrent();
+            String username = getUsernameFromSession();
+            Thread t = new Thread(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                MainController.addTeamsToSeason(username);
+            });
+            t.setName(buttonTaskName.toUpperCase());
+            t.start();
+
+        });
+
+        add(addTeamsToSeason);
     }
 
     private void createAssignRefereeButton() {
