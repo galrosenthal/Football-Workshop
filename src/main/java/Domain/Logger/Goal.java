@@ -6,6 +6,8 @@ public class Goal extends Event {
     private Team scoringTeam;
     private Team scoredOnTeam;
     private int goalMinute;
+    //todo:Add Player who scored
+
 
     public Goal(Team scoringTeam, Team scoredOnTeam, int goalMinute) {
         this.scoringTeam = scoringTeam;

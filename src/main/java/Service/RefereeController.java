@@ -1,13 +1,12 @@
 package Service;
 
 import Domain.Game.Game;
-import Domain.Logger.Card;
+import Domain.Game.Team;
 import Domain.Logger.Event;
-import Domain.Logger.RedCard;
+import Domain.Users.Player;
 import Domain.Users.Referee;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
-import com.vaadin.flow.component.UI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,26 +31,153 @@ public class RefereeController {
 
         //Get new event type
         String eventType = getEventTypeByChoice();
+
+        //Adding the new event
         switch (eventType) {
             case "Red Card":
-                //Card card = new RedCard();
-                break;
-            case "Yellow Card":
+            case "Yellow Card"://player,min
+                addCardEvent(eventType, chosenGame);
                 break;
             case "Goal":
+                addGoalEvent(chosenGame);
                 break;
             case "Offside":
+                addOffsideEvent(chosenGame);
                 break;
             case "Penalty":
+                addPenaltyEvent(chosenGame);
                 break;
             case "Switch Players":
+                addSwitchPlayersEvent(chosenGame);
                 break;
             case "Injury":
+                addInjuryEvent(chosenGame);
                 break;
         }
 
+        UIController.showNotification("The event added successfully");
         return true;
     }
+
+    /**
+     * Receives the necessary arguments from the user and logs a new card event
+     *
+     * @param cardType - String - The type of the card
+     * @param game     - Game - The game to log the event to
+     */
+    private static void addCardEvent(String cardType, Game game) {
+        Player player = getPlayerFromGameByChoice(game, "Choose a player");
+        int minute = getMinuteByChoice();
+        game.getEventsLogger().addCardEvent(cardType, player, minute);
+    }
+
+    /**
+     * Receives the necessary arguments from the user and logs a new goal event
+     *
+     * @param game - Game - The game to log the event to
+     */
+    private static void addGoalEvent(Game game) {
+        Team scored = getTeamFromGameByChoice(game, "Choose a team who scored");
+        Team scoredOn = getTeamFromGameByChoice(game, "Choose a team who got scored on");
+        //todo:Add Player who scored
+        int minute = getMinuteByChoice();
+
+        game.getEventsLogger().addGoalEvent(scored, scoredOn, minute);
+    }
+
+    /**
+     * Receives the necessary arguments from the user and logs a new offside event
+     *
+     * @param game - Game - The game to log the event to
+     */
+    private static void addOffsideEvent(Game game) {
+        Team teamWhoCommitted = getTeamFromGameByChoice(game, "Choose a team which committed the offside");
+        int minute = getMinuteByChoice();
+        game.getEventsLogger().addOffsideEvent(teamWhoCommitted, minute);
+    }
+
+    /**
+     * Receives the necessary arguments from the user and logs a new penalty event
+     *
+     * @param game - Game - The game to log the event to
+     */
+    private static void addPenaltyEvent(Game game) {
+        Team teamWhoCommitted = getTeamFromGameByChoice(game, "Choose a team which committed the penalty");
+        int minute = getMinuteByChoice();
+        game.getEventsLogger().addPenaltyEvent(teamWhoCommitted, minute);
+    }
+
+    /**
+     * Receives the necessary arguments from the user and logs a new player switching  event
+     *
+     * @param game - Game - The game to log the event to
+     */
+    private static void addSwitchPlayersEvent(Game game) {
+        Team teamWhoCommitted = getTeamFromGameByChoice(game, "Choose a team which switched players");
+        Player enteringPlayer = getPlayerFromGameByChoice(game, "Choose the entering player");
+        Player exitingPlayer = getPlayerFromGameByChoice(game, "Choose the exiting player");
+        int minute = getMinuteByChoice();
+        game.getEventsLogger().addSwitchPlayersEvent(teamWhoCommitted, enteringPlayer, exitingPlayer, minute);
+    }
+
+    /**
+     * Receives the necessary arguments from the user and logs a new injury event
+     *
+     * @param game - Game - The game to log the event to
+     */
+    private static void addInjuryEvent(Game game) {
+        Player player = getPlayerFromGameByChoice(game, "Choose a player who got injured");
+        int minute = getMinuteByChoice();
+        game.getEventsLogger().addInjuryEvent(player, minute);
+    }
+
+    /**
+     * Receives an integer from the user for the minute the event occurred.
+     *
+     * @return - int - a non negative integer
+     */
+    private static int getMinuteByChoice() {
+        int minute = -1;
+        do {
+            minute = UIController.receiveInt("Enter the minute of the event (positive integer)");
+        } while (minute < 0);
+        return minute;
+    }
+
+    /**
+     * Receives a game and returns a player who plays in the game based on the user selection
+     *
+     * @param game - Game - a game to chose a player from
+     * @return - Player - the player the user chose
+     */
+    private static Player getPlayerFromGameByChoice(Game game, String message) {
+        List<Player> gamePlayers = game.getPlayers();
+        List<String> playersList = new ArrayList<>();
+        for (int i = 0; i < gamePlayers.size(); i++) {
+            playersList.add(gamePlayers.get(i).toString());
+        }
+        int Index;
+        do {
+            Index = UIController.receiveInt(message, playersList);
+        } while (!(Index >= 0 && Index < gamePlayers.size()));
+
+        return gamePlayers.get(Index);
+    }
+
+    private static Team getTeamFromGameByChoice(Game game, String message) {
+        List<Team> gameTeams = game.getTeams();
+        List<String> teamsList = new ArrayList<>();
+        for (int i = 0; i < gameTeams.size(); i++) {
+            teamsList.add(gameTeams.get(i).getTeamName());
+        }
+        int Index;
+        do {
+            Index = UIController.receiveInt(message, teamsList);
+        } while (!(Index >= 0 && Index < gameTeams.size()));
+
+        return gameTeams.get(Index);
+    }
+
 
     public static void showExistingEvents(Game chosenGame) {
         List<String> gameEventsStringList = chosenGame.getGameEventsStringList();

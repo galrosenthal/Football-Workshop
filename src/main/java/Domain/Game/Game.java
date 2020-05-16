@@ -2,8 +2,10 @@ package Domain.Game;
 
 import Domain.Logger.EventsLogger;
 import Domain.Logger.Goal;
+import Domain.Users.Player;
 import Domain.Users.Referee;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -45,7 +47,7 @@ public class Game {
         List<Goal> goals = eventsLogger.getGoals();
         int homeTeamGoals = 0;
         int awayTeamGoals = 0;
-        if(goals != null) {
+        if (goals != null) {
             for (Goal goal : goals) {
                 if (goal.getScoringTeam().equals(homeTeam)) {
                     homeTeamGoals++;
@@ -112,8 +114,32 @@ public class Game {
     }
 
 
-    public List<String> getGameEventsStringList(){
+    public List<String> getGameEventsStringList() {
         return this.eventsLogger.getEventsStringList();
     }
+
+    /**
+     * Returns the players of both teams
+     *
+     * @return - List<Player> - a list of the players of both teams
+     */
+    public List<Player> getPlayers() {
+        List<Player> players = new ArrayList<>();
+        players.addAll(this.homeTeam.getTeamPlayers());
+        players.addAll(this.awayTeam.getTeamPlayers());
+        return players;
+    }
+
+    /**
+     * Returns the teams playing in this game
+     * @return - List<Team> - A list of the teams playing in this game
+     */
+    public List<Team> getTeams() {
+        List<Team> teams = new ArrayList<>();
+        teams.add(this.homeTeam);
+        teams.add(this.awayTeam);
+        return teams;
+    }
+
 
 }
