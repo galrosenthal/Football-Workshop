@@ -31,6 +31,14 @@ public class EventsLogger {
         return goals;
     }
 
+    public List<String> getEventsStringList() {
+        List<String> eventsString = new ArrayList<>();
+        for (Event event : this.gameEvents) {
+            eventsString.add(event.toString());
+        }
+        return eventsString;
+    }
+
     /**
      * Logs a new goal
      *
@@ -43,14 +51,6 @@ public class EventsLogger {
         this.gameEvents.add(goal);
     }
 
-    public List<String> getEventsStringList() {
-        List<String> eventsString = new ArrayList<>();
-        for (Event event : this.gameEvents) {
-            eventsString.add(event.toString());
-        }
-        return eventsString;
-    }
-
     /**
      * Adds a new card event based on the given parameters
      *
@@ -58,7 +58,7 @@ public class EventsLogger {
      * @param player   - Player - The player who got the card
      * @param minute   - int - The minute the event happened
      */
-    public void addCardEvent(String cardType, Player player, int minute) {
+    public void logCardEvent(String cardType, Player player, int minute) {
         Card card = null;
         switch (cardType) {
             case "Red Card":
@@ -72,24 +72,12 @@ public class EventsLogger {
     }
 
     /**
-     * Adds a new goal event based on the given parameters
-     *
-     * @param scored   - Team - The scoring team
-     * @param scoredOn - Team - The team which got scored on
-     * @param minute   - int - The minute the event happened
-     */
-    public void addGoalEvent(Team scored, Team scoredOn, int minute) {
-        this.gameEvents.add(new Goal(scored, scoredOn, minute));
-
-    }
-
-    /**
      * Adds a new offside event based on the given parameters
      *
      * @param teamWhoCommitted - Team - The team which committed the offside
      * @param minute           - int - The minute the event happened
      */
-    public void addOffsideEvent(Team teamWhoCommitted, int minute) {
+    public void logOffsideEvent(Team teamWhoCommitted, int minute) {
         this.gameEvents.add(new Offside(teamWhoCommitted, minute));
     }
 
@@ -99,7 +87,7 @@ public class EventsLogger {
      * @param teamWhoCommitted - Team - The team which committed the penalty
      * @param minute           - int - The minute the event happened
      */
-    public void addPenaltyEvent(Team teamWhoCommitted, int minute) {
+    public void logPenaltyEvent(Team teamWhoCommitted, int minute) {
         this.gameEvents.add(new Offside(teamWhoCommitted, minute));
     }
 
@@ -111,7 +99,7 @@ public class EventsLogger {
      * @param exitingPlayer    - Player - The player who is exiting
      * @param minute           - int - The minute the event happened
      */
-    public void addSwitchPlayersEvent(Team teamWhoCommitted, Player enteringPlayer, Player exitingPlayer, int minute) {
+    public void logSwitchPlayersEvent(Team teamWhoCommitted, Player enteringPlayer, Player exitingPlayer, int minute) {
         this.gameEvents.add(new SwitchPlayers(teamWhoCommitted, enteringPlayer, exitingPlayer, minute));
     }
 
@@ -121,7 +109,7 @@ public class EventsLogger {
      * @param player - Player - The player who was injured
      * @param minute - int - The minute the event happened
      */
-    public void addInjuryEvent(Player player, int minute) {
+    public void logInjuryEvent(Player player, int minute) {
         this.gameEvents.add(new Injury(player, minute));
     }
 }

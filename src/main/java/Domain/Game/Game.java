@@ -69,29 +69,6 @@ public class Game {
         return true;
     }
 
-    /**
-     * Adds a goal to the game.
-     *
-     * @param scoringTeam  - Team - The scoring team - must play in this game
-     * @param scoredOnTeam - Team - The scored on team - must play in this game
-     * @param minute       - int - The minute the goal was scored - positive integer
-     */
-    public void addGoal(Team scoringTeam, Team scoredOnTeam, int minute) throws Exception {
-        if ((!scoringTeam.equals(homeTeam)) && (!scoringTeam.equals(awayTeam))) {
-            throw new IllegalArgumentException("The given scoringTeam doesn't play in this game");
-        }
-        if ((!scoredOnTeam.equals(homeTeam)) && (!scoredOnTeam.equals(awayTeam))) {
-            throw new IllegalArgumentException("The given scoredOnTeam doesn't play in this game");
-        }
-        if (scoredOnTeam.equals(scoringTeam)) {
-            throw new IllegalArgumentException("The teams given are the same team");
-        }
-        if (minute < 0) {
-            throw new IllegalArgumentException("minute must be positive integer");
-        }
-        this.eventsLogger.logGoal(scoringTeam, scoredOnTeam, minute);
-    }
-
 
     public Team getHomeTeam() {
         return homeTeam;
@@ -132,6 +109,7 @@ public class Game {
 
     /**
      * Returns the teams playing in this game
+     *
      * @return - List<Team> - A list of the teams playing in this game
      */
     public List<Team> getTeams() {
@@ -141,5 +119,121 @@ public class Game {
         return teams;
     }
 
+    /**
+     * Adds a goal to the game.
+     *
+     * @param scoringTeam  - Team - The scoring team - must play in this game
+     * @param scoredOnTeam - Team - The scored on team - must play in this game
+     * @param minute       - int - The minute the goal was scored - positive integer
+     * @throws IllegalArgumentException - if the arguments aren't valid
+     */
+    public void addGoal(Team scoringTeam, Team scoredOnTeam, int minute) throws IllegalArgumentException {
+        if ((!scoringTeam.equals(homeTeam)) && (!scoringTeam.equals(awayTeam))) {
+            throw new IllegalArgumentException("The given scoring Team doesn't play in this game");
+        }
+        if ((!scoredOnTeam.equals(homeTeam)) && (!scoredOnTeam.equals(awayTeam))) {
+            throw new IllegalArgumentException("The given scored On Team doesn't play in this game");
+        }
+        if (scoredOnTeam.equals(scoringTeam)) {
+            throw new IllegalArgumentException("The teams given are the same team");
+        }
+        if (minute < 0) {
+            throw new IllegalArgumentException("minute must be positive integer");
+        }
+        this.eventsLogger.logGoal(scoringTeam, scoredOnTeam, minute);
+    }
 
+    /**
+     * Adds a card event to the game
+     *
+     * @param cardType - String - The type of the card
+     * @param player   - Player - The player who got the card
+     * @param minute   - int - The minute the event happened
+     * @throws IllegalArgumentException - if the arguments aren't valid
+     */
+    public void addCard(String cardType, Player player, int minute) throws IllegalArgumentException {
+        if ((!this.homeTeam.getTeamPlayers().contains(player)) && (!this.awayTeam.getTeamPlayers().contains(player))) {
+            throw new IllegalArgumentException("The given player doesn't play in this game");
+        }
+        if (minute < 0) {
+            throw new IllegalArgumentException("minute must be positive integer");
+        }
+        this.eventsLogger.logCardEvent(cardType, player, minute);
+    }
+
+    /**
+     * Adds an offside event to the game
+     *
+     * @param teamWhoCommitted - Team - The team which committed the offside
+     * @param minute           - int - The minute the event happened
+     * @throws IllegalArgumentException - if the arguments aren't valid
+     */
+    public void addOffside(Team teamWhoCommitted, int minute) throws IllegalArgumentException {
+        if ((!teamWhoCommitted.equals(homeTeam)) && (!teamWhoCommitted.equals(awayTeam))) {
+            throw new IllegalArgumentException("The given team doesn't play in this game");
+        }
+        if (minute < 0) {
+            throw new IllegalArgumentException("minute must be positive integer");
+        }
+        this.eventsLogger.logOffsideEvent(teamWhoCommitted, minute);
+    }
+
+    /**
+     * Adds a penalty event to the game
+     *
+     * @param teamWhoCommitted - Team - The team which committed the penalty
+     * @param minute           - int - The minute the event happened
+     * @throws IllegalArgumentException - if the arguments aren't valid
+     */
+    public void addPenalty(Team teamWhoCommitted, int minute) throws IllegalArgumentException {
+        if ((!teamWhoCommitted.equals(homeTeam)) && (!teamWhoCommitted.equals(awayTeam))) {
+            throw new IllegalArgumentException("The given team doesn't play in this game");
+        }
+        if (minute < 0) {
+            throw new IllegalArgumentException("minute must be positive integer");
+        }
+        this.eventsLogger.logPenaltyEvent(teamWhoCommitted, minute);
+    }
+
+    /**
+     * Adds a players switch event to the game
+     *
+     * @param teamWhoCommitted - Team - The team which committed the switch
+     * @param enteringPlayer   - Player - The player who is entering the game
+     * @param exitingPlayer    - Player - The player who is exiting the game
+     * @param minute           - int - The minute the event happened
+     * @throws IllegalArgumentException - if the arguments aren't valid
+     */
+    public void addSwitchPlayers(Team teamWhoCommitted, Player enteringPlayer, Player exitingPlayer, int minute) throws IllegalArgumentException {
+        if ((!teamWhoCommitted.equals(homeTeam)) && (!teamWhoCommitted.equals(awayTeam))) {
+            throw new IllegalArgumentException("The given team doesn't play in this game");
+        }
+        if ((!this.homeTeam.getTeamPlayers().contains(enteringPlayer)) && (!this.awayTeam.getTeamPlayers().contains(enteringPlayer))) {
+            throw new IllegalArgumentException("The given entering Player doesn't play in this game");
+        }
+        if ((!this.homeTeam.getTeamPlayers().contains(exitingPlayer)) && (!this.awayTeam.getTeamPlayers().contains(exitingPlayer))) {
+            throw new IllegalArgumentException("The given exiting Player doesn't play in this game");
+        }
+        if (minute < 0) {
+            throw new IllegalArgumentException("minute must be positive integer");
+        }
+        this.eventsLogger.logSwitchPlayersEvent(teamWhoCommitted, enteringPlayer, exitingPlayer, minute);
+    }
+
+    /**
+     * Adds a injury event to the game
+     *
+     * @param player - Player - The player who got injured
+     * @param minute - int - The minute the event happened
+     * @throws IllegalArgumentException - if the arguments aren't valid
+     */
+    public void addInjury(Player player, int minute) throws IllegalArgumentException {
+        if ((!this.homeTeam.getTeamPlayers().contains(player)) && (!this.awayTeam.getTeamPlayers().contains(player))) {
+            throw new IllegalArgumentException("The given player doesn't play in this game");
+        }
+        if (minute < 0) {
+            throw new IllegalArgumentException("minute must be positive integer");
+        }
+        this.eventsLogger.logInjuryEvent(player, minute);
+    }
 }

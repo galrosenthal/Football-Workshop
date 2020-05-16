@@ -33,26 +33,31 @@ public class RefereeController {
         String eventType = getEventTypeByChoice();
 
         //Adding the new event
-        switch (eventType) {
-            case "Red Card":
-            case "Yellow Card"://player,min
-                addCardEvent(eventType, chosenGame);
-                break;
-            case "Goal":
-                addGoalEvent(chosenGame);
-                break;
-            case "Offside":
-                addOffsideEvent(chosenGame);
-                break;
-            case "Penalty":
-                addPenaltyEvent(chosenGame);
-                break;
-            case "Switch Players":
-                addSwitchPlayersEvent(chosenGame);
-                break;
-            case "Injury":
-                addInjuryEvent(chosenGame);
-                break;
+        try{
+            switch (eventType) {
+                case "Red Card":
+                case "Yellow Card"://player,min
+                    addCardEvent(eventType, chosenGame);
+                    break;
+                case "Goal":
+                    addGoalEvent(chosenGame);
+                    break;
+                case "Offside":
+                    addOffsideEvent(chosenGame);
+                    break;
+                case "Penalty":
+                    addPenaltyEvent(chosenGame);
+                    break;
+                case "Switch Players":
+                    addSwitchPlayersEvent(chosenGame);
+                    break;
+                case "Injury":
+                    addInjuryEvent(chosenGame);
+                    break;
+            }
+        }catch (Exception e){
+            UIController.showNotification(e.getMessage());
+            return false;
         }
 
         UIController.showNotification("The event added successfully");
@@ -68,7 +73,7 @@ public class RefereeController {
     private static void addCardEvent(String cardType, Game game) {
         Player player = getPlayerFromGameByChoice(game, "Choose a player");
         int minute = getMinuteByChoice();
-        game.getEventsLogger().addCardEvent(cardType, player, minute);
+        game.addCard(cardType, player, minute);
     }
 
     /**
@@ -76,13 +81,13 @@ public class RefereeController {
      *
      * @param game - Game - The game to log the event to
      */
-    private static void addGoalEvent(Game game) {
+    private static void addGoalEvent(Game game) throws Exception {
         Team scored = getTeamFromGameByChoice(game, "Choose a team who scored");
         Team scoredOn = getTeamFromGameByChoice(game, "Choose a team who got scored on");
         //todo:Add Player who scored
         int minute = getMinuteByChoice();
 
-        game.getEventsLogger().addGoalEvent(scored, scoredOn, minute);
+        game.addGoal(scored, scoredOn, minute);
     }
 
     /**
@@ -93,7 +98,7 @@ public class RefereeController {
     private static void addOffsideEvent(Game game) {
         Team teamWhoCommitted = getTeamFromGameByChoice(game, "Choose a team which committed the offside");
         int minute = getMinuteByChoice();
-        game.getEventsLogger().addOffsideEvent(teamWhoCommitted, minute);
+        game.addOffside(teamWhoCommitted, minute);
     }
 
     /**
@@ -104,7 +109,7 @@ public class RefereeController {
     private static void addPenaltyEvent(Game game) {
         Team teamWhoCommitted = getTeamFromGameByChoice(game, "Choose a team which committed the penalty");
         int minute = getMinuteByChoice();
-        game.getEventsLogger().addPenaltyEvent(teamWhoCommitted, minute);
+        game.addPenalty(teamWhoCommitted, minute);
     }
 
     /**
@@ -117,7 +122,7 @@ public class RefereeController {
         Player enteringPlayer = getPlayerFromGameByChoice(game, "Choose the entering player");
         Player exitingPlayer = getPlayerFromGameByChoice(game, "Choose the exiting player");
         int minute = getMinuteByChoice();
-        game.getEventsLogger().addSwitchPlayersEvent(teamWhoCommitted, enteringPlayer, exitingPlayer, minute);
+        game.addSwitchPlayers(teamWhoCommitted, enteringPlayer, exitingPlayer, minute);
     }
 
     /**
@@ -128,7 +133,7 @@ public class RefereeController {
     private static void addInjuryEvent(Game game) {
         Player player = getPlayerFromGameByChoice(game, "Choose a player who got injured");
         int minute = getMinuteByChoice();
-        game.getEventsLogger().addInjuryEvent(player, minute);
+        game.addInjury(player, minute);
     }
 
     /**
