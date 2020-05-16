@@ -47,6 +47,7 @@ public class DBHandler implements CRUD {
         return true;
     }
 
+    
     public boolean dslCheckFalse() {
         DSLContext create = DSL.using(connection, SQLDialect.MARIADB);
         Result<?> result = create.select().
