@@ -85,15 +85,23 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>9.4.22.v20191022</version>
                 <configuration>
-                    <scanIntervalSeconds>2</scanIntervalSeconds>
-                    <!-- Use war output directory to get the webpack files -->
-                    <webAppConfig>
-                        <allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>
-                    </webAppConfig>
-                    <httpConnector>
-                        <port>80</port>
-                    </httpConnector>
+<!--                    <scanIntervalSeconds>2</scanIntervalSeconds>-->
+<!--                    &lt;!&ndash; Use war output directory to get the webpack files &ndash;&gt;-->
+<!--                    <webAppConfig>-->
+<!--                        <allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>-->
+<!--                    </webAppConfig>-->
+<!--                    To Enable http on port 8080 insert the line: -->
+<!--                    ${project.basedir}/src/main/resources/jetty-http.xml,-->
+                    <jettyXml>
+                        ${project.basedir}/src/main/resources/jetty.xml,${project.basedir}/src/main/resources/jetty-ssl.xml,${project.basedir}/src/main/resources/jetty-https.xml
+                    </jettyXml>
                 </configuration>
+<!--                <configuration>-->
+<!--                    <httpConnector>-->
+<!--                        <port>80</port>-->
+<!--                    </httpConnector>-->
+<!--                </configuration>-->
+
             </plugin>
 
             <!--
