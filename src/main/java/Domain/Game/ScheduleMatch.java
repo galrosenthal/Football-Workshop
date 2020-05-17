@@ -6,12 +6,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Class that represent a scheduled match.
+ */
 public class ScheduleMatch {
-    private Team homeTeam;
-    private Team awayTeam;
-    private Stadium stadium;
-    private Date matchDate;
-    private List<Referee> referees;
+    private Team homeTeam; /** home team */
+    private Team awayTeam; /** away team */
+    private Stadium stadium; /** the stadium the match is taken place at */
+    private Date matchDate; /** When the match starts*/
+    private List<Referee> referees; /** referees assigned to the match*/
 
     public ScheduleMatch(Team homeTeam, Team awayTeam, Date matchDate) {
         this.homeTeam = homeTeam;
@@ -54,6 +57,11 @@ public class ScheduleMatch {
         return referees;
     }
 
+    /**
+     * Add a referee to the list of referees if he isn't there already.
+     * @param referee Referee to add.
+     * @return True if the referee was added, else false.
+     */
     public boolean addReferee(Referee referee){
         if(!referees.contains(referee)){
             referees.add(referee);
@@ -62,6 +70,9 @@ public class ScheduleMatch {
         return false;
     }
 
+    /**
+     * @return String that shows the details of the scheduled match.
+     */
     @Override
     public String toString() {
         String str = homeTeam.getTeamName()+" vs. "+awayTeam.getTeamName()
