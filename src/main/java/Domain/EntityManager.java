@@ -184,7 +184,7 @@ public class EntityManager{
         for (SystemUser user :
                 allUsers) {
             Role userAdmin = user.getRole(RoleTypes.SYSTEM_ADMIN);
-            if (userAdmin != null)
+            if (userAdmin != null && userAdmin.getType() == RoleTypes.SYSTEM_ADMIN )
             {
                 sysAdmins.add((SystemAdmin) userAdmin);
             }

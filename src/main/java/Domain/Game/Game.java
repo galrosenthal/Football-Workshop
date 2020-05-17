@@ -16,7 +16,6 @@ public class Game {
     private Team homeTeam;
     private Team awayTeam;
     private Date gameDate;
-    private Score score;
     private List<Referee> referees; // - maybe array?
     private EventsLogger eventsLogger;
     //TODO: should be more properties
@@ -27,7 +26,6 @@ public class Game {
         this.awayTeam = awayTeam;
         this.gameDate = gameDate;
         this.referees = referees;
-        this.score = new Score();
         this.eventsLogger = new EventsLogger();
         //TODO: Add to EntityManager?
     }
@@ -104,9 +102,6 @@ public class Game {
         return awayTeam;
     }
 
-    public Date getGameDate() {
-        return gameDate;
-    }
 
     public List<Referee> getReferees() {
         return referees;
@@ -122,7 +117,7 @@ public class Game {
         return this.gameDate;
     }
 
-    public void setScore(Score score) {
-        this.score = score;
-    }
+//    public void setScore(Score score) {
+//        this.score = score;
+//    }
 }
