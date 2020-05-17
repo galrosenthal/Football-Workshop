@@ -904,7 +904,7 @@ public class AcceptanceTests {
      * Main success scenario - A new Injury event is created.
      */
     @Test
-    public void updateGameEventsATest() {
+    public void updateGameEventsATest() { 
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new Referee(systemUser,"VAR"));
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
