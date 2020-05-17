@@ -90,8 +90,10 @@
 <!--                    <webAppConfig>-->
 <!--                        <allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>-->
 <!--                    </webAppConfig>-->
+<!--                    To Enable http on port 8080 insert the line: -->
+<!--                    ${project.basedir}/src/main/resources/jetty-http.xml,-->
                     <jettyXml>
-                        ${project.basedir}/src/main/resources/jetty.xml,${project.basedir}/src/main/resources/jetty-http.xml,${project.basedir}/src/main/resources/jetty-ssl.xml,${project.basedir}/src/main/resources/jetty-https.xml
+                        ${project.basedir}/src/main/resources/jetty.xml,${project.basedir}/src/main/resources/jetty-ssl.xml,${project.basedir}/src/main/resources/jetty-https.xml
                     </jettyXml>
                 </configuration>
 <!--                <configuration>-->
