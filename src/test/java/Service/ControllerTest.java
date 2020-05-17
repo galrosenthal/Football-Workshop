@@ -36,6 +36,10 @@ public class ControllerTest {
     public void tearDown() throws Exception {
     }
 
+    /**
+     * Check addTeamOwner Controller method,only a team owner of the team can add a new
+     * team owner which he is system user
+     */
     @Test
     public void loginUTest() throws Exception {
         //userName not exists
@@ -116,8 +120,12 @@ public class ControllerTest {
 
     @Test
     public void addTeamOwnerUTest() {
-        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 0)));
-        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 1)));
+
+        //"rosengal" Not a team owner
+        //assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 0)));
+
+        // "rosengal" role type not TeamOwner
+        //assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 1)));
 
         UIController.setIsTest(true);
         UIController.setSelector(0);
@@ -135,13 +143,16 @@ public class ControllerTest {
 //        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
 //    }
 
+    /**
+     * Success Check, a user who never owned a team before
+     */
     @Test
     public void addTeamOwner2ITest() {
         UIController.setIsTest(true);
 //        TeamOwnerStub.setSelector(0);
         new SystemUserStub("newTOUsername", "newTO", 3);
         UIController.setSelector(2);
-        //false because of wrong username from user
+
         assertTrue(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
     }
 
@@ -253,4 +264,67 @@ public class ControllerTest {
         System.out.println(stadium.getName());
     }
 
+    /**
+     * Failure test, check that the user name owned a team
+     */
+    @Test
+    public void removeTeamOwner1UTest(){
+        UIController.setIsTest(true);
+        UIController.setSelector(0);
+        //false because username not owned a team
+        assertFalse(Controller.removeTeamOwner(new SystemUser("rosengal", "gal")));
+    }
+
+    /**
+     * Failure test, check that the team owner owned a team
+     */
+    @Test
+    public void removeTeamOwner2UTest(){
+        UIController.setIsTest(true);
+        UIController.setSelector(1);
+        SystemUser user = new SystemUser("rosengal", "gal");
+        TeamOwnerStub teamOwner = new TeamOwnerStub(user);
+        user.addNewRole(teamOwner);
+        teamOwner.setSelector(6111);
+
+        assertFalse(Controller.removeTeamOwner(user));
+    }
+
+
+    /**
+     * Failure test, check that user name input is a not a real user name
+     */
+    @Test
+    public void removeTeamOwner1ITest(){
+        UIController.setIsTest(true);
+        UIController.setSelector(0);
+        //false because of wrong username from user
+        assertFalse(Controller.removeTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
+    }
+
+//    /**
+//     * Success test, check user name input is a real user name
+//     */
+//    @Test
+//    public void removeTeamOwner2ITest(){
+//        UIController.setIsTest(true);
+//        UIController.setSelector(1);
+//
+//        assertTrue(Controller.removeTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
+//    }
+
+    /**
+     * check only the owner of this team can remove owner
+     */
+    @Test
+    public void removeTeamOwner3ITest(){
+        UIController.setIsTest(true);
+        UIController.setSelector(1);
+
+        SystemUser owner = new SystemUser("rosengal", "gal");
+        owner.addNewRole(new TeamOwner(owner));
+        assertFalse(Controller.removeTeamOwner(owner));
+
+       // owner.getRole(RoleTypes.TEAM_OWNER).
+    }
 }

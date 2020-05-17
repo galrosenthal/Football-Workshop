@@ -9,6 +9,7 @@ import com.vaadin.flow.server.VaadinSession;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
@@ -18,6 +19,12 @@ public class UIController {
 
     private static boolean isTest = false;
     private static int selector = 0; //latest = 10
+
+    public static final String STRING_DELIMETER = ";";
+    public static final String SEND_TYPE_FOR_GUI_STRING = "string";
+    public static final String SEND_TYPE_FOR_GUI_INT = "int";
+    public static final String SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS = "multiple";
+    public static final String CANCEL_TASK_VALUE = "canceled";
 
 
     public static void setSelector(int selector) {
@@ -51,7 +58,7 @@ public class UIController {
      * @param messageToDisplay a message to display to the user
      * @return
      */
-    public static String receiveString(String messageToDisplay, Collection<String>... valuesToChooseFrom) {
+    public static String receiveString(String messageToDisplay,Collection<String>... valuesToChooseFrom)  throws CancellationException{
         if (!isTest) {
             StringBuilder line = new StringBuilder();
             UI lastUI = UI.getCurrent();
@@ -61,18 +68,12 @@ public class UIController {
             Future<Void> returnValue = se.access(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
-                FootballMain.showDialog(messageToDisplay, "string", line, t, valuesToChooseFrom);
+                FootballMain.showDialog(lastUI, messageToDisplay, SEND_TYPE_FOR_GUI_STRING, line,t ,valuesToChooseFrom);
                 System.out.println("Closed Dialog");
             });
 
-            try {
-                returnValue.get();
-                System.out.println("Prints Void");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            while (line.length() == 0) {
+            while (line.length() == 0)
+            {
                 try {
                     //waiting for the user to close the dialog
                     sleep(1000);
@@ -81,12 +82,15 @@ public class UIController {
                     e.printStackTrace();
                 }
             }
+            if(line.toString().equals(CANCEL_TASK_VALUE))
+            {
+                throw new CancellationException();
+            }
             System.out.println(line.toString());
             return line.toString();
 
         } else {
             printMessageAndValuesForTest(messageToDisplay, valuesToChooseFrom);
-            ;
             if (selector == 0) {
                 return "Not a username";
             } else if (selector == 1) {
@@ -177,8 +181,69 @@ public class UIController {
                 return "stubTeam91126";
             } else if (selector == 9102) {
                 return "stubTeam9102";
-            } else
+            }
+            else if(selector == 631){
+                selector = 632;
+                return "Hapoel Ta";
+            }
+            else if(selector == 632){
+                return "gal";
+            }
+            else if(selector == 633){
+                return "merav";
+            }
+            else if(selector == 634){
+                return "nir";
+            }
+            else if(selector == 635){
+                return "ifatch";
+            }
+            else
                 return null;
+        }
+    }
+
+    public static String receiveStringFromMultipleInputs(String messagesToDisplay, Collection<String>... valuesToChooseFrom) throws CancellationException
+    {
+        if (!isTest) {
+            StringBuilder line = new StringBuilder();
+            UI lastUI = UI.getCurrent();
+            Thread t = Thread.currentThread();
+            VaadinSession se = VaadinSession.getCurrent();
+            VaadinService srvc = VaadinService.getCurrent();
+
+            Future<Void> returnValue = se.access(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                FootballMain.showDialog(lastUI, messagesToDisplay, SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS, line,t ,valuesToChooseFrom);
+                lastUI.access(()-> {
+                    lastUI.push();
+                });
+                System.out.println("Closed Dialog");
+            });
+
+            while (line.length() == 0)
+            {
+                try {
+                    //waiting for the user to close the dialog
+                    sleep(1000);
+//                    System.out.println("Waiting for the user input");
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            if(line.toString().equals(CANCEL_TASK_VALUE))
+            {
+                throw new CancellationException();
+            }
+            System.out.println(line.toString());
+            return line.toString();
+
+        } else {
+            printMessageAndValuesForTest(messagesToDisplay, valuesToChooseFrom);
+            return null;
         }
     }
 
@@ -193,7 +258,7 @@ public class UIController {
         }
     }
 
-    public static int receiveInt(String messageToDisplay, Collection<String>... valuesToDisplay) {
+    public static int receiveInt(String messageToDisplay, Collection<String>... valuesToDisplay) throws CancellationException{
         if (!isTest) {
             StringBuilder line = new StringBuilder();
             UI lastUI = UI.getCurrent();
@@ -209,17 +274,13 @@ public class UIController {
                 } else {
                     type = "int";
                 }
-                FootballMain.showDialog(messageToDisplay, type, line, t, valuesToDisplay);
+                FootballMain.showDialog(lastUI, messageToDisplay, SEND_TYPE_FOR_GUI_INT, line,t ,valuesToDisplay);
                 System.out.println("Closed Dialog");
             });
 
-            try {
-                returnValue.get();
-                System.out.println("Prints Void");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            while (line.length() == 0) {
+
+            while (line.length() == 0)
+            {
                 try {
                     //waiting for the user to close the dialog
                     sleep(100);
@@ -227,10 +288,13 @@ public class UIController {
                     e.printStackTrace();
                 }
             }
-            int resultValue = Integer.parseInt(line.toString());
+            if(line.toString().equals(CANCEL_TASK_VALUE))
+            {
+                throw new CancellationException();
+            }
 
 
-            return resultValue;
+            return Integer.parseInt(line.toString());
         } else {
             printMessageAndValuesForTest(messageToDisplay, valuesToDisplay);
             if (selector == 0 || selector == 1 || selector == 2 || selector == 6117 || selector == 6118 || selector == 921 || selector == 922 || selector == 924 || selector == 9321) {
@@ -280,7 +344,10 @@ public class UIController {
             } else if (selector == 6139) {
                 setSelector(61310);
                 return 0;
-            } else if (selector == 9111) {
+            }else if(selector == 632 || selector == 633 || selector == 634 || selector == 635){
+                return 0;
+            }
+            else if(selector == 9111){
                 setSelector(91112);
                 return 0;
             } else if (selector == 91112) {
