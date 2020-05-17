@@ -15,6 +15,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
 import static java.lang.Thread.sleep;
+import java.util.Date;
+import java.util.Scanner;
 
 public class UIController {
 
@@ -251,7 +253,24 @@ public class UIController {
 
         } else {
             printMessageAndValuesForTest(messagesToDisplay, valuesToChooseFrom);
-            return null;
+            if(selector == 9511 || selector == 9521){
+                return "1;-1;0";
+            }
+            else if(selector == 962){
+                return "1;1;1";
+            }
+            else if (selector == 9514){
+                return "1;1;-1";
+            }
+            else if(selector == 9512){
+                return "-1;0;1";
+            }
+            else if (selector == 961){
+                return "0;1;1";
+            }
+            else{
+                return "-2,1,a"; // not legal
+            }
         }
     }
 
@@ -409,7 +428,36 @@ public class UIController {
                 setSelector(912322);
                 return 0;
             }
-            else {
+          //  else {
+           // }
+            else if(selector == 9511) //victory points
+            {
+                setSelector(9512);//1,-1,0,1,...
+                return 1;
+            }else if(selector == 9512) //Loss points
+            {
+                setSelector(9513);//-1,0,1,-1,..
+                return -1;
+            }else if(selector == 9513)
+            {
+                setSelector(9511);
+                return 1;
+            }else if(selector == 9514)
+            {
+                setSelector(9511);//1,1,-1
+                return 1;
+            }else if(selector == 9521)  //0,-1,1
+            {
+                setSelector(9513);
+                return 0;
+            }else if(selector == 961)  //0,1,1
+            {
+                setSelector(9514);
+                return 0;
+            }else if(selector == 962)
+            {
+                return 1;
+            }else {
                 //random number to crash test that were not checked
                 return 123812;
             }
@@ -452,5 +500,16 @@ public class UIController {
         {
             System.out.println("Alert: " + alert);
         }
+    }
+
+    public static Date receiveDate(String s) {
+        if(!isTest){
+            //TODO: fill
+        }else {
+            if(selector ==0){
+                return new Date(2020,01,01);
+            }
+        }
+        return  null;
     }
 }

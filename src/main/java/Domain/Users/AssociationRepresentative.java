@@ -1,12 +1,17 @@
 package Domain.Users;
 
 import Domain.EntityManager;
+import Domain.Exceptions.ExistsAlreadyException;
 import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Financials.AssociationFinancialRecordLog;
+import Domain.Game.PointsPolicy;
+import Domain.Game.SchedulingPolicy;
 import Domain.Game.League;
 import Domain.Game.Team;
 import Domain.Game.Season;
+import Service.UIController;
 
+import java.util.Date;
 import java.util.List;
 
 public class AssociationRepresentative extends Role {
@@ -151,4 +156,68 @@ public class AssociationRepresentative extends Role {
         return true;
     }
 
+
+    /**
+     * Adds a new points policy using the given parameters.
+     * Adds only if the arguments are correct and if an identical policy doesn't exist yet.
+     *
+     * @param victoryPoints - int - the amount of points earned for a victory - positive integer
+     * @param lossPoints    - int - the amount of points lost for a loss - negative integer or zero
+     * @param tiePoints     - int - the amount of points earned/lost for a tie - integer
+     * @throws Exception - IllegalArgumentException - if the wrong arguments were passed, ExistsAlreadyException - if the policy already exists
+     */
+    public void addPointsPolicy(int victoryPoints, int lossPoints, int tiePoints) throws Exception {
+        if (victoryPoints <= 0) {
+            throw new IllegalArgumentException("The victory points most be positive");
+        } else if (lossPoints > 0) {
+            throw new IllegalArgumentException("The loss points most be negative or zero");
+        }
+        if (EntityManager.getInstance().doesPointsPolicyExists(victoryPoints, lossPoints, tiePoints)) {
+            throw new ExistsAlreadyException("This points policy already exists");
+        }
+        PointsPolicy newPointsPolicy = new PointsPolicy(victoryPoints, lossPoints, tiePoints);
+        EntityManager.getInstance().addPointsPolicy(newPointsPolicy);
+    }
+
+    /**
+     * Sets the points policy of the given season to be the points policy given
+     *
+     * @param chosenSeason - Season - the season to changed its points policy
+     * @param pointsPolicy - PointsPolicy - the new points policy
+     */
+    public void setPointsPolicy(Season chosenSeason, PointsPolicy pointsPolicy) {
+        if (chosenSeason != null && pointsPolicy != null) {
+            chosenSeason.setPointsPolicy(pointsPolicy);
+        }
+    }
+
+    /**
+     * Adds a new scheduling policy using the given parameters.
+     * Adds only if the arguments are correct and if an identical policy doesn't exist yet.
+     *
+     * @param gamesPerSeason - int - The number of games for each team per season - positive integer
+     * @param gamesPerDay    - int - The number of games on the same day - positive integer
+     * @param minRest        - int - The minimum rest days between games - non-negative integer
+     */
+    public void addSchedulingPolicy(int gamesPerSeason, int gamesPerDay, int minRest) throws Exception {
+        if (gamesPerSeason <= 0) {
+            throw new IllegalArgumentException("The number of games for each team per season must be positive integer");
+        } else if (gamesPerDay <= 0) {
+            throw new IllegalArgumentException("The number of games on the same day must be positive integer");
+        } else if (minRest < 0) {
+            throw new IllegalArgumentException("The minimum rest days between games must be non-negative integer");
+        }
+        if (EntityManager.getInstance().doesSchedulingPolicyExists(gamesPerSeason, gamesPerDay, minRest)) {
+            throw new ExistsAlreadyException("This scheduling policy already exists");
+        }
+        SchedulingPolicy newSchedulingPolicy = new SchedulingPolicy(gamesPerSeason, gamesPerDay, minRest);
+        EntityManager.getInstance().addSchedulingPolicy(newSchedulingPolicy);
+    }
+
+    public void activateSchedulingPolicy(Season chosenSeason, SchedulingPolicy schedulingPolicy, Date startDate) throws Exception {
+        if(chosenSeason.getIsUnderway()){
+            throw new Exception("Activating a scheduling policy after a season has started is forbidden");
+        }
+        chosenSeason.scheduleGames(schedulingPolicy,startDate);
+    }
 }
