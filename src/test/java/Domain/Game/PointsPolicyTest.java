@@ -1,6 +1,5 @@
 package Domain.Game;
 
-import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
