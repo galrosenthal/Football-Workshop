@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class TeamStub extends Team{
+public class TeamStub extends Team {
 
     private List<TeamOwner> teamOwners;
     private List<Player> players;
@@ -26,8 +26,8 @@ public class TeamStub extends Team{
         this.teamManagers = new ArrayList<>();
         this.coaches = new ArrayList<>();
         this.stadiums = new ArrayList<>();
-        this.setTeamName( "stubTeam"+selector);
-        if(selector == 66143 || selector == 66163)
+        this.setTeamName("stubTeam" + selector);
+        if (selector == 66143 || selector == 66163)
             setStatus(TeamStatus.CLOSED);
     }
 
@@ -43,6 +43,11 @@ public class TeamStub extends Team{
 
     @Override
     public List<Player> getTeamPlayers() {
+        if(selector >= 1 && selector <= 6) {
+            for(int i = 1 ; i <= 11; i++){
+                this.players.add(new PlayerStub(new SystemUserStub("a","a",1)));
+            }
+        }
         return this.players;
     }
 
@@ -116,7 +121,7 @@ public class TeamStub extends Team{
         } else {
             return null;
         }*/
-     return "stubTeam"+selector;
+        return "stubTeam" + selector;
     }
 
     @Override
@@ -126,8 +131,7 @@ public class TeamStub extends Team{
 
     @Override
     public boolean addTeamPlayer(TeamOwner townr, Role teamPlayer) {
-        if(selector == 1)
-        {
+        if (selector == 1) {
             return true;
         }
 
@@ -141,8 +145,7 @@ public class TeamStub extends Team{
 
     @Override
     public boolean addTeamManager(TeamOwner townr, Role teamManager) {
-        if(this.selector == 6131)
-        {
+        if (this.selector == 6131) {
             return true;
         }
         return super.addTeamManager(townr, teamManager);
@@ -154,105 +157,76 @@ public class TeamStub extends Team{
     }
 
 
-
     @Override
     public boolean isTeamOwner(TeamOwner teamOwner) {
-        if(selector == 6110)
-        {
+        if (selector == 6110) {
             return true;
-        }
-        else if(selector == 6111)
-        {
+        } else if (selector == 6111) {
             return true;
-        }
-        else if(selector == 6112)
-        {
+        } else if (selector == 6112) {
             return true;
-        }else if(selector == 6113)
-        {
+        } else if (selector == 6113) {
             return true;
-        }
-        else if(selector == 6131)
-        {
+        } else if (selector == 6131) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
 
     @Override
-    public boolean addAsset(String assetName, TeamOwner teamOwner, TeamAsset assetType){
-        if(selector == 6110)
-        {
+    public boolean addAsset(String assetName, TeamOwner teamOwner, TeamAsset assetType) {
+        if (selector == 6110) {
             return true;
-        }
-        else if(selector == 6111)
-        {
+        } else if (selector == 6111) {
             return false;
-        }else if(selector == 6112)
-        {
+        } else if (selector == 6112) {
             return true;
-        }
-        else if(selector == 6113)
-        {
+        } else if (selector == 6113) {
             return false;
-        }
-        else{
+        } else {
             return false;
         }
     }
 
     /**
      * Each team has a lot of Assets {@link TeamAsset},
+     *
      * @return a list of all the team assets
      */
     public List<Asset> getAllAssets() {
 
-        if(this.selector == 6132)
-        {
+        if (this.selector == 6132) {
             List<Asset> allTeamAssets = new ArrayList<>();
             allTeamAssets.add(new AssetStub(6132));
             return allTeamAssets;
 
-        }
-        else if(this.selector == 6133)
-        {
+        } else if (this.selector == 6133) {
             List<Asset> allTeamAssets = new ArrayList<>();
             allTeamAssets.add(new AssetStub(6133));
             return allTeamAssets;
 
-        }
-        else if(this.selector == 6134)
-        {
+        } else if (this.selector == 6134) {
             List<Asset> allTeamAssets = new ArrayList<>();
             allTeamAssets.add(new AssetStub(6134));
             return allTeamAssets;
 
-        }
-        else if(this.selector == 6135)
-        {
+        } else if (this.selector == 6135) {
             List<Asset> allTeamAssets = new ArrayList<>();
             allTeamAssets.add(new AssetStub(6135));
             return allTeamAssets;
 
-        }
-        else if(this.selector == 6136)
-        {
+        } else if (this.selector == 6136) {
             List<Asset> allTeamAssets = new ArrayList<>();
             allTeamAssets.add(new AssetStub(6136));
             return allTeamAssets;
 
-        }
-        else if(this.selector == 6137)
-        {
+        } else if (this.selector == 6137) {
             List<Asset> allTeamAssets = new ArrayList<>();
             allTeamAssets.add(new AssetStub(6137));
             return allTeamAssets;
 
-        }
-        else if(this.selector == 6138)
-        {
+        } else if (this.selector == 6138) {
             List<Asset> allTeamAssets = new ArrayList<>();
             allTeamAssets.add(new AssetStub(6138));
             return allTeamAssets;
@@ -264,8 +238,13 @@ public class TeamStub extends Team{
     }
 
     @Override
+    public boolean equals(Object o) {
+        return (super.equals(o) && (this.selector==((TeamStub)o).selector));
+    }
+
+    @Override
     public List<Enum> getAllProperty(Asset asset, String propertyName) {
-        List<Enum> enumList = asset.getAllPropertyList(this , propertyName);
+        List<Enum> enumList = asset.getAllPropertyList(this, propertyName);
         return enumList;
     }
 }

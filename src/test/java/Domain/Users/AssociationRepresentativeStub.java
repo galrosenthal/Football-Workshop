@@ -45,6 +45,16 @@ public class AssociationRepresentativeStub extends AssociationRepresentative{
         }
     }
 
+    @Override
+    public void addPointsPolicy(int victoryPoints, int lossPoints, int tiePoints) throws Exception {
+        if(selector == 9511){
+            throw new IllegalArgumentException("The victory points most be positive");
+        }else if(selector == 9512){
+            throw new IllegalArgumentException("The loss points most be negative or zero");
+        }else if(selector == 9513){
+            throw new IllegalArgumentException("This Points policy already exists");
+        }
+    }
 
     @Override
     public boolean addTeam(String teamName, SystemUser newTeamOwnerUser) {
