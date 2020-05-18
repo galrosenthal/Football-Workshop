@@ -5,15 +5,17 @@ import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Exceptions.TeamAlreadyExistsException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.League;
+import Domain.Game.PointsPolicy;
+import Domain.Game.SchedulingPolicy;
 import Domain.Game.Season;
 import Domain.Game.Team;
 import Domain.Users.AssociationRepresentative;
 import Domain.Users.Referee;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
-import com.vaadin.flow.component.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static Service.UIController.*;
@@ -105,7 +107,7 @@ public class ARController {
         }
         int Index;
         do {
-            Index = UIController.receiveInt("Choose a League Number",leaguesList);
+            Index = UIController.receiveInt("Choose a League", leaguesList);
         } while (!(Index >= 0 && Index < leagues.size()));
 
         return leagues.get(Index);
@@ -113,6 +115,7 @@ public class ARController {
 
     /**
      * Receives the user's selection of a season from a given league.
+     *
      * @param league - League - a league with the desired season
      * @return - Season - the selected season
      * @throws Exception - throws if there are no seasons in the league
@@ -128,7 +131,7 @@ public class ARController {
         }
         int Index;
         do {
-            Index = UIController.receiveInt("Choose a Season Number",seasonsList);
+            Index = UIController.receiveInt("Choose a Season", seasonsList);
         } while (!(Index >= 0 && Index < seasons.size()));
 
         return seasons.get(Index);
@@ -195,7 +198,7 @@ public class ARController {
             return false;
         }
 
-        if(ARRole.removeReferee(chosenUser)) {
+        if (ARRole.removeReferee(chosenUser)) {
             UIController.showNotification("The referee has been removed successfully");
             return true;
         }
@@ -204,6 +207,7 @@ public class ARController {
 
     /**
      * receives a system user selection from the user.
+     *
      * @return - SystemUser - a referee chosen by the user
      * @throws Exception - "There are no referees"
      */
@@ -219,7 +223,7 @@ public class ARController {
         }
         int index;
         do {
-            index = UIController.receiveInt("Choose a referee number from the list:",refereesList);
+            index = UIController.receiveInt("Choose a referee from the list:", refereesList);
         } while (!(index >= 0 && index < referees.size()));
 
         return referees.get(index);
@@ -260,11 +264,11 @@ public class ARController {
             UIController.showNotification(e.getMessage());
             return false;
         }
-        Referee refereeRole = (Referee)chosenRefereeUser.getRole(RoleTypes.REFEREE);
+        Referee refereeRole = (Referee) chosenRefereeUser.getRole(RoleTypes.REFEREE);
 
 
         try {
-            ARRole.assignRefereeToSeason(chosenSeason,refereeRole);
+            ARRole.assignRefereeToSeason(chosenSeason, refereeRole);
         } catch (Exception e) {
             UIController.showNotification(e.getMessage());
             return false;
@@ -277,12 +281,13 @@ public class ARController {
 
     /**
      * Controls the flow of Creating a new team.
+     *
      * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
      * @return - boolean - True if a new team was created successfully, else false
      * @throws TeamAlreadyExistsException
      * @throws UserNotFoundException
      */
-    public static boolean registerNewTeam(SystemUser systemUser) throws TeamAlreadyExistsException,UserNotFoundException  {
+    public static boolean registerNewTeam(SystemUser systemUser) throws TeamAlreadyExistsException, UserNotFoundException {
         if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
             return false;
         }
@@ -311,24 +316,26 @@ public class ARController {
 
     /**
      * Controls the flow of adding teams to season.
+     *
      * @param systemUser SystemUser - the user who initiated the procedure, needs to be an association representative
      * @return boolean - True if new teams were assigned successfully to the chosen league's latest season, else false
      */
-    public static boolean addTeamsToSeason(SystemUser systemUser){
+    public static boolean addTeamsToSeason(SystemUser systemUser) {
         return addRemoveTeamsToSeason(systemUser, "add");
     }
 
     /**
      * Controls the flow of removing teams from season.
+     *
      * @param systemUser SystemUser - the user who initiated the procedure, needs to be an association representative
      * @return boolean - True if teams were removed successfully from the chosen league's latest season, else false
      */
-    public static boolean removeTeamsFromSeason(SystemUser systemUser){
+    public static boolean removeTeamsFromSeason(SystemUser systemUser) {
         return addRemoveTeamsToSeason(systemUser, "remove");
     }
 
 
-    private static boolean addRemoveTeamsToSeason(SystemUser systemUser, String action){
+    private static boolean addRemoveTeamsToSeason(SystemUser systemUser, String action) {
         if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
             return false;
         }
@@ -345,7 +352,7 @@ public class ARController {
         Season currLeagueSeason = chosenLeague.getLatestSeason();
         List<Team> chosenTeams = null;
         try {
-            if(action.equals("add"))
+            if (action.equals("add"))
                 chosenTeams = getTeamsBySeasonByChoice(currLeagueSeason, "not in season");
             else // "remove"
                 chosenTeams = getTeamsBySeasonByChoice(currLeagueSeason, "in season");
@@ -356,18 +363,35 @@ public class ARController {
 
         //delegate the operation responsibility to AssociationRepresentative
         boolean succeeded;
-        if(action.equals("add"))
-             succeeded = ARRole.assignTeamsToSeason(chosenTeams, currLeagueSeason);
+        if (action.equals("add"))
+            succeeded = ARRole.assignTeamsToSeason(chosenTeams, currLeagueSeason);
         else  // "remove"
             succeeded = ARRole.removeTeamsFromSeason(chosenTeams, currLeagueSeason);
         if (succeeded) {
-            if(action.equals("add"))
+            if (action.equals("add"))
                 UIController.showNotification("The teams have been successfully assigned to the league's latest season");
             else  // "remove"
                 UIController.showNotification("The teams have been successfully removed from the league's latest season");
         }
         return succeeded;
     }
+
+
+    private static PointsPolicy getPointsPolicyByChoice() {
+        PointsPolicy.getDefaultPointsPolicy();
+        List<PointsPolicy> pointsPolicies = EntityManager.getInstance().getPointsPolicies();
+        List<String> stringList = new ArrayList<>();
+        for (int i = 0; i < pointsPolicies.size(); i++) {
+            stringList.add(pointsPolicies.get(i).toString());
+        }
+        int index;
+        do {
+            index = UIController.receiveInt("Choose a points policy number from the list", stringList);
+        } while (!(index >= 0 && index < pointsPolicies.size()));
+
+        return pointsPolicies.get(index);
+    }
+
 
     private static List<Team> getTeamsBySeasonByChoice(Season season, String action) throws Exception {
         List<Team> teams = EntityManager.getInstance().getTeams();
@@ -379,38 +403,35 @@ public class ARController {
         // Display teamChoices to the user, so he can select a multiple teams
         // and return the list of the chosen teams
         List<String> teamChoices = new ArrayList<>();
-        for(Team teamInSys : teams){
-            if(action.equals("not in season")) {
+        for (Team teamInSys : teams) {
+            if (action.equals("not in season")) {
                 if (!teamsInSeason.contains(teamInSys))
                     teamChoices.add(teamInSys.getTeamName());
-            }
-            else { //"in season"
+            } else { //"in season"
                 if (teamsInSeason.contains(teamInSys))
                     teamChoices.add(teamInSys.getTeamName());
             }
         }
-        if(teamChoices.isEmpty()){
-            if(action.equals("not in season"))
-                 throw new Exception("There are no teams that do not belong already to the chosen league's latest season");
+        if (teamChoices.isEmpty()) {
+            if (action.equals("not in season"))
+                throw new Exception("There are no teams that do not belong already to the chosen league's latest season");
             else //"in season"
                 throw new Exception("There are no teams that belong to the chosen league's latest season");
         }
         String messageToShow = "";
-        if(action.equals("not in season"))
-        {
-            messageToShow = "Choose Team numbers from the list of " +
+        if (action.equals("not in season")) {
+            messageToShow = "Choose Teams from the list of " +
                     "teams that do not belong to the chosen league's latest season.";
-        }
-        else //"in season"
+        } else //"in season"
         {
-            messageToShow = "Choose Team numbers from the list of " +
+            messageToShow = "Choose Teams from the list of " +
                     "teams that belong to the chosen league's latest season.";
         }
         List<Team> chosenTeams = new ArrayList<>();
 //        for (int i = 0; i < teamChoices.size(); i++) {
 //            UIController.showNotification(i + ". " + teamChoices.get(i).getTeamName());
 //        }
-        String selectedTeams = UIController.receiveString(messageToShow,teamChoices);
+        String selectedTeams = UIController.receiveString(messageToShow, teamChoices);
         String[] selectedTeamsArray = selectedTeams.split(";");
         for (String teamName :
                 selectedTeamsArray) {
@@ -435,11 +456,11 @@ public class ARController {
             if (leagues.get(i).getLatestSeason() != null && !leagues.get(i).getLatestSeason().getIsUnderway())
                 leaguesChoices.add(leagues.get(i).getName());
         }
-        if(leaguesChoices.isEmpty()){
+        if (leaguesChoices.isEmpty()) {
             throw new Exception("There are no leagues that their latest season hasn't started");
         }
 
-        String messeage = ("Choose a League Number from the list of " +
+        String messeage = ("Choose a League from the list of " +
                 "leagues that their latest season hasn't started");
 //        int selectedLeague = UIController.receiveInt(messeage, leaguesChoices);
         int Index;
@@ -449,4 +470,192 @@ public class ARController {
 
         return EntityManager.getInstance().getLeagueByName(leaguesChoices.get(Index));
     }
+
+
+    /**
+     * Controls the flow of adding a new points policy
+     *
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - boolean - True if a  new points policy have been created successfully, else false
+     */
+    public static boolean addPointsPolicy(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        String msg = "Enter points for VICTORY (positive integer);Enter points for LOSS (negative integer or zero);" +
+                "Enter points for TIE (integer)";
+        String selectedPoints = UIController.receiveStringFromMultipleInputs(msg);
+        String[] selectedPointsArray = selectedPoints.split(";");
+        String victoryPointsString = selectedPointsArray[0];
+        String lossPointsString = selectedPointsArray[1];
+        String tiePointsString = selectedPointsArray[2];
+
+        if (!validateStringIsInteger(victoryPointsString)
+                || !validateStringIsInteger(lossPointsString)
+                || !validateStringIsInteger(tiePointsString)) {
+            UIController.showNotification("error, invalid input. Please enter valid inputs.");
+            return false;
+        }
+        //Now we know that the inputs are legal
+        int victoryPoints = Integer.parseInt(victoryPointsString);
+        int lossPoints = Integer.parseInt(lossPointsString);
+        int tiePoints = Integer.parseInt(tiePointsString);
+        try {
+            ARRole.addPointsPolicy(victoryPoints, lossPoints, tiePoints);
+        } catch (Exception e) {
+            UIController.showNotification(e.getMessage());
+            return false;
+        }
+
+        UIController.showNotification("The new points policy has been added successfully");
+        return true;
+    }
+
+    private static boolean validateStringIsInteger(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+
+    /**
+     * Sets a points policy to a chosen season.
+     *
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - boolean - True if a points policy was assigned successfully, else false
+     */
+    public static boolean setPointsPolicy(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        //League selection
+        League chosenLeague = null;
+        try {
+            chosenLeague = getLeagueThatHasntStartedByChoice();
+        } catch (Exception e) {
+            UIController.showNotification(e.getMessage());
+            return false;
+        }
+
+        Season chosenSeason = chosenLeague.getLatestSeason();
+
+        PointsPolicy pointsPolicy = getPointsPolicyByChoice();
+
+        ARRole.setPointsPolicy(chosenSeason, pointsPolicy);
+
+        UIController.showNotification("The chosen points policy was set successfully");
+        return true;
+    }
+
+
+    /**
+     * Controls the flow of adding a new scheduling policy
+     *
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - boolean - True if a  new points policy have been created successfully, else false
+     */
+    public static boolean addSchedulingPolicy(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        String msg = "Enter Number of games each team will face other team;" +
+                "Enter maximum number of games on the same day;" +
+                "Enter minimum rest days between games";
+        String selectedParams = UIController.receiveStringFromMultipleInputs(msg);
+        String[] selectedParamsArray = selectedParams.split(";");
+        String gamesPerSeasonString = selectedParamsArray[0];
+        String gamesPerDayString = selectedParamsArray[1];
+        String minRestString = selectedParamsArray[2];
+
+        if (!validateStringIsInteger(gamesPerSeasonString)
+                || !validateStringIsInteger(gamesPerDayString)
+                || !validateStringIsInteger(minRestString)) {
+            UIController.showNotification("error, invalid input. Please enter valid inputs.");
+            return false;
+        }
+        //Now we know that the inputs are legal
+        int gamesPerSeason = Integer.parseInt(gamesPerSeasonString);
+        int gamesPerDay = Integer.parseInt(gamesPerDayString);
+        int minRest = Integer.parseInt(minRestString);
+
+        try {
+            ARRole.addSchedulingPolicy(gamesPerSeason, gamesPerDay, minRest);
+        } catch (Exception e) {
+            UIController.showNotification(e.getMessage());
+            return false;
+        }
+
+        UIController.showNotification("The new scheduling policy has been added successfully");
+        return true;
+    }
+
+
+    /**
+     * Activates a scheduling policy to a chosen season.
+     *
+     * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
+     * @return - boolean - True if the scheduling process was assigned successfully, else false
+     */
+    public static boolean activateSchedulingPolicy(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
+            return false;
+        }
+        AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        //League selection
+        League chosenLeague = null;
+        try {
+            chosenLeague = getLeagueThatHasntStartedByChoice();
+        } catch (Exception e) {
+            UIController.showNotification(e.getMessage());
+            return false;
+        }
+
+        Season chosenSeason = chosenLeague.getLatestSeason();
+        //override
+        boolean override = true;
+        if (chosenSeason.scheduled()) {
+            override = UIController.receiveChoice("Caution: this season already have a schedule.\nRe-activating scheduling policy will cause the previous schedule to be over-written");
+        }
+        if (!override) {
+            return false;
+        }
+        //Date selection
+        Date startDate = UIController.receiveDate("Please chose a date for the first game:");
+        //Scheduling policy selection
+        SchedulingPolicy schedulingPolicy = getSchedulingPolicyByChoice();
+
+        try {
+            ARRole.activateSchedulingPolicy(chosenSeason, schedulingPolicy, startDate);
+        } catch (Exception e) {
+            UIController.showNotification(e.getMessage());
+            return false;
+        }
+
+        UIController.showNotification("The chosen points policy was set successfully");
+        return true;
+    }
+
+    private static SchedulingPolicy getSchedulingPolicyByChoice() {
+        SchedulingPolicy.getDefaultSchedulingPolicy();
+        List<SchedulingPolicy> schedulingPolicies = EntityManager.getInstance().getSchedulingPolicies();
+        List<String> schedulingPoliciesChoices = new ArrayList<>();
+        for (int i = 0; i < schedulingPolicies.size(); i++) {
+            schedulingPoliciesChoices.add(schedulingPolicies.get(i).toString());
+        }
+        String messeage = "Choose a scheduling policy from the list:";
+        int index;
+        do {
+            index = UIController.receiveInt(messeage, schedulingPoliciesChoices);
+        } while (!(index >= 0 && index < schedulingPoliciesChoices.size()));
+
+        return schedulingPolicies.get(index);
+    }
+
+
 }

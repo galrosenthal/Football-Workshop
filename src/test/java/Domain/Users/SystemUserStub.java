@@ -9,7 +9,7 @@ import java.util.List;
 public class SystemUserStub extends SystemUser{
 
     private int selector;
-
+    private Role role;
 
     /**
      * Selector latest number: 9
@@ -128,6 +128,11 @@ public class SystemUserStub extends SystemUser{
             return referee;
         }else if( selector == 9321){
             return new AssociationRepresentativeStub(this);
+        }else if( selector == 1031){
+            if(role == null){
+                role =  new RefereeStub(this ,"VAR");
+            }
+            return role;
         }
         return null;
     }
