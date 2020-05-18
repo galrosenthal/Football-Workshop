@@ -127,7 +127,7 @@ public class Game {
      * @param minute       - int - The minute the goal was scored - positive integer
      * @throws IllegalArgumentException - if the arguments aren't valid
      */
-    public void addGoal(Team scoringTeam, Team scoredOnTeam, int minute) throws IllegalArgumentException {
+    public void addGoal(Team scoringTeam, Team scoredOnTeam, Player playerScored, int minute) throws IllegalArgumentException {
         if ((!scoringTeam.equals(homeTeam)) && (!scoringTeam.equals(awayTeam))) {
             throw new IllegalArgumentException("The given scoring Team doesn't play in this game");
         }
@@ -140,7 +140,7 @@ public class Game {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
-        this.eventsLogger.logGoal(scoringTeam, scoredOnTeam, minute);
+        this.eventsLogger.logGoal(scoringTeam, scoredOnTeam,playerScored, minute);
     }
 
     /**

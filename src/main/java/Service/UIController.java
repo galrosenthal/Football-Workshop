@@ -237,7 +237,20 @@ public class UIController {
                 return "1;1;-1";
             } else if (selector == 9512) {
                 return "-1;0;1";
-            } else if (selector == 961) {
+            }
+            else if(selector == 1034 || selector == 1032112 || selector == 103151 || selector == 1031112){
+                return "AviCohen;1";
+            }
+            else if (selector == 103112 || selector == 10391){
+                return "stubTeam9511;1";
+            }
+            else if (selector == 10371){
+                return "stubTeam9512;stubTeam9511;UserName1;1";
+            }
+            else if( selector == 103131){
+                return "stubTeam9511;UserName2;AviCohen;1";
+            }
+            else if (selector == 961) {
                 return "0;1;1";
             } else {
                 return "-2,1,a"; // not legal
@@ -408,7 +421,24 @@ public class UIController {
                 return 0;
             } else if (selector == 95212) {
                 return 1;
-            } else if (selector == 1031)  //0,0,0,1 - success
+            }
+            else if( selector == 1032110){//0 ,1
+                selector = 1032111;
+                return 0;
+            }
+            else if( selector == 1032111){
+                selector = 1032112;
+                return 1;
+            }
+            else if(selector == 1031110 ){ //0,0
+                selector = 1031111;
+                return 0;
+            }
+            else if(selector == 1031111){
+                selector = 1031112;
+                return 0;
+            }
+            else if (selector == 1031)  //0,0,0,1 - success
             {
                 setSelector(9521);
                 return 0;
@@ -434,7 +464,7 @@ public class UIController {
                 return 0;
             } else if (selector == 1037)  //2,1,0,1
             {
-                setSelector(1033);
+                setSelector(10371);
                 return 2;
             } else if (selector == 1038)  //0,3,0,1
             {
@@ -442,7 +472,7 @@ public class UIController {
                 return 0;
             } else if (selector == 1039)  //3,0,1
             {
-                setSelector(1034);
+                setSelector(10391);
                 return 3;
             } else if (selector == 10310)  //0,4,0,1
             {
@@ -450,7 +480,7 @@ public class UIController {
                 return 0;
             } else if (selector == 10311)  //4,0,1
             {
-                setSelector(1034);
+                setSelector(103112);
                 return 4;
             } else if (selector == 10312)  //0,5,0,1,0,1
             {
@@ -458,7 +488,7 @@ public class UIController {
                 return 0;
             } else if (selector == 10313)  //5,0,1,0,1
             {
-                setSelector(1032);
+                setSelector(103131);
                 return 5;
             } else if (selector == 10314)  //0,6,0,1
             {
@@ -466,7 +496,7 @@ public class UIController {
                 return 0;
             } else if (selector == 10315)  //6,0,1
             {
-                setSelector(1034);
+                setSelector(103151);
                 return 6;
             } else {
                 //random number to crash test that were not checked

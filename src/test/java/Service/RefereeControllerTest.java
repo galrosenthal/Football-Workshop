@@ -57,15 +57,20 @@ public class RefereeControllerTest {
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
         Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0 ));
+        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
         Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
+        EntityManager.getInstance().addTeam(firstTeam);
+        EntityManager.getInstance().addTeam(secondTeam);
+        EntityManager.getInstance().addUser(player1.getSystemUser());
+        EntityManager.getInstance().addUser(player2.getSystemUser());
+
         game.addReferee(referee);
         referee.addGame(game);
 
-        UIController.setSelector(1031);//0,0,0,1
+        UIController.setSelector(1031110);//0,0,0,1
         assertTrue(RefereeController.updateGameEvents(systemUser));
         //The new Red Card has been added successfully
 
@@ -82,7 +87,7 @@ public class RefereeControllerTest {
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
         Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0 ));
+        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
         Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
@@ -90,7 +95,12 @@ public class RefereeControllerTest {
         game.addReferee(referee);
         referee.addGame(game);
 
-        UIController.setSelector(1031);//0,0,0,1
+        EntityManager.getInstance().addTeam(firstTeam);
+        EntityManager.getInstance().addTeam(secondTeam);
+        EntityManager.getInstance().addUser(player1.getSystemUser());
+        EntityManager.getInstance().addUser(player2.getSystemUser());
+
+        UIController.setSelector(1031110);//0,0,0,1
         assertTrue(RefereeController.updateGameEvents(systemUser));
         //The new Red Card has been added successfully
 
@@ -114,7 +124,7 @@ public class RefereeControllerTest {
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
         Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0 ));
+        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
         Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
@@ -122,7 +132,13 @@ public class RefereeControllerTest {
         game.addReferee(referee);
         referee.addGame(game);
 
-        UIController.setSelector(1032); //0,1,0,1
+
+        EntityManager.getInstance().addTeam(firstTeam);
+        EntityManager.getInstance().addTeam(secondTeam);
+        EntityManager.getInstance().addUser(player1.getSystemUser());
+        EntityManager.getInstance().addUser(player2.getSystemUser());
+
+        UIController.setSelector(1032110); //0,1,0,1
         assertTrue(RefereeController.updateGameEvents(systemUser));
         //The new Yellow Card has been added successfully
         Event event = game.getEventsLogger().getGameEvents().get(0);
@@ -146,6 +162,11 @@ public class RefereeControllerTest {
 
         game.addReferee(referee);
         referee.addGame(game);
+
+        EntityManager.getInstance().addTeam(firstTeam);
+        EntityManager.getInstance().addTeam(secondTeam);
+        EntityManager.getInstance().addUser(player1.getSystemUser());
+        EntityManager.getInstance().addUser(player2.getSystemUser());
 
         UIController.setSelector(1036); //0,2,1,0,1
         assertTrue(RefereeController.updateGameEvents(systemUser));
@@ -173,6 +194,11 @@ public class RefereeControllerTest {
         game.addReferee(referee);
         referee.addGame(game);
 
+        EntityManager.getInstance().addTeam(firstTeam);
+        EntityManager.getInstance().addTeam(secondTeam);
+        EntityManager.getInstance().addUser(player1.getSystemUser());
+        EntityManager.getInstance().addUser(player2.getSystemUser());
+
         UIController.setSelector(1038); //0,3,0,1
         assertTrue(RefereeController.updateGameEvents(systemUser));
         //The new Offside has been added successfully
@@ -198,6 +224,11 @@ public class RefereeControllerTest {
         game.addReferee(referee);
         referee.addGame(game);
 
+        EntityManager.getInstance().addTeam(firstTeam);
+        EntityManager.getInstance().addTeam(secondTeam);
+        EntityManager.getInstance().addUser(player1.getSystemUser());
+        EntityManager.getInstance().addUser(player2.getSystemUser());
+
         UIController.setSelector(10310); //0,4,0,1
         assertTrue(RefereeController.updateGameEvents(systemUser));
         //The new Penalty has been added successfully
@@ -215,13 +246,18 @@ public class RefereeControllerTest {
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
         Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
+        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",10312 ));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
         game.addReferee(referee);
         referee.addGame(game);
+
+        EntityManager.getInstance().addTeam(firstTeam);
+        EntityManager.getInstance().addTeam(secondTeam);
+        EntityManager.getInstance().addUser(player1.getSystemUser());
+        EntityManager.getInstance().addUser(player2.getSystemUser());
 
         UIController.setSelector(10312); //0,5,0,1,0,1
         assertTrue(RefereeController.updateGameEvents(systemUser));
@@ -246,10 +282,15 @@ public class RefereeControllerTest {
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
         Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0 ));
+        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
         Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
+
+        EntityManager.getInstance().addTeam(firstTeam);
+        EntityManager.getInstance().addTeam(secondTeam);
+        EntityManager.getInstance().addUser(player1.getSystemUser());
+        EntityManager.getInstance().addUser(player2.getSystemUser());
 
         game.addReferee(referee);
         referee.addGame(game);
@@ -275,11 +316,15 @@ public class RefereeControllerTest {
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
 
         Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new Player(new SystemUser("UserName1","Name1"),new Date(2001, 01, 01));
+        Player player1 = new Player(new SystemUser("AviCohen","Name1"),new Date(2001, 01, 01));
         firstTeam.addTeamPlayer(toRole,player1);
 
         game.addReferee(referee);
         referee.addGame(game);
+
+        EntityManager.getInstance().addTeam(firstTeam);
+        EntityManager.getInstance().addTeam(secondTeam);
+        EntityManager.getInstance().addUser(player1.getSystemUser());
 
         UIController.setSelector(10314); //0,6,0,1
         assertTrue(RefereeController.updateGameEvents(systemUser));

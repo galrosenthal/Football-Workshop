@@ -83,7 +83,7 @@ public class SystemUserStub extends SystemUser{
             p.setSelector(0);
             return p;
         }
-        else if (selector == 661721 ||selector == 662721)
+        else if (selector == 661721 ||selector == 662721 || selector == 10312)
             return new PlayerStub(this);
         else if (selector == 661722 || selector == 662722)
             return new TeamManagerStub(this);

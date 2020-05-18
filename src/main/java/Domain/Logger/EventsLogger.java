@@ -46,8 +46,8 @@ public class EventsLogger {
      * @param scoredOnTeam - Team - The scored on team - must play in this game
      * @param minute       - int - The minute the goal was scored - positive integer
      */
-    public void logGoal(Team scoringTeam, Team scoredOnTeam, int minute) {
-        Goal goal = new Goal(scoringTeam, scoredOnTeam, minute);
+    public void logGoal(Team scoringTeam, Team scoredOnTeam, Player playerScored, int minute) {
+        Goal goal = new Goal(scoringTeam, scoredOnTeam, playerScored,  minute);
         this.gameEvents.add(goal);
     }
 
