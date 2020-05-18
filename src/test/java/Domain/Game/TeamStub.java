@@ -242,6 +242,8 @@ public class TeamStub extends Team {
         return (super.equals(o) && (this.selector==((TeamStub)o).selector));
     }
 
+
+
     @Override
     public List<Enum> getAllProperty(Asset asset, String propertyName) {
         List<Enum> enumList = asset.getAllPropertyList(this, propertyName);
