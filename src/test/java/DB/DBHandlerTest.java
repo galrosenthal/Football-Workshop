@@ -15,7 +15,7 @@ public class DBHandlerTest {
     {
          db = new DBHandler();
          assertTrue(db.dslCheck());
-        assertFalse(db.dslCheckFalse());
+         assertFalse(db.dslCheckFalse());
 
     }
 
