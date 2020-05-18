@@ -107,7 +107,7 @@ public class ARController {
         }
         int Index;
         do {
-            Index = UIController.receiveInt("Choose a League",leaguesList);
+            Index = UIController.receiveInt("Choose a League", leaguesList);
         } while (!(Index >= 0 && Index < leagues.size()));
 
         return leagues.get(Index);
@@ -115,6 +115,7 @@ public class ARController {
 
     /**
      * Receives the user's selection of a season from a given league.
+     *
      * @param league - League - a league with the desired season
      * @return - Season - the selected season
      * @throws Exception - throws if there are no seasons in the league
@@ -130,7 +131,7 @@ public class ARController {
         }
         int Index;
         do {
-            Index = UIController.receiveInt("Choose a Season",seasonsList);
+            Index = UIController.receiveInt("Choose a Season", seasonsList);
         } while (!(Index >= 0 && Index < seasons.size()));
 
         return seasons.get(Index);
@@ -197,7 +198,7 @@ public class ARController {
             return false;
         }
 
-        if(ARRole.removeReferee(chosenUser)) {
+        if (ARRole.removeReferee(chosenUser)) {
             UIController.showNotification("The referee has been removed successfully");
             return true;
         }
@@ -206,6 +207,7 @@ public class ARController {
 
     /**
      * receives a system user selection from the user.
+     *
      * @return - SystemUser - a referee chosen by the user
      * @throws Exception - "There are no referees"
      */
@@ -221,7 +223,7 @@ public class ARController {
         }
         int index;
         do {
-            index = UIController.receiveInt("Choose a referee from the list:",refereesList);
+            index = UIController.receiveInt("Choose a referee from the list:", refereesList);
         } while (!(index >= 0 && index < referees.size()));
 
         return referees.get(index);
@@ -262,11 +264,11 @@ public class ARController {
             UIController.showNotification(e.getMessage());
             return false;
         }
-        Referee refereeRole = (Referee)chosenRefereeUser.getRole(RoleTypes.REFEREE);
+        Referee refereeRole = (Referee) chosenRefereeUser.getRole(RoleTypes.REFEREE);
 
 
         try {
-            ARRole.assignRefereeToSeason(chosenSeason,refereeRole);
+            ARRole.assignRefereeToSeason(chosenSeason, refereeRole);
         } catch (Exception e) {
             UIController.showNotification(e.getMessage());
             return false;
@@ -279,12 +281,13 @@ public class ARController {
 
     /**
      * Controls the flow of Creating a new team.
+     *
      * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
      * @return - boolean - True if a new team was created successfully, else false
      * @throws TeamAlreadyExistsException
      * @throws UserNotFoundException
      */
-    public static boolean registerNewTeam(SystemUser systemUser) throws TeamAlreadyExistsException,UserNotFoundException  {
+    public static boolean registerNewTeam(SystemUser systemUser) throws TeamAlreadyExistsException, UserNotFoundException {
         if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
             return false;
         }
@@ -332,7 +335,7 @@ public class ARController {
     }
 
 
-    private static boolean addRemoveTeamsToSeason(SystemUser systemUser, String action){
+    private static boolean addRemoveTeamsToSeason(SystemUser systemUser, String action) {
         if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
             return false;
         }
@@ -416,12 +419,10 @@ public class ARController {
                 throw new Exception("There are no teams that belong to the chosen league's latest season");
         }
         String messageToShow = "";
-        if(action.equals("not in season"))
-        {
+        if (action.equals("not in season")) {
             messageToShow = "Choose Teams from the list of " +
                     "teams that do not belong to the chosen league's latest season.";
-        }
-        else //"in season"
+        } else //"in season"
         {
             messageToShow = "Choose Teams from the list of " +
                     "teams that belong to the chosen league's latest season.";
@@ -473,6 +474,7 @@ public class ARController {
 
     /**
      * Controls the flow of adding a new points policy
+     *
      * @param systemUser - SystemUser - the user who initiated the procedure, needs to be an association representative
      * @return - boolean - True if a  new points policy have been created successfully, else false
      */
@@ -489,9 +491,9 @@ public class ARController {
         String lossPointsString = selectedPointsArray[1];
         String tiePointsString = selectedPointsArray[2];
 
-        if(!validateStringIsInteger(victoryPointsString)
-              || !validateStringIsInteger(lossPointsString)
-              || !validateStringIsInteger(tiePointsString)){
+        if (!validateStringIsInteger(victoryPointsString)
+                || !validateStringIsInteger(lossPointsString)
+                || !validateStringIsInteger(tiePointsString)) {
             UIController.showNotification("error, invalid input. Please enter valid inputs.");
             return false;
         }
@@ -512,7 +514,7 @@ public class ARController {
 
     private static boolean validateStringIsInteger(String value) {
         try {
-           Integer.parseInt(value);
+            Integer.parseInt(value);
             return true;
         } catch (NumberFormatException e) {
             return false;
@@ -551,7 +553,6 @@ public class ARController {
     }
 
 
-
     /**
      * Controls the flow of adding a new scheduling policy
      *
@@ -572,9 +573,9 @@ public class ARController {
         String gamesPerDayString = selectedParamsArray[1];
         String minRestString = selectedParamsArray[2];
 
-        if(!validateStringIsInteger(gamesPerSeasonString)
+        if (!validateStringIsInteger(gamesPerSeasonString)
                 || !validateStringIsInteger(gamesPerDayString)
-                || !validateStringIsInteger(minRestString)){
+                || !validateStringIsInteger(minRestString)) {
             UIController.showNotification("error, invalid input. Please enter valid inputs.");
             return false;
         }
@@ -618,10 +619,10 @@ public class ARController {
         Season chosenSeason = chosenLeague.getLatestSeason();
         //override
         boolean override = true;
-        if (chosenSeason.scheduled()){
+        if (chosenSeason.scheduled()) {
             override = UIController.receiveChoice("Caution: this season already have a schedule.\nRe-activating scheduling policy will cause the previous schedule to be over-written");
         }
-        if(!override){
+        if (!override) {
             return false;
         }
         //Date selection

@@ -14,6 +14,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
 import static java.lang.Thread.sleep;
+
 import java.util.Date;
 import java.util.Scanner;
 
@@ -56,34 +57,28 @@ public class UIController {
 
     /**
      * Receiving multiple inputs from the user.
+     *
      * @param messagesToDisplay String which contains the message to put for each input,
-     *                      with the delimiter ";" between each message
+     *                          with the delimiter ";" between each message
      * @return String - The inputs from the user to each input, with the delimiter ";" between each input
      */
-    public static String receiveStringFromMultipleInputs(String messagesToDisplay, Collection<String>... valuesToChooseFrom) throws CancellationException
-    {
-        if(isTest){
+    public static String receiveStringFromMultipleInputs(String messagesToDisplay, Collection<String>... valuesToChooseFrom) throws CancellationException {
+        if (isTest) {
             printMessageAndValuesForTest(messagesToDisplay, valuesToChooseFrom);
-            if(selector == 9511 || selector == 9521 || selector==95211){
+            if (selector == 9511 || selector == 9521 || selector == 95211) {
                 return "1;-1;0";
-            }
-            else if(selector == 962){
+            } else if (selector == 962) {
                 return "1;1;1";
-            }
-            else if (selector == 9514){
+            } else if (selector == 9514) {
                 return "1;1;-1";
-            }
-            else if(selector == 9512){
+            } else if (selector == 9512) {
                 return "-1;0;1";
-            }
-            else if (selector == 961){
+            } else if (selector == 961) {
                 return "0;1;1";
-            }
-            else{
+            } else {
                 return "-2,1,a"; // not legal
             }
-        }
-        else {
+        } else {
             StringBuilder line = new StringBuilder();
             UI lastUI = UI.getCurrent();
             Thread t = Thread.currentThread();
@@ -93,27 +88,23 @@ public class UIController {
             Future<Void> returnValue = se.access(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
-                FootballMain.showDialog(lastUI, messagesToDisplay, SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS, line,t ,valuesToChooseFrom);
-                lastUI.access(()-> {
+                FootballMain.showDialog(lastUI, messagesToDisplay, SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS, line, t, valuesToChooseFrom);
+                lastUI.access(() -> {
                     lastUI.push();
                 });
                 System.out.println("Closed Dialog");
             });
 
-            while (line.length() == 0)
-            {
+            while (line.length() == 0) {
                 try {
                     //waiting for the user to close the dialog
                     sleep(1000);
 //                    System.out.println("Waiting for the user input");
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            if(line.toString().equals(CANCEL_TASK_VALUE))
-            {
+            if (line.toString().equals(CANCEL_TASK_VALUE)) {
                 throw new CancellationException();
             }
             System.out.println(line.toString());
@@ -129,7 +120,7 @@ public class UIController {
      * @param messageToDisplay a message to display to the user
      * @return
      */
-    public static String receiveString(String messageToDisplay,Collection<String>... valuesToChooseFrom)  throws CancellationException{
+    public static String receiveString(String messageToDisplay, Collection<String>... valuesToChooseFrom) throws CancellationException {
         if (!isTest) {
             StringBuilder line = new StringBuilder();
             UI lastUI = UI.getCurrent();
@@ -139,12 +130,11 @@ public class UIController {
             Future<Void> returnValue = se.access(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
-                FootballMain.showDialog(lastUI, messageToDisplay, SEND_TYPE_FOR_GUI_STRING, line,t ,valuesToChooseFrom);
+                FootballMain.showDialog(lastUI, messageToDisplay, SEND_TYPE_FOR_GUI_STRING, line, t, valuesToChooseFrom);
                 System.out.println("Closed Dialog");
             });
 
-            while (line.length() == 0)
-            {
+            while (line.length() == 0) {
                 try {
                     //waiting for the user to close the dialog
                     sleep(1000);
@@ -153,8 +143,7 @@ public class UIController {
                     e.printStackTrace();
                 }
             }
-            if(line.toString().equals(CANCEL_TASK_VALUE))
-            {
+            if (line.toString().equals(CANCEL_TASK_VALUE)) {
                 throw new CancellationException();
             }
             System.out.println(line.toString());
@@ -252,28 +241,21 @@ public class UIController {
                 return "stubTeam91126";
             } else if (selector == 9102) {
                 return "stubTeam9102";
-            }
-            else if(selector == 631){
+            } else if (selector == 631) {
                 selector = 632;
                 return "Hapoel Ta";
-            }
-            else if(selector == 632){
+            } else if (selector == 632) {
                 return "gal";
-            }
-            else if(selector == 633){
+            } else if (selector == 633) {
                 return "merav";
-            }
-            else if(selector == 634){
+            } else if (selector == 634) {
                 return "nir";
-            }
-            else if(selector == 635){
+            } else if (selector == 635) {
                 return "ifatch";
-            }
-            else
+            } else
                 return null;
         }
     }
-
 
 
     private static void printMessageAndValuesForTest(String messageToDisplay, Collection<String>... valuesToChooseFrom) {
@@ -287,7 +269,7 @@ public class UIController {
         }
     }
 
-    public static int receiveInt(String messageToDisplay, Collection<String>... valuesToDisplay) throws CancellationException{
+    public static int receiveInt(String messageToDisplay, Collection<String>... valuesToDisplay) throws CancellationException {
         if (!isTest) {
             StringBuilder line = new StringBuilder();
             UI lastUI = UI.getCurrent();
@@ -303,13 +285,12 @@ public class UIController {
                 } else {
                     type = "int";
                 }
-                FootballMain.showDialog(lastUI, messageToDisplay, SEND_TYPE_FOR_GUI_INT, line,t ,valuesToDisplay);
+                FootballMain.showDialog(lastUI, messageToDisplay, SEND_TYPE_FOR_GUI_INT, line, t, valuesToDisplay);
                 System.out.println("Closed Dialog");
             });
 
 
-            while (line.length() == 0)
-            {
+            while (line.length() == 0) {
                 try {
                     //waiting for the user to close the dialog
                     sleep(100);
@@ -317,8 +298,7 @@ public class UIController {
                     e.printStackTrace();
                 }
             }
-            if(line.toString().equals(CANCEL_TASK_VALUE))
-            {
+            if (line.toString().equals(CANCEL_TASK_VALUE)) {
                 throw new CancellationException();
             }
 
@@ -373,10 +353,9 @@ public class UIController {
             } else if (selector == 6139) {
                 setSelector(61310);
                 return 0;
-            }else if(selector == 632 || selector == 633 || selector == 634 || selector == 635){
+            } else if (selector == 632 || selector == 633 || selector == 634 || selector == 635) {
                 return 0;
-            }
-            else if(selector == 9111){
+            } else if (selector == 9111) {
                 setSelector(91112);
                 return 0;
             } else if (selector == 91112) {
@@ -437,12 +416,10 @@ public class UIController {
             {
                 setSelector(9513);
                 return 0;
-            } else if (selector == 95211)
-            {
+            } else if (selector == 95211) {
                 selector = 95212;
                 return 0;
-            }else if (selector == 95212)
-            {
+            } else if (selector == 95212) {
                 return 1;
             } else if (selector == 1031)  //0,0,0,1 - success
             {
@@ -540,13 +517,13 @@ public class UIController {
     }
 
     public static Date receiveDate(String s) {
-        if(!isTest){
+        if (!isTest) {
             //TODO: fill
-        }else {
-            if(selector ==0){
-                return new Date(2020,01,01);
+        } else {
+            if (selector == 0) {
+                return new Date(2020, 01, 01);
             }
         }
-        return  null;
+        return null;
     }
 }
