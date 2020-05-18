@@ -38,7 +38,7 @@ public class RefereeControls extends VerticalLayout {
             Thread t = new Thread(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
-                MainController.assignReferee(username);
+                MainController.DisplayActiveGame(username);
             });
             t.setName(buttonTaskName.toUpperCase());
             t.start();

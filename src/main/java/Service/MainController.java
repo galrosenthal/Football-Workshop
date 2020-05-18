@@ -472,4 +472,20 @@ public class MainController {
         }
     }
 
+    public static void DisplayActiveGame(String username) {
+        SystemUser refereeUser = EntityManager.getInstance().getUser(username);
+        if(refereeUser == null)
+        {
+            return;
+        }
+        try
+        {
+            //Controller.modifyTeamAssetDetails(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
 }
