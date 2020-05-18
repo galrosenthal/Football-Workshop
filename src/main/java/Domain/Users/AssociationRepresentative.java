@@ -5,10 +5,13 @@ import Domain.Exceptions.ExistsAlreadyException;
 import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Financials.AssociationFinancialRecordLog;
 import Domain.Game.PointsPolicy;
+import Domain.Game.SchedulingPolicy;
 import Domain.Game.League;
 import Domain.Game.Team;
 import Domain.Game.Season;
+import Service.UIController;
 
+import java.util.Date;
 import java.util.List;
 
 public class AssociationRepresentative extends Role {
@@ -20,7 +23,6 @@ public class AssociationRepresentative extends Role {
 
     /**
      * Creates a new League.
-     *
      * @param leagueName - String - A unique league name
      * @return - boolean - True if a new league was created successfully, else false
      * @throws Exception - throws if a league already exists with the given leagueName
@@ -57,8 +59,7 @@ public class AssociationRepresentative extends Role {
 
     /**
      * Creates a new team.
-     *
-     * @param teamName         - String - A unique team name
+     * @param teamName - String - A unique team name
      * @param newTeamOwnerUser - SystemUser - The user who is chosen to be the team owner of the new team.
      * @return - boolean - True if a new team was created successfully, else false
      */
@@ -67,7 +68,8 @@ public class AssociationRepresentative extends Role {
         TeamOwner teamOwner;
         if (newTeamOwnerRole == null) {
             teamOwner = new TeamOwner(newTeamOwnerUser);
-        } else {
+        }
+        else{
             teamOwner = (TeamOwner) newTeamOwnerRole;
         }
         teamOwner.setAppointedOwner(this.getSystemUser());
@@ -79,10 +81,9 @@ public class AssociationRepresentative extends Role {
 
     /**
      * Creates a new team. Responsible only for creating and adding a new team, doesn't do any farther checks.
-     *
      * @param teamName - String - the team's name.
-     * @param to       -TeamOwner - The team's owner.
-     * @return The new Team that was created.
+     * @param to -TeamOwner - The team's owner.
+     * @return   The new Team that was created.
      */
     private Team createNewTeam(String teamName, TeamOwner to) {
         Team team = new Team(teamName, to);
@@ -92,7 +93,6 @@ public class AssociationRepresentative extends Role {
 
     /**
      * Removes the referee role from a given user.
-     *
      * @param chosenUser - SystemUser - a user with a Referee role to be removed.
      * @return - boolean - true if the Referee role was removed successfully, else false
      */
@@ -189,5 +189,35 @@ public class AssociationRepresentative extends Role {
         if (chosenSeason != null && pointsPolicy != null) {
             chosenSeason.setPointsPolicy(pointsPolicy);
         }
+    }
+
+    /**
+     * Adds a new scheduling policy using the given parameters.
+     * Adds only if the arguments are correct and if an identical policy doesn't exist yet.
+     *
+     * @param gamesPerSeason - int - The number of games for each team per season - positive integer
+     * @param gamesPerDay    - int - The number of games on the same day - positive integer
+     * @param minRest        - int - The minimum rest days between games - non-negative integer
+     */
+    public void addSchedulingPolicy(int gamesPerSeason, int gamesPerDay, int minRest) throws Exception {
+        if (gamesPerSeason <= 0) {
+            throw new IllegalArgumentException("The number of games for each team per season must be positive integer");
+        } else if (gamesPerDay <= 0) {
+            throw new IllegalArgumentException("The number of games on the same day must be positive integer");
+        } else if (minRest < 0) {
+            throw new IllegalArgumentException("The minimum rest days between games must be non-negative integer");
+        }
+        if (EntityManager.getInstance().doesSchedulingPolicyExists(gamesPerSeason, gamesPerDay, minRest)) {
+            throw new ExistsAlreadyException("This scheduling policy already exists");
+        }
+        SchedulingPolicy newSchedulingPolicy = new SchedulingPolicy(gamesPerSeason, gamesPerDay, minRest);
+        EntityManager.getInstance().addSchedulingPolicy(newSchedulingPolicy);
+    }
+
+    public void activateSchedulingPolicy(Season chosenSeason, SchedulingPolicy schedulingPolicy, Date startDate) throws Exception {
+        if(chosenSeason.getIsUnderway()){
+            throw new Exception("Activating a scheduling policy after a season has started is forbidden");
+        }
+        chosenSeason.scheduleGames(schedulingPolicy,startDate);
     }
 }

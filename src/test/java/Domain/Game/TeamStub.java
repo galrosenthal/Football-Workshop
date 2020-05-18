@@ -43,6 +43,11 @@ public class TeamStub extends Team {
 
     @Override
     public List<Player> getTeamPlayers() {
+        if(selector >= 1 && selector <= 6) {
+            for(int i = 1 ; i <= 11; i++){
+                this.players.add(new PlayerStub(new SystemUserStub("a","a",1)));
+            }
+        }
         return this.players;
     }
 

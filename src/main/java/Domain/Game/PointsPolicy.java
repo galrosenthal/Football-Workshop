@@ -1,10 +1,6 @@
 package Domain.Game;
 
 import Domain.EntityManager;
-import javafx.util.Pair;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class PointsPolicy {

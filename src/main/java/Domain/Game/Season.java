@@ -1,8 +1,6 @@
 package Domain.Game;
 
 import Domain.Users.Referee;
-import Domain.Users.SystemUser;
-import javafx.util.Pair;
 
 import java.time.Year;
 import java.util.*;
@@ -15,7 +13,6 @@ public class Season {
     private List<Referee> referees;
     private List<Game> games;
     private boolean isUnderway; //whether the season has started
-    private GamePolicy gamePolicy; //todo: initialize with default
     private PointsPolicy pointsPolicy;
 
     /**
@@ -67,9 +64,14 @@ public class Season {
             teams.add(team);
             return true;
         }
+
         return false;
     }
 
+    /*  public boolean hasStarted() {
+          //TODO: Check if the season has started
+          return getIsUnderway();
+      }*/
     public boolean removeTeam(Team team) {
         if (!teams.contains(team)) {
             return false;
@@ -185,7 +187,7 @@ public class Season {
     /**
      * Officially start the season. Should be called after the game schedule is built.
      */
-    public void startSeason(){
+    public void startSeason() {
         this.isUnderway = true;
     }
 
@@ -203,6 +205,7 @@ public class Season {
 
     /**
      * Returns a map of the ranking of the teams
+     *
      * @return - Map<Integer, Team>  - A map of the ranking of the teams
      */
     public Map<Integer, Team> getRanking() {
@@ -213,7 +216,7 @@ public class Season {
         // Sort the list
         Collections.sort(list, Comparator.comparing(Map.Entry::getValue));
         //replacing the score with the rank
-        for (int rank = list.size()-1; rank <= 0; rank++) { //TODO: Test boundaries
+        for (int rank = list.size() - 1; rank >= 0; rank--) { //TODO: Test boundaries
             Map.Entry<Team, Integer> entry = list.get(rank);
             list.remove(entry);
             entry.setValue(rank);
@@ -224,7 +227,7 @@ public class Season {
         // put data from sorted list to hashmap
         HashMap<Integer, Team> sortedMap = new LinkedHashMap<>();
         for (Map.Entry<Team, Integer> entry : list) {
-            sortedMap.put(entry.getValue(),entry.getKey());
+            sortedMap.put(entry.getValue(), entry.getKey());
         }
         return sortedMap;
     }
@@ -262,5 +265,35 @@ public class Season {
 
     public PointsPolicy getPointsPolicy() {
         return pointsPolicy;
+    }
+
+    /**
+     * Checks if this season have scheduled games.
+     * @return - boolean - true if this season have scheduled games, else false
+     */
+    public boolean scheduled() {
+        if(games.isEmpty()){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Generates a new schedule and create new games based on it
+     * @param schedulingPolicy
+     * @param startDate
+     * @throws Exception
+     */
+    public void scheduleGames(SchedulingPolicy schedulingPolicy, Date startDate) throws Exception {
+        List<ScheduleMatch> scheduleMatches = schedulingPolicy.generateSchedule(startDate, this.teams, this.referees);
+        //Delete previous games
+        this.games = new ArrayList<>();
+        //TODO:Maybe delete games from DB?
+        //Create games based on schedule
+        for (int i = 0; i < scheduleMatches.size(); i++) {
+            ScheduleMatch scheduleMatch = scheduleMatches.get(i);
+            Game game = new Game(scheduleMatch.getStadium(),scheduleMatch.getHomeTeam(),scheduleMatch.getAwayTeam(),scheduleMatch.getMatchDate(),scheduleMatch.getReferees());
+            this.games.add(game);
+        }
     }
 }

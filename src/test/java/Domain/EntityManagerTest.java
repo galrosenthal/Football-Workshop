@@ -2,6 +2,7 @@ package Domain;
 
 import Domain.Game.League;
 import Domain.Game.PointsPolicy;
+import Domain.Game.SchedulingPolicy;
 import Domain.Users.Referee;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
@@ -78,8 +79,26 @@ public class EntityManagerTest {
         assertTrue(EntityManager.getInstance().getPointsPolicy(1,-1,0).equals(pointsPolicy));
         assertNull(EntityManager.getInstance().getPointsPolicy(1,-1,1));
     }
+    @Test
+    public void doesSchedulingPolicyExistsITest() {
+        assertFalse(EntityManager.getInstance().doesSchedulingPolicyExists(2,2,2));
+    }
 
+    @Test
+    public void addSchedulingPolicyITest() {
+        assertFalse(EntityManager.getInstance().doesSchedulingPolicyExists(2,2,2));
+        EntityManager.getInstance().addSchedulingPolicy(new SchedulingPolicy(2,2,2));
+        assertTrue(EntityManager.getInstance().doesSchedulingPolicyExists(2,2,2));
+    }
 
+    @Test
+    public void addSchedulingPolicy2ITest() {
+        assertFalse(EntityManager.getInstance().doesSchedulingPolicyExists(2,2,2));
+        SchedulingPolicy schedulingPolicy= new SchedulingPolicy(2,2,2);
+        EntityManager.getInstance().addSchedulingPolicy(schedulingPolicy);
+        assertTrue(EntityManager.getInstance().getSchedulingPolicy(2,2,2).equals(schedulingPolicy));
+        assertNull(EntityManager.getInstance().getSchedulingPolicy(3,2,2));
+    }
 
 
     @After

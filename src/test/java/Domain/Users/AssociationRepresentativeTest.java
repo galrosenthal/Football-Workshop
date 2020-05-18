@@ -319,6 +319,77 @@ public class AssociationRepresentativeTest {
     }
 
 
+    @Test
+    public void addSchedulingPolicyITest() {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        try {
+            aR.addSchedulingPolicy(0, 0, 0);
+            Assert.fail();
+        } catch (Exception e) {
+            assertEquals("The number of games for each team per season must be positive integer", e.getMessage());
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+    }
+
+    @Test
+    public void addSchedulingPolicy2ITest() {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        try {
+            aR.addSchedulingPolicy(1, 0, 0);
+            Assert.fail();
+        } catch (Exception e) {
+            assertEquals("The number of games on the same day must be positive integer", e.getMessage());
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+    }
+    @Test
+    public void addSchedulingPolicy3ITest() {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        try {
+            aR.addSchedulingPolicy(1, 1, -1);
+            Assert.fail();
+        } catch (Exception e) {
+            assertEquals("The minimum rest days between games must be non-negative integer", e.getMessage());
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+    }
+
+    @Test
+    public void addSchedulingPolicy4ITest() {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        try {
+            aR.addSchedulingPolicy(1, 1, 0);
+        } catch (Exception e) {
+        }
+        try {
+            aR.addSchedulingPolicy(1, 1, 0);
+            Assert.fail();
+        } catch (Exception e) {
+            assertEquals("This scheduling policy already exists", e.getMessage());
+            assertTrue(e instanceof ExistsAlreadyException);
+        }
+    }
+
+    @Test
+    public void addSchedulingPolicy5ITest() {
+        SystemUser aRUser = new SystemUser("arUsername", "arName");
+        aR = new AssociationRepresentative(aRUser);
+        boolean succeeded = true;
+        try {
+            aR.addSchedulingPolicy(1, 1, 0);
+        } catch (Exception e) {
+            succeeded = false;
+        }
+        assertTrue(succeeded);
+        assertTrue(EntityManager.getInstance().getSchedulingPolicy(1, 1, 0) != null);
+        assertTrue(EntityManager.getInstance().doesSchedulingPolicyExists(1, 1, 0));
+    }
+
+
     @After
     public void tearDown() {
         EntityManager.getInstance().clearAll();

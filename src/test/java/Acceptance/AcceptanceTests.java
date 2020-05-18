@@ -16,7 +16,7 @@ import org.junit.*;
 import org.junit.experimental.categories.Category;
 
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -832,7 +832,7 @@ public class AcceptanceTests {
         }
 
         assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(3, 0, 1));
-        UIController.setSelector(9521);
+        UIController.setSelector(95211);
         assertTrue(ARController.setPointsPolicy(systemUser));
         assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(1, -1, 0));
         /*
@@ -897,6 +897,38 @@ public class AcceptanceTests {
         assertEquals(0, season.getTeams().size());
         assertEquals(0, team1.getSeasons().size());
         assertEquals(0, team2.getSeasons().size());
+    }
+
+    /**
+     * 9.6.a
+     * Main success scenario - A new scheduling policy is created.
+     */
+    @Test
+    public void addSchedulingPolicyATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        UIController.setSelector(962);//1,1,1,..
+        assertTrue(ARController.addSchedulingPolicy(systemUser));
+        assertTrue(EntityManager.getInstance().doesSchedulingPolicyExists(1, 1, 1));
+        assertNotNull(EntityManager.getInstance().getSchedulingPolicy(1, 1, 1));
+        /*
+        Expected: The new scheduling policy has been added successfully
+         */
+    }
+    /**
+     * 9.6.b
+     * failure scenario - A scheduling policy with the same values already exists
+     */
+    @Test
+    public void addSchedulingPolicy2ATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        UIController.setSelector(962); //1,1,1,...
+        assertTrue(ARController.addSchedulingPolicy(systemUser));
+        assertFalse(ARController.addSchedulingPolicy(systemUser));
+        /*
+        Expected: This scheduling policy already exists
+         */
     }
 
     /**
