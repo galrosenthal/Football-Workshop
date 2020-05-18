@@ -434,7 +434,6 @@ public class EntityManager {
         return allUsers;
     }
 
-
     /**
      * Get a list of all Teams by thier name
      * @return List<String of all the teams names

@@ -790,7 +790,7 @@ public class ARControllerTest {
         }
 
         assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(3, 0, 1));
-        UIController.setSelector(9521);
+        UIController.setSelector(95211);
         assertTrue(ARController.setPointsPolicy(systemUser));
         assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(1, -1, 0));
     }
