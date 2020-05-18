@@ -10,7 +10,6 @@ import Domain.Game.TeamAsset;
 import Domain.Users.*;
 import Service.UIController;
 import Domain.Exceptions.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,7 +121,6 @@ public class TeamController {
         if (allAssetsTeam.size() == 0) {
 
             throw new AssetsNotExistsException("There is not assets to team");
-
         }
 
         List<String> objects = new ArrayList<>();

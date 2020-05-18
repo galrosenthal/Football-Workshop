@@ -1,9 +1,11 @@
 package Domain.Game;
 
+import Domain.EntityManager;
 import Domain.Logger.EventsLogger;
 import Domain.Logger.Goal;
 import Domain.Users.Player;
 import Domain.Users.Referee;
+import Domain.Users.SystemUser;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -78,10 +80,6 @@ public class Game {
 
     public Team getAwayTeam() {
         return awayTeam;
-    }
-
-    public Date getGameDate() {
-        return gameDate;
     }
 
     public List<Referee> getReferees() {
@@ -256,4 +254,14 @@ public class Game {
                 ", awayTeam=" + awayTeam.getTeamName() +
                 ", gameDate=" + gameDate + '}';
     }
+
+
+    public Date getGameDate()
+    {
+        return this.gameDate;
+    }
+
+//    public void setScore(Score score) {
+//        this.score = score;
+//    }
 }

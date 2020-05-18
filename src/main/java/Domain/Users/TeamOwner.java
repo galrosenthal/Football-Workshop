@@ -1,11 +1,14 @@
 package Domain.Users;
 
+import Domain.Alert;
+import Domain.EntityManager;
 import Domain.Game.Team;
+import Domain.Subject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TeamOwner extends Role {
+public class TeamOwner extends Role implements Subject {
 
     private List<Team> ownedTeams;
     private SystemUser appointedOwner; /** The team owner who appointed -this- team owner */
@@ -106,5 +109,47 @@ public class TeamOwner extends Role {
     @Override
     public String toString() {
         return "TeamOwner{"+ this.getSystemUser().getName() +" }";
+    }
+
+
+
+
+    /*notify teamOwners  and TeamMangers and systemAdmins - close team or reopen team*/
+    public void closeReopenTeam(Team team , String closeOrReopen)
+    {
+        List<TeamOwner> teamOwners = new ArrayList<>();
+        List<TeamManager> teamManagers = new ArrayList<>();
+        EntityManager entityManager = EntityManager.getInstance();
+        List<SystemAdmin> SystemAdmins = entityManager.getSystemAdmins();
+        List<SystemUser> systemUsers = new ArrayList<>();
+        teamOwners.addAll(team.getTeamOwners());
+        teamManagers.addAll(team.getTeamManagers());
+        for (int i = 0; i <teamOwners.size() ; i++) {
+            systemUsers.add(teamOwners.get(i).getSystemUser());
+        }
+        for (int i = 0; i <teamManagers.size() ; i++) {
+            systemUsers.add(teamManagers.get(i).getSystemUser());
+        }
+        for (int i = 0; i <SystemAdmins.size() ; i++) {
+            systemUsers.add(SystemAdmins.get(i).getSystemUser());
+        }
+        String alert = team.getTeamName()+" has been "+ closeOrReopen;
+        notifyObserver(systemUsers, alert);
+    }
+
+
+    /*notify Team Owner - removal */
+    public void removeTeamOwnerNotify(TeamOwner teamOwner , Team team)
+    {
+        List<SystemUser> systemUsers = new ArrayList<>();
+        systemUsers.add(teamOwner.getSystemUser());
+        String alert = teamOwner.getSystemUser().getUsername()+" has been remove from been owner in"+ team.getTeamName();
+        notifyObserver(systemUsers , alert);
+    }
+
+    @Override
+    public void notifyObserver(List<SystemUser> systemUsers, String alert) {
+        Alert alertInstance = Alert.getInstance();
+        alertInstance.update(systemUsers , alert);
     }
 }
