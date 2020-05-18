@@ -28,18 +28,11 @@ public class EntityManager{
     private HashSet<League> allLeagues;
     private List<PointsPolicy> pointsPolicies;
     private List<SchedulingPolicy> schedulingPolicies;
-    private boolean loggedIn = false;
     private HashMap<SystemUser, Boolean> loggedInMap;
 
 
 
-    public boolean isLoggedIn() {
-        return loggedIn;
-    }
 
-    public void setLoggedIn(boolean loggedIn) {
-        this.loggedIn = loggedIn;
-    }
 
     private EntityManager() {
         allUsers = new ArrayList<>();
@@ -175,6 +168,25 @@ public class EntityManager{
         }
         return null;
     }
+
+
+    /**
+     * Returns all system admins
+     * @return List<SystemAdmin> SystemAdmin
+     */
+    public List<SystemAdmin> getSystemAdmins() {
+        List<SystemAdmin> sysAdmins = new ArrayList<>();
+        for (SystemUser user :
+                allUsers) {
+            Role userAdmin = user.getRole(RoleTypes.SYSTEM_ADMIN);
+            if (userAdmin != null && userAdmin.getType() == RoleTypes.SYSTEM_ADMIN )
+            {
+                sysAdmins.add((SystemAdmin) userAdmin);
+            }
+        }
+        return sysAdmins;
+    }
+
 
     /**
      * Checks if a team with a name that matches the given name already exists.
@@ -391,7 +403,9 @@ public class EntityManager{
      * @return true if the password is correct and the user is able to login
      */
     private boolean authenticate(SystemUser userWithUsrNm, String pswrd) {
-        if (userWithUsrNm.getPassword().equals(pswrd)) {
+        //hash the given password
+        String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pswrd);
+        if (userWithUsrNm.getPassword().equals(hashedPassword)) {
             return true;
         }
         return false;
@@ -431,7 +445,9 @@ public class EntityManager{
             throw new WeakPasswordException("Password does not meet the requirements");
         }
 
-        SystemUser newUser = new SystemUser(usrNm, pswrd, name);
+        //hash the password
+        String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pswrd);
+        SystemUser newUser = new SystemUser(usrNm, hashedPassword, name);
         addUser(newUser);
 
 
@@ -443,7 +459,6 @@ public class EntityManager{
     public List<SystemUser> getAllUsers() {
         return allUsers;
     }
-
 
     /**
      * Get a list of all Teams by thier name

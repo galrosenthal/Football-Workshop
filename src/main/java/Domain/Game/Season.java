@@ -12,8 +12,8 @@ public class Season {
     private List<Team> teams;
     private List<Referee> referees;
     private List<Game> games;
-    private PointsPolicy pointsPolicy;
     private boolean isUnderway; //whether the season has started
+    private PointsPolicy pointsPolicy;
 
     /**
      * Constructor
@@ -26,9 +26,9 @@ public class Season {
         this.teams = new ArrayList<>();
         this.years = years;
         this.referees = new ArrayList<>();
-        this.isUnderway = false;
         this.games = new ArrayList<>();
         this.pointsPolicy = PointsPolicy.getDefaultPointsPolicy();
+        this.isUnderway = false;
     }
 
     /**
@@ -68,10 +68,10 @@ public class Season {
         return false;
     }
 
-  /*  public boolean hasStarted() {
-        //TODO: Check if the season has started
-        return getIsUnderway();
-    }*/
+    /*  public boolean hasStarted() {
+          //TODO: Check if the season has started
+          return getIsUnderway();
+      }*/
     public boolean removeTeam(Team team) {
         if (!teams.contains(team)) {
             return false;
@@ -85,9 +85,10 @@ public class Season {
 
     /**
      * Returns the number of referees assigned to this season
+     *
      * @return - int - the number of referees assigned to this season
      */
-    public int refereesSize(){
+    public int refereesSize() {
         return this.referees.size();
     }
 
@@ -186,7 +187,7 @@ public class Season {
     /**
      * Officially start the season. Should be called after the game schedule is built.
      */
-    public void startSeason(){
+    public void startSeason() {
         this.isUnderway = true;
     }
 

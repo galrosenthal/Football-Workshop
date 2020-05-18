@@ -5,19 +5,19 @@ import Domain.Exceptions.AssetsNotExistsException;
 import Domain.Exceptions.TeamAlreadyExistsException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.*;
+import Domain.Logger.Event;
+import Domain.Logger.Injury;
 import Domain.Users.*;
 import Domain.Users.AssociationRepresentative;
 import Domain.Users.SystemAdmin;
 import Domain.Users.SystemUser;
-import Service.ARController;
-import Service.Controller;
-import Service.TOController;
-import Service.UIController;
+import Service.*;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
 
 
 import java.util.*;
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -29,11 +29,13 @@ public class AcceptanceTests {
 
     @BeforeClass
     public static void setUp() { //Will be called only once
-        existingUser = new SystemUser("abc", "aBc12345", "abc");
+        String hashedPasswordForEu = org.apache.commons.codec.digest.DigestUtils.sha256Hex("aBc12345");
+        String hashedPasswordForAviYosi = org.apache.commons.codec.digest.DigestUtils.sha256Hex("123Ab456");
+        existingUser = new SystemUser("abc", hashedPasswordForEu, "abc");
         existingUser.addNewRole(new TeamOwner(existingUser));
-        aviCohenSu = new SystemUser("avicohen", "123Ab456", "Avi Cohen");
+        aviCohenSu = new SystemUser("avicohen", hashedPasswordForAviYosi, "Avi Cohen");
         aviCohenSu.addNewRole(new TeamOwner(aviCohenSu));
-        yosiManagerSu = new SystemUser("yosilevi", "123Ab456", "Yosi Levi");
+        yosiManagerSu = new SystemUser("yosilevi", hashedPasswordForAviYosi, "Yosi Levi");
         yosiManagerSu.addNewRole(new TeamManager(yosiManagerSu));
         UIController.setIsTest(true);
     }
@@ -48,7 +50,8 @@ public class AcceptanceTests {
     }
 
     private void initEntities() {
-        SystemUser adminUser = new SystemUser("admin", "12345678", "administrator");
+        String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex("12345678");
+        SystemUser adminUser = new SystemUser("admin", hashedPassword, "administrator");
         adminUser.addNewRole(new SystemAdmin(adminUser));
         EntityManager.getInstance().addUser(adminUser);
     }
@@ -409,13 +412,13 @@ public class AcceptanceTests {
         Team beitShean = new Team();
 
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
+        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
         SystemUser elisha = new SystemUser("elevy","Elisha Levy");
 
-        SystemUser abc = Controller.login("abc1","abc12345");
+        SystemUser abc = Controller.login("abc1","aBc12345");
         assertEquals(abc,abcCreate);
 
         UIController.setSelector(61118);
@@ -436,12 +439,12 @@ public class AcceptanceTests {
 
         beitShean.setTeamName("Beit Shean");
 
-        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
+        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
 
-        SystemUser abc = Controller.login("abc1","abc12345");
+        SystemUser abc = Controller.login("abc1","aBc12345");
         assertEquals(abc,abcCreate);
 
         UIController.setSelector(61118);
@@ -475,12 +478,12 @@ public class AcceptanceTests {
     public void modifyTeamAssetDetails1ATest() throws Exception {
         Team beitShean = new Team();
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = new SystemUser("abc1", "abc12345", "abc");
+        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
 
-        SystemUser abc = Controller.login("abc1", "abc12345");
+        SystemUser abc = Controller.login("abc1", "aBc12345");
         assertEquals(abc, abcCreate);
 
         SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");
@@ -507,12 +510,12 @@ public class AcceptanceTests {
     public void modifyTeamAssetDetails2ATest() throws Exception {
         Team beitShean = new Team();
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = new SystemUser("abc1", "abc12345", "abc");
+        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
 
-        SystemUser abc = Controller.login("abc1", "abc12345");
+        SystemUser abc = Controller.login("abc1", "aBc12345");
         assertEquals(abc, abcCreate);
 
         SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");
@@ -781,6 +784,66 @@ public class AcceptanceTests {
     }
 
     /**
+     * 9.5.1.a
+     * Main success scenario - A new points policy is created.
+     */
+    @Test
+    public void addPointsPolicyATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        UIController.setSelector(9511);//1,-1,0
+        assertTrue(ARController.addPointsPolicy(systemUser));
+        assertTrue(EntityManager.getInstance().doesPointsPolicyExists(1,-1,0));
+        assertNotNull(EntityManager.getInstance().getPointsPolicy(1,-1,0));
+        /*
+        Expected: The new points policy has been added successfully
+         */
+    }
+    /**
+     * 9.5.1.b
+     * failure scenario - A points policy
+     */
+    @Test
+    public void addPointsPolicy2ATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        UIController.setSelector(9511); //1,-1,0
+        assertTrue(ARController.addPointsPolicy(systemUser));
+        assertFalse(ARController.addPointsPolicy(systemUser));
+        /*
+        Expected: This points policy already exists
+         */
+    }
+
+    /**
+     * 9.5.2.a
+     * Main success scenario - A points policy was changed in a season.
+     */
+    @Test
+    public void setPointsPolicyATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        new AssociationRepresentative(systemUser);
+        EntityManager.getInstance().addLeague(new League("Premier League"));
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2019/20");
+
+        AssociationRepresentative aR = (AssociationRepresentative)systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        try {
+            aR.addPointsPolicy(1,-1,0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(3, 0, 1));
+        UIController.setSelector(95211);
+        assertTrue(ARController.setPointsPolicy(systemUser));
+        assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(1, -1, 0));
+        /*
+        Expected: The chosen points policy was set successfully
+         */
+    }
+
+    /**
      * 9.11.a
      */
     @Test
@@ -840,66 +903,6 @@ public class AcceptanceTests {
     }
 
     /**
-     * 9.5.1.a
-     * Main success scenario - A new points policy is created.
-     */
-    @Test
-    public void addPointsPolicyATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(systemUser);
-        UIController.setSelector(9511);//1,-1,0
-        assertTrue(ARController.addPointsPolicy(systemUser));
-        assertTrue(EntityManager.getInstance().doesPointsPolicyExists(1,-1,0));
-        assertNotNull(EntityManager.getInstance().getPointsPolicy(1,-1,0));
-        /*
-        Expected: The new points policy has been added successfully
-         */
-    }
-    /**
-     * 9.5.1.b
-     * failure scenario - A points policy with the same values already exists
-     */
-    @Test
-    public void addPointsPolicy2ATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(systemUser);
-        UIController.setSelector(9511); //1,-1,0
-        assertTrue(ARController.addPointsPolicy(systemUser));
-        assertFalse(ARController.addPointsPolicy(systemUser));
-        /*
-        Expected: This points policy already exists
-         */
-    }
-
-    /**
-     * 9.5.2.a
-     * Main success scenario - A points policy was changed in a season.
-     */
-    @Test
-    public void setPointsPolicyATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(systemUser);
-        EntityManager.getInstance().addLeague(new League("Premier League"));
-        League league = EntityManager.getInstance().getLeagues().get(0);
-        league.addSeason("2019/20");
-
-        AssociationRepresentative aR = (AssociationRepresentative)systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
-        try {
-            aR.addPointsPolicy(1,-1,0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(3, 0, 1));
-        UIController.setSelector(9521);
-        assertTrue(ARController.setPointsPolicy(systemUser));
-        assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(1, -1, 0));
-        /*
-        Expected: The chosen points policy was set successfully
-         */
-    }
-
-    /**
      * 9.6.a
      * Main success scenario - A new scheduling policy is created.
      */
@@ -931,8 +934,44 @@ public class AcceptanceTests {
          */
     }
 
+    /**
+     * 10.3.a
+     * Main success scenario - A new Injury event is created.
+     */
+    @Test
+    public void updateGameEventsATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        systemUser.addNewRole(new Referee(systemUser,"VAR"));
+        Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
-        @After
+        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
+        new AssociationRepresentative(arSystemUser);
+        new TeamOwner(arSystemUser);
+        TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        Team firstTeam = new Team("Hapoel Beit Shan", toRole);
+        Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
+
+        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen"),new Date(2001, 01, 01));
+        firstTeam.addTeamPlayer(toRole,player1);
+
+        game.addReferee(referee);
+        referee.addGame(game);
+
+        UIController.setSelector(10314); //0,6,0,1
+        assertTrue(RefereeController.updateGameEvents(systemUser));
+        //The new Penalty has been added successfully
+        Event event = game.getEventsLogger().getGameEvents().get(0);
+        assertTrue(event instanceof Injury);
+        assertTrue(((Injury) event).getMinute()==1);
+        assertTrue(((Injury) event).getInjuredPlayer().equals(player1));
+        /*
+        Expected: The new Injury has been added successfully
+         */
+    }
+
+
+    @After
     public void tearDown() throws Exception {
         EntityManager.getInstance().clearAll();
     }
