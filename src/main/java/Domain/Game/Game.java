@@ -13,7 +13,6 @@ import java.util.List;
 
 public class Game {
 
-
     private Stadium stadium;
     private Team homeTeam;
     private Team awayTeam;
@@ -28,8 +27,6 @@ public class Game {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.gameDate = gameDate;
-        this.referees = referees;
-        this.eventsLogger = new EventsLogger();
         this.referees = referees;
         this.eventsLogger = new EventsLogger();
         this.hasFinished = false;
@@ -198,7 +195,6 @@ public class Game {
         this.eventsLogger.logPenaltyEvent(teamWhoCommitted, minute);
     }
 
-
     /**
      * Adds a players switch event to the game
      *
@@ -222,6 +218,8 @@ public class Game {
             throw new IllegalArgumentException("minute must be positive integer");
         }
         this.eventsLogger.logSwitchPlayersEvent(teamWhoCommitted, enteringPlayer, exitingPlayer, minute);
+    }
+
     /**
      * Adds a injury event to the game
      *
@@ -237,14 +235,17 @@ public class Game {
             throw new IllegalArgumentException("minute must be positive integer");
         }
         this.eventsLogger.logInjuryEvent(player, minute);
+    }
+
 
     public void setHasFinished(boolean hasFinished) {
         this.hasFinished = hasFinished;
+    }
+
     public void addReferee(Referee referee) {
         this.referees.add(referee);
+    }
 
-    public EventsLogger getEventsLogger() {
-        return eventsLogger;
     @Override
     public String toString() {
         return "Game{" +
@@ -253,7 +254,6 @@ public class Game {
                 ", awayTeam=" + awayTeam.getTeamName() +
                 ", gameDate=" + gameDate + '}';
     }
-
 
 
     public Date getGameDate()

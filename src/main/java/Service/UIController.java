@@ -57,73 +57,6 @@ public class UIController {
     }
 
 
-    /**
-     * Receiving multiple inputs from the user.
-     * @param messagesToDisplay String which contains the message to put for each input,
-     *                      with the delimiter ";" between each message
-     * @return String - The inputs from the user to each input, with the delimiter ";" between each input
-     */
-    public static String receiveStringFromMultipleInputs(String messagesToDisplay, Collection<String>... valuesToChooseFrom) throws CancellationException
-    {
-        if(isTest){
-            printMessageAndValuesForTest(messagesToDisplay, valuesToChooseFrom);
-            if(selector == 9511 || selector == 9521){
-                return "1;-1;0";
-            }
-            else if(selector == 962){
-                return "1;1;1";
-            }
-            else if (selector == 9514){
-                return "1;1;-1";
-            }
-            else if(selector == 9512){
-                return "-1;0;1";
-            }
-            else if (selector == 961){
-                return "0;1;1";
-            }
-            else{
-                return "-2,1,a"; // not legal
-            }
-        }
-        else {
-            StringBuilder line = new StringBuilder();
-            UI lastUI = UI.getCurrent();
-            Thread t = Thread.currentThread();
-            VaadinSession se = VaadinSession.getCurrent();
-            VaadinService srvc = VaadinService.getCurrent();
-
-            Future<Void> returnValue = se.access(() -> {
-                UI.setCurrent(lastUI);
-                VaadinSession.setCurrent(se);
-                FootballMain.showDialog(lastUI, messagesToDisplay, SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS, line,t ,valuesToChooseFrom);
-                lastUI.access(()-> {
-                    lastUI.push();
-                });
-                System.out.println("Closed Dialog");
-            });
-
-            while (line.length() == 0)
-            {
-                try {
-                    //waiting for the user to close the dialog
-                    sleep(1000);
-//                    System.out.println("Waiting for the user input");
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-            if(line.toString().equals(CANCEL_TASK_VALUE))
-            {
-                throw new CancellationException();
-            }
-            System.out.println(line.toString());
-            return line.toString();
-
-        }
-    }
 
     /**
      * This function is receiving a string from the user
@@ -250,6 +183,12 @@ public class UIController {
         }
     }
 
+    /**
+     * Receiving multiple inputs from the user.
+     * @param messagesToDisplay String which contains the message to put for each input,
+     *                      with the delimiter ";" between each message
+     * @return String - The inputs from the user to each input, with the delimiter ";" between each input
+     */
     public static String receiveStringFromMultipleInputs(String messagesToDisplay, Collection<String>... valuesToChooseFrom) throws CancellationException
     {
         if (!isTest) {
