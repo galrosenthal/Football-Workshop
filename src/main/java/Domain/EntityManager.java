@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-public class EntityManager{
+public class EntityManager {
     private static EntityManager entityManagerInstance = null;
 
     private List<SystemUser> allUsers;
@@ -30,6 +30,8 @@ public class EntityManager{
     private HashSet<League> allLeagues;
     private List<SystemAdmin> systemAdmins;
 
+    private List<PointsPolicy> pointsPolicies;
+    private List<SchedulingPolicy> schedulingPolicies;
 
     public boolean isLoggedIn() {
         return loggedIn;
@@ -47,6 +49,8 @@ public class EntityManager{
         allTeams = new ArrayList<>();
         allStadiums = new ArrayList<>();
         systemAdmins = new ArrayList<>();
+        pointsPolicies = new ArrayList<>();
+        schedulingPolicies = new ArrayList<>();
     }
 
     /**
@@ -330,6 +334,8 @@ public class EntityManager{
         allLeagues = new HashSet<>();
         allUsers = new ArrayList<>();
         allTeams = new ArrayList<>();
+        pointsPolicies = new ArrayList<>();
+        schedulingPolicies = new ArrayList<>();
     }
 
     private void clearAllUsers() {
@@ -443,7 +449,6 @@ public class EntityManager{
         return allUsers;
     }
 
-
     /**
      * Get a list of all Teams by thier name
      * @return List<String of all the teams names
@@ -480,4 +485,104 @@ public class EntityManager{
     }
 
  */
+
+    /**
+     * Checks if a points policy already exists with the same values
+     *
+     * @param victoryPoints - int
+     * @param lossPoints    - int
+     * @param tiePoints     - int
+     * @return - boolean - true if a policy with the same given values already exists, else false
+     */
+    public boolean doesPointsPolicyExists(int victoryPoints, int lossPoints, int tiePoints) {
+        for (PointsPolicy pointsPolicy : this.pointsPolicies) {
+            if (pointsPolicy.equals(victoryPoints, lossPoints, tiePoints)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns a points policy matching the given parameters
+     *
+     * @param victoryPoints - int
+     * @param lossPoints    - int
+     * @param tiePoints     - int
+     * @return - PointsPolicy - A points policy matching the given parameters
+     */
+    public PointsPolicy getPointsPolicy(int victoryPoints, int lossPoints, int tiePoints) {
+        for (PointsPolicy pointsPolicy : this.pointsPolicies) {
+            if (pointsPolicy.equals(victoryPoints, lossPoints, tiePoints)) {
+                return pointsPolicy;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Receives a new points policy and adds it
+     *
+     * @param newPointsPolicy - PointsPolicy - a new policy
+     */
+    public void addPointsPolicy(PointsPolicy newPointsPolicy) {
+        if (newPointsPolicy != null) {
+            this.pointsPolicies.add(newPointsPolicy);
+            //TODO: Update DB?
+        }
+    }
+
+    public List<PointsPolicy> getPointsPolicies() {
+        return this.pointsPolicies;
+    }
+
+    /**
+     * Checks if a scheduling policy already exists with the same values
+     *
+     * @param gamesPerSeason - int
+     * @param gamesPerDay    - int
+     * @param minRest        - int
+     * @return - boolean - true if a policy with the same given values already exists, else false
+     */
+    public boolean doesSchedulingPolicyExists(int gamesPerSeason, int gamesPerDay, int minRest) {
+        for (SchedulingPolicy schedulingPolicy : this.schedulingPolicies) {
+            if (schedulingPolicy.equals(gamesPerSeason, gamesPerDay, minRest)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns a scheduling policy matching the given parameters
+     *
+     * @param gamesPerSeason - int
+     * @param gamesPerDay    - int
+     * @param minRest        - int
+     * @return - SchedulingPolicy - A scheduling policy matching the given parameters
+     */
+    public SchedulingPolicy getSchedulingPolicy(int gamesPerSeason, int gamesPerDay, int minRest) {
+        for (SchedulingPolicy schedulingPolicy : this.schedulingPolicies) {
+            if (schedulingPolicy.equals(gamesPerSeason, gamesPerDay, minRest)) {
+                return schedulingPolicy;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Receives a new scheduling policy and adds it
+     *
+     * @param newSchedulingPolicy - SchedulingPolicy - a scheduling policy to be added
+     */
+    public void addSchedulingPolicy(SchedulingPolicy newSchedulingPolicy) {
+        if (newSchedulingPolicy != null) {
+            this.schedulingPolicies.add(newSchedulingPolicy);
+            //TODO: Update DB?
+        }
+    }
+
+    public List<SchedulingPolicy> getSchedulingPolicies() {
+        return schedulingPolicies;
+    }
 }

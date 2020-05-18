@@ -178,4 +178,5 @@ public class Player extends PartOfTeam{
     public List<Team> getPlayerTeams() {
         return playerTeams;
     }
+
 }
