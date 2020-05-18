@@ -29,11 +29,13 @@ public class AcceptanceTests {
 
     @BeforeClass
     public static void setUp() { //Will be called only once
-        existingUser = new SystemUser("abc", "aBc12345", "abc");
+        String hashedPasswordForEu = org.apache.commons.codec.digest.DigestUtils.sha256Hex("aBc12345");
+        String hashedPasswordForAviYosi = org.apache.commons.codec.digest.DigestUtils.sha256Hex("123Ab456");
+        existingUser = new SystemUser("abc", hashedPasswordForEu, "abc");
         existingUser.addNewRole(new TeamOwner(existingUser));
-        aviCohenSu = new SystemUser("avicohen", "123Ab456", "Avi Cohen");
+        aviCohenSu = new SystemUser("avicohen", hashedPasswordForAviYosi, "Avi Cohen");
         aviCohenSu.addNewRole(new TeamOwner(aviCohenSu));
-        yosiManagerSu = new SystemUser("yosilevi", "123Ab456", "Yosi Levi");
+        yosiManagerSu = new SystemUser("yosilevi", hashedPasswordForAviYosi, "Yosi Levi");
         yosiManagerSu.addNewRole(new TeamManager(yosiManagerSu));
         UIController.setIsTest(true);
     }
@@ -48,7 +50,8 @@ public class AcceptanceTests {
     }
 
     private void initEntities() {
-        SystemUser adminUser = new SystemUser("admin", "12345678", "administrator");
+        String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex("12345678");
+        SystemUser adminUser = new SystemUser("admin", hashedPassword, "administrator");
         adminUser.addNewRole(new SystemAdmin(adminUser));
         EntityManager.getInstance().addUser(adminUser);
     }
@@ -409,13 +412,13 @@ public class AcceptanceTests {
         Team beitShean = new Team();
 
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
+        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
         SystemUser elisha = new SystemUser("elevy","Elisha Levy");
 
-        SystemUser abc = Controller.login("abc1","abc12345");
+        SystemUser abc = Controller.login("abc1","aBc12345");
         assertEquals(abc,abcCreate);
 
         UIController.setSelector(61118);
@@ -436,12 +439,12 @@ public class AcceptanceTests {
 
         beitShean.setTeamName("Beit Shean");
 
-        SystemUser abcCreate = new SystemUser("abc1","abc12345","abc");
+        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
 
-        SystemUser abc = Controller.login("abc1","abc12345");
+        SystemUser abc = Controller.login("abc1","aBc12345");
         assertEquals(abc,abcCreate);
 
         UIController.setSelector(61118);
@@ -475,12 +478,12 @@ public class AcceptanceTests {
     public void modifyTeamAssetDetails1ATest() throws Exception {
         Team beitShean = new Team();
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = new SystemUser("abc1", "abc12345", "abc");
+        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
 
-        SystemUser abc = Controller.login("abc1", "abc12345");
+        SystemUser abc = Controller.login("abc1", "aBc12345");
         assertEquals(abc, abcCreate);
 
         SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");
@@ -507,12 +510,12 @@ public class AcceptanceTests {
     public void modifyTeamAssetDetails2ATest() throws Exception {
         Team beitShean = new Team();
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = new SystemUser("abc1", "abc12345", "abc");
+        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345");
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
 
-        SystemUser abc = Controller.login("abc1", "abc12345");
+        SystemUser abc = Controller.login("abc1", "aBc12345");
         assertEquals(abc, abcCreate);
 
         SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");

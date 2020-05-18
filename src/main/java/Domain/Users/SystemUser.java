@@ -15,7 +15,7 @@ public class SystemUser extends User implements Fan{
     private List<UserComplaints> complaints;
 
     protected String username;
-    private String password;
+    private String password; /**  password is in hash format */
     private String name;
 
     @Override
