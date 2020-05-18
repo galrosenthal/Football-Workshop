@@ -518,10 +518,12 @@ public class Team {
             }
         }
 
+        if(!teamAsset.addTeam(this,teamOwner))
+        {
+            return false;
+        }
+        return teamAsset.addAllProperties(this);
 
-        teamAsset.addAllProperties();
-
-        return teamAsset.addTeam(this,teamOwner);
     }
 
 

@@ -33,7 +33,7 @@ public class PlayerTest {
     }
 
     @Test
-    public void addTeam() throws Exception{
+    public void addTeamUTest() throws Exception{
         Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
         Player p1 = new Player(testUser,bday);
 
@@ -50,25 +50,34 @@ public class PlayerTest {
 
 
     @Test
-    public void addAllProperties() throws Exception{
+    public void addAllPropertiesUTest() throws Exception{
         UIController.setIsTest(true);
         UIController.setSelector(61120);
         Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
         Player p1 = new Player(testUser,bday);
 
-        assertTrue(p1.addAllProperties());
+        TeamStub ts = new TeamStub(61120);
+        BelongToTeamStub bgStub = new BelongToTeamStub(ts, p1);
+        p1.addTeamConnection(bgStub);
+
+
+        assertTrue(p1.addAllProperties(ts));
 
     }
 
     @Test
-    public void addProperty() throws Exception{
+    public void addPropertyUTest() throws Exception{
         UIController.setIsTest(true);
         UIController.setSelector(61120);
         Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
         Player p1 = new Player(testUser,bday);
 
-        assertFalse(p1.addProperty("NotAValidString"));
-        assertTrue(p1.addProperty(p1.fieldJobString));
+        TeamStub ts = new TeamStub(61120);
+        BelongToTeamStub bgStub = new BelongToTeamStub(ts, p1);
+        p1.addTeamConnection(bgStub);
+
+        assertFalse(p1.addProperty(ts, "NotAValidString"));
+        assertTrue(p1.addProperty(ts, p1.fieldJobString));
 
     }
 
@@ -83,8 +92,11 @@ public class PlayerTest {
     @Test
     public void changePropertyUTest() {
         Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131) , new Date());
-        Assert.assertTrue(player.changeProperty(player.fieldJobString , PlayerFieldJobs.DEFENSE.toString()));
-        Assert.assertFalse(player.changeProperty("test" , CoachQualification.MAIN_COACH.toString()));
+        TeamStub ts = new TeamStub(61120);
+        BelongToTeamStub bgStub = new BelongToTeamStub(ts,player);
+        player.addTeamConnection(bgStub);
+        Assert.assertTrue(player.changeProperty(ts,player.fieldJobString , PlayerFieldJobs.DEFENSE.toString()));
+        Assert.assertFalse(player.changeProperty(ts,"test" , CoachQualification.MAIN_COACH.toString()));
 
     }
 
@@ -127,7 +139,7 @@ public class PlayerTest {
     }
 
     @Test
-    public void addPropertyUTest() {
+    public void addPropertyEnumFalseUTest() {
         Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131) , new Date());
         Assert.assertFalse(player.addProperty(player.fieldJobString ,PlayerFieldJobs.FRONT ,new TeamStub(6131)));
     }
@@ -152,8 +164,11 @@ public class PlayerTest {
     @Test
     public void changePropertyITest() {
         Player player = new Player(new SystemUser("playerTest" , "gal" ) , new Date());
-        Assert.assertTrue(player.changeProperty(player.fieldJobString , PlayerFieldJobs.DEFENSE.toString()));
-        Assert.assertFalse(player.changeProperty("test" , CoachQualification.MAIN_COACH.toString()));
+        TeamStub ts = new TeamStub(61120);
+        BelongToTeamStub bgStub = new BelongToTeamStub(ts,player);
+        player.addTeamConnection(bgStub);
+        Assert.assertTrue(player.changeProperty(ts,player.fieldJobString , PlayerFieldJobs.DEFENSE.toString()));
+        Assert.assertFalse(player.changeProperty(ts,"test" , CoachQualification.MAIN_COACH.toString()));
 
     }
 
