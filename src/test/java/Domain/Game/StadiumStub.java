@@ -26,7 +26,7 @@ public class StadiumStub extends Stadium{
     }
 
     @Override
-    public boolean addAllProperties() {
+    public boolean addAllProperties(Team t) {
         return true;
     }
 
