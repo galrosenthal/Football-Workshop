@@ -39,21 +39,24 @@ public class GameTest {
     @Test
     public void getScore2ITest() {
         try {
-            game.addGoal(game.getHomeTeam(), game.getAwayTeam(), 1);
+            game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),1);
         } catch (Exception e) {
         }
         Score score = game.getScore();
         assertTrue(score.getHomeTeamGoalCount()==1);
         assertTrue(score.getAwayTeamGoalCount()==0);
         try {
-            game.addGoal(game.getHomeTeam(), game.getAwayTeam(), 2);
+            game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),2);
         } catch (Exception e) {
         }
         score = game.getScore();
         assertTrue(score.getHomeTeamGoalCount()==2);
         assertTrue(score.getAwayTeamGoalCount()==0);
         try {
-            game.addGoal( game.getAwayTeam(),game.getHomeTeam(), 3);
+            game.addGoal( game.getAwayTeam(),game.getHomeTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),3);
         } catch (Exception e) {
         }
         score = game.getScore();
@@ -64,7 +67,8 @@ public class GameTest {
     @Test
     public void addGoalITest() {
         try {
-            game.addGoal(game.getAwayTeam(), game.getAwayTeam(), 1);
+            game.addGoal(game.getAwayTeam(), game.getAwayTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),1);
             Assert.fail();
         } catch (Exception e) {
             assertEquals("The teams given are the same team", e.getMessage());
@@ -73,13 +77,15 @@ public class GameTest {
     @Test
     public void addGoal2ITest() {
         try {
-            game.addGoal(game.getHomeTeam(), game.getAwayTeam(), -1);
+            game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),-1);
             Assert.fail();
         } catch (Exception e) {
             assertEquals("minute must be positive integer", e.getMessage());
         }
         try {
-            game.addGoal(game.getHomeTeam(), game.getAwayTeam(), 0);
+            game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),0);
         } catch (Exception e) {
         }
         assertTrue(game.getEventsLogger().getGoals().size()==1);
@@ -87,7 +93,8 @@ public class GameTest {
     @Test
     public void addGoal3ITest() {
         try {
-            game.addGoal(game.getHomeTeam(), game.getAwayTeam(), 1);
+            game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),1);
         } catch (Exception e) {
         }
         assertTrue(game.getEventsLogger().getGoals().size()==1);
@@ -95,7 +102,8 @@ public class GameTest {
     @Test
     public void addGoal4ITest() {
         try {
-            game.addGoal(new TeamStub(9513), game.getAwayTeam(), 1);
+            game.addGoal(new TeamStub(9513), game.getAwayTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),1);
         } catch (Exception e) {
             assertEquals("The given scoring Team doesn't play in this game", e.getMessage());
         }
@@ -103,7 +111,8 @@ public class GameTest {
     @Test
     public void addGoal5ITest() {
         try {
-            game.addGoal(game.getHomeTeam(), new TeamStub(9513), 1);
+            game.addGoal(game.getHomeTeam(), new TeamStub(9513),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),1);
         } catch (Exception e) {
             assertEquals("The given scored On Team doesn't play in this game", e.getMessage());
         }
