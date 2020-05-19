@@ -21,8 +21,8 @@ public class StadiumTest {
     @Test
     public void changeProperty1UTest() {
         Stadium stadium = new Stadium("AESSEAL","New York");
-        Assert.assertTrue(stadium.changeProperty(stadium.namePropertyString , "AESSEAL"));
-        Assert.assertFalse(stadium.changeProperty("Test" , "Test"));
+        Assert.assertTrue(stadium.changeProperty(new TeamStub(0), stadium.namePropertyString , "AESSEAL"));
+        Assert.assertFalse(stadium.changeProperty(new TeamStub(0), "Test" , "Test"));
         Assert.assertTrue(stadium.getName().equals("AESSEAL"));
 
     }
@@ -30,8 +30,8 @@ public class StadiumTest {
     @Test
     public void changeProperty2UTest() {
         Stadium stadium = new Stadium("New York" , "AESEAL");
-        Assert.assertTrue(stadium.changeProperty(stadium.namePropertyString , "AESSEAL"));
-        Assert.assertFalse(stadium.changeProperty("Test" , "Test"));
+        Assert.assertTrue(stadium.changeProperty(new TeamStub(0), stadium.namePropertyString , "AESSEAL"));
+        Assert.assertFalse(stadium.changeProperty(new TeamStub(0), "Test" , "Test"));
         Assert.assertTrue(stadium.getName().equals("AESSEAL"));
 
     }

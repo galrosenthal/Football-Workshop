@@ -1,6 +1,7 @@
 package Domain.Users;
 
 import Domain.Game.Team;
+import Domain.Game.TeamStub;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public class PlayerStub extends Player{
     private int selector;
+    private List<Team> teamsOfTest;
 
     public PlayerStub(SystemUser systemUser) {
         this(systemUser, null);
@@ -17,10 +19,11 @@ public class PlayerStub extends Player{
 
     public PlayerStub(SystemUser user, Date bdate) {
         super(user,bdate);
+        teamsOfTest = new ArrayList<>();
     }
 
     public PlayerStub(SystemUser user, Date bdate , int selector) {
-        super(user,bdate);
+        this(user,bdate);
         this.selector = selector;
     }
 
@@ -29,7 +32,7 @@ public class PlayerStub extends Player{
     }
 
     @Override
-    public boolean addAllProperties() {
+    public boolean addAllProperties(Team team) {
         return true;
     }
 
@@ -75,6 +78,7 @@ public class PlayerStub extends Player{
     public boolean addTeam(Team playTeam, TeamOwner teamOwner) {
         if(selector == 0)
         {
+            this.teamsOfTest.add(playTeam);
             return super.addTeam(playTeam,teamOwner);
         }
 
@@ -89,4 +93,14 @@ public class PlayerStub extends Player{
         return null;
     }
 
+
+    @Override
+    public List<Team> getTeams() {
+        return teamsOfTest;
+    }
+
+    @Override
+    public boolean removeTeam(Team teamToRemove) {
+        return this.teamsOfTest.remove(teamToRemove);
+    }
 }

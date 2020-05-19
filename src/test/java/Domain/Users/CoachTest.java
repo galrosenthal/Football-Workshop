@@ -1,5 +1,6 @@
 package Domain.Users;
 
+import Domain.Game.Team;
 import Domain.Game.TeamStub;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,9 +22,12 @@ public class CoachTest {
     @Test
     public void changePropertyUTest() {
         Coach coach = new Coach(new SystemUserStub("coachTest" , "gal" , 6131));
-        Assert.assertTrue(coach.changeProperty(coach.teamJobString , "Test"));
-        Assert.assertTrue(coach.changeProperty(coach.qualificationString , CoachQualification.MAIN_COACH.toString()));
-        Assert.assertFalse(coach.changeProperty("test" , CoachQualification.MAIN_COACH.toString()));
+        TeamStub ts = new TeamStub(6131);
+        BelongToTeamStub bgStub = new BelongToTeamStub(ts, coach);
+        Assert.assertTrue(coach.addTeamConnection(bgStub));
+        Assert.assertTrue(coach.changeProperty(ts,coach.teamJobString , "Test"));
+        Assert.assertTrue(coach.changeProperty(ts,coach.qualificationString , CoachQualification.MAIN_COACH.toString()));
+        Assert.assertFalse(coach.changeProperty(ts,"test" , CoachQualification.MAIN_COACH.toString()));
 
     }
 
@@ -92,9 +96,12 @@ public class CoachTest {
     @Test
     public void changePropertyITest() {
         Coach coach = new Coach(new SystemUser("coachTest" , "gal"));
-        Assert.assertTrue(coach.changeProperty(coach.teamJobString , "Test"));
-        Assert.assertTrue(coach.changeProperty(coach.qualificationString , CoachQualification.MAIN_COACH.toString()));
-        Assert.assertFalse(coach.changeProperty("test" , CoachQualification.MAIN_COACH.toString()));
+        Team team = new Team();
+        BelongToTeam bg = new BelongToTeam(team, coach);
+        Assert.assertTrue(coach.addTeamConnection(bg));
+        Assert.assertTrue(coach.changeProperty(team, coach.teamJobString , "Test"));
+        Assert.assertTrue(coach.changeProperty(team, coach.qualificationString , CoachQualification.MAIN_COACH.toString()));
+        Assert.assertFalse(coach.changeProperty(team, "test" , CoachQualification.MAIN_COACH.toString()));
 
     }
 

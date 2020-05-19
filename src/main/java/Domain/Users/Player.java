@@ -11,32 +11,16 @@ import java.util.Objects;
 
 public class Player extends PartOfTeam{
 
-    private PlayerFieldJobs fieldJob;
-    private List<Team> playerTeams;
     private Date bday;
 
     public final String fieldJobString = "Filed Job";
 
     public Player(SystemUser systemUser,Date birthDate) {
         super(RoleTypes.PLAYER, systemUser);
-        playerTeams= new ArrayList<>();
         bday = birthDate;
     }
 
 
-    public boolean addTeam(Team playTeam){
-        if(!this.playerTeams.contains(playTeam)) {
-            this.playerTeams.add(playTeam);
-        }
-        return false;
-    }
-
-
-    @Override
-    public String getAssetName()
-    {
-        return this.systemUser.getUsername();
-    }
 
     @Override
     public List<String> getProperties() {
@@ -45,23 +29,19 @@ public class Player extends PartOfTeam{
         return properties;
     }
 
-    @Override
-    public boolean addTeam(Team team, TeamOwner teamOwner) {
-        if(team != null)
-        {
-            playerTeams.add(team);
-            return team.addTeamPlayer(teamOwner,this);
-
-        }
-        return false;
-    }
 
     @Override
-    public boolean changeProperty(String property, String toChange)
+    public boolean changeProperty(Team teamOfAsset, String property, String toChange)
     {
         if(property.equalsIgnoreCase(fieldJobString))
         {
-            this.fieldJob = PlayerFieldJobs.valueOf(toChange);
+//            this.fieldJob =
+            BelongToTeam assetBelongsTo = getBelongTeamByTeam(teamOfAsset);
+            if(assetBelongsTo == null)
+            {
+                return false;
+            }
+            assetBelongsTo.setTeamJob(toChange);
             return true;
         }
         return false;
@@ -86,24 +66,20 @@ public class Player extends PartOfTeam{
         return false;
     }
 
-    public boolean removeTeam(Team team){
-        return this.playerTeams.remove(team);
-    }
-
-
 
 
     @Override
-    public boolean addAllProperties() {
-        return addProperty(fieldJobString);
+    public boolean addAllProperties(Team teamOfAsset) {
+        return addProperty(teamOfAsset, fieldJobString);
     }
 
     @Override
-    public boolean addProperty(String property) {
+    public boolean addProperty(Team teamOfAsset, String property) {
         if(property.equalsIgnoreCase(fieldJobString))
         {
             int fieldJobIndex = getEnumIndex();
-            return this.changeProperty(property,PlayerFieldJobs.values()[fieldJobIndex].toString());
+
+            return this.changeProperty(teamOfAsset, property,PlayerFieldJobs.values()[fieldJobIndex].toString());
         }
 
         return false;
@@ -130,7 +106,7 @@ public class Player extends PartOfTeam{
     }
 
     @Override
-    public boolean removeProperty(String property) {
+    public boolean removeProperty(Team teamOfAsset, String property) {
         return false;
     }
 
@@ -169,14 +145,11 @@ public class Player extends PartOfTeam{
         if (this == o) return true;
         if (!(o instanceof Player)) return false;
         Player player = (Player) o;
-        return fieldJob == player.fieldJob &&
-                Objects.equals(bday, player.bday)&&
+        return Objects.equals(bday, player.bday)&&
                 super.systemUser.equals(player.systemUser);
 
     }
 
-    public List<Team> getPlayerTeams() {
-        return playerTeams;
-    }
+
 
 }

@@ -76,7 +76,7 @@ public class TeamManager extends Role implements Asset {
     }
 
     @Override
-    public boolean changeProperty(String toChange, String property)
+    public boolean changeProperty(Team teamOfAsset, String toChange, String property)
     {
         return false;
     }
@@ -103,18 +103,18 @@ public class TeamManager extends Role implements Asset {
 
 
     @Override
-    public boolean addAllProperties() {
+    public boolean addAllProperties(Team teamOfAsset) {
         return true;
     }
 
     @Override
-    public boolean addProperty(String property) {
+    public boolean addProperty(Team teamOfAsset,String property) {
         return false;
 
     }
 
     @Override
-    public boolean removeProperty(String property) {
+    public boolean removeProperty(Team teamOfAsset,String property) {
         return false;
     }
 
