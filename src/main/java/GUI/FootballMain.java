@@ -448,7 +448,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
         newWindow.open();
     }
 
-    
+
 
 }
 
