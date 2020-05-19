@@ -9,11 +9,8 @@ import Domain.Game.*;
 import Domain.Users.*;
 import Service.UIController;
 import org.junit.*;
-import org.junit.rules.ExpectedException;
 
 import java.util.Date;
-
-import java.util.EmptyStackException;
 
 import static org.junit.Assert.*;
 
@@ -562,8 +559,10 @@ public class TeamControllerTest {
     public void closeTeamUTest(){
         TeamStub teamStub = new TeamStub(66172);
         SystemUserStub su1 = new SystemUserStub("rosengal", "gal",661721);
+        TeamOwnerStub teamOwnerStub = new TeamOwnerStub(su1);
+        teamStub.addTeamOwner(teamOwnerStub);
         PlayerStub p1 = (PlayerStub)su1.getRole(RoleTypes.PLAYER);
-        p1.addTeam(teamStub);
+        p1.addTeam(teamStub,teamOwnerStub);
         teamStub.addPlayer(p1);
 
         SystemUserStub su2 = new SystemUserStub("nirdz", "nir",661722);
@@ -573,7 +572,7 @@ public class TeamControllerTest {
 
         SystemUserStub su3 = new SystemUserStub("coach", "coach",661723);
         CoachStub co1 = (CoachStub)su3.getRole(RoleTypes.COACH);
-        co1.addTeamToCoach(teamStub);
+        co1.addTeam(teamStub,teamOwnerStub);
         teamStub.addCoach(co1);
 
         SystemUserStub su4 = new SystemUserStub("iamowner", "owner",661724);
@@ -595,16 +594,16 @@ public class TeamControllerTest {
 
         //success
         Assert.assertEquals(1, to.getOwnedTeams().size());
-        Assert.assertEquals(1, p1.getPlayerTeams().size());
+        Assert.assertEquals(1, p1.getTeams().size());
         Assert.assertEquals(1, tm1.getTeamsManaged().size());
-        Assert.assertEquals(1, co1.getCoachedTeams().size());
+        Assert.assertEquals(1, co1.getTeams().size());
         Assert.assertEquals(1, st1.getTeams().size());
         Assert.assertTrue(TeamController.closeTeam(teamStub));
         Assert.assertEquals(TeamStatus.CLOSED, teamStub.getStatus());
         Assert.assertEquals(1, to.getOwnedTeams().size());
-        Assert.assertEquals(0, p1.getPlayerTeams().size());
+        Assert.assertEquals(0, p1.getTeams().size());
         Assert.assertEquals(0, tm1.getTeamsManaged().size());
-        Assert.assertEquals(0, co1.getCoachedTeams().size());
+        Assert.assertEquals(0, co1.getTeams().size());
         Assert.assertEquals(0, st1.getTeams().size());
 
         //cleanup
@@ -650,16 +649,16 @@ public class TeamControllerTest {
 
         //success
         Assert.assertEquals(1, to.getOwnedTeams().size());
-        Assert.assertEquals(0, p1.getPlayerTeams().size());
+        Assert.assertEquals(0, p1.getTeams().size());
         Assert.assertEquals(0, tm1.getTeamsManaged().size());
-        Assert.assertEquals(0, co1.getCoachedTeams().size());
+        Assert.assertEquals(0, co1.getTeams().size());
         Assert.assertEquals(0, st1.getTeams().size());
         Assert.assertTrue(TeamController.reopenTeam(teamStub, to));
         Assert.assertEquals(TeamStatus.OPEN, teamStub.getStatus());
         Assert.assertEquals(1, to.getOwnedTeams().size());
-        Assert.assertEquals(1, p1.getPlayerTeams().size());
+        Assert.assertEquals(1, p1.getTeams().size());
         Assert.assertEquals(1, tm1.getTeamsManaged().size());
-        Assert.assertEquals(1, co1.getCoachedTeams().size());
+        Assert.assertEquals(1, co1.getTeams().size());
         Assert.assertEquals(1, st1.getTeams().size());
 
         //cleanup
@@ -712,15 +711,15 @@ public class TeamControllerTest {
         //success, but could not restore nirdz the team's manager because he is not a user anymore
         Assert.assertEquals(1, teamStub.getTeamManagers().size());
         Assert.assertEquals(1, to.getOwnedTeams().size());
-        Assert.assertEquals(0, p1.getPlayerTeams().size());
-        Assert.assertEquals(0, co1.getCoachedTeams().size());
+        Assert.assertEquals(0, p1.getTeams().size());
+        Assert.assertEquals(0, co1.getTeams().size());
         Assert.assertEquals(0, st1.getTeams().size());
         Assert.assertTrue(TeamController.reopenTeam(teamStub, to));
         Assert.assertEquals(TeamStatus.OPEN, teamStub.getStatus());
         Assert.assertEquals(0, teamStub.getTeamManagers().size());
         Assert.assertEquals(1, to.getOwnedTeams().size());
-        Assert.assertEquals(1, p1.getPlayerTeams().size());
-        Assert.assertEquals(1, co1.getCoachedTeams().size());
+        Assert.assertEquals(1, p1.getTeams().size());
+        Assert.assertEquals(1, co1.getTeams().size());
         Assert.assertEquals(1, st1.getTeams().size());
 
         //cleanup

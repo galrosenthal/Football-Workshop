@@ -25,7 +25,7 @@ public interface Asset {
      * @param newValue
      * @return true - successfully change to new value
      */
-    boolean changeProperty(String propertyToChange, String newValue);
+    boolean changeProperty(Team teamOfAsset, String propertyToChange, String newValue);
 
     /**
      *
@@ -53,19 +53,19 @@ public interface Asset {
      * @param property
      * @return
      */
-    boolean addProperty(String property);
+    boolean addProperty(Team teamOfAsset, String property);
 
     /**
      * @return true - all properties has been added successfully
      */
-    boolean addAllProperties();
+    boolean addAllProperties(Team teamOfAsset);
 
     /**
      *
      * @param property
      * @return
      */
-    boolean removeProperty(String property);
+    boolean removeProperty(Team teamOfAsset, String property);
 
     /**
      *

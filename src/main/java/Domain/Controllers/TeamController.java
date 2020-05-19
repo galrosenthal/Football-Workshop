@@ -172,10 +172,10 @@ public class TeamController {
                 objects.add(e.name());
             }
             int propertyNewValueIndex = choosePropertiesUI("Choose Property new value ",objects);
-            return allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify), allEnumValues.get(propertyNewValueIndex).toString());
+            return allAssetsTeam.get(assetIndex).changeProperty(chosenTeam, properties.get(propertyIndexToModify), allEnumValues.get(propertyNewValueIndex).toString());
         } else if (allAssetsTeam.get(assetIndex).isStringProperty(properties.get(propertyIndexToModify))) {
             String newValue = UIController.receiveString("Enter new value: ");
-            return allAssetsTeam.get(assetIndex).changeProperty(properties.get(propertyIndexToModify), newValue);
+            return allAssetsTeam.get(assetIndex).changeProperty(chosenTeam, properties.get(propertyIndexToModify), newValue);
         }
         return false;
     }
@@ -317,7 +317,7 @@ public class TeamController {
             p.removeTeam(teamToClose);
         }
         for(Coach coach : teamToClose.getTeamCoaches()){
-            coach.removeTeamToCoach(teamToClose);
+            coach.removeTeam(teamToClose);
         }
 
         teamToClose.setStatus(TeamStatus.CLOSED);
@@ -351,7 +351,7 @@ public class TeamController {
             if(roleStillExists(playerRole) &&
                     playerRole.getSystemUser().getRole(RoleTypes.PLAYER) instanceof Player) //Check in the db that the player still exists
             {
-                playerRole.addTeam(teamToReOpen);
+                playerRole.addTeam(teamToReOpen, teamOwner);
             }
             else{
                 //Removes player from the team because he is no longer exists.
@@ -365,7 +365,7 @@ public class TeamController {
             if(roleStillExists(coachRole) &&
                     coachRole.getSystemUser().getRole(RoleTypes.COACH) instanceof Coach)  //Check in the db that the coach still exists
             {
-                coachRole.addTeamToCoach(teamToReOpen);
+                coachRole.addTeam(teamToReOpen, teamOwner);
             }
             else{
                 //Removes Team Coach from the team because he is no longer exists.
