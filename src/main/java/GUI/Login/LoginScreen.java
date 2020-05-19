@@ -2,6 +2,7 @@ package GUI.Login;
 
 import Domain.EntityManager;
 import GUI.FootballMain;
+import Service.AllSubscribers;
 import Service.MainController;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -16,6 +17,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.WrappedSession;
 
 /**
@@ -95,15 +97,17 @@ public class LoginScreen extends FlexLayout {
 
     private void login(LoginForm.LoginEvent event) {
         if (MainController.login(event.getUsername(), event.getPassword())) {
-            WrappedSession currentSession = VaadinService.getCurrentRequest().getWrappedSession();
-            if(currentSession == null)
+//            WrappedSession currentSession = VaadinService.getCurrentRequest().getWrappedSession();
+            VaadinSession session = VaadinSession.getCurrent();
+            if(session == null)
             {
                 FootballMain.showNotification("Something went Wrong, Please try Again");
                 return;
             }
             else{
-                currentSession.setAttribute("username", event.getUsername());
+                session.setAttribute("username", event.getUsername());
                 getUI().get().navigate("");
+                AllSubscribers.getInstance().login(event.getUsername(),session);
             }
 
         } else {

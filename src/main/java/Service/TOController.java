@@ -53,6 +53,7 @@ public class TOController {
         }
 
         UIController.showNotification("Team \""+chosenTeam.getTeamName()+"\" " + closeOrReopen+"ed successfully");
+        myTeamOwner.closeReopenTeam(chosenTeam , closeOrReopen);
         return true;
     }
 

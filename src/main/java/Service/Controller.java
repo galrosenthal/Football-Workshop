@@ -241,13 +241,15 @@ public class Controller {
     /**
      * Receives user name and password from the unregistered user who wants to log in to the system,
      * Delegates the responsibility to EntityManger.
+     * Add system user to all AllSubscribers - userSystem list  - online
      * @param usrNm User name
      * @param pswrd Password
      * @return The user in the system with those credentials.
      * @throws UsernameOrPasswordIncorrectException If user name or password are incorrect.
      */
     public static SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException {
-        return EntityManager.getInstance().login(usrNm, pswrd);
+        SystemUser SystemUser =  EntityManager.getInstance().login(usrNm, pswrd);
+        return SystemUser;
     }
 
 

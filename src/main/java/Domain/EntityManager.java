@@ -12,6 +12,8 @@ import Domain.Users.SystemUser;
 import Domain.Game.Stadium;
 import Domain.Users.*;
 import Domain.Game.Stadium;
+import Service.AllSubscribers;
+import Service.Observer;
 import Service.UIController;
 
 import java.util.ArrayList;
@@ -19,7 +21,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-public class EntityManager {
+public class EntityManager{
     private static EntityManager entityManagerInstance = null;
 
     private List<SystemUser> allUsers;
@@ -172,6 +174,25 @@ public class EntityManager {
         }
         return null;
     }
+
+
+    /**
+     * Returns all system admins
+     * @return List<SystemAdmin> SystemAdmin
+     */
+    public List<SystemAdmin> getSystemAdmins() {
+        List<SystemAdmin> sysAdmins = new ArrayList<>();
+        for (SystemUser user :
+                allUsers) {
+            Role userAdmin = user.getRole(RoleTypes.SYSTEM_ADMIN);
+            if (userAdmin != null && userAdmin.getType() == RoleTypes.SYSTEM_ADMIN )
+            {
+                sysAdmins.add((SystemAdmin) userAdmin);
+            }
+        }
+        return sysAdmins;
+    }
+
 
     /**
      * Checks if a team with a name that matches the given name already exists.
@@ -382,7 +403,9 @@ public class EntityManager {
      * @return true if the password is correct and the user is able to login
      */
     private boolean authenticate(SystemUser userWithUsrNm, String pswrd) {
-        if (userWithUsrNm.getPassword().equals(pswrd)) {
+        //hash the given password
+        String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pswrd);
+        if (userWithUsrNm.getPassword().equals(hashedPassword)) {
             return true;
         }
         return false;
@@ -422,7 +445,9 @@ public class EntityManager {
             throw new WeakPasswordException("Password does not meet the requirements");
         }
 
-        SystemUser newUser = new SystemUser(usrNm, pswrd, name);
+        //hash the password
+        String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pswrd);
+        SystemUser newUser = new SystemUser(usrNm, hashedPassword, name);
         addUser(newUser);
 
 
@@ -453,6 +478,24 @@ public class EntityManager {
 
         return null;
     }
+
+/*
+    public List<Referee> getAllRefereesPerGame(Game game) {
+        //need to import referees table
+        List<Referee> referees = new ArrayList<>();
+
+        for (int i = 0; i < this.allUsers.size(); i++) {
+            Role role= allUsers.get(i).getRole(RoleTypes.REFEREE);
+            if(role != null)
+            {
+                Referee referee = (Referee) role;
+                if(referee.get)
+            }
+        }
+        return referees;
+    }
+
+ */
 
     /**
      * Checks if a points policy already exists with the same values

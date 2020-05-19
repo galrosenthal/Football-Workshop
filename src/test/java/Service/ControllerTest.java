@@ -21,13 +21,14 @@ import static org.mockito.Mockito.when;
 public class ControllerTest {
     @Mock
     SystemUser systemUser; //For testing login and signUp. Moved From UnregisteredTest
-
+    String hashedPassword;
     @Before
     public void setUp() throws Exception {
         UIController.setIsTest(true);
         //For testing login and signUp. Moved From UnregisteredTest
         MockitoAnnotations.initMocks(this);
-        when(systemUser.getPassword()).thenReturn("12aA34567");
+        hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex("12aA34567");
+        when(systemUser.getPassword()).thenReturn(hashedPassword);
         when(systemUser.getName()).thenReturn("Nir");
         when(systemUser.getUsername()).thenReturn("nir");
     }
@@ -59,7 +60,7 @@ public class ControllerTest {
         Assert.assertNotNull(result2);
         Assert.assertEquals("nir", result2.getUsername());
         Assert.assertEquals("Nir", result2.getName());
-        Assert.assertEquals("12aA34567", result2.getPassword());
+        Assert.assertEquals(hashedPassword, result2.getPassword());
 
         //password incorrect
         try{
@@ -80,7 +81,8 @@ public class ControllerTest {
         Assert.assertNotNull(newUser);
         Assert.assertEquals("avi", newUser.getUsername());
         Assert.assertEquals("Avi", newUser.getName());
-        Assert.assertEquals("1234cB57", newUser.getPassword());
+        String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex("1234cB57");
+        Assert.assertEquals(hashedPassword, newUser.getPassword());
 
 
         //userName already exists

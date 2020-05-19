@@ -9,6 +9,7 @@ import Service.TOController;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinServiceInitListener;
+import com.vaadin.flow.server.VaadinSession;
 
 public class GuiInit implements VaadinServiceInitListener {
 
@@ -18,29 +19,26 @@ public class GuiInit implements VaadinServiceInitListener {
     public void serviceInit(ServiceInitEvent serviceInitEvent) {
         serviceInitEvent.getSource().addUIInitListener(uiInitEvent -> {
             uiInitEvent.getUI().addBeforeEnterListener(enterEvent -> {
-                if(VaadinService.getCurrentRequest().getWrappedSession().getAttribute("username") == null
+                if(VaadinSession.getCurrent().getAttribute("username") == null
                 && (!pageAllowedForGuest(enterEvent.getNavigationTarget())))
                 {
                     FootballMain.showNotification("Wrong Page, You dont have sufficient permissions");
                     enterEvent.rerouteTo("");
                 }
                 else if(enterEvent.getNavigationTarget().equals(ModifyUsers.class) &&
-                        !MainController.getUserRoles((String)VaadinService.getCurrentRequest().
-                                getWrappedSession().getAttribute("username")).contains("SYSTEM_ADMIN"))
+                        !MainController.getUserRoles((String)VaadinSession.getCurrent().getAttribute("username")).contains("SYSTEM_ADMIN"))
                 {
                     FootballMain.showNotification("Wrong Page, You dont have sufficient permissions");
                     enterEvent.rerouteTo("");
                 }
                 else if(enterEvent.getNavigationTarget().equals(ARControls.class) &&
-                        !MainController.getUserRoles((String)VaadinService.getCurrentRequest().
-                                getWrappedSession().getAttribute("username")).contains("ASSOCIATION_REPRESENTATIVE"))
+                        !MainController.getUserRoles((String)VaadinSession.getCurrent().getAttribute("username")).contains("ASSOCIATION_REPRESENTATIVE"))
                 {
                     FootballMain.showNotification("Wrong Page, You dont have sufficient permissions");
                     enterEvent.rerouteTo("");
                 }
                 else if(enterEvent.getNavigationTarget().equals(TOControls.class) &&
-                        !MainController.getUserRoles((String)VaadinService.getCurrentRequest().
-                                getWrappedSession().getAttribute("username")).contains("TEAM_OWNER"))
+                        !MainController.getUserRoles((String)VaadinSession.getCurrent().getAttribute("username")).contains("TEAM_OWNER"))
                 {
                     FootballMain.showNotification("Wrong Page, You dont have sufficient permissions");
                     enterEvent.rerouteTo("");

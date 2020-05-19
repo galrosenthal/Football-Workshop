@@ -114,10 +114,28 @@ public class FootballMain extends AppLayout implements RouterLayout{
         logoutButton.getElement().setAttribute("title", "Logout (Ctrl+L)");
     }
 
+    public static void showAlert(String message) {
+        UI.getCurrent().access(() -> {
+            Dialog alertWindow = new Dialog();
+            VerticalLayout alertView = new VerticalLayout();
+            Label msg = new Label(message);
+            Button close = new Button("Close");
+            close.addClickListener(e -> {
+                alertWindow.close();
+            });
+            alertView.add(msg,close);
+
+            alertWindow.add(alertView);
+            alertWindow.setCloseOnOutsideClick(false);
+            alertWindow.open();
+
+            UI.getCurrent().push();
+        });
+    }
 
 
     private void createNavItems() {
-        WrappedSession userSession = VaadinService.getCurrentRequest().getWrappedSession();
+        VaadinSession userSession = VaadinSession.getCurrent();
         if(userSession == null || userSession.getAttribute(USERNAME_ATTRIBUTE_NAME) == null  )
         {
             System.out.println("No Session acquired");
@@ -136,7 +154,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
         if(userRoles.contains("SYSTEM_ADMIN"))
         {
             addToDrawer(createMenuLink(ModifyUsers.class, ModifyUsers.VIEW_NAME,
-                VaadinIcon.EDIT.create()));
+                    VaadinIcon.EDIT.create()));
 
         }
 
@@ -160,8 +178,8 @@ public class FootballMain extends AppLayout implements RouterLayout{
     }
 
     private void logout() {
-        WrappedSession userSession = VaadinService.getCurrentRequest().getWrappedSession();
-        userSession.removeAttribute(USERNAME_ATTRIBUTE_NAME);
+        VaadinSession userSession = VaadinSession.getCurrent();
+        userSession.setAttribute(USERNAME_ATTRIBUTE_NAME, null);
         getUI().get().navigate("");
         getUI().get().getPage().reload();
 
@@ -190,7 +208,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
 
-        WrappedSession userSession = VaadinService.getCurrentRequest().getWrappedSession();
+        VaadinSession userSession = VaadinSession.getCurrent();
         if(userSession.getAttribute(USERNAME_ATTRIBUTE_NAME) != null  )
         {
             loginBtn.setVisible(false);

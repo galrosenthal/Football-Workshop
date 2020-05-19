@@ -42,7 +42,7 @@ public class ARControls extends VerticalLayout {
 
             UI lastUI = UI.getCurrent();
             VaadinSession se = VaadinSession.getCurrent();
-            String username = (String) VaadinService.getCurrentRequest().getWrappedSession().getAttribute("username");
+            String username = getUsernameFromSession();
             Thread t = new Thread(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
@@ -63,7 +63,7 @@ public class ARControls extends VerticalLayout {
 
             UI lastUI = UI.getCurrent();
             VaadinSession se = VaadinSession.getCurrent();
-            String username = (String) VaadinService.getCurrentRequest().getWrappedSession().getAttribute("username");
+            String username = getUsernameFromSession();
             Thread t = new Thread(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
@@ -84,7 +84,7 @@ public class ARControls extends VerticalLayout {
 
             UI lastUI = UI.getCurrent();
             VaadinSession se = VaadinSession.getCurrent();
-            String username = (String) VaadinService.getCurrentRequest().getWrappedSession().getAttribute("username");
+            String username = getUsernameFromSession();
             Thread t = new Thread(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
@@ -105,7 +105,7 @@ public class ARControls extends VerticalLayout {
 
             UI lastUI = UI.getCurrent();
             VaadinSession se = VaadinSession.getCurrent();
-            String username = (String) VaadinService.getCurrentRequest().getWrappedSession().getAttribute("username");
+            String username = getUsernameFromSession();
             Thread t = new Thread(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
@@ -126,7 +126,7 @@ public class ARControls extends VerticalLayout {
 
             UI lastUI = UI.getCurrent();
             VaadinSession se = VaadinSession.getCurrent();
-            String username = (String) VaadinService.getCurrentRequest().getWrappedSession().getAttribute("username");
+            String username = getUsernameFromSession();
             Thread t = new Thread(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
@@ -149,7 +149,7 @@ public class ARControls extends VerticalLayout {
 
             UI lastUI = UI.getCurrent();
             VaadinSession se = VaadinSession.getCurrent();
-            String username = (String) VaadinService.getCurrentRequest().getWrappedSession().getAttribute("username");
+            String username = getUsernameFromSession();
             Thread t = new Thread(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
@@ -169,7 +169,7 @@ public class ARControls extends VerticalLayout {
 
             UI lastUI = UI.getCurrent();
             VaadinSession se = VaadinSession.getCurrent();
-            String username = (String) VaadinService.getCurrentRequest().getWrappedSession().getAttribute("username");
+            String username = getUsernameFromSession();
             Thread t = new Thread(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
@@ -189,7 +189,7 @@ public class ARControls extends VerticalLayout {
 
             UI lastUI = UI.getCurrent();
             VaadinSession se = VaadinSession.getCurrent();
-            String username = (String) VaadinService.getCurrentRequest().getWrappedSession().getAttribute("username");
+            String username = getUsernameFromSession();
             Thread t = new Thread(() -> {
                UI.setCurrent(lastUI);
                VaadinSession.setCurrent(se);
@@ -201,5 +201,11 @@ public class ARControls extends VerticalLayout {
         });
 
         add(regNewTeam);
+    }
+
+    private String getUsernameFromSession() {
+        VaadinSession se = VaadinSession.getCurrent();
+        return (String)se.getAttribute("username");
+
     }
 }

@@ -6,11 +6,10 @@ import Domain.Game.League;
 import Domain.Game.Season;
 import Domain.Game.Team;
 import Domain.Users.*;
-import com.vaadin.flow.component.Component;
+import com.vaadin.flow.server.VaadinSession;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -470,6 +469,10 @@ public class MainController {
             e.printStackTrace();
             UIController.showNotification(e.getMessage());
         }
+    }
+
+    public static void testAlert(VaadinSession se) {
+        UIController.showAlert( se,"Mother of god");
     }
 
     public static void DisplayScheduledGame(String username) {
