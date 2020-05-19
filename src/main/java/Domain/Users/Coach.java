@@ -10,7 +10,6 @@ public class Coach extends PartOfTeam {
 
     private CoachQualification qualification;
     private List<Team> coachedTeams;
-    private String teamJob;
     public final String teamJobString = "Team job";
     public final String qualificationString = "Qualification";
 
@@ -19,13 +18,6 @@ public class Coach extends PartOfTeam {
         coachedTeams = new ArrayList<>();
     }
 
-
-    public Coach(SystemUser su , CoachQualification qlf,  String jobTitle) {
-        super(RoleTypes.COACH,su);
-        qualification = qlf;
-        teamJob = jobTitle;
-        coachedTeams = new ArrayList<>();
-    }
 
     @Override
     public List<String> getProperties() {
@@ -185,7 +177,6 @@ public class Coach extends PartOfTeam {
         if (!(o instanceof Coach)) return false;
         Coach coach = (Coach) o;
         return qualification == coach.qualification &&
-                ((teamJob == null && coach.teamJob == null) || teamJob.equals(coach.teamJob)) &&
                 super.systemUser.equals(coach.systemUser);
     }
 
@@ -219,7 +210,6 @@ public class Coach extends PartOfTeam {
         return "Coach{" +
                 "qualification=" + qualification +
                 ", coachedTeam=" + coachedTeams +
-                ", teamJob='" + teamJob + '\'' +
                 ", teamJobString='" + teamJobString + '\'' +
                 ", qualificationString='" + qualificationString + '\'' +
                 '}';
