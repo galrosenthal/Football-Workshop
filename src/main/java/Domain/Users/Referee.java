@@ -87,4 +87,8 @@ public class Referee extends Role {
     public void addGame(Game game) {
         this.games.add(game);
     }
+
+    public void removeGame(Game game){
+        this.games.remove(game);
+    }
 }
