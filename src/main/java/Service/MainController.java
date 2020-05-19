@@ -537,4 +537,72 @@ public class MainController {
         EntityManager.getInstance().logout(logoutUser);
         AllSubscribers.getInstance().logout(username);
     }
+
+    public static void addPointPolicy(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.addPointsPolicy(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static void changePointsPolicy(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.setPointsPolicy(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static void createGamePolicy(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.addSchedulingPolicy(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static void changeGamesPolicy(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.activateSchedulingPolicy(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
 }
