@@ -231,4 +231,22 @@ public class RefereeController {
         game.addInjury(player, minute);
     }
 
+    public static void displayScheduledGames(SystemUser systemUser) throws Exception {
+        if (!systemUser.isType(RoleTypes.REFEREE)) {
+            throw new Exception("The user is not a referee");
+        }
+        Referee refereeRole = (Referee) systemUser.getRole(RoleTypes.REFEREE);
+        List<Game> gamesOfReferee = refereeRole.getGames();
+        if (gamesOfReferee == null || gamesOfReferee.isEmpty() ) {
+            throw new Exception("There are no games for this referee");
+        }
+
+        List<String> gamesByString = new ArrayList<>();
+
+        for (Game game: gamesOfReferee){
+            gamesByString.add(game.toString());
+        }
+
+        UIController.showModal(gamesByString);
+    }
 }

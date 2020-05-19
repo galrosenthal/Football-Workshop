@@ -472,7 +472,7 @@ public class MainController {
         }
     }
 
-    public static void DisplayActiveGame(String username) {
+    public static void DisplayScheduledGame(String username) {
         SystemUser refereeUser = EntityManager.getInstance().getUser(username);
         if(refereeUser == null)
         {
@@ -480,7 +480,7 @@ public class MainController {
         }
         try
         {
-            //Controller.modifyTeamAssetDetails(associationUser);
+            RefereeController.displayScheduledGames(refereeUser);
         }
         catch (Exception e )
         {

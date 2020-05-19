@@ -24,24 +24,21 @@ public class RefereeControls extends VerticalLayout {
 
     private void buildUI() {
         createShowActiveGameButton();
-        createDisplayActiveGame();
+        createDisplayScheduleGame();
     }
 
-    private void createDisplayActiveGame() {
-        String buttonTaskName = "Display Active Game";
+    private void createDisplayScheduleGame() {
+        String buttonTaskName = "View Game Schedule";
         Button watchGamesBtn = new Button(buttonTaskName);
         watchGamesBtn.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
             VaadinSession se = VaadinSession.getCurrent();
             String username = (String) VaadinService.getCurrentRequest().getWrappedSession().getAttribute("username");
-            Thread t = new Thread(() -> {
+
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
-                MainController.DisplayActiveGame(username);
-            });
-            t.setName(buttonTaskName.toUpperCase());
-            t.start();
+                MainController.DisplayScheduledGame(username);
 
         });
 
