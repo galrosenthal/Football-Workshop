@@ -1,19 +1,20 @@
 package Service;
 
+import Domain.EntityManager;
 import Domain.Game.Game;
+import Domain.Game.Stadium;
 import Domain.Game.Team;
 import Domain.Logger.Event;
-import Domain.Users.Player;
-import Domain.Users.Referee;
-import Domain.Users.RoleTypes;
-import Domain.Users.SystemUser;
+import Domain.Users.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class RefereeController {
 
     public static boolean updateGameEvents(SystemUser systemUser) {
+        createGameForTet();
         if (!systemUser.isType(RoleTypes.REFEREE)) {
             return false;
         }
@@ -62,6 +63,26 @@ public class RefereeController {
 
         UIController.showNotification("The new " + eventType + " has been added successfully");
         return true;
+    }
+
+    private static void createGameForTet() {
+        SystemUser systemUser = EntityManager.getInstance().getUser("Administrator");
+
+        Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
+
+        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
+        new AssociationRepresentative(arSystemUser);
+        new TeamOwner(arSystemUser);
+        TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        Team firstTeam = new Team("Hapoel Beit Shan", toRole);
+        Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
+
+        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen"),new Date(2001, 01, 01));
+        firstTeam.addTeamPlayer(toRole,player1);
+
+        game.addReferee(referee);
+        referee.addGame(game);
     }
 
 

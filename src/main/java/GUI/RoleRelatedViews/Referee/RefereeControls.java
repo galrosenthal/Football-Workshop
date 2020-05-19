@@ -34,7 +34,7 @@ public class RefereeControls extends VerticalLayout {
 
             UI lastUI = UI.getCurrent();
             VaadinSession se = VaadinSession.getCurrent();
-            String username = (String) VaadinService.getCurrentRequest().getWrappedSession().getAttribute("username");
+            String username = getUsernameFromSession();
 
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
@@ -46,8 +46,28 @@ public class RefereeControls extends VerticalLayout {
     }
 
     private void createShowActiveGameButton() {
-        String buttonTaskName = "Watch games you scheduled";
-        Button watchGamesBtn = new Button(buttonTaskName);
+        String buttonTaskName = "Update Game Events";
+        Button activeGamesEventsBtn = new Button(buttonTaskName);
+
+        activeGamesEventsBtn.addClickListener(e-> {
+            UI lastUI = UI.getCurrent();
+            VaadinSession se = VaadinSession.getCurrent();
+            String username = getUsernameFromSession();
+            Thread t = new Thread(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                MainController.updateGameEvents(username);
+            });
+            t.setName(buttonTaskName.toUpperCase());
+            t.start();
+        });
+
+        add(activeGamesEventsBtn);
+    }
+
+    private String getUsernameFromSession() {
+        VaadinSession se = VaadinSession.getCurrent();
+        return (String)se.getAttribute("username");
 
     }
 }
