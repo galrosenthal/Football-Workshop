@@ -11,26 +11,14 @@ import java.util.Objects;
 
 public class Player extends PartOfTeam{
 
-    private PlayerFieldJobs fieldJob;
-//    private List<Team> playerTeams;
     private Date bday;
 
     public final String fieldJobString = "Filed Job";
 
     public Player(SystemUser systemUser,Date birthDate) {
         super(RoleTypes.PLAYER, systemUser);
-//        playerTeams= new ArrayList<>();
         bday = birthDate;
     }
-
-
-//    public boolean addTeam(Team playTeam){
-//        if(!this.playerTeams.contains(playTeam)) {
-//            this.playerTeams.add(playTeam);
-//        }
-//        return false;
-//    }
-
 
 
 
@@ -78,9 +66,6 @@ public class Player extends PartOfTeam{
         return false;
     }
 
-//    public boolean removeTeam(Team team){
-//        return this.playerTeams.remove(team);
-//    }
 
 
     @Override
@@ -160,8 +145,7 @@ public class Player extends PartOfTeam{
         if (this == o) return true;
         if (!(o instanceof Player)) return false;
         Player player = (Player) o;
-        return fieldJob == player.fieldJob &&
-                Objects.equals(bday, player.bday)&&
+        return Objects.equals(bday, player.bday)&&
                 super.systemUser.equals(player.systemUser);
 
     }
