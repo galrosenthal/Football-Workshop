@@ -14,6 +14,8 @@ import Domain.Users.Referee;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -626,13 +628,21 @@ public class ARController {
             return false;
         }
         //Date selection
-        Date startDate = UIController.receiveDate("Please chose a date for the first game:");
+        String selectedDate = UIController.receiveDate("Please choose a date for the first game:");
+
         //Scheduling policy selection
         SchedulingPolicy schedulingPolicy = getSchedulingPolicyByChoice();
 
         try {
+            Date startDate = new SimpleDateFormat("dd/MM/yyyy").parse(selectedDate);
+
             ARRole.activateSchedulingPolicy(chosenSeason, schedulingPolicy, startDate);
-        } catch (Exception e) {
+        } catch (ParseException pe)
+        {
+            pe.printStackTrace();
+            UIController.showNotification("Wrong Date, please try again");
+            return false;
+        }catch (Exception e) {
             UIController.showNotification(e.getMessage());
             return false;
         }
