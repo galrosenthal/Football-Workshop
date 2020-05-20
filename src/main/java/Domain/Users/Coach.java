@@ -4,6 +4,7 @@ import Domain.Game.Team;
 import Service.UIController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Coach extends PartOfTeam {
@@ -18,7 +19,6 @@ public class Coach extends PartOfTeam {
         super(RoleTypes.COACH, systemUser);
         coachedTeams = new ArrayList<>();
     }
-
 
     public Coach(SystemUser su , CoachQualification qlf,  String jobTitle) {
         super(RoleTypes.COACH,su);

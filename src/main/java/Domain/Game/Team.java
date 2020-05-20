@@ -21,6 +21,7 @@ public class Team {
     private List<Stadium> stadiums;
     private TeamStatus status;
 
+
     public List<TeamOwner> getTeamOwners() {
         return teamOwners;
     }

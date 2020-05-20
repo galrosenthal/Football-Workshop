@@ -6,7 +6,8 @@ import java.util.Objects;
 
 public class BelongToTeam {
     Team teamBealongsTo;
-    PartOfTeam assetOfTheTeam;
+    PartOfTeam assetOfTheTeam; //player/coach
+
 
     public BelongToTeam(Team teamBealongsTo, PartOfTeam assetOfTheTeam) {
         this.teamBealongsTo = teamBealongsTo;

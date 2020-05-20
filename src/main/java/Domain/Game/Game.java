@@ -48,10 +48,6 @@ public class Game {
         return this.gameDate;
     }
 
-    public void setScore(Score score) {
-        this.score = score;
-    }
-
     /**
      * Returns the score of the game
      *
@@ -90,10 +86,6 @@ public class Game {
 
     public Team getAwayTeam() {
         return awayTeam;
-    }
-
-    public Date getGameDate() {
-        return gameDate;
     }
 
     public List<Referee> getReferees() {
