@@ -4,6 +4,7 @@ import Domain.Game.Team;
 import Domain.Users.Player;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class EventsLogger {
@@ -113,7 +114,18 @@ public class EventsLogger {
         this.gameEvents.add(new Injury(player, minute));
     }
 
+    /**
+     * Adds a new game end event based on the given parameters
+     * @param endDate - Date - The time the game ended
+     * @param minute - int - The minute game ended (maybe it ended before the 90th or 120th minute)
+     */
+    public void logEndGameEvent(Date endDate, int minute) {
+        this.gameEvents.add(new GameEnd(endDate, minute));
+    }
+
     public List<Event> getGameEvents() {
         return gameEvents;
     }
+
+
 }

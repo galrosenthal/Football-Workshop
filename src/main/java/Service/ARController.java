@@ -640,7 +640,7 @@ public class ARController {
             return false;
         }
         //Date selection
-        Date startDate = UIController.receiveDate("Please chose a date for the first game:");
+        Date startDate = UIController.receiveDate("Choose a date for the first game:");
         //Scheduling policy selection
         SchedulingPolicy schedulingPolicy = getSchedulingPolicyByChoice();
 

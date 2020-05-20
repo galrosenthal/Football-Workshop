@@ -40,7 +40,7 @@ public class RefereeControllerTest {
         Team firstTeam = new TeamStub(9511);
         Team secondTeam = new TeamStub(9512);
         Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        game.setHasFinished(true);
+        game.setEndDate(new Date()); // end the game, for the test
 
         game.addReferee(referee);
         referee.addGame(game);

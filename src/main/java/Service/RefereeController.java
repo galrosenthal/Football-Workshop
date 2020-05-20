@@ -4,12 +4,10 @@ import Domain.EntityManager;
 import Domain.Game.Game;
 import Domain.Game.Team;
 import Domain.Logger.Event;
-import Domain.Users.Player;
-import Domain.Users.Referee;
-import Domain.Users.RoleTypes;
-import Domain.Users.SystemUser;
+import Domain.Users.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class RefereeController {
@@ -55,6 +53,8 @@ public class RefereeController {
                 case "Injury":
                     addInjuryEvent(chosenGame);
                     break;
+                case "Game End":
+                    addGameEndEvent(chosenGame);
             }
         } catch (Exception e) {
             UIController.showNotification(e.getMessage());
@@ -125,9 +125,19 @@ public class RefereeController {
         }
         List<String> gamesList = new ArrayList<>();
         for (int i = 0; i < gamesOfReferee.size(); i++) {
-            if (!gamesOfReferee.get(i).hasFinished()) { //only games which didn't finish
-                gamesList.add(gamesOfReferee.get(i).toString());
+            Game gameOfReferee = gamesOfReferee.get(i);
+            if (!gameOfReferee.hasFinished()) { //only games which didn't finish
+                gamesList.add(gameOfReferee.toString());
             }
+            else{ // If this is MAIN_REFEREE he can still edit the game if 5 hours have not passed.
+                if(refereeRole.getTraining() == RefereeQualification.MAIN_REFEREE){
+                    Date currDate = new Date();
+                    if(gameOfReferee.getHoursPassedSinceGameEnd(currDate) <= 5){
+                        gamesList.add(gameOfReferee.toString());
+                    }
+                }
+            }
+
         }
         if (gamesList.isEmpty()) {
             throw new Exception("There are no ongoing games for this referee");
@@ -243,5 +253,23 @@ public class RefereeController {
         int minute = Integer.parseInt(chosenArgsArray[1]);
         game.addInjury(player, minute);
     }
+
+    /**
+     * Receives the necessary arguments from the user and logs a new game end event
+     * @param game - Game - The game to log the event to
+     */
+    private static void addGameEndEvent(Game game) {
+        //Ask if he is sure to end the game
+        boolean wantToEnd = UIController.receiveChoice("Are you sure you want to end the game?");
+        if(wantToEnd){
+            String msg = "Choose the minute the game ended";
+            List<String> minuteChoices = getMinutesList();
+            int index = UIController.receiveInt(msg, minuteChoices);
+            Date endDate = new Date(); // get the current date and time
+            int minute = Integer.parseInt(minuteChoices.get(index));
+            game.addEndGame(endDate, minute);
+        }
+    }
+
 
 }
