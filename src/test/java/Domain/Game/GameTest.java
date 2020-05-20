@@ -268,6 +268,19 @@ public class GameTest {
         assertTrue(found);
     }
 
+    @Test
+    public void addEndGameITest() {
+        game.addEndGame(new Date(),90);
+        boolean found = false;
+        for (Event event : game.getEventsLogger().getGameEvents()) {
+            if (event instanceof GameEnd) {
+                assertTrue(((GameEnd) event).getMinute() == 90);
+                found = true;
+            }
+        }
+        assertTrue(found);
+    }
+
 
     @Test
     public void addSwitchPlayersITest() {
