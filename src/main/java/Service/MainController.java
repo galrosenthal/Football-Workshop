@@ -589,7 +589,7 @@ public class MainController {
         }
     }
 
-    public static void changeGamesPolicy(String username) {
+    public static void activateSchedulingPolicy(String username) {
         SystemUser associationUser = EntityManager.getInstance().getUser(username);
         if(associationUser == null)
         {

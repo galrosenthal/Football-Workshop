@@ -49,7 +49,7 @@ public class ARControls extends VerticalLayout {
             Thread t = new Thread(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
-                MainController.changeGamesPolicy(username);
+                MainController.activateSchedulingPolicy(username);
             });
             t.setName(buttonTaskName.toUpperCase());
             t.start();
