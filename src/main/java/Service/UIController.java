@@ -155,9 +155,10 @@ public class UIController {
             } else if (selector == 9312 || selector == 91032 || selector == 910311) {
                 selector = 9311;
                 return "NOTaUSERNAME";
-            } else if (selector == 9313) { //training
-                return "VAR";
-            } else if (selector == 91011 || selector == 91021 || selector == 91031 || selector == 9103
+            } //else if (selector == 9313) { //training
+             //  return "VAR";
+           // }
+            else if (selector == 91011 || selector == 91021 || selector == 91031 || selector == 9103
                     || selector == 91041 || selector == 91051 || selector == 91052 || selector == 91053 || selector == 912321 || selector == 911321) { //team name
                 if (selector == 91031)
                     selector = 91032;
@@ -409,7 +410,11 @@ public class UIController {
             {
                 setSelector(9511);
                 return 0;
-            } else if (selector == 9514) {
+            }
+            else if (selector == 9313) { //training
+              return 2; // VAR
+             }
+            else if (selector == 9514) {
                 setSelector(9511);
                 return 1;
             } else if (selector == 9521)  //0,0,1

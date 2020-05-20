@@ -112,7 +112,7 @@ public class RefereeControllerTest {
 
     private SystemUser getSystemUserReferee() {
         SystemUser systemUser = new SystemUser("username", "name");
-        systemUser.addNewRole(new Referee(systemUser,"VAR"));
+        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.VAR_REFEREE));
         return systemUser;
     }
 

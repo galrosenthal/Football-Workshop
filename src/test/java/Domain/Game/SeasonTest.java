@@ -1,10 +1,7 @@
 package Domain.Game;
 
 import Domain.EntityManager;
-import Domain.Users.Referee;
-import Domain.Users.RefereeStub;
-import Domain.Users.SystemUser;
-import Domain.Users.SystemUserStub;
+import Domain.Users.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +39,7 @@ public class SeasonTest {
 
     @Test
     public void assignAndUnAssignRefereeUTest() {
-        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121),"training");
+        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121), RefereeQualification.VAR_REFEREE);
         assertTrue(season.refereesSize()==0);
         season.assignReferee(referee);
         assertTrue(season.refereesSize()==1);
@@ -61,7 +58,7 @@ public class SeasonTest {
     }
     @Test
     public void doesContainsRefereeUTest() {
-        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121),"training");
+        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121),RefereeQualification.VAR_REFEREE);
         assertFalse(season.doesContainsReferee(referee));
         season.assignReferee(referee);
         assertTrue(season.doesContainsReferee(referee));
@@ -69,7 +66,7 @@ public class SeasonTest {
 
     @Test
     public void assignAndUnAssignRefereeITest() {
-        Referee referee = new Referee(new SystemUser("username", "name"),"training");
+        Referee referee = new Referee(new SystemUser("username", "name"),RefereeQualification.VAR_REFEREE);
         assertTrue(season.refereesSize()==0);
         season.assignReferee(referee);
         assertTrue(season.refereesSize()==1);

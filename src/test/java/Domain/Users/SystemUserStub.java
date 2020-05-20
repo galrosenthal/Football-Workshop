@@ -112,25 +112,25 @@ public class SystemUserStub extends SystemUser{
             teamOwner.setSelector(6131);
             return teamOwner;
         }else if( selector == 9311){
-            RefereeStub refereeStub =  new RefereeStub(this ,"VAR");
+            RefereeStub refereeStub =  new RefereeStub(this ,RefereeQualification.VAR_REFEREE);
             return refereeStub;
         }else if( selector == 9312){
             selector = 93121;
             return null;
         }else if( selector == 93121){
-            RefereeStub refereeStub =  new RefereeStub(this ,"VAR");
+            RefereeStub refereeStub =  new RefereeStub(this ,RefereeQualification.VAR_REFEREE);
             return refereeStub;
         }else if( selector == 93131){
             selector = 93132;
             return null;
         }else if( selector == 93132){
-            Referee referee =  new Referee(this ,"VAR");
+            Referee referee =  new Referee(this ,RefereeQualification.VAR_REFEREE);
             return referee;
         }else if( selector == 9321){
             return new AssociationRepresentativeStub(this);
         }else if( selector == 1031){
             if(role == null){
-                role =  new RefereeStub(this ,"VAR");
+                role =  new RefereeStub(this ,RefereeQualification.VAR_REFEREE);
             }
             return role;
         }

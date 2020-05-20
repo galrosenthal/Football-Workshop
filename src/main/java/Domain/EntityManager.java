@@ -58,7 +58,7 @@ public class EntityManager{
     public static EntityManager getInstance() {
         if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
-            SystemUser a = new SystemUser("Administrator","Aa123456","admin");
+            SystemUser a = new SystemUser("Administrator",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"admin");
             a.addNewRole(new SystemAdmin(a));
             a.addNewRole(new AssociationRepresentative(a));
         }

@@ -9,10 +9,7 @@ import Domain.Game.PointsPolicy;
 import Domain.Game.SchedulingPolicy;
 import Domain.Game.Season;
 import Domain.Game.Team;
-import Domain.Users.AssociationRepresentative;
-import Domain.Users.Referee;
-import Domain.Users.RoleTypes;
-import Domain.Users.SystemUser;
+import Domain.Users.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -161,11 +158,11 @@ public class ARController {
         } while (refereeUser == null);
         //A user has been identified.
 
-        String training = UIController.receiveString("Enter the new referee's training:");
+        String training = getRefereeTrainingByChoice();
 
         boolean succeeded = false;
         try {
-            succeeded = ARRole.addReferee(refereeUser, training);
+            succeeded = ARRole.addReferee(refereeUser, RefereeQualification.valueOf(training));
         } catch (RoleExistsAlreadyException e) {
             UIController.showNotification("The user chosen is already a referee");
             return false;
@@ -176,6 +173,20 @@ public class ARController {
             UIController.showNotification("The referee has been added successfully");
         }
         return true;
+    }
+
+    private static String getRefereeTrainingByChoice() {
+        List<String> trainingChoices = new ArrayList<>();
+        for (RefereeQualification training : RefereeQualification.values()) {
+            trainingChoices.add(training.name());
+        }
+        String messeage = "Choose the new referee's training:";
+        int Index;
+        do {
+            Index = UIController.receiveInt(messeage, trainingChoices);
+        } while (!(Index >= 0 && Index < trainingChoices.size()));
+
+        return trainingChoices.get(Index);
     }
 
     /**
