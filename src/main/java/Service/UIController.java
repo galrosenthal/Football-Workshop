@@ -578,4 +578,34 @@ public class UIController {
         date.append(dateSplitted[2]).append("/").append(dateSplitted[1]).append("/").append(dateSplitted[0]);
         return date.toString();
     }
+
+    public static boolean getConfirmation(String msg) {
+        if(!isTest)
+        {
+            UI lastUI = UI.getCurrent();
+            VaadinSession se = VaadinSession.getCurrent();
+            StringBuilder result = new StringBuilder();
+            se.access(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                FootballMain.showConfirmBox(lastUI, msg, result, Thread.currentThread());
+            });
+
+            while(!result.equals(CANCEL_TASK_VALUE))
+            {
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    return true;
+                }
+            }
+
+        }
+        else
+        {
+            return false;
+        }
+        return false;
+    }
 }

@@ -7,7 +7,6 @@ import Domain.Game.Season;
 import Domain.Game.Team;
 import Domain.Users.*;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.server.VaadinSession;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -532,10 +531,15 @@ public class MainController {
         }
     }
 
-    public static void logout(String username) {
+    public static boolean logout(String username) {
         SystemUser logoutUser = EntityManager.getInstance().getUser(username);
-        EntityManager.getInstance().logout(logoutUser);
-        AllSubscribers.getInstance().logout(username);
+        if(UIController.getConfirmation("Are you sure you want to logout?"))
+        {
+            EntityManager.getInstance().logout(logoutUser);
+            AllSubscribers.getInstance().logout(username);
+            return true;
+        }
+        return false;
     }
 
     public static void addPointPolicy(String username) {

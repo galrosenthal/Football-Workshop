@@ -2,6 +2,7 @@ package GUI;
 
 
 import GUI.About.AboutView;
+import GUI.Registration.ConfirmPassValidator;
 import GUI.RoleRelatedViews.AssociationRepresentative.ARControls;
 import GUI.RoleRelatedViews.TeamOwner.TOControls;
 import Service.MainController;
@@ -33,11 +34,13 @@ import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.Version;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 
 
 /**
@@ -180,10 +183,24 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
     private void logout() {
         VaadinSession userSession = VaadinSession.getCurrent();
-        MainController.logout((String)userSession.getAttribute(USERNAME_ATTRIBUTE_NAME));
-        userSession.setAttribute(USERNAME_ATTRIBUTE_NAME, null);
-        getUI().get().navigate("");
-        getUI().get().getPage().reload();
+        UI lastUI = UI.getCurrent();
+        String username = (String)userSession.getAttribute(USERNAME_ATTRIBUTE_NAME);
+        Thread t = new Thread(() -> {
+            UI.setCurrent(lastUI);
+            VaadinSession.setCurrent(userSession);
+            if(MainController.logout(username)){
+                userSession.access(()-> userSession.setAttribute(USERNAME_ATTRIBUTE_NAME, null));
+                lastUI.access(() -> {
+
+                    //TODO: Navigate to logged out window
+                    getUI().get().navigate("");
+                    getUI().get().getPage().reload();
+                });
+
+            }
+        });
+        t.setName("LOGOUT");
+        t.start();
 
     }
 
@@ -364,14 +381,14 @@ public class FootballMain extends AppLayout implements RouterLayout{
                     vl.add(valuesForString);
                     valuesForString.setItems(displayValues[0]);
                     valuesForString.addValueChangeListener(e -> {
-                       if(valuesForString.getSelectedItems().size() > 0)
-                       {
-                           submit.setEnabled(true);
-                       }
-                       else
-                       {
-                           submit.setEnabled(false);
-                       }
+                        if(valuesForString.getSelectedItems().size() > 0)
+                        {
+                            submit.setEnabled(true);
+                        }
+                        else
+                        {
+                            submit.setEnabled(false);
+                        }
                     });
                 }
 
@@ -408,14 +425,14 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 vl.add(picker);
                 picker.setLabel(msg);
                 picker.addValueChangeListener(e -> {
-                   if(picker.getValue() != null)
-                   {
-                       submit.setEnabled(true);
-                   }
-                   else
-                   {
-                       submit.setEnabled(false);
-                   }
+                    if(picker.getValue() != null)
+                    {
+                        submit.setEnabled(true);
+                    }
+                    else
+                    {
+                        submit.setEnabled(false);
+                    }
                 });
             }
 
@@ -456,6 +473,41 @@ public class FootballMain extends AppLayout implements RouterLayout{
             });
             vl.add(textFieldsArray[i]);
         }
+    }
+
+
+    public static void showConfirmBox(UI usedUI, String msg, StringBuilder answer ,Thread callingThread)
+    {
+        usedUI.access(() -> {
+            Dialog confirmBox = new Dialog();
+            confirmBox.setCloseOnOutsideClick(false);
+            confirmBox.setCloseOnEsc(false);
+            VerticalLayout confirmLayout = new VerticalLayout();
+
+            Label message = new Label(msg);
+            confirmLayout.add(message);
+
+            HorizontalLayout buttons = new HorizontalLayout();
+            Button dismiss = new Button("Dismiss");
+            dismiss.addClickListener(e -> {
+                confirmBox.close();
+                answer.append(UIController.CANCEL_TASK_VALUE);
+            });
+            dismiss.getElement().setAttribute("theme", "error tertiary");
+            Button approve = new Button("Submit");
+            approve.addClickListener(e -> {
+                confirmBox.close();
+                callingThread.interrupt();
+            });
+            approve.getElement().setAttribute("theme", "primary");
+            buttons.setAlignSelf(Alignment.END,approve);
+            buttons.add(dismiss,approve);
+
+            confirmLayout.add(buttons);
+            confirmBox.add(confirmLayout);
+            confirmBox.open();
+            usedUI.push();
+        });
     }
 
 }
