@@ -26,7 +26,7 @@ public class TeamManagerStub extends TeamManager {
     }
 
     @Override
-    public boolean addAllProperties() {
+    public boolean addAllProperties(Team t) {
         return true;
     }
 

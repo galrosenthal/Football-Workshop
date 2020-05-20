@@ -4,8 +4,6 @@ package Domain.Users;
 import Domain.EntityManager;
 import Domain.Game.Game;
 import Domain.UserComplaints;
-import javafx.beans.Observable;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +16,7 @@ public class SystemUser extends User implements Fan {
     private List<UserComplaints> complaints;
     protected List<Game> gamesAlert;
     protected String username;
-    private String password;
+    private String password; /**  password is in hash format */
     private String name;
 
 

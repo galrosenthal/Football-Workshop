@@ -133,7 +133,7 @@ public class TeamOwner extends Role implements Subject {
         for (int i = 0; i <SystemAdmins.size() ; i++) {
             systemUsers.add(SystemAdmins.get(i).getSystemUser());
         }
-        String alert = team.getTeamName()+" has been"+ closeOrReopen;
+        String alert = team.getTeamName()+" has been "+ closeOrReopen;
         notifyObserver(systemUsers, alert);
     }
 

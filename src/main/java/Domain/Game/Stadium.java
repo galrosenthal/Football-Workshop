@@ -40,7 +40,7 @@ public class Stadium implements Asset{
     }
 
     @Override
-    public boolean changeProperty(String property, String toChange)
+    public boolean changeProperty(Team teamOfAsset, String property, String toChange)
     {
         if(property.equalsIgnoreCase(namePropertyString))
         {
@@ -89,17 +89,17 @@ public class Stadium implements Asset{
     }
 
     @Override
-    public boolean addAllProperties() {
-        return addProperty(namePropertyString);
+    public boolean addAllProperties(Team teamOfAsset) {
+        return addProperty(teamOfAsset, namePropertyString);
     }
 
     @Override
-    public boolean addProperty(String property) {
+    public boolean addProperty(Team teamOfAsset, String property) {
         String stringProp = "";
         if(property.equalsIgnoreCase(namePropertyString))
         {
             stringProp = UIController.receiveString("Please Enter Stadium name");
-            changeProperty(property,stringProp);
+            return changeProperty(teamOfAsset, property,stringProp);
         }
 
         return false;
@@ -108,7 +108,7 @@ public class Stadium implements Asset{
 
 
     @Override
-    public boolean removeProperty(String property) {
+    public boolean removeProperty(Team teamOfAsset, String property) {
         return false;
     }
 

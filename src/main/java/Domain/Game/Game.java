@@ -42,12 +42,6 @@ public class Game {
         this.stadium = stadium;
     }
 
-
-    public Date getGameDate()
-    {
-        return this.gameDate;
-    }
-
     /**
      * Returns the score of the game
      *
@@ -260,4 +254,14 @@ public class Game {
                 ", awayTeam=" + awayTeam.getTeamName() +
                 ", gameDate=" + gameDate + '}';
     }
+
+
+    public Date getGameDate()
+    {
+        return this.gameDate;
+    }
+
+//    public void setScore(Score score) {
+//        this.score = score;
+//    }
 }

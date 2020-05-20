@@ -148,6 +148,28 @@ public class ModifyUsers extends FlexLayout {
         seasonOfLeague.setVisible(false);
         verticalLayout.add(seasonOfLeague);
 
+        Button testAlert = new Button("test alerts");
+        testAlert.addClickListener(e -> {
+            VaadinSession se = VaadinSession.getCurrent();
+            UI lastUI = UI.getCurrent();
+            Thread t = new Thread(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                try
+                {
+                    Thread.sleep(2000);
+                }
+                catch (Exception exception)
+                {
+                    exception.printStackTrace();
+                }
+                MainController.testAlert(se);
+            });
+            t.setName("Alert Testing");
+            t.start();
+        });
+        verticalLayout.add(testAlert);
+
         allLeagues.addValueChangeListener(e -> {
             if(e.getValue() != null)
             {

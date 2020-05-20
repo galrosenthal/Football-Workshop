@@ -174,7 +174,7 @@ public class TeamTest {
         UIController.setIsTest(true);
         UIController.setSelector(6118);
         Coach c2 = new Coach(anotherUser);
-        c2.addAllProperties();
+        c2.addAllProperties(team);
         team.addTeamOwner(localTeamOwner);
         team.addTeamCoach(localTeamOwner,c2);
         assertNotEquals(team, copyTeam);
@@ -296,7 +296,7 @@ public class TeamTest {
         UIController.setIsTest(true);
         UIController.setSelector(6118);
         Coach c2 = new Coach(testUser);
-        c2.addAllProperties();
+        c2.addAllProperties(team);
         team.addTeamCoach(localTeamOwner,c2);
         Player p2 = new PlayerStub(testUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
         team.addTeamPlayer(localTeamOwner,p2);
@@ -435,7 +435,7 @@ public class TeamTest {
         assertFalse(team.addAsset("vas", localTeamOwner, TeamAsset.STADIUM));
 
         team.getTeamOwners().add(localTeamOwner);
-        stadiumStub.changeProperty("name", "vas");
+        stadiumStub.changeProperty(team,"name", "vas");
         assertTrue(team.addAsset("vas", localTeamOwner, TeamAsset.STADIUM));
     }
 

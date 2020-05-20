@@ -42,7 +42,7 @@ public class AssetStub implements Asset {
     }
 
     @Override
-    public boolean changeProperty(String propertyToChange, String newValue) {
+    public boolean changeProperty(Team team, String propertyToChange, String newValue) {
 
         if(selector == 6135 || selector ==6136 || selector == 6137)
         {
@@ -79,17 +79,17 @@ public class AssetStub implements Asset {
     }
 
     @Override
-    public boolean addProperty(String property) {
+    public boolean addProperty(Team team, String property) {
         return false;
     }
 
     @Override
-    public boolean addAllProperties() {
+    public boolean addAllProperties(Team team) {
         return false;
     }
 
     @Override
-    public boolean removeProperty(String property) {
+    public boolean removeProperty(Team team, String property) {
         return false;
     }
 

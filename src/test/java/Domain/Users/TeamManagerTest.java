@@ -22,7 +22,7 @@ public class TeamManagerTest {
     @Test
     public void changePropertyUTest() {
         TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest" , "gal" , 6131));
-        Assert.assertFalse(teamManager.changeProperty("test" , teamManager.permissionsString));
+        Assert.assertFalse(teamManager.changeProperty(null,"test" , teamManager.permissionsString));
 
     }
 
@@ -110,7 +110,7 @@ public class TeamManagerTest {
     @Test
     public void changePropertyITest() {
         TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest" , "gal" ));
-        Assert.assertFalse(teamManager.changeProperty("test" , teamManager.permissionsString));
+        Assert.assertFalse(teamManager.changeProperty(null, "test" , teamManager.permissionsString));
 
     }
 

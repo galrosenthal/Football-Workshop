@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-public class EntityManager {
+public class EntityManager{
     private static EntityManager entityManagerInstance = null;
 
     private List<SystemUser> allUsers;
@@ -183,7 +183,16 @@ public class EntityManager {
      * @return List<SystemAdmin> SystemAdmin
      */
     public List<SystemAdmin> getSystemAdmins() {
-        return systemAdmins;
+        List<SystemAdmin> sysAdmins = new ArrayList<>();
+        for (SystemUser user :
+                allUsers) {
+            Role userAdmin = user.getRole(RoleTypes.SYSTEM_ADMIN);
+            if (userAdmin != null && userAdmin.getType() == RoleTypes.SYSTEM_ADMIN )
+            {
+                sysAdmins.add((SystemAdmin) userAdmin);
+            }
+        }
+        return sysAdmins;
     }
 
 
@@ -396,7 +405,9 @@ public class EntityManager {
      * @return true if the password is correct and the user is able to login
      */
     private boolean authenticate(SystemUser userWithUsrNm, String pswrd) {
-        if (userWithUsrNm.getPassword().equals(pswrd)) {
+        //hash the given password
+        String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pswrd);
+        if (userWithUsrNm.getPassword().equals(hashedPassword)) {
             return true;
         }
         return false;
@@ -436,7 +447,9 @@ public class EntityManager {
             throw new WeakPasswordException("Password does not meet the requirements");
         }
 
-        SystemUser newUser = new SystemUser(usrNm, pswrd, name);
+        //hash the password
+        String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pswrd);
+        SystemUser newUser = new SystemUser(usrNm, hashedPassword, name);
         addUser(newUser);
 
 
