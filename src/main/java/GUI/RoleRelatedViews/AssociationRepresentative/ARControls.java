@@ -28,7 +28,7 @@ public class ARControls extends VerticalLayout {
         createDefinePointsPolicyButton();
         createChangePointsPolicyButton();
         createDefineGamesPolicyButton();
-        createChangeGamesPolicyButton();
+        createActivateSchedulingPolicyButton();
         createAddLeaugeButton();
         createAddSeasonToLeagueButton();
         createAddRefereeButton();
@@ -38,8 +38,8 @@ public class ARControls extends VerticalLayout {
         createRemoveTeamsFromSeasonButton();
     }
 
-    private void createChangeGamesPolicyButton() {
-        String buttonTaskName = "Change Game Policy";
+    private void createActivateSchedulingPolicyButton() {
+        String buttonTaskName = "Activate Scheduling Policy";
         Button removeTeamsFromSeason = new Button(buttonTaskName);
         removeTeamsFromSeason.addClickListener(e -> {
 
@@ -60,7 +60,7 @@ public class ARControls extends VerticalLayout {
     }
 
     private void createChangePointsPolicyButton() {
-        String buttonTaskName = "Change Points Policy";
+        String buttonTaskName = "Set Points Policy";
         Button removeTeamsFromSeason = new Button(buttonTaskName);
         removeTeamsFromSeason.addClickListener(e -> {
 
