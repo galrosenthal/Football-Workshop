@@ -42,6 +42,7 @@ public class TeamControllerTest {
         EntityManager.getInstance().addUser(teamOwnerUser2);
         EntityManager.getInstance().addUser(teamOwnerUser3);
         EntityManager.getInstance().addUser(teamOwnerUser4);
+        UIController.setIsTest(true);
     }
 
     @After
