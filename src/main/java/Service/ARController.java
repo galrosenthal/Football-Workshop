@@ -9,10 +9,7 @@ import Domain.Game.PointsPolicy;
 import Domain.Game.SchedulingPolicy;
 import Domain.Game.Season;
 import Domain.Game.Team;
-import Domain.Users.AssociationRepresentative;
-import Domain.Users.Referee;
-import Domain.Users.RoleTypes;
-import Domain.Users.SystemUser;
+import Domain.Users.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -161,11 +158,11 @@ public class ARController {
         } while (refereeUser == null);
         //A user has been identified.
 
-        String training = UIController.receiveString("Enter the new referee's training:");
+        String training = getRefereeTrainingByChoice();
 
         boolean succeeded = false;
         try {
-            succeeded = ARRole.addReferee(refereeUser, training);
+            succeeded = ARRole.addReferee(refereeUser, RefereeQualification.valueOf(training));
         } catch (RoleExistsAlreadyException e) {
             UIController.showNotification("The user chosen is already a referee");
             return false;
@@ -176,6 +173,20 @@ public class ARController {
             UIController.showNotification("The referee has been added successfully");
         }
         return true;
+    }
+
+    private static String getRefereeTrainingByChoice() {
+        List<String> trainingChoices = new ArrayList<>();
+        for (RefereeQualification training : RefereeQualification.values()) {
+            trainingChoices.add(training.name());
+        }
+        String messeage = "Choose the new referee's training:";
+        int Index;
+        do {
+            Index = UIController.receiveInt(messeage, trainingChoices);
+        } while (!(Index >= 0 && Index < trainingChoices.size()));
+
+        return trainingChoices.get(Index);
     }
 
     /**
@@ -483,21 +494,23 @@ public class ARController {
             return false;
         }
         AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
-        String msg = "Enter points for VICTORY (positive integer);Enter points for LOSS (negative integer or zero);" +
-                "Enter points for TIE (integer)";
-        String selectedPoints = UIController.receiveStringFromMultipleInputs(msg);
+        String msg = "Select points for VICTORY;Select points for LOSS;" +
+                "Select points for TIE";
+        String selectedPoints = UIController.receiveStringFromMultipleInputs(msg
+        ,getListOfNumbersBetweenRange(1,20),getListOfNumbersBetweenRange(-20,20), getListOfNumbersBetweenRange(-20,20));
         String[] selectedPointsArray = selectedPoints.split(";");
         String victoryPointsString = selectedPointsArray[0];
         String lossPointsString = selectedPointsArray[1];
         String tiePointsString = selectedPointsArray[2];
 
+        /*
         if (!validateStringIsInteger(victoryPointsString)
                 || !validateStringIsInteger(lossPointsString)
                 || !validateStringIsInteger(tiePointsString)) {
             UIController.showNotification("error, invalid input. Please enter valid inputs.");
             return false;
-        }
-        //Now we know that the inputs are legal
+        }*/
+        //Because the nature of receiveStringFromMultipleInputs we know that the inputs are legal
         int victoryPoints = Integer.parseInt(victoryPointsString);
         int lossPoints = Integer.parseInt(lossPointsString);
         int tiePoints = Integer.parseInt(tiePointsString);
@@ -564,22 +577,23 @@ public class ARController {
             return false;
         }
         AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
-        String msg = "Enter Number of games each team will face other team;" +
-                "Enter maximum number of games on the same day;" +
-                "Enter minimum rest days between games";
-        String selectedParams = UIController.receiveStringFromMultipleInputs(msg);
+        String msg = "Select Number of games each team will face other team;" +
+                "Select maximum number of games on the same day;" +
+                "Select minimum rest days between games";
+        String selectedParams = UIController.receiveStringFromMultipleInputs(msg
+        , getListOfNumbersBetweenRange(1,6), getListOfNumbersBetweenRange(1,40), getListOfNumbersBetweenRange(0, 30));
         String[] selectedParamsArray = selectedParams.split(";");
         String gamesPerSeasonString = selectedParamsArray[0];
         String gamesPerDayString = selectedParamsArray[1];
         String minRestString = selectedParamsArray[2];
 
-        if (!validateStringIsInteger(gamesPerSeasonString)
+      /*  if (!validateStringIsInteger(gamesPerSeasonString)
                 || !validateStringIsInteger(gamesPerDayString)
                 || !validateStringIsInteger(minRestString)) {
             UIController.showNotification("error, invalid input. Please enter valid inputs.");
             return false;
-        }
-        //Now we know that the inputs are legal
+        }*/
+        //Because the nature of receiveStringFromMultipleInputs we know that the inputs are legal
         int gamesPerSeason = Integer.parseInt(gamesPerSeasonString);
         int gamesPerDay = Integer.parseInt(gamesPerDayString);
         int minRest = Integer.parseInt(minRestString);
@@ -626,7 +640,7 @@ public class ARController {
             return false;
         }
         //Date selection
-        Date startDate = UIController.receiveDate("Please chose a date for the first game:");
+        Date startDate = UIController.receiveDate("Choose a date for the first game:");
         //Scheduling policy selection
         SchedulingPolicy schedulingPolicy = getSchedulingPolicyByChoice();
 
@@ -657,5 +671,12 @@ public class ARController {
         return schedulingPolicies.get(index);
     }
 
+    private static List<String> getListOfNumbersBetweenRange(int startingNumber, int endingNumber){
+        List<String> list = new ArrayList<>();
+        for(int i = startingNumber; i <= endingNumber; i++){
+            list.add(""+i);
+        }
+        return list;
+    }
 
 }
