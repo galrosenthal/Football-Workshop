@@ -279,12 +279,15 @@ public class FootballMain extends AppLayout implements RouterLayout{
             newWindow.setCloseOnOutsideClick(false);
             newWindow.setCloseOnEsc(false);
             newWindow.setVisible(true);
+            newWindow.setWidth("500px");
+            newWindow.setHeight("175px");
             VerticalLayout vl = new VerticalLayout();
             newWindow.setCloseOnEsc(false);
             int numOfInputs = msg.split(UIController.STRING_DELIMETER).length;
             TextField[] textFieldsArray = new TextField[numOfInputs];
 
             ComboBox<String> valuesForInt = new ComboBox<>();
+            valuesForInt.setWidth("400px");
             MultiSelectListBox<String> valuesForString = new MultiSelectListBox<>();
 
             Button submit = new Button("Submit");
@@ -359,8 +362,14 @@ public class FootballMain extends AppLayout implements RouterLayout{
             }
             else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_INT))
             {
-                Label lbl = new Label(msg);
-                vl.add(lbl);
+                String[] messeages = msg.split(UIController.STRING_DELIMETER);
+                for (String message : messeages){
+                    Label lbl = new Label(message);
+                    lbl.setSizeFull();
+                    lbl.setWidth("400px");
+                    vl.add(lbl);
+                }
+
                 if(displayValues.length > 0) {
                     valuesForInt.setItems(displayValues[0]);
                     valuesForInt.setClearButtonVisible(true);
@@ -411,7 +420,11 @@ public class FootballMain extends AppLayout implements RouterLayout{
     private static void createMultiInputs(VerticalLayout vl, int numOfInputs, TextField[] textFieldsArray, Button close, String[] messagesToDisplay) {
         for (int i = 0; i < numOfInputs; i++) {
             textFieldsArray[i] = new TextField();
-            textFieldsArray[i].setLabel(messagesToDisplay[i]);
+            //textFieldsArray[i].setLabel(messagesToDisplay[i]);
+            Label lbl = new Label(messagesToDisplay[i]);
+            lbl.setSizeFull();
+            lbl.setWidth("400px");
+            vl.add(lbl);
             textFieldsArray[i].setValueChangeMode(ValueChangeMode.EAGER);
             textFieldsArray[i].addValueChangeListener(e -> {
                 if (!e.getValue().isEmpty()) {
@@ -429,14 +442,16 @@ public class FootballMain extends AppLayout implements RouterLayout{
         newWindow.setCloseOnOutsideClick(false);
         newWindow.setCloseOnEsc(false);
         newWindow.setVisible(true);
+        newWindow.setWidth("500px");
+        newWindow.setHeight("200px");
         VerticalLayout vl = new VerticalLayout();
         newWindow.setCloseOnEsc(false);
 
         for (String game : displayValues[0]){
-            TextArea ta = new TextArea();
-            ta.setSizeFull();
-            ta.setMaxHeight("100px");
-            ta.setValue(game);
+
+            Label ta = new Label(game);
+                ta.setSizeFull();
+                ta.setMaxHeight("100px");
             vl.add(ta);
         }
 
@@ -465,9 +480,6 @@ public class FootballMain extends AppLayout implements RouterLayout{
         newWindow.add(vl);
         newWindow.open();
     }
-
-
-
 }
 
 
