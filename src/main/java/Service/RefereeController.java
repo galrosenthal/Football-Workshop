@@ -1,6 +1,7 @@
 package Service;
 
 import Domain.EntityManager;
+import Domain.Exceptions.NoRoleForUser;
 import Domain.Game.Game;
 import Domain.Game.Stadium;
 import Domain.Game.Team;
@@ -14,7 +15,7 @@ import java.util.List;
 public class RefereeController {
 
     public static boolean updateGameEvents(SystemUser systemUser) {
-            createGameForTet();
+            //createGameForTest();
         if (!systemUser.isType(RoleTypes.REFEREE)) {
             return false;
         }
@@ -26,9 +27,6 @@ public class RefereeController {
             UIController.showNotification(e.getMessage());
             return false;
         }
-
-        //Show existing events
-        showExistingEvents(chosenGame);
 
         //Get new event type
         String eventType = getEventTypeByChoice(chosenGame);
@@ -67,8 +65,11 @@ public class RefereeController {
         return true;
     }
 
-    public static boolean alreadyARun = false;
-    private static void createGameForTet() {
+    /**
+     * Only for tests
+     */
+    /*public static boolean alreadyARun = false;
+    private static void createGameForTest() {
         if(!alreadyARun) {
             alreadyARun = true;
             SystemUser systemUser = EntityManager.getInstance().getUser("Administrator");
@@ -94,7 +95,7 @@ public class RefereeController {
             game.addReferee(referee);
             referee.addGame(game);
         }
-    }
+    }*/
 
 
     /**
@@ -304,9 +305,15 @@ public class RefereeController {
     }
 
 
+    /**
+     * Display all future referee games
+     * @param systemUser - the referee user
+     * @throws NoRoleForUser - The user is not a referee
+     * @throws Exception - There are no games for this referee
+     */
     public static void displayScheduledGames(SystemUser systemUser) throws Exception {
         if (!systemUser.isType(RoleTypes.REFEREE)) {
-            throw new Exception("The user is not a referee");
+            throw new NoRoleForUser("The user is not a referee");
         }
         Referee refereeRole = (Referee) systemUser.getRole(RoleTypes.REFEREE);
         List<Game> gamesOfReferee = refereeRole.getGames();
