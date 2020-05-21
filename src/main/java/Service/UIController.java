@@ -155,9 +155,10 @@ public class UIController {
             } else if (selector == 9312 || selector == 91032 || selector == 910311) {
                 selector = 9311;
                 return "NOTaUSERNAME";
-            } else if (selector == 9313) { //training
-                return "VAR";
-            } else if (selector == 91011 || selector == 91021 || selector == 91031 || selector == 9103
+            } //else if (selector == 9313) { //training
+             //  return "VAR";
+           // }
+            else if (selector == 91011 || selector == 91021 || selector == 91031 || selector == 9103
                     || selector == 91041 || selector == 91051 || selector == 91052 || selector == 91053 || selector == 912321 || selector == 911321) { //team name
                 if (selector == 91031)
                     selector = 91032;
@@ -322,7 +323,7 @@ public class UIController {
             } else if (selector == 61115) {
                 setSelector(61116);
                 return 0;
-            } else if (selector == 61116) {
+            } else if (selector == 61116 || selector == 103721) {
                 return 0;
             } else if (selector == 61117) {
                 return 0;
@@ -409,7 +410,11 @@ public class UIController {
             {
                 setSelector(9511);
                 return 0;
-            } else if (selector == 9514) {
+            }
+            else if (selector == 9313) { //training
+              return 2; // VAR
+             }
+            else if (selector == 9514) {
                 setSelector(9511);
                 return 1;
             } else if (selector == 9521)  //0,0,1
@@ -498,7 +503,19 @@ public class UIController {
             {
                 setSelector(103151);
                 return 6;
-            } else {
+            }
+            else if(selector == 103711){ //0,7,true,90
+                selector = 103712;
+                return 0;
+            }
+            else if(selector == 103712){ //7,true,90
+                selector = 103713;
+                return 7;
+            }
+            else if(selector == 103714){
+                return  89;
+            }
+            else {
                 //random number to crash test that were not checked
                 return 123812;
             }
@@ -518,9 +535,15 @@ public class UIController {
             return false;
         }
 
-        if (selector == 6611 || selector == 6621 || selector == 6623 || selector == 4 || selector == 66151 || selector == 66251) {
+        if (selector == 6611 || selector == 6621 || selector == 6623 || selector == 4 ||
+                selector == 66151 || selector == 66251) {
             return true;
-        } else {
+        }
+        else if(selector == 103713){ //true, 90
+            selector = 103714;
+            return true;
+        }
+        else {
             return false;
         }
     }

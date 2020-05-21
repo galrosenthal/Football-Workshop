@@ -7,6 +7,7 @@ import Domain.Users.PlayerStub;
 import Domain.Users.SystemUserStub;
 import org.junit.*;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -267,6 +268,19 @@ public class GameTest {
         assertTrue(found);
     }
 
+    @Test
+    public void addEndGameITest() {
+        game.addEndGame(new Date(),90);
+        boolean found = false;
+        for (Event event : game.getEventsLogger().getGameEvents()) {
+            if (event instanceof GameEnd) {
+                assertTrue(((GameEnd) event).getMinute() == 90);
+                found = true;
+            }
+        }
+        assertTrue(found);
+    }
+
 
     @Test
     public void addSwitchPlayersITest() {
@@ -335,5 +349,29 @@ public class GameTest {
             }
         }
         assertTrue(found);
+    }
+
+    @Test
+    public void getHoursPassedSinceGameEndITest(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, 2020);
+        calendar.set(Calendar.MONTH, 11);
+        calendar.set(Calendar.DATE, 05);
+        calendar.set(Calendar.HOUR_OF_DAY,20);
+        calendar.set(Calendar.MINUTE,30);
+        calendar.set(Calendar.SECOND,0);
+        Date currDate = calendar.getTime();
+        //Game has not finished yet
+        assertEquals(0, game.getHoursPassedSinceGameEnd(currDate));
+
+        calendar.set(Calendar.YEAR, 2020);
+        calendar.set(Calendar.MONTH, 11);
+        calendar.set(Calendar.DATE, 05);
+        calendar.set(Calendar.HOUR_OF_DAY,17);
+        calendar.set(Calendar.MINUTE,30);
+        calendar.set(Calendar.SECOND,0);
+        game.setEndDate(calendar.getTime());
+
+        assertEquals(3, game.getHoursPassedSinceGameEnd(currDate));
     }
 }

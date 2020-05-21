@@ -37,7 +37,7 @@ public class AssociationRepresentativeTest {
     @Test(expected = RoleExistsAlreadyException.class)
     public void addRefereeUTest() throws RoleExistsAlreadyException {
         aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5));
-        aR.addReferee(new SystemUserStub("stubUsername", "stub", 9311), "VAR");
+        aR.addReferee(new SystemUserStub("stubUsername", "stub", 9311), RefereeQualification.VAR_REFEREE);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class AssociationRepresentativeTest {
         aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5));
         SystemUser newRefereeUser = new SystemUserStub("stubUsername", "stub", 9312);
         try {
-            aR.addReferee(newRefereeUser, "VAR");
+            aR.addReferee(newRefereeUser, RefereeQualification.VAR_REFEREE);
         } catch (RoleExistsAlreadyException e) {
             e.printStackTrace();
         }
@@ -57,7 +57,7 @@ public class AssociationRepresentativeTest {
         aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5));
         SystemUser newRefereeUser = new SystemUserStub("stubUsername", "stub", 93131);
         try {
-            assertTrue(aR.addReferee(newRefereeUser, "VAR"));
+            assertTrue(aR.addReferee(newRefereeUser, RefereeQualification.VAR_REFEREE));
         } catch (RoleExistsAlreadyException e) {
             e.printStackTrace();
         }
@@ -71,7 +71,7 @@ public class AssociationRepresentativeTest {
         aR = new AssociationRepresentative(aRUser);
         SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
         try {
-            assertTrue(aR.addReferee(newRefereeUser, "VAR"));
+            assertTrue(aR.addReferee(newRefereeUser, RefereeQualification.VAR_REFEREE));
         } catch (RoleExistsAlreadyException e) {
             e.printStackTrace();
         }
@@ -83,9 +83,9 @@ public class AssociationRepresentativeTest {
         SystemUser aRUser = new SystemUser("arUsername", "arName");
         aR = new AssociationRepresentative(aRUser);
         SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
-        new Referee(newRefereeUser, "refTraining");
+        new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE);
 
-        aR.addReferee(newRefereeUser, "VAR");
+        aR.addReferee(newRefereeUser, RefereeQualification.VAR_REFEREE);
     }
 
     @Test
@@ -128,7 +128,7 @@ public class AssociationRepresentativeTest {
         SystemUser aRUser = new SystemUser("arUsername", "arName");
         aR = new AssociationRepresentative(aRUser);
         SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
-        new Referee(newRefereeUser, "refTraining");
+        new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE);
 
         Referee referee = (Referee) newRefereeUser.getRole(RoleTypes.REFEREE);
         Season season = new Season(new League("noName"), "2020/21");
@@ -193,7 +193,7 @@ public class AssociationRepresentativeTest {
         SystemUser aRUser = new SystemUser("arUsername", "arName");
         aR = new AssociationRepresentative(aRUser);
         SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
-        Referee refereeRole = new Referee(newRefereeUser, "refTraining");
+        Referee refereeRole = new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE);
         Season season = new Season(new League("noName"), "2020/21");
 
         boolean thrown = false;
@@ -213,7 +213,7 @@ public class AssociationRepresentativeTest {
         SystemUser aRUser = new SystemUser("arUsername", "arName");
         aR = new AssociationRepresentative(aRUser);
         SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
-        Referee refereeRole = new Referee(newRefereeUser, "refTraining");
+        Referee refereeRole = new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE);
         Season season = new Season(new League("noName"), "2020/21");
 
 

@@ -2,23 +2,30 @@ package Domain.Users;
 
 import Domain.Game.Team;
 
-import java.util.Objects;
-
 public class BelongToTeam {
-    Team teamBealongsTo;
-    PartOfTeam assetOfTheTeam;
+    private Team teamBelongsTo;
+    private PartOfTeam assetOfTheTeam;
+    private String teamJob;
 
-    public BelongToTeam(Team teamBealongsTo, PartOfTeam assetOfTheTeam) {
-        this.teamBealongsTo = teamBealongsTo;
+    public String getTeamJob() {
+        return teamJob;
+    }
+
+    public void setTeamJob(String teamJob) {
+        this.teamJob = teamJob;
+    }
+
+    public BelongToTeam(Team teamBelongsTo, PartOfTeam assetOfTheTeam) {
+        this.teamBelongsTo = teamBelongsTo;
         this.assetOfTheTeam = assetOfTheTeam;
     }
 
-    public Team getTeamBealongsTo() {
-        return teamBealongsTo;
+    public Team getTeamBelongsTo() {
+        return teamBelongsTo;
     }
 
-    public void setTeamBealongsTo(Team teamBealongsTo) {
-        this.teamBealongsTo = teamBealongsTo;
+    public void setTeamBelongsTo(Team teamBelongsTo) {
+        this.teamBelongsTo = teamBelongsTo;
     }
 
     public PartOfTeam getAssetOfTheTeam() {
@@ -34,8 +41,33 @@ public class BelongToTeam {
         if (this == o) return true;
         if (!(o instanceof BelongToTeam)) return false;
         BelongToTeam anotherConnection = (BelongToTeam) o;
-        return teamBealongsTo.equals(anotherConnection.teamBealongsTo) &&
+        return checkTeamsAreEquals(teamBelongsTo, anotherConnection.teamBelongsTo) &&
                 assetOfTheTeam.equals(anotherConnection.assetOfTheTeam);
+    }
+
+    /**
+     * Checks if the teams of both instance of this Class are equals
+     * @param teamBelongsTo current instance team
+     * @param anotherTeamBelongsTo other instance team
+     * @return
+     */
+    private boolean checkTeamsAreEquals(Team teamBelongsTo, Team anotherTeamBelongsTo) {
+        if(teamBelongsTo.getTeamName().equals(anotherTeamBelongsTo.getTeamName()))
+        {
+            if(teamBelongsTo.getAllAssets().size() == anotherTeamBelongsTo.getAllAssets().size() &&
+                teamBelongsTo.getTeamOwners().size() == anotherTeamBelongsTo.getTeamOwners().size() &&
+                teamBelongsTo.getTeamPlayers().size() == anotherTeamBelongsTo.getTeamPlayers().size() &&
+                teamBelongsTo.getTeamCoaches().size() == anotherTeamBelongsTo.getTeamCoaches().size() &&
+                teamBelongsTo.getTeamManagers().size() == anotherTeamBelongsTo.getTeamManagers().size() &&
+                teamBelongsTo.getStatus().equals(anotherTeamBelongsTo.getStatus()) &&
+                teamBelongsTo.getStadiums().size() == anotherTeamBelongsTo.getStadiums().size() &&
+                teamBelongsTo.getSeasons().size() == anotherTeamBelongsTo.getSeasons().size())
+            {
+                return true;
+            }
+        }
+        return false;
+
     }
 
 }

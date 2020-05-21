@@ -10,7 +10,6 @@ public class Coach extends PartOfTeam {
 
     private CoachQualification qualification;
     private List<Team> coachedTeams;
-    private String teamJob;
     public final String teamJobString = "Team job";
     public final String qualificationString = "Qualification";
 
@@ -20,19 +19,6 @@ public class Coach extends PartOfTeam {
     }
 
 
-    public Coach(SystemUser su , CoachQualification qlf,  String jobTitle) {
-        super(RoleTypes.COACH,su);
-        qualification = qlf;
-        teamJob = jobTitle;
-        coachedTeams = new ArrayList<>();
-    }
-
-    @Override
-    public String getAssetName()
-    {
-        return this.systemUser.getUsername();
-    }
-
     @Override
     public List<String> getProperties() {
         List<String> properties = new ArrayList<>();
@@ -41,11 +27,17 @@ public class Coach extends PartOfTeam {
         return properties;
     }
     @Override
-    public boolean changeProperty(String property, String toChange)
+    public boolean changeProperty(Team teamOfAsset, String property, String toChange)
     {
         if(property.equalsIgnoreCase(teamJobString))
         {
-            this.teamJob = toChange+"";
+//            this.teamJob = toChange+"";
+            BelongToTeam assetBelongsTo = getBelongTeamByTeam(teamOfAsset);
+            if(assetBelongsTo == null)
+            {
+                return false;
+            }
+            assetBelongsTo.setTeamJob(toChange);
             return true;
         }
         else if(property.equals(qualificationString))
@@ -90,22 +82,22 @@ public class Coach extends PartOfTeam {
     }
 
     @Override
-    public boolean addAllProperties() {
-        if(!addProperty(teamJobString))
+    public boolean addAllProperties(Team assetBelongsTo) {
+        if(!addProperty(assetBelongsTo, teamJobString))
         {
             return false;
         }
 
-        if(!addProperty(qualificationString))
+        if(!addProperty(assetBelongsTo, qualificationString))
         {
-            removeProperty(teamJobString);
+            removeProperty(assetBelongsTo, teamJobString);
             return false;
         }
         return true;
     }
 
     @Override
-    public boolean addProperty(String property)
+    public boolean addProperty(Team teamBelongsTo, String property)
     {
         String valueOfProperty = "";
         if(property.equalsIgnoreCase(teamJobString))
@@ -119,7 +111,7 @@ public class Coach extends PartOfTeam {
         }
 
 
-        return this.changeProperty(property,valueOfProperty);
+        return this.changeProperty(teamBelongsTo, property,valueOfProperty);
 
 
 
@@ -145,7 +137,7 @@ public class Coach extends PartOfTeam {
     }
 
     @Override
-    public boolean removeProperty(String property) {
+    public boolean removeProperty(Team teamBelongsTo, String property) {
 
         return false;
     }
@@ -185,45 +177,39 @@ public class Coach extends PartOfTeam {
         if (!(o instanceof Coach)) return false;
         Coach coach = (Coach) o;
         return qualification == coach.qualification &&
-                ((teamJob == null && coach.teamJob == null) || teamJob.equals(coach.teamJob)) &&
                 super.systemUser.equals(coach.systemUser);
     }
 
-    public boolean addTeam(Team teamToAdd, TeamOwner teamOwner)
-    {
-        if(teamToAdd != null && teamToAdd.isTeamOwner(teamOwner))
-        {
-            this.coachedTeams.add(teamToAdd);
-            return teamToAdd.addTeamCoach(teamOwner,this);
-        }
-        return false;
-    }
+//    public boolean addTeam(Team teamToAdd, TeamOwner teamOwner)
+//    {
+//        if(teamToAdd != null && teamToAdd.isTeamOwner(teamOwner))
+//        {
+//            this.coachedTeams.add(teamToAdd);
+//            return teamToAdd.addTeamCoach(teamOwner,this);
+//        }
+//        return false;
+//    }
+//
+//    public boolean addTeamToCoach(Team playTeam){
+//        if(!this.coachedTeams.contains(playTeam)) {
+//            this.coachedTeams.add(playTeam);
+//            return true;
+//        }
+//        return false;
+//    }
 
-    public boolean addTeamToCoach(Team playTeam){
-        if(!this.coachedTeams.contains(playTeam)) {
-            this.coachedTeams.add(playTeam);
-            return true;
-        }
-        return false;
-    }
+//    public boolean removeTeam(Team team){
+//        return this.coachedTeams.remove(team);
+//    }
 
-    public boolean removeTeamToCoach(Team team){
-        return this.coachedTeams.remove(team);
-    }
 
-    public List<Team> getCoachedTeams() {
-        return coachedTeams;
-    }
 
-    public String getTeamJob() {
-        return teamJob;
-    }
+
     @Override
     public String toString() {
         return "Coach{" +
                 "qualification=" + qualification +
                 ", coachedTeam=" + coachedTeams +
-                ", teamJob='" + teamJob + '\'' +
                 ", teamJobString='" + teamJobString + '\'' +
                 ", qualificationString='" + qualificationString + '\'' +
                 '}';
