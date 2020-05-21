@@ -192,7 +192,6 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 userSession.access(()-> userSession.setAttribute(USERNAME_ATTRIBUTE_NAME, null));
                 lastUI.access(() -> {
 
-                    //TODO: Navigate to logged out window
                     getUI().get().navigate("");
                     getUI().get().getPage().reload();
                 });
