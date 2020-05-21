@@ -60,7 +60,6 @@ public class ARController {
         if (!systemUser.isType(RoleTypes.ASSOCIATION_REPRESENTATIVE)) {
             return false;
         }
-
         League chosenLeague = null;
         try {
             chosenLeague = getLeagueByChoice();

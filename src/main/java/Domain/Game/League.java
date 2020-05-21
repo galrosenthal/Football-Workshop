@@ -1,6 +1,6 @@
 package Domain.Game;
 
-import Domain.Users.SystemUser;
+import Domain.EntityManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,8 @@ public class League {
                 return true;
             }
         }
-        return false;
+        return EntityManager.getInstance().doesSeasonExist(this.name,seasonYears);
+        //return false;
     }
 
     /**
@@ -71,6 +72,7 @@ public class League {
     public boolean addSeason(String seasonYears) {
         Season season = new Season(this, seasonYears);
         this.seasons.add(season);
+        EntityManager.getInstance().addSeason(this.name , season);
         return true;
     }
 

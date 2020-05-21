@@ -16,10 +16,7 @@ import Service.AllSubscribers;
 import Service.Observer;
 import Service.UIController;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class EntityManager{
     private static EntityManager entityManagerInstance = null;
@@ -69,7 +66,7 @@ public class EntityManager{
         return entityManagerInstance;
     }
 
-
+/*
     public void initSystem() throws Exception {
         Table systemUsersTable = DBManager.getInstance().getSystemUsers();
         for (int i = 0; i < systemUsersTable.size(); i++) {
@@ -114,6 +111,8 @@ public class EntityManager{
         }
     }
 
+ */
+/*
     private Role recreateRoleFromDB(String username, RoleTypes roleType) {
         Role newRole;
 
@@ -127,10 +126,18 @@ public class EntityManager{
 
     }
 
+ */
+
     public List<League> getLeagues() {
+        //fixme to list<String>
+        List<String> allLeaguesList = DBManager.getInstance().getLeagues();
+        List<League> leagues =  new ArrayList<>();
+        for (int i = 0; i < allLeaguesList.size(); i++) {
+            //fixme
+            leagues.add(new League((String) allLeaguesList.get(i)));
+        }
         return new ArrayList<League>(allLeagues);
     }
-
     public List<Team> getTeams() {
         return new ArrayList<Team>(allTeams);
     }
@@ -140,12 +147,19 @@ public class EntityManager{
      * @param username
      * @return The SystemUser with the username, if exists in the system.
      */
+    //todo: check is username in allUsers list,
+    // if yes return SystemUser,
+    // otherwise ask dbManager.getUserDetails(String username) and receive all Details to create user system
+    // then ask dbManager.getUserRoles(String username) - ask dbManager for each role Details.
     public SystemUser getUser(String username) {
+
         for (SystemUser su : allUsers) {
             if (su.getUsername().equals(username)) {
                 return su;
             }
         }
+
+
         return null;
     }
 
@@ -216,12 +230,15 @@ public class EntityManager{
      * @return - boolean - True if a league with a name that matches the given name already exists, else false
      */
     public boolean doesLeagueExists(String name){
+
         for (League league : allLeagues) {
             if (league.getName().equals(name)) {
                 return true;
             }
         }
-        return false;
+        return DBManager.getInstance().doesLeagueExists(name);
+
+       // return false;
     }
 
     /**
@@ -284,7 +301,8 @@ public class EntityManager{
             this.allLeagues.add(league);
             return true;
         }
-        return false;
+        return DBManager.getInstance().addLeagueRecord(league.getName());
+        //return false;
     }
 
 
@@ -597,5 +615,17 @@ public class EntityManager{
 
     public List<SchedulingPolicy> getSchedulingPolicies() {
         return schedulingPolicies;
+    }
+
+    public boolean doesSeasonExist(String leagueName, String seasonYears) {
+       return  DBManager.getInstance().doesSeasonExists(leagueName , seasonYears);
+    }
+
+    public boolean addSeason(String leagueName, Season season) {
+        PointsPolicy pointsPolicy = season.getPointsPolicy();
+        int pointsPolicyID = DBManager.getInstance().getPointsPolicyID(pointsPolicy.getVictoryPoints(),pointsPolicy.getLossPoints(),pointsPolicy.getTiePoints());
+
+        return  DBManager.getInstance().addSeasonToLeague(leagueName , season.getYears() , season.getIsUnderway(), pointsPolicyID);
+
     }
 }

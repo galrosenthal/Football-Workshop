@@ -11,18 +11,20 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import static DB.Tables.Tables.TABLETEST;
 import static org.jooq.impl.DSL.name;
 
 public class DBHandler implements CRUD {
-    String username = "root";
-    String password = "foot123Ball!";
-    String myDriver = "org.mariadb.jdbc.Driver";
-    String myUrl = "jdbc:mysql://132.72.65.105:3306/TestDB";
-    Connection connection = null;
+    private static String username = "root";
+    private static String password = "foot123Ball!";
+    private static String myDriver = "org.mariadb.jdbc.Driver";
+    private static String myUrl = "jdbc:mysql://132.72.65.105:3306/fwdb";
+    private static Connection connection = null;
 
 
     public DBHandler() {
+    }
+
+    public static void startConnection() {
         //connect to DB and save to field in class.
         try {
             Class.forName(myDriver);
@@ -35,28 +37,13 @@ public class DBHandler implements CRUD {
         }
     }
 
-
-    public boolean dslCheck() {
+    public static DSLContext getContext(){
         DSLContext create = DSL.using(connection, SQLDialect.MARIADB);
-        Result<?> result = create.select().
-                from(DSL.table(name("tabletest")))
-                .where(DSL.field(name("A")).eq(1)).fetch();
-        if (result.isEmpty()) {
-            return false;
-        }
-        return true;
+        return create;
     }
 
-    public boolean dslCheckFalse() {
-        DSLContext create = DSL.using(connection, SQLDialect.MARIADB);
-        Result<?> result = create.select().
-                from(TABLETEST)
-                .where(TABLETEST.A.eq(6)).fetch();
-        if (result.isEmpty()) {
-            return false;
-        }
-        return true;
-    }
+
+
 
 
     @Override

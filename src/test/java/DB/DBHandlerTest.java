@@ -14,8 +14,7 @@ public class DBHandlerTest {
     public void DBHandler()
     {
          db = new DBHandler();
-         assertTrue(db.dslCheck());
-         assertFalse(db.dslCheckFalse());
+         DBHandler.startConnection();
 
     }
 
