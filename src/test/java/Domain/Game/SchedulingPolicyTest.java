@@ -1,6 +1,7 @@
 package Domain.Game;
 
 import Domain.Users.Referee;
+import Domain.Users.RefereeQualification;
 import Domain.Users.RefereeStub;
 import Domain.Users.SystemUser;
 import org.junit.Assert;
@@ -50,11 +51,11 @@ public class SchedulingPolicyTest {
         teams.add(team5);
         teams.add(team6);
         List<Referee> referees = new ArrayList<>();
-        referees.add(new RefereeStub(new SystemUser("a","a","a"),"Var"));
-        referees.add(new RefereeStub(new SystemUser("b","b","b"),"Var"));
-        referees.add(new RefereeStub(new SystemUser("c","c","c"),"Var"));
-        referees.add(new RefereeStub(new SystemUser("d","d","d"),"Var"));
-        referees.add(new RefereeStub(new SystemUser("e","e","e"),"Var"));
+        referees.add(new RefereeStub(new SystemUser("a","a","a"), RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("b","b","b"),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("c","c","c"),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("d","d","d"),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("e","e","e"),RefereeQualification.VAR_REFEREE));
         List<ScheduleMatch> scheduleMatches = sp.generateSchedule(new Date(),teams,referees );
         assertEquals(30,scheduleMatches.size());
 

@@ -1,5 +1,7 @@
 package Domain.Game;
 
+import Domain.Users.PlayerStub;
+import Domain.Users.SystemUserStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,7 +23,8 @@ public class PointsPolicyTest {
     public void getPointsITest() {
         Game game = new Game(new StadiumStub("staName", "staLoca"), new TeamStub(9511), new TeamStub(9512), new Date(2020, 01, 01), null);
         try {
-            game.addGoal(game.getHomeTeam(), game.getAwayTeam(), 1);
+            game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),1);
         } catch (Exception e) {
         }
         Points points = pointsPolicy.getPoints(game);
@@ -33,7 +36,8 @@ public class PointsPolicyTest {
     public void getPoints2ITest() {
         Game game = new Game(new StadiumStub("staName", "staLoca"), new TeamStub(9511), new TeamStub(9512), new Date(2020, 01, 01), null);
         try {
-            game.addGoal(game.getAwayTeam(),game.getHomeTeam(), 1);
+            game.addGoal(game.getAwayTeam(),game.getHomeTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),1);
         } catch (Exception e) {
         }
         Points points = pointsPolicy.getPoints(game);
