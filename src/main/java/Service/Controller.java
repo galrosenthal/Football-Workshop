@@ -18,7 +18,6 @@ public class Controller {
     public static boolean systemBoot() {
         //Establishing connections to external DBMS
         //access DB
-        DBManager.getInstance().startConnection();
         //extract system admins
 
         String username = UIController.receiveString("Please enter a system administrator username: ");

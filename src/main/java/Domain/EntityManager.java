@@ -134,14 +134,6 @@ public class EntityManager{
  */
 
     public List<League> getLeagues() {
-        List<String> allLeaguesList = DBManager.getInstance().getLeagues();
-        List<League> leagues =  new ArrayList<>();
-        for (int i = 0; i < allLeaguesList.size(); i++) {
-            //fixme
-            leagues.add(new League((allLeaguesList.get(i))));
-        }
-
-
         return new ArrayList<>(allLeagues);
         //return leagues;
     }
@@ -243,9 +235,8 @@ public class EntityManager{
                 return true;
             }
         }
-        return DBManager.getInstance().doesLeagueExists(name);
 
-        //return false;
+        return false;
     }
 
     /**
@@ -308,8 +299,7 @@ public class EntityManager{
             this.allLeagues.add(league);
             return true;
         }
-        return DBManager.getInstance().addLeagueRecord(league.getName());
-        //return false;
+        return false;
     }
 
 
@@ -628,17 +618,6 @@ public class EntityManager{
         return schedulingPolicies;
     }
 
-    public boolean doesSeasonExist(String leagueName, String seasonYears) {
-       return  DBManager.getInstance().doesSeasonExists(leagueName , seasonYears);
-    }
-
-    public boolean addSeason(String leagueName, Season season) {
-        PointsPolicy pointsPolicy = season.getPointsPolicy();
-        int pointsPolicyID = DBManager.getInstance().getPointsPolicyID(pointsPolicy.getVictoryPoints(),pointsPolicy.getLossPoints(),pointsPolicy.getTiePoints());
-
-        return  DBManager.getInstance().addSeasonToLeague(leagueName , season.getYears() , season.getIsUnderway(), pointsPolicyID);
-
-    }
 
     private static boolean validate(String emailStr) {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);

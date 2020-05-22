@@ -12,7 +12,7 @@ public class DBHandlerTest {
     @Test
     public void DBHandler()
     {
-         DBHandler.startConnection();
+       //  DBHandler.startConnection();
 
     }
 
