@@ -137,13 +137,17 @@ public class EntityManager{
         List<String> allLeaguesList = DBManager.getInstance().getLeagues();
         List<League> leagues =  new ArrayList<>();
         for (int i = 0; i < allLeaguesList.size(); i++) {
-            //fixme
             leagues.add(new League((allLeaguesList.get(i))));
         }
 
-
-        return new ArrayList<>(allLeagues);
-        //return leagues;
+        if(leagues.isEmpty())
+        {
+            return  new ArrayList<>(this.allLeagues);
+        }
+        else {
+            return leagues;
+        }
+      //
     }
     public List<Team> getTeams() {
         return new ArrayList<Team>(allTeams);

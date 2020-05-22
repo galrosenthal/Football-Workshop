@@ -13,8 +13,10 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
 
-public class Alert implements Subject, Observer{
+public class Alert implements Subject, Observer {
     private static Alert alertInstance = null;
+    private final String emailAddress = ""; //fixme!!!!!!!
+    private final String host =  "smtp.gmail.com";//todo: check
 
     /**
      * Returns an instance of dbManager. part of the Singleton design
@@ -24,7 +26,7 @@ public class Alert implements Subject, Observer{
     public static Alert getInstance() {
         if (alertInstance == null) {
             alertInstance = new Alert();
-            SystemUser a = new SystemUser("Administrator","Aa123456","admin","test@gmail.com", false);
+            SystemUser a = new SystemUser("Administrator", "Aa123456", "admin", "test@gmail.com", false);
             a.addNewRole(new SystemAdmin(a));
             a.addNewRole(new AssociationRepresentative(a));
         }
@@ -37,61 +39,80 @@ public class Alert implements Subject, Observer{
         AllSubscribers allSubscribers = AllSubscribers.getInstance();
         List<String> onlineSystemUsers = allSubscribers.getSystemUsers();
         List<SystemUser> updateSystemUsers = new ArrayList<>();
-        for (int i = 0; i < systemUsers.size() ; i++) {
-            /*In case system user online*/
-            if(onlineSystemUsers.contains(systemUsers.get(i).getUsername()))
-            {
-                updateSystemUsers.add(systemUsers.get(i));
+        for (int i = 0; i < systemUsers.size(); i++) {
+            SystemUser systemUser = systemUsers.get(i);
+            /*In case system user wants email alert*/
+            if (systemUser.isAlertEmail()) {
+                this.sendEmail(systemUser.getEmail(), this.emailAddress, "Football-Workshop Notification", alert);
             }
-            //todo: save alert on db
+            /*otherwise - In case system user online*/
+            else if (onlineSystemUsers.contains(systemUser.getUsername())) {
+                updateSystemUsers.add(systemUser);
+            } else {
+                //todo: save alert on db
+
+            }
         }
         allSubscribers.update(updateSystemUsers, alert);
     }
 
     /**
-     *
-     * @param to - Recipient's email ID needs to be mentioned.
+     * @param to   - Recipient's email ID needs to be mentioned.
      * @param from - Sender's email ID needs to be mentioned
-     * @param host - Assuming you are sending email from localhost
-     * @return
+     * @return true - send Email successfully
+     *         false - otherwise
      */
-    private boolean sendEmail(String to, String from, String host)
-    {
-        Properties properties = System.getProperties();
+    public boolean sendEmail(String to, String from, String subject, String content) {
+        // Put recipient’s address
 
-        // Setup mail server
-        properties.setProperty("mail.smtp.host", host);
+        // Add recipient
 
-        // Get the default Session object.
-        Session session = Session.getDefaultInstance(properties);
+        // Add sender
+        final String username = "notifyfootballworkshop@gmail.com";//your Gmail username
+        final String password = "footBALL!!12";//your Gmail password
+
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", this.host);
+        props.put("mail.smtp.port", "587");
+
+        // Get the Session object
+        Session session = Session.getInstance(props,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
 
         try {
-            // Create a default MimeMessage object.
-            MimeMessage message = new MimeMessage(session);
+            // Create a default MimeMessage object
+            Message message = new MimeMessage(session);
 
-            // Set From: header field of the header.
             message.setFrom(new InternetAddress(from));
 
-            // Set To: header field of the header.
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            message.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(to));
 
-            // Set Subject: header field
-            message.setSubject("This is the Subject Line!");
+            // Set Subject
+            message.setSubject(subject);
 
-            // Now set the actual message
-            message.setText("This is actual message");
+            // Put the content of your message
+            message.setText(content);
 
             // Send message
             Transport.send(message);
+
             System.out.println("Sent message successfully....");
-        } catch (MessagingException mex) {
-            mex.printStackTrace();
+
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
         }
         return true;
     }
 
     @Override
     public void update(List<SystemUser> systemUsers, String alert) {
-        notifyObserver(systemUsers,alert);
+        notifyObserver(systemUsers, alert);
     }
 }

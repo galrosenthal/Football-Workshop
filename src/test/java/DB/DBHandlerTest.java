@@ -9,7 +9,7 @@ public class DBHandlerTest {
     @Test
     public void DBHandler()
     {
-         DBHandler.startConnection();
+         DBHandler.startConnection("jdbc:mysql://132.72.65.105:3306/fwdb_test");
     }
 
 }
