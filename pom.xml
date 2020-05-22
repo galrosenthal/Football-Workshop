@@ -38,7 +38,6 @@
 
 
     <build>
-
         <defaultGoal>jetty:run</defaultGoal>
         <plugins>
             <plugin>
@@ -122,8 +121,12 @@
                     </execution>
                 </executions>
             </plugin>
+
+
+
         </plugins>
     </build>
+
 
     <dependencies>
 
@@ -269,6 +272,18 @@
             <version>2.1.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.4.5</version>
+        </dependency>
+
     </dependencies>
 
     <profiles>
@@ -304,7 +319,6 @@
                 </plugins>
             </build>
         </profile>
-
 
         <profile>
             <id>it</id>
@@ -383,7 +397,6 @@
                 </plugins>
             </build>
         </profile>
-
         <profile>
             <id>gen</id>
             <build>
@@ -451,12 +464,14 @@
                                 </strategy>
                             </generator>
                         </configuration>
-
                     </plugin>
                 </plugins>
             </build>
         </profile>
     </profiles>
+
+
+
 
 
 

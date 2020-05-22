@@ -44,7 +44,15 @@ public class SystemUser extends User implements Fan {
         EntityManager.getInstance().addUser(this);
     }
 
-    public SystemUser(String username,String name)
+    public String getEmail() {
+        return email;
+    }
+
+    public boolean isAlertEmail() {
+        return alertEmail;
+    }
+
+    public SystemUser(String username, String name)
     {
         this.roles = new ArrayList<>();
         this.username = username;

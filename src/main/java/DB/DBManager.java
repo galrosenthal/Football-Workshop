@@ -6,6 +6,7 @@ import org.jooq.DSLContext;
 import org.jooq.Result;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,10 +31,19 @@ public class DBManager {
         return dbManagerInstance;
     }
 
+    public static void deleteData() throws Exception {
+        DBHandler.getInstance().deleteData();
+    }
 
 
-    public void startConnection() {
-        DBHandler.startConnection();
+    public void startConnection(String url) {
+
+        DBHandler.startConnection(url);
+    }
+
+    public void closeConnection() {
+
+        DBHandler.closeConnection();
     }
 
     /**
