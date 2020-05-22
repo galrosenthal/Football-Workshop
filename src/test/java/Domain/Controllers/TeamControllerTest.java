@@ -1,6 +1,5 @@
 package Domain.Controllers;
 
-import DB.DBManager;
 import Domain.EntityManager;
 import Domain.Exceptions.AssetCantBeModifiedException;
 import Domain.Exceptions.AssetsNotExistsException;
@@ -11,17 +10,15 @@ import Domain.Users.*;
 import Service.UIController;
 import org.junit.*;
 
-import java.io.IOException;
 import java.util.Date;
 
 import static org.junit.Assert.*;
 
-
 public class TeamControllerTest {
 
 
-    SystemUser teamOwnerUser = new SystemUser("oranShich", "Oran2802", "Oran","test@gmail.com", false);
-    SystemUser teamOwnerToAdd = new SystemUser("oranSh", "Oran2802", "Shichman","test@gmail.com", false);
+    SystemUser teamOwnerUser = new SystemUser("oranShich", "Oran2802", "Oran" , "test@gmail.com" , false);
+    SystemUser teamOwnerToAdd = new SystemUser("oranSh", "Oran2802", "Shichman","test@gmail.com" , false);
     Team hapoelBash = new Team();
     TeamStub stubTeam = new TeamStub(0);
     //TeamOwner originalOwner = new TeamOwner(teamOwnerUser);
@@ -29,14 +26,9 @@ public class TeamControllerTest {
     TeamOwnerStub to;
 
     //For removeOwner tests
-    SystemUser teamOwnerUser2 = new SystemUser("rosengal", "Gal12345", "Gal","test@gmail.com", false);
-    SystemUser teamOwnerUser3 = new SystemUser("nirdz", "Nir12345", "Nir","test@gmail.com", false);
-    SystemUser teamOwnerUser4 = new SystemUser("merav", "Merav12345", "Mer","test@gmail.com", false);
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.getInstance().startConnection("jdbc:mysql://132.72.65.105:3306/fwdb_test");
-    }
+    SystemUser teamOwnerUser2 = new SystemUser("rosengal", "Gal12345", "Gal" , "test@gmail.com" , false);
+    SystemUser teamOwnerUser3 = new SystemUser("nirdz", "Nir12345", "Nir" , "test@gmail.com" , false);
+    SystemUser teamOwnerUser4 = new SystemUser("merav", "Merav12345", "Mer" , "test@gmail.com" , false);
 
     @Before
     public void runBeforeTests(){
@@ -51,8 +43,6 @@ public class TeamControllerTest {
         EntityManager.getInstance().addUser(teamOwnerUser3);
         EntityManager.getInstance().addUser(teamOwnerUser4);
         UIController.setIsTest(true);
-
-
     }
 
     @After
@@ -684,7 +674,6 @@ public class TeamControllerTest {
 
     @Test
     public void reopenTeam2UTest(){
-
         TeamStub teamStub = new TeamStub(66271);
         SystemUserStub su1 = new SystemUserStub("rosengal", "gal",662721);
         PlayerStub p1 = (PlayerStub)su1.getRole(RoleTypes.PLAYER);
@@ -743,15 +732,4 @@ public class TeamControllerTest {
 
     }
 
-    @After
-    public void runAfterEachTest() throws Exception {
-        DBManager.deleteData();
-    }
-
-
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }
-
