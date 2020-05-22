@@ -1,9 +1,6 @@
 package DB;
 
-import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class DBHandlerTest {
 
@@ -13,7 +10,6 @@ public class DBHandlerTest {
     public void DBHandler()
     {
          DBHandler.startConnection();
-
     }
 
 }
