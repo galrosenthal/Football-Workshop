@@ -6,12 +6,6 @@ package DB.Tables.tables;
 
 import DB.Tables.Fwdb;
 import DB.Tables.Keys;
-import DB.Tables.enums.ManagerInTeamsAddCoach;
-import DB.Tables.enums.ManagerInTeamsAddPlayer;
-import DB.Tables.enums.ManagerInTeamsChangePositionPlayer;
-import DB.Tables.enums.ManagerInTeamsChangeTeamJobCoach;
-import DB.Tables.enums.ManagerInTeamsRemoveCoach;
-import DB.Tables.enums.ManagerInTeamsRemovePlayer;
 import DB.Tables.tables.records.ManagerInTeamsRecord;
 
 import java.util.Arrays;
@@ -37,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ManagerInTeams extends TableImpl<ManagerInTeamsRecord> {
 
-    private static final long serialVersionUID = 2053862272;
+    private static final long serialVersionUID = -832202050;
 
     /**
      * The reference instance of <code>fwdb.manager_in_teams</code>
@@ -65,32 +59,32 @@ public class ManagerInTeams extends TableImpl<ManagerInTeamsRecord> {
     /**
      * The column <code>fwdb.manager_in_teams.REMOVE_PLAYER</code>.
      */
-    public final TableField<ManagerInTeamsRecord, ManagerInTeamsRemovePlayer> REMOVE_PLAYER = createField(DSL.name("REMOVE_PLAYER"), org.jooq.impl.SQLDataType.VARCHAR(1).nullable(false).defaultValue(org.jooq.impl.DSL.field("'N'", org.jooq.impl.SQLDataType.VARCHAR)).asEnumDataType(DB.Tables.enums.ManagerInTeamsRemovePlayer.class), this, "");
+    public final TableField<ManagerInTeamsRecord, Boolean> REMOVE_PLAYER = createField(DSL.name("REMOVE_PLAYER"), org.jooq.impl.SQLDataType.BIT.nullable(false).defaultValue(org.jooq.impl.DSL.field("b'0'", org.jooq.impl.SQLDataType.BIT)), this, "");
 
     /**
      * The column <code>fwdb.manager_in_teams.ADD_PLAYER</code>.
      */
-    public final TableField<ManagerInTeamsRecord, ManagerInTeamsAddPlayer> ADD_PLAYER = createField(DSL.name("ADD_PLAYER"), org.jooq.impl.SQLDataType.VARCHAR(1).nullable(false).defaultValue(org.jooq.impl.DSL.field("'N'", org.jooq.impl.SQLDataType.VARCHAR)).asEnumDataType(DB.Tables.enums.ManagerInTeamsAddPlayer.class), this, "");
+    public final TableField<ManagerInTeamsRecord, Boolean> ADD_PLAYER = createField(DSL.name("ADD_PLAYER"), org.jooq.impl.SQLDataType.BIT.nullable(false).defaultValue(org.jooq.impl.DSL.field("b'0'", org.jooq.impl.SQLDataType.BIT)), this, "");
 
     /**
      * The column <code>fwdb.manager_in_teams.CHANGE_POSITION_PLAYER</code>.
      */
-    public final TableField<ManagerInTeamsRecord, ManagerInTeamsChangePositionPlayer> CHANGE_POSITION_PLAYER = createField(DSL.name("CHANGE_POSITION_PLAYER"), org.jooq.impl.SQLDataType.VARCHAR(1).nullable(false).defaultValue(org.jooq.impl.DSL.field("'N'", org.jooq.impl.SQLDataType.VARCHAR)).asEnumDataType(DB.Tables.enums.ManagerInTeamsChangePositionPlayer.class), this, "");
+    public final TableField<ManagerInTeamsRecord, Boolean> CHANGE_POSITION_PLAYER = createField(DSL.name("CHANGE_POSITION_PLAYER"), org.jooq.impl.SQLDataType.BIT.nullable(false).defaultValue(org.jooq.impl.DSL.field("b'0'", org.jooq.impl.SQLDataType.BIT)), this, "");
 
     /**
      * The column <code>fwdb.manager_in_teams.REMOVE_COACH</code>.
      */
-    public final TableField<ManagerInTeamsRecord, ManagerInTeamsRemoveCoach> REMOVE_COACH = createField(DSL.name("REMOVE_COACH"), org.jooq.impl.SQLDataType.VARCHAR(1).nullable(false).defaultValue(org.jooq.impl.DSL.field("'N'", org.jooq.impl.SQLDataType.VARCHAR)).asEnumDataType(DB.Tables.enums.ManagerInTeamsRemoveCoach.class), this, "");
+    public final TableField<ManagerInTeamsRecord, Boolean> REMOVE_COACH = createField(DSL.name("REMOVE_COACH"), org.jooq.impl.SQLDataType.BIT.nullable(false).defaultValue(org.jooq.impl.DSL.field("b'0'", org.jooq.impl.SQLDataType.BIT)), this, "");
 
     /**
      * The column <code>fwdb.manager_in_teams.ADD_COACH</code>.
      */
-    public final TableField<ManagerInTeamsRecord, ManagerInTeamsAddCoach> ADD_COACH = createField(DSL.name("ADD_COACH"), org.jooq.impl.SQLDataType.VARCHAR(1).nullable(false).defaultValue(org.jooq.impl.DSL.field("'N'", org.jooq.impl.SQLDataType.VARCHAR)).asEnumDataType(DB.Tables.enums.ManagerInTeamsAddCoach.class), this, "");
+    public final TableField<ManagerInTeamsRecord, Boolean> ADD_COACH = createField(DSL.name("ADD_COACH"), org.jooq.impl.SQLDataType.BIT.nullable(false).defaultValue(org.jooq.impl.DSL.field("b'0'", org.jooq.impl.SQLDataType.BIT)), this, "");
 
     /**
      * The column <code>fwdb.manager_in_teams.CHANGE_TEAM_JOB_COACH</code>.
      */
-    public final TableField<ManagerInTeamsRecord, ManagerInTeamsChangeTeamJobCoach> CHANGE_TEAM_JOB_COACH = createField(DSL.name("CHANGE_TEAM_JOB_COACH"), org.jooq.impl.SQLDataType.VARCHAR(1).nullable(false).defaultValue(org.jooq.impl.DSL.field("'N'", org.jooq.impl.SQLDataType.VARCHAR)).asEnumDataType(DB.Tables.enums.ManagerInTeamsChangeTeamJobCoach.class), this, "");
+    public final TableField<ManagerInTeamsRecord, Boolean> CHANGE_TEAM_JOB_COACH = createField(DSL.name("CHANGE_TEAM_JOB_COACH"), org.jooq.impl.SQLDataType.BIT.nullable(false).defaultValue(org.jooq.impl.DSL.field("b'0'", org.jooq.impl.SQLDataType.BIT)), this, "");
 
     /**
      * Create a <code>fwdb.manager_in_teams</code> table reference
@@ -180,7 +174,7 @@ public class ManagerInTeams extends TableImpl<ManagerInTeamsRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<String, String, ManagerInTeamsRemovePlayer, ManagerInTeamsAddPlayer, ManagerInTeamsChangePositionPlayer, ManagerInTeamsRemoveCoach, ManagerInTeamsAddCoach, ManagerInTeamsChangeTeamJobCoach> fieldsRow() {
+    public Row8<String, String, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean> fieldsRow() {
         return (Row8) super.fieldsRow();
     }
 }

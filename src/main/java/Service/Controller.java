@@ -3,10 +3,7 @@ package Service;
 import DB.DBManager;
 import Domain.Controllers.TeamController;
 import Domain.EntityManager;
-import Domain.Exceptions.NoTeamExistsException;
-import Domain.Exceptions.UsernameAlreadyExistsException;
-import Domain.Exceptions.UsernameOrPasswordIncorrectException;
-import Domain.Exceptions.WeakPasswordException;
+import Domain.Exceptions.*;
 import Domain.Game.Team;
 import Domain.Game.TeamAsset;
 import Domain.Game.TeamStatus;
@@ -265,10 +262,10 @@ public class Controller {
      * @throws Exception If user name is already belongs to a user in the system, or
      * the password does not meet the security requirements.
      */
-    public static SystemUser signUp(String name, String usrNm, String pswrd)
-            throws UsernameAlreadyExistsException, WeakPasswordException {
+    public static SystemUser signUp(String name, String usrNm, String pswrd, String email, boolean emailAlert)
+            throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException {
 
-        return EntityManager.getInstance().signUp(name, usrNm, pswrd);
+        return EntityManager.getInstance().signUp(name, usrNm, pswrd, email, emailAlert);
 
 
     }

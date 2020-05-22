@@ -2,6 +2,7 @@ package Domain;
 
 import DB.DBManager;
 import DB.Table;
+import Domain.Exceptions.InvalidEmailException;
 import Domain.Exceptions.UsernameAlreadyExistsException;
 import Domain.Exceptions.UsernameOrPasswordIncorrectException;
 import Domain.Exceptions.WeakPasswordException;
@@ -17,10 +18,14 @@ import Service.Observer;
 import Service.UIController;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EntityManager{
     private static EntityManager entityManagerInstance = null;
 
+    private static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private List<SystemUser> allUsers;
     private List<Team> allTeams;
     private List<Stadium> allStadiums;
@@ -58,7 +63,7 @@ public class EntityManager{
     public static EntityManager getInstance() {
         if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
-            SystemUser a = new SystemUser("Administrator","Aa123456","admin");
+            SystemUser a = new SystemUser("Administrator","Aa123456","admin","test@gmail.com", false);
             a.addNewRole(new SystemAdmin(a));
             a.addNewRole(new AssociationRepresentative(a));
         }
@@ -129,14 +134,16 @@ public class EntityManager{
  */
 
     public List<League> getLeagues() {
-        //fixme to list<String>
         List<String> allLeaguesList = DBManager.getInstance().getLeagues();
         List<League> leagues =  new ArrayList<>();
         for (int i = 0; i < allLeaguesList.size(); i++) {
             //fixme
-            leagues.add(new League((String) allLeaguesList.get(i)));
+            leagues.add(new League((allLeaguesList.get(i))));
         }
-        return new ArrayList<League>(allLeagues);
+
+
+        return new ArrayList<>(allLeagues);
+        //return leagues;
     }
     public List<Team> getTeams() {
         return new ArrayList<Team>(allTeams);
@@ -238,7 +245,7 @@ public class EntityManager{
         }
         return DBManager.getInstance().doesLeagueExists(name);
 
-       // return false;
+        //return false;
     }
 
     /**
@@ -448,7 +455,7 @@ public class EntityManager{
      * @throws Exception If user name is already belongs to a user in the system, or
      * the password does not meet the security requirements.
      */
-    public SystemUser signUp(String name, String usrNm, String pswrd) throws UsernameAlreadyExistsException, WeakPasswordException {
+    public SystemUser signUp(String name, String usrNm, String pswrd,String email, boolean emailAlert) throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException {
         //Checking if user name is already exists
         if(getUser(usrNm) != null){
             throw new UsernameAlreadyExistsException("Username already exists");
@@ -464,10 +471,14 @@ public class EntityManager{
         if(!pswrd.matches(pswrdRegEx)){
             throw new WeakPasswordException("Password does not meet the requirements");
         }
+        if(!validate(email))
+        {
+            throw new InvalidEmailException("Invalid Email");
+        }
 
         //hash the password
         String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pswrd);
-        SystemUser newUser = new SystemUser(usrNm, hashedPassword, name);
+        SystemUser newUser = new SystemUser(usrNm, hashedPassword, name, email,emailAlert);
         addUser(newUser);
 
 
@@ -627,5 +638,10 @@ public class EntityManager{
 
         return  DBManager.getInstance().addSeasonToLeague(leagueName , season.getYears() , season.getIsUnderway(), pointsPolicyID);
 
+    }
+
+    private static boolean validate(String emailStr) {
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
+        return matcher.find();
     }
 }

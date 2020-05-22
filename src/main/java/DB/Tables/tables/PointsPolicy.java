@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PointsPolicy extends TableImpl<PointsPolicyRecord> {
 
-    private static final long serialVersionUID = 198471605;
+    private static final long serialVersionUID = 375724829;
 
     /**
      * The reference instance of <code>fwdb.points_policy</code>
@@ -49,7 +50,7 @@ public class PointsPolicy extends TableImpl<PointsPolicyRecord> {
     /**
      * The column <code>fwdb.points_policy.policy_id</code>.
      */
-    public final TableField<PointsPolicyRecord, Integer> POLICY_ID = createField(DSL.name("policy_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<PointsPolicyRecord, Integer> POLICY_ID = createField(DSL.name("policy_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>fwdb.points_policy.victory_points</code>.
@@ -102,6 +103,11 @@ public class PointsPolicy extends TableImpl<PointsPolicyRecord> {
     @Override
     public Schema getSchema() {
         return Fwdb.FWDB;
+    }
+
+    @Override
+    public Identity<PointsPolicyRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_POINTS_POLICY;
     }
 
     @Override

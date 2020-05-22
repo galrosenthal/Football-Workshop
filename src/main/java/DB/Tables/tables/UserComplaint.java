@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserComplaint extends TableImpl<UserComplaintRecord> {
 
-    private static final long serialVersionUID = -277267308;
+    private static final long serialVersionUID = -2147181288;
 
     /**
      * The reference instance of <code>fwdb.user_complaint</code>
@@ -75,7 +75,7 @@ public class UserComplaint extends TableImpl<UserComplaintRecord> {
     /**
      * The column <code>fwdb.user_complaint.active</code>.
      */
-    public final TableField<UserComplaintRecord, Byte> ACTIVE = createField(DSL.name("active"), org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<UserComplaintRecord, Boolean> ACTIVE = createField(DSL.name("active"), org.jooq.impl.SQLDataType.BIT.nullable(false).defaultValue(org.jooq.impl.DSL.field("b'1'", org.jooq.impl.SQLDataType.BIT)), this, "");
 
     /**
      * Create a <code>fwdb.user_complaint</code> table reference
@@ -165,7 +165,7 @@ public class UserComplaint extends TableImpl<UserComplaintRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, String, String, String, LocalDate, Byte> fieldsRow() {
+    public Row6<Integer, String, String, String, LocalDate, Boolean> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }

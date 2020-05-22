@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EventInjury extends TableImpl<EventInjuryRecord> {
 
-    private static final long serialVersionUID = -317802536;
+    private static final long serialVersionUID = 418950210;
 
     /**
      * The reference instance of <code>fwdb.event_injury</code>
@@ -49,7 +50,7 @@ public class EventInjury extends TableImpl<EventInjuryRecord> {
     /**
      * The column <code>fwdb.event_injury.event_id</code>.
      */
-    public final TableField<EventInjuryRecord, Integer> EVENT_ID = createField(DSL.name("event_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<EventInjuryRecord, Integer> EVENT_ID = createField(DSL.name("event_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>fwdb.event_injury.game_id</code>.
@@ -102,6 +103,11 @@ public class EventInjury extends TableImpl<EventInjuryRecord> {
     @Override
     public Schema getSchema() {
         return Fwdb.FWDB;
+    }
+
+    @Override
+    public Identity<EventInjuryRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_EVENT_INJURY;
     }
 
     @Override

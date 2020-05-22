@@ -20,7 +20,7 @@ public class Alert implements Subject, Observer{
     public static Alert getInstance() {
         if (alertInstance == null) {
             alertInstance = new Alert();
-            SystemUser a = new SystemUser("Administrator","Aa123456","admin");
+            SystemUser a = new SystemUser("Administrator","Aa123456","admin","test@gmail.com", false);
             a.addNewRole(new SystemAdmin(a));
             a.addNewRole(new AssociationRepresentative(a));
         }

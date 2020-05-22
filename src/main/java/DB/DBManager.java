@@ -2,35 +2,21 @@ package DB;
 
 import static DB.Tables.Tables.*;
 
-import DB.Tables.tables.League;
-import Domain.EntityManager;
-import Domain.Game.Season;
-import Domain.Users.AssociationRepresentative;
-import Domain.Users.RoleTypes;
-import Domain.Users.SystemAdmin;
-import Domain.Users.SystemUser;
 import org.jooq.DSLContext;
 import org.jooq.Result;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
+
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.jooq.impl.DSL.name;
 
 public class DBManager {
 
     private static DBManager dbManagerInstance = null;
 
-    //TODO: add fields for different tables
-
     /**
      * Constructor
      */
     private DBManager() {
-
-
     }
 
 
@@ -126,13 +112,12 @@ public class DBManager {
         return result.get(0).indexOf(POINTS_POLICY.POLICY_ID);
     }
 
-    //fixme: index
+    //todo: auto excremental index check
     public boolean addSeasonToLeague(String leagueName, String years, boolean isUnderway, int pointsPolicyID) {
         DSLContext dslContext = DBHandler.getContext();
-        //todo: check!!!!
-        int succeed = dslContext.insertInto(SEASON,SEASON.SEASON_ID, SEASON.LEAGUE_NAME,  SEASON.YEARS,
+        int succeed = dslContext.insertInto(SEASON, SEASON.LEAGUE_NAME,  SEASON.YEARS,
                SEASON.IS_UNDER_WAY, SEASON.POINTS_POLICY_ID)
-                .values(1,leagueName,years, isUnderway, pointsPolicyID).execute();
+                .values(leagueName,years, isUnderway, pointsPolicyID).execute();
         if(succeed == 0)
         {
             return false;

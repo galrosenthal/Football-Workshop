@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row6;
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EventGoal extends TableImpl<EventGoalRecord> {
 
-    private static final long serialVersionUID = -650271653;
+    private static final long serialVersionUID = -1979517935;
 
     /**
      * The reference instance of <code>fwdb.event_goal</code>
@@ -49,7 +50,7 @@ public class EventGoal extends TableImpl<EventGoalRecord> {
     /**
      * The column <code>fwdb.event_goal.event_id</code>.
      */
-    public final TableField<EventGoalRecord, Integer> EVENT_ID = createField(DSL.name("event_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<EventGoalRecord, Integer> EVENT_ID = createField(DSL.name("event_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>fwdb.event_goal.game_id</code>.
@@ -115,6 +116,11 @@ public class EventGoal extends TableImpl<EventGoalRecord> {
     }
 
     @Override
+    public Identity<EventGoalRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_EVENT_GOAL;
+    }
+
+    @Override
     public UniqueKey<EventGoalRecord> getPrimaryKey() {
         return Keys.KEY_EVENT_GOAL_PRIMARY;
     }
@@ -126,11 +132,11 @@ public class EventGoal extends TableImpl<EventGoalRecord> {
 
     @Override
     public List<ForeignKey<EventGoalRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<EventGoalRecord, ?>>asList(Keys.FK_GAME_EVENT, Keys.FK_SCORED_TEAM_TEAM, Keys.FK__TEAM_SCORED_ON, Keys.FK_EVENT_GOAL_PLAYER);
+        return Arrays.<ForeignKey<EventGoalRecord, ?>>asList(Keys.FK_EVENT_GOAL_GAME, Keys.FK_SCORED_TEAM_TEAM, Keys.FK__TEAM_SCORED_ON, Keys.FK_EVENT_GOAL_PLAYER);
     }
 
     public Game game() {
-        return new Game(this, Keys.FK_GAME_EVENT);
+        return new Game(this, Keys.FK_EVENT_GOAL_GAME);
     }
 
     public Team fkScoredTeamTeam() {

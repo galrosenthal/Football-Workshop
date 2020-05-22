@@ -9,11 +9,9 @@ public class DBHandlerTest {
 
     DBHandler db;
 
-    @Before
     @Test
     public void DBHandler()
     {
-         db = new DBHandler();
          DBHandler.startConnection();
 
     }

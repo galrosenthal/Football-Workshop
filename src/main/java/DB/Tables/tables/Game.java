@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row6;
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Game extends TableImpl<GameRecord> {
 
-    private static final long serialVersionUID = 1344911729;
+    private static final long serialVersionUID = -498120030;
 
     /**
      * The reference instance of <code>fwdb.game</code>
@@ -50,7 +51,7 @@ public class Game extends TableImpl<GameRecord> {
     /**
      * The column <code>fwdb.game.game_id</code>.
      */
-    public final TableField<GameRecord, Integer> GAME_ID = createField(DSL.name("game_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<GameRecord, Integer> GAME_ID = createField(DSL.name("game_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>fwdb.game.stadium_id</code>.
@@ -113,6 +114,11 @@ public class Game extends TableImpl<GameRecord> {
     @Override
     public Schema getSchema() {
         return Fwdb.FWDB;
+    }
+
+    @Override
+    public Identity<GameRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_GAME;
     }
 
     @Override

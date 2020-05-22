@@ -60,7 +60,6 @@ public class League {
             }
         }
         return EntityManager.getInstance().doesSeasonExist(this.name,seasonYears);
-        //return false;
     }
 
     /**

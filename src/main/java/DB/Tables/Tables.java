@@ -4,6 +4,7 @@
 package DB.Tables;
 
 
+import DB.Tables.tables.Alert;
 import DB.Tables.tables.AssociationRepresentative;
 import DB.Tables.tables.Coach;
 import DB.Tables.tables.CoachInTeam;
@@ -43,6 +44,11 @@ import DB.Tables.tables.UserRoles;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>fwdb.alert</code>.
+     */
+    public static final Alert ALERT = Alert.ALERT;
 
     /**
      * The table <code>fwdb.association_representative</code>.

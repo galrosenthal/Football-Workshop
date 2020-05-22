@@ -156,6 +156,7 @@ public class TeamManager extends Role implements Asset {
             {
                 permissions.add((TeamManagerPermissions) anEnum);
                 this.permissionsPerTeam.put(team, permissions);
+                team.updatePermissionsPerTeamManger(this,permissions);
                 return true;
             }
 
@@ -172,6 +173,7 @@ public class TeamManager extends Role implements Asset {
             {
                 permissions.remove(anEnum);
                 this.permissionsPerTeam.put(team, permissions);
+                team.updatePermissionsPerTeamManger(this,permissions);
                 return true;
             }
 

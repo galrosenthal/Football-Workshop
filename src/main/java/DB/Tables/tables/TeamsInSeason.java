@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TeamsInSeason extends TableImpl<TeamsInSeasonRecord> {
 
-    private static final long serialVersionUID = -1787871700;
+    private static final long serialVersionUID = -1814028820;
 
     /**
      * The reference instance of <code>fwdb.teams_in_season</code>
@@ -106,11 +106,11 @@ public class TeamsInSeason extends TableImpl<TeamsInSeasonRecord> {
 
     @Override
     public List<ForeignKey<TeamsInSeasonRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<TeamsInSeasonRecord, ?>>asList(Keys.FK__SEASON_ID, Keys.FK__TEAM_NAME);
+        return Arrays.<ForeignKey<TeamsInSeasonRecord, ?>>asList(Keys.FK_TEAMS_IN_SEASON_SEASON, Keys.FK__TEAM_NAME);
     }
 
     public Season season() {
-        return new Season(this, Keys.FK__SEASON_ID);
+        return new Season(this, Keys.FK_TEAMS_IN_SEASON_SEASON);
     }
 
     public Team team() {

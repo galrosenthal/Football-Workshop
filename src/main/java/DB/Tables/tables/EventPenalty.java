@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EventPenalty extends TableImpl<EventPenaltyRecord> {
 
-    private static final long serialVersionUID = 1436629403;
+    private static final long serialVersionUID = -680747141;
 
     /**
      * The reference instance of <code>fwdb.event_penalty</code>
@@ -49,7 +50,7 @@ public class EventPenalty extends TableImpl<EventPenaltyRecord> {
     /**
      * The column <code>fwdb.event_penalty.event_id</code>.
      */
-    public final TableField<EventPenaltyRecord, Integer> EVENT_ID = createField(DSL.name("event_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<EventPenaltyRecord, Integer> EVENT_ID = createField(DSL.name("event_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>fwdb.event_penalty.game_id</code>.
@@ -105,6 +106,11 @@ public class EventPenalty extends TableImpl<EventPenaltyRecord> {
     }
 
     @Override
+    public Identity<EventPenaltyRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_EVENT_PENALTY;
+    }
+
+    @Override
     public UniqueKey<EventPenaltyRecord> getPrimaryKey() {
         return Keys.KEY_EVENT_PENALTY_PRIMARY;
     }
@@ -116,11 +122,11 @@ public class EventPenalty extends TableImpl<EventPenaltyRecord> {
 
     @Override
     public List<ForeignKey<EventPenaltyRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<EventPenaltyRecord, ?>>asList(Keys.FK__GAME_PENALTY, Keys.FK__TEAM_PENALTY);
+        return Arrays.<ForeignKey<EventPenaltyRecord, ?>>asList(Keys.FK_EVENT_PENALTY_GAME, Keys.FK__TEAM_PENALTY);
     }
 
     public Game game() {
-        return new Game(this, Keys.FK__GAME_PENALTY);
+        return new Game(this, Keys.FK_EVENT_PENALTY_GAME);
     }
 
     public Team team() {

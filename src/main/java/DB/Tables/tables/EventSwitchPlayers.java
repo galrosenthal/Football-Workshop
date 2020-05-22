@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row6;
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EventSwitchPlayers extends TableImpl<EventSwitchPlayersRecord> {
 
-    private static final long serialVersionUID = 1854377840;
+    private static final long serialVersionUID = 897326509;
 
     /**
      * The reference instance of <code>fwdb.event_switch_players</code>
@@ -49,7 +50,7 @@ public class EventSwitchPlayers extends TableImpl<EventSwitchPlayersRecord> {
     /**
      * The column <code>fwdb.event_switch_players.event_id</code>.
      */
-    public final TableField<EventSwitchPlayersRecord, Integer> EVENT_ID = createField(DSL.name("event_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<EventSwitchPlayersRecord, Integer> EVENT_ID = createField(DSL.name("event_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>fwdb.event_switch_players.game_id</code>.
@@ -115,6 +116,11 @@ public class EventSwitchPlayers extends TableImpl<EventSwitchPlayersRecord> {
     }
 
     @Override
+    public Identity<EventSwitchPlayersRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_EVENT_SWITCH_PLAYERS;
+    }
+
+    @Override
     public UniqueKey<EventSwitchPlayersRecord> getPrimaryKey() {
         return Keys.KEY_EVENT_SWITCH_PLAYERS_PRIMARY;
     }
@@ -126,11 +132,11 @@ public class EventSwitchPlayers extends TableImpl<EventSwitchPlayersRecord> {
 
     @Override
     public List<ForeignKey<EventSwitchPlayersRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<EventSwitchPlayersRecord, ?>>asList(Keys.FK__GAME_SWITCH, Keys.FK_EVENT_SWITCH_PLAYERS_TEAM, Keys.FK__PLAYER_ENTER, Keys.FK__PLAYER_EXIT);
+        return Arrays.<ForeignKey<EventSwitchPlayersRecord, ?>>asList(Keys.FK_EVENT_SWITCH_PLAYERS_GAME, Keys.FK_EVENT_SWITCH_PLAYERS_TEAM, Keys.FK__PLAYER_ENTER, Keys.FK__PLAYER_EXIT);
     }
 
     public Game game() {
-        return new Game(this, Keys.FK__GAME_SWITCH);
+        return new Game(this, Keys.FK_EVENT_SWITCH_PLAYERS_GAME);
     }
 
     public Team team() {

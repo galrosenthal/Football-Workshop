@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -33,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Season extends TableImpl<SeasonRecord> {
 
-    private static final long serialVersionUID = -2137739651;
+    private static final long serialVersionUID = 120536708;
 
     /**
      * The reference instance of <code>fwdb.season</code>
@@ -51,7 +52,7 @@ public class Season extends TableImpl<SeasonRecord> {
     /**
      * The column <code>fwdb.season.season_id</code>.
      */
-    public final TableField<SeasonRecord, Integer> SEASON_ID = createField(DSL.name("season_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<SeasonRecord, Integer> SEASON_ID = createField(DSL.name("season_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>fwdb.season.league_name</code>.
@@ -114,6 +115,11 @@ public class Season extends TableImpl<SeasonRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.SEASON_LEAGUE_NAME, Indexes.SEASON_YEARS);
+    }
+
+    @Override
+    public Identity<SeasonRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_SEASON;
     }
 
     @Override

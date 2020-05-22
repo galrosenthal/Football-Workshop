@@ -4,6 +4,7 @@ import Domain.EntityManager;
 import Domain.Exceptions.*;
 import Domain.Users.*;
 import Service.UIController;
+import sun.net.ftp.FtpDirEntry;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -20,6 +21,7 @@ public class Team {
     private List<Season> seasons;
     private List<Stadium> stadiums;
     private TeamStatus status;
+    private HashMap<TeamManager, List<TeamManagerPermissions>> permissionsPerTeamManager;
 
 
     public List<TeamOwner> getTeamOwners() {
@@ -29,7 +31,7 @@ public class Team {
     public List<String> getTeamOwnersString() {
         List<String> teamOwnersString = new ArrayList<>();
 
-        for (TeamOwner to : teamOwners){
+        for (TeamOwner to : teamOwners) {
             teamOwnersString.add(to.toString());
         }
 
@@ -44,6 +46,7 @@ public class Team {
         playersAndCoaches = new HashSet<>(anotherTeam.playersAndCoaches);
         status = TeamStatus.OPEN;
         seasons = new ArrayList<>();
+        permissionsPerTeamManager = new HashMap<>(anotherTeam.permissionsPerTeamManager);
 
     }
 
@@ -54,6 +57,7 @@ public class Team {
         seasons = new ArrayList<>();
         stadiums = new ArrayList<>();
         status = TeamStatus.OPEN;
+        permissionsPerTeamManager = new HashMap<>();
     }
 
     public Team(String teamName, TeamOwner to) {
@@ -65,92 +69,80 @@ public class Team {
         status = TeamStatus.OPEN;
         seasons = new ArrayList<>();
         this.teamName = teamName;
+        permissionsPerTeamManager = new HashMap<>();
     }
 
 
     /**
      * Add a Player to the team,
      * can only be requested by the Team Owner
+     *
      * @param teamPlayer a register user that represents a player
      * @return true if the player added successfully to the Team.
      */
-    public boolean addTeamPlayer(TeamOwner townr, Role teamPlayer)
-    {
-        if(!teamOwners.contains(townr)|| status != TeamStatus.OPEN)
-        {
+    public boolean addTeamPlayer(TeamOwner townr, Role teamPlayer) {
+        if (!teamOwners.contains(townr) || status != TeamStatus.OPEN) {
             return false;
         }
-        if(teamPlayer.getType() == RoleTypes.PLAYER)
-        {
-            return addConnection((Player)teamPlayer);
+        if (teamPlayer.getType() == RoleTypes.PLAYER) {
+            return addConnection((Player) teamPlayer);
         }
         return false;
     }
 
     private boolean addConnection(PartOfTeam teamConnectionAsset) {
-        BelongToTeam bg = new BelongToTeam(this,teamConnectionAsset);
-        if(playersAndCoaches.contains(bg))
-        {
+        BelongToTeam bg = new BelongToTeam(this, teamConnectionAsset);
+        if (playersAndCoaches.contains(bg)) {
             return false;
         }
         playersAndCoaches.add(bg);
         boolean addedPlayerConnection = teamConnectionAsset.addTeamConnection(bg);
-        if(addedPlayerConnection)
-        {
+        if (addedPlayerConnection) {
             return true;
-        }
-        else
-        {
+        } else {
             playersAndCoaches.remove(bg);
             return false;
         }
     }
 
-    public boolean addTeamCoach(TeamOwner townr, Role coach)
-    {
-        if(!teamOwners.contains(townr) || status != TeamStatus.OPEN)
-        {
+    public boolean addTeamCoach(TeamOwner townr, Role coach) {
+        if (!teamOwners.contains(townr) || status != TeamStatus.OPEN) {
             return false;
         }
-        if(coach.getType() == RoleTypes.COACH)
-        {
-            return addConnection((Coach)coach);
+        if (coach.getType() == RoleTypes.COACH) {
+            return addConnection((Coach) coach);
         }
         return false;
     }
 
 
-    public boolean addTeamManager(TeamOwner townr, Role teamManager)
-    {
-        if(!teamOwners.contains(townr) || status != TeamStatus.OPEN)
-        {
+    public boolean addTeamManager(TeamOwner townr, Role teamManager) {
+        if (!teamOwners.contains(townr) || status != TeamStatus.OPEN) {
             return false;
         }
-        if(teamManager.getType() == RoleTypes.TEAM_MANAGER)
-        {
+        if (teamManager.getType() == RoleTypes.TEAM_MANAGER) {
             boolean managerAdded = teamManagers.add((TeamManager) teamManager);
-            if(managerAdded)
-            {
+            if (managerAdded) {
+                this.permissionsPerTeamManager.put((TeamManager) teamManager, new ArrayList<>());
                 return true;
             }
         }
         return false;
     }
 
-    public boolean addTeamOwner(Role teamOwner)
-    {
-        if(teamOwner == null || status != TeamStatus.OPEN){
+    public boolean addTeamOwner(Role teamOwner) {
+        if (teamOwner == null || status != TeamStatus.OPEN) {
             return false;
         }
-        if(teamOwner.getType() == RoleTypes.TEAM_OWNER && !teamOwners.contains(teamOwner)){
-            return teamOwners.add((TeamOwner)teamOwner);
+        if (teamOwner.getType() == RoleTypes.TEAM_OWNER && !teamOwners.contains(teamOwner)) {
+            return teamOwners.add((TeamOwner) teamOwner);
         }
 
         return false;
     }
 
-    public boolean removeTeamOwner(TeamOwner teamOwner){
-        if(!teamOwners.contains(teamOwner)|| status != TeamStatus.OPEN){
+    public boolean removeTeamOwner(TeamOwner teamOwner) {
+        if (!teamOwners.contains(teamOwner) || status != TeamStatus.OPEN) {
             return false;
         }
 
@@ -159,12 +151,10 @@ public class Team {
 
     public List<Player> getTeamPlayers() {
         List<Player> allPlayersInTeam = new ArrayList<>();
-        for (BelongToTeam po: playersAndCoaches)
-        {
+        for (BelongToTeam po : playersAndCoaches) {
             PartOfTeam teamAssetConnection = po.getAssetOfTheTeam();
-            if(teamAssetConnection instanceof Player)
-            {
-                allPlayersInTeam.add((Player)teamAssetConnection);
+            if (teamAssetConnection instanceof Player) {
+                allPlayersInTeam.add((Player) teamAssetConnection);
             }
         }
         return allPlayersInTeam;
@@ -172,11 +162,9 @@ public class Team {
 
     public List<Coach> getTeamCoaches() {
         List<Coach> allPlayersInTeam = new ArrayList<>();
-        for (BelongToTeam po: playersAndCoaches)
-        {
+        for (BelongToTeam po : playersAndCoaches) {
             PartOfTeam teamAssetConnection = po.getAssetOfTheTeam();
-            if(teamAssetConnection instanceof Coach)
-            {
+            if (teamAssetConnection instanceof Coach) {
                 allPlayersInTeam.add((Coach) teamAssetConnection);
             }
         }
@@ -194,8 +182,8 @@ public class Team {
         Team team = (Team) o;
         return teamOwners.equals(team.teamOwners) &&
                 teamManagers.equals(team.teamManagers) &&
-                stadiums.equals(team.stadiums)&&
-                playersAndCoaches.equals(team.playersAndCoaches)&&
+                stadiums.equals(team.stadiums) &&
+                playersAndCoaches.equals(team.playersAndCoaches) &&
                 teamName.equals(team.teamName);
 //        return this.teamOwners.size() == team.teamOwners.size() &&
 //               this.teamManagers.size() == team.teamManagers.size() &&
@@ -314,9 +302,8 @@ public class Team {
         StringBuilder stadiumString = new StringBuilder();
         stadiumString.append("Stadiums: \n");
 
-        for (int i = 0; i < stadiums.size(); i++)
-        {
-            stadiumString.append(i+1).append(". ");
+        for (int i = 0; i < stadiums.size(); i++) {
+            stadiumString.append(i + 1).append(". ");
             stadiumString.append(stadiums.get(i).getName());
             stadiumString.append("\n");
         }
@@ -327,9 +314,8 @@ public class Team {
         StringBuilder teamOwnersString = new StringBuilder();
         teamOwnersString.append("Owners: \n");
 
-        for (int i = 0; i < teamOwners.size(); i++)
-        {
-            teamOwnersString.append(i+1).append(". ");
+        for (int i = 0; i < teamOwners.size(); i++) {
+            teamOwnersString.append(i + 1).append(". ");
             teamOwnersString.append(teamOwners.get(i).getSystemUser().getName());
             teamOwnersString.append("\n");
         }
@@ -340,9 +326,8 @@ public class Team {
         StringBuilder teamManagersString = new StringBuilder();
         teamManagersString.append("Managers: \n");
 
-        for (int i = 0; i < teamManagers.size(); i++)
-        {
-            teamManagersString.append(i+1).append(". ");
+        for (int i = 0; i < teamManagers.size(); i++) {
+            teamManagersString.append(i + 1).append(". ");
             teamManagersString.append(teamManagers.get(i).getSystemUser().getName());
             teamManagersString.append("\n");
         }
@@ -353,9 +338,8 @@ public class Team {
         StringBuilder teamCoachesString = new StringBuilder();
         teamCoachesString.append("Coaches: \n");
         List<Coach> teamCoaches = getTeamCoaches();
-        for (int i = 0; i < teamCoaches.size(); i++)
-        {
-            teamCoachesString.append(i+1).append(". ");
+        for (int i = 0; i < teamCoaches.size(); i++) {
+            teamCoachesString.append(i + 1).append(". ");
             teamCoachesString.append(teamCoaches.get(i).getSystemUser().getName());
             teamCoachesString.append("\n");
         }
@@ -367,9 +351,8 @@ public class Team {
         teamPlayersString.append("Players: \n");
 
         List<Player> teamPlayers = getTeamPlayers();
-        for (int i = 0; i < teamPlayers.size(); i++)
-        {
-            teamPlayersString.append(i+1).append(". ");
+        for (int i = 0; i < teamPlayers.size(); i++) {
+            teamPlayersString.append(i + 1).append(". ");
             teamPlayersString.append(teamPlayers.get(i).getSystemUser().getName());
             teamPlayersString.append("\n");
         }
@@ -393,7 +376,8 @@ public class Team {
     }
 
     /**
-     *Getter Stadiums
+     * Getter Stadiums
+     *
      * @return list of Stadiums
      */
     public List<Stadium> getStadiums() {
@@ -401,9 +385,7 @@ public class Team {
     }
 
     /**
-     *
-     * @param stadium
-     * add stadium to team
+     * @param stadium add stadium to team
      * @return true if stadium added successfully!
      */
     public boolean addStadium(Stadium stadium) {
@@ -414,14 +396,11 @@ public class Team {
     }
 
     /**
-     *
-     * @param stadium
-     * remove stadium to team
+     * @param stadium remove stadium to team
      * @return true if stadium removed successfully!
      */
     public boolean removeStadium(Stadium stadium) {
-        if(this.stadiums.contains(stadium))
-        {
+        if (this.stadiums.contains(stadium)) {
             this.stadiums.remove(stadium);
             return true;
         }
@@ -430,6 +409,7 @@ public class Team {
 
     /**
      * Each team has a lot of Assets {@link TeamAsset},
+     *
      * @return a list of all the team assets
      */
     public List<Asset> getAllAssets() {
@@ -444,12 +424,12 @@ public class Team {
 
     /**
      * Checks whether or not the teamOwner is owner if this team
+     *
      * @param teamOwner the team owner to validate with
      * @return true if teamOwner is this team wner.
      */
     public boolean isTeamOwner(TeamOwner teamOwner) {
-        if(teamOwner != null && teamOwners.contains(teamOwner))
-        {
+        if (teamOwner != null && teamOwners.contains(teamOwner)) {
             return true;
         }
         return false;
@@ -458,6 +438,7 @@ public class Team {
     /**
      * General Function to add an asset to the team,
      * receives an assetName a teamOwner and an AssetType
+     *
      * @param assetName the assetName suppose to be the Username of the {@link SystemUser} or the name of the {@link Stadium}
      * @param teamOwner the {@link TeamOwner} of this team
      * @param assetType the {@link TeamAsset} of the user to add to the team
@@ -466,61 +447,47 @@ public class Team {
      * @throws StadiumNotFoundException
      */
     public boolean addAsset(String assetName, TeamOwner teamOwner, TeamAsset assetType)
-            throws UserNotFoundException,StadiumNotFoundException {
+            throws UserNotFoundException, StadiumNotFoundException {
 
         Asset teamAsset;
         SystemUser assetUser;
-        if(!assetType.equals(TeamAsset.STADIUM)) {
+        if (!assetType.equals(TeamAsset.STADIUM)) {
             assetUser = EntityManager.getInstance().getUser(assetName);
             if (assetUser == null) {
                 throw new UserNotFoundException("Could not find user " + assetName);
             }
-        }
-        else
-        {
+        } else {
             //Suppose to add a stadium as an asset
             assetUser = null;
         }
 
-        if(assetType.equals(TeamAsset.PLAYER))
-        {
-            teamAsset = (Player)assetUser.getRole(RoleTypes.PLAYER);
-            if(teamAsset == null)
-            {
+        if (assetType.equals(TeamAsset.PLAYER)) {
+            teamAsset = (Player) assetUser.getRole(RoleTypes.PLAYER);
+            if (teamAsset == null) {
                 Date playerBDate = getPlayerBirthDate();
-                teamAsset = new Player(assetUser,playerBDate);
+                teamAsset = new Player(assetUser, playerBDate);
             }
-        }
-        else if(assetType.equals(TeamAsset.COACH))
-        {
-            teamAsset = (Coach)assetUser.getRole(RoleTypes.COACH);
-            if(teamAsset == null)
-            {
+        } else if (assetType.equals(TeamAsset.COACH)) {
+            teamAsset = (Coach) assetUser.getRole(RoleTypes.COACH);
+            if (teamAsset == null) {
                 teamAsset = new Coach(assetUser);
             }
-        }
-        else if(assetType.equals(TeamAsset.TEAM_MANAGER))
-        {
-            teamAsset = (TeamManager)assetUser.getRole(RoleTypes.TEAM_MANAGER);
-            if(teamAsset == null)
-            {
+        } else if (assetType.equals(TeamAsset.TEAM_MANAGER)) {
+            teamAsset = (TeamManager) assetUser.getRole(RoleTypes.TEAM_MANAGER);
+            if (teamAsset == null) {
                 teamAsset = new TeamManager(assetUser);
             }
-        }
-        else
-        {
+        } else {
             /**
              * assetType Should be TeamAsset.STADIUM
              */
             teamAsset = EntityManager.getInstance().getStadium(assetName);
-            if(teamAsset == null)
-            {
+            if (teamAsset == null) {
                 throw new StadiumNotFoundException("Could not find a stadium by the given name" + assetName);
             }
         }
 
-        if(!teamAsset.addTeam(this,teamOwner))
-        {
+        if (!teamAsset.addTeam(this, teamOwner)) {
             return false;
         }
         return teamAsset.addAllProperties(this);
@@ -530,19 +497,18 @@ public class Team {
 
     /**
      * Get the player date of birth from the user
+     *
      * @return the birth date of the player as java.util.Date
      */
     private Date getPlayerBirthDate() {
         String bDate;
         do {
             bDate = UIController.receiveString("Please insert Player Birth Date in format dd/MM/yyyy");
-        }while (!bDate.matches("^(3[01]|[12][0-9]|0[1-9])/(1[0-2]|0[1-9])/[0-9]{4}$"));
+        } while (!bDate.matches("^(3[01]|[12][0-9]|0[1-9])/(1[0-2]|0[1-9])/[0-9]{4}$"));
 
         try {
             return new SimpleDateFormat("dd/MM/yyyy").parse(bDate);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
 //            e.printStackTrace();
             return null;
         }
@@ -551,73 +517,71 @@ public class Team {
     }
 
 
-
     /**
      * Finds the season is now playing and returns it
+     *
      * @return the current season
      */
-    private Season getCurrentSeason(){
+    private Season getCurrentSeason() {
         Season currentSeason;
 
-        if(seasons.size() == 0){
+        if (seasons.size() == 0) {
             return null;
         }
         currentSeason = seasons.get(0);
-        for (Season s: seasons){
-            if(s.getYear().isAfter(currentSeason.getYear())){
+        for (Season s : seasons) {
+            if (s.getYear().isAfter(currentSeason.getYear())) {
                 currentSeason = s;
             }
         }
 
-        return  currentSeason;
+        return currentSeason;
     }
 
     /**
      * Finds the seasons is now playing, and returns all the seasons in the same year
+     *
      * @return the current seasons
      */
-    public List<Season> getCurrentSeasons(){
-        List<Season> currentSeasons= new ArrayList<>();
+    public List<Season> getCurrentSeasons() {
+        List<Season> currentSeasons = new ArrayList<>();
         Season currentSeason = getCurrentSeason();
 
-        if(seasons.size() == 0){
+        if (seasons.size() == 0) {
             return null;
         }
 
-        for (Season s: seasons){
-            if(s.getYear().equals(currentSeason.getYear())){
+        for (Season s : seasons) {
+            if (s.getYear().equals(currentSeason.getYear())) {
                 currentSeasons.add(s);
             }
         }
 
-        return  currentSeasons;
+        return currentSeasons;
     }
 
     public List<Season> getSeasons() {
         return seasons;
     }
 
-    public  boolean addSeason(Season season){
-        if(!seasons.contains(season)){
+    public boolean addSeason(Season season) {
+        if (!seasons.contains(season)) {
             seasons.add(season);
             return true;
         }
         return false;
     }
 
-    public  boolean removeSeason(Season season){
-        if(!seasons.contains(season)){
+    public boolean removeSeason(Season season) {
+        if (!seasons.contains(season)) {
             return false;
         }
         return seasons.remove(season);
     }
 
-    private boolean removePlayerOrCoach(PartOfTeam playerOrCoach)
-    {
-        for(BelongToTeam po: playersAndCoaches)
-        {
-            if(po.getAssetOfTheTeam().equals(playerOrCoach))
-            {
+    private boolean removePlayerOrCoach(PartOfTeam playerOrCoach) {
+        for (BelongToTeam po : playersAndCoaches) {
+            if (po.getAssetOfTheTeam().equals(playerOrCoach)) {
                 playersAndCoaches.remove(po);
                 return true;
             }
@@ -625,19 +589,25 @@ public class Team {
         return false;
     }
 
-    public boolean removeTeamPlayer(Player player){
+    public boolean removeTeamPlayer(Player player) {
         return removePlayerOrCoach(player);
     }
-    public boolean removeTeamCoach(Coach coach){
+
+    public boolean removeTeamCoach(Coach coach) {
         return removePlayerOrCoach(coach);
     }
-    public boolean removeTeamManager(TeamManager teamManager){
-        return teamManagers.remove(teamManager);
+
+    public boolean removeTeamManager(TeamManager teamManager) {
+        if (teamManagers.remove(teamManager)) {
+            return true;
+        }
+        return false;
     }
 
 
     /**
-     *  - assumption - propertyName is Enum type!
+     * - assumption - propertyName is Enum type!
+     *
      * @param asset
      * @param propertyName
      * @return List<Enum> - contains all the Enum options to property of the asset
@@ -646,4 +616,14 @@ public class Team {
         List<Enum> enumList = asset.getAllPropertyList(this, propertyName);
         return enumList;
     }
+
+    /**
+     * add or remove permission to team manager
+     * @param teamManager
+     * @param permissions
+     */
+    public void updatePermissionsPerTeamManger(TeamManager teamManager, List<TeamManagerPermissions> permissions) {
+        this.permissionsPerTeamManager.put(teamManager, permissions);
+    }
+
 }

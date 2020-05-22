@@ -10,8 +10,10 @@ import Domain.Users.SystemUser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class GameReport extends Report implements Subject {
+public class GameReport extends Report implements Subject, Observer {
 
     Game game;
     List<SystemUser> fans;
@@ -24,6 +26,7 @@ public class GameReport extends Report implements Subject {
     public GameReport(Game game) {
         this.game = game;
         this.fans = new ArrayList<>();
+        this.game.addObserver(this);
     }
 
     /**
@@ -92,6 +95,12 @@ public class GameReport extends Report implements Subject {
     public void notifyObserver(List<SystemUser> systemUsers, String alert) {
         Alert alertInstance = Alert.getInstance();
         alertInstance.update(systemUsers , alert);
+
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+
 
     }
 }

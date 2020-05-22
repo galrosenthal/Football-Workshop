@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row5;
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EventCard extends TableImpl<EventCardRecord> {
 
-    private static final long serialVersionUID = -704258473;
+    private static final long serialVersionUID = 1870047775;
 
     /**
      * The reference instance of <code>fwdb.event_card</code>
@@ -50,7 +51,7 @@ public class EventCard extends TableImpl<EventCardRecord> {
     /**
      * The column <code>fwdb.event_card.event_id</code>.
      */
-    public final TableField<EventCardRecord, Integer> EVENT_ID = createField(DSL.name("event_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<EventCardRecord, Integer> EVENT_ID = createField(DSL.name("event_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>fwdb.event_card.game_id</code>.
@@ -111,6 +112,11 @@ public class EventCard extends TableImpl<EventCardRecord> {
     }
 
     @Override
+    public Identity<EventCardRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_EVENT_CARD;
+    }
+
+    @Override
     public UniqueKey<EventCardRecord> getPrimaryKey() {
         return Keys.KEY_EVENT_CARD_PRIMARY;
     }
@@ -122,11 +128,11 @@ public class EventCard extends TableImpl<EventCardRecord> {
 
     @Override
     public List<ForeignKey<EventCardRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<EventCardRecord, ?>>asList(Keys.FK__GAME_CARD, Keys.FK__PLAYER_CARD);
+        return Arrays.<ForeignKey<EventCardRecord, ?>>asList(Keys.FK_EVENT_CARD_GAME, Keys.FK__PLAYER_CARD);
     }
 
     public Game game() {
-        return new Game(this, Keys.FK__GAME_CARD);
+        return new Game(this, Keys.FK_EVENT_CARD_GAME);
     }
 
     public Player player() {

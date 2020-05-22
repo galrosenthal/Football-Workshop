@@ -4,6 +4,7 @@
 package DB.Tables;
 
 
+import DB.Tables.tables.Alert;
 import DB.Tables.tables.AssociationRepresentative;
 import DB.Tables.tables.Coach;
 import DB.Tables.tables.CoachInTeam;
@@ -51,12 +52,17 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Fwdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 970924228;
+    private static final long serialVersionUID = -651893468;
 
     /**
      * The reference instance of <code>fwdb</code>
      */
     public static final Fwdb FWDB = new Fwdb();
+
+    /**
+     * The table <code>fwdb.alert</code>.
+     */
+    public final Alert ALERT = Alert.ALERT;
 
     /**
      * The table <code>fwdb.association_representative</code>.
@@ -234,6 +240,7 @@ public class Fwdb extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
+            Alert.ALERT,
             AssociationRepresentative.ASSOCIATION_REPRESENTATIVE,
             Coach.COACH,
             CoachInTeam.COACH_IN_TEAM,

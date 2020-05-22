@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EventOffside extends TableImpl<EventOffsideRecord> {
 
-    private static final long serialVersionUID = 1760677985;
+    private static final long serialVersionUID = -1368836503;
 
     /**
      * The reference instance of <code>fwdb.event_offside</code>
@@ -49,7 +50,7 @@ public class EventOffside extends TableImpl<EventOffsideRecord> {
     /**
      * The column <code>fwdb.event_offside.event_id</code>.
      */
-    public final TableField<EventOffsideRecord, Integer> EVENT_ID = createField(DSL.name("event_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<EventOffsideRecord, Integer> EVENT_ID = createField(DSL.name("event_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>fwdb.event_offside.game_id</code>.
@@ -102,6 +103,11 @@ public class EventOffside extends TableImpl<EventOffsideRecord> {
     @Override
     public Schema getSchema() {
         return Fwdb.FWDB;
+    }
+
+    @Override
+    public Identity<EventOffsideRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_EVENT_OFFSIDE;
     }
 
     @Override

@@ -18,6 +18,9 @@ public class SystemUser extends User implements Fan {
     protected String username;
     private String password; /**  password is in hash format */
     private String name;
+    private String email;
+    private boolean alertEmail;
+
 
 
     @Override
@@ -30,11 +33,13 @@ public class SystemUser extends User implements Fan {
         return false;
     }
 
-    public SystemUser(String username, String password, String name) {
+    public SystemUser(String username, String password, String name , String email, boolean alertEmail) {
         this.roles = new ArrayList<>();
         this.username = username;
         this.name = name;
         this.password = password;
+        this.email = email;
+        this.alertEmail = alertEmail;
         gamesAlert = new ArrayList<>();
         EntityManager.getInstance().addUser(this);
     }
@@ -45,6 +50,8 @@ public class SystemUser extends User implements Fan {
         this.username = username;
         this.name = name;
         gamesAlert = new ArrayList<>();
+        this.email = "";
+        this.alertEmail = false;
         EntityManager.getInstance().addUser(this);
     }
 
