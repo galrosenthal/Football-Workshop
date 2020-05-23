@@ -1,12 +1,13 @@
 package Service;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.Exceptions.TeamAlreadyExistsException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.*;
 import Domain.Users.*;
 import org.junit.*;
-import Domain.Users.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -15,9 +16,12 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ARControllerTest {
+
     @BeforeClass
     public static void beforeClass() throws Exception {
         EntityManager.getInstance().clearAll();
+        DBManager.getInstance().startTest();
+        DBManagerForTest.startConnection();
     }
 
     @Before
@@ -145,53 +149,58 @@ public class ARControllerTest {
     @Test
     public void addReferee2UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 5);
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 9311));
         AssociationRepresentativeStub.setSelector(0);
         UIController.setSelector(9311);
 
         assertFalse(ARController.addReferee(systemUser));
     }
+
     @Test
     public void addReferee3UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 5);
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 9311));
         AssociationRepresentativeStub.setSelector(0);
         UIController.setSelector(9312);
 
         assertFalse(ARController.addReferee(systemUser));
     }
+
     @Test
     public void addReferee4UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 5);
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 9311));
         AssociationRepresentativeStub.setSelector(1);
         UIController.setSelector(9311);
 
         assertTrue(ARController.addReferee(systemUser));
     }
+
     @Test
     public void addReferee5UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 5);
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 9311));
         AssociationRepresentativeStub.setSelector(1);
         UIController.setSelector(9312);
 
         assertTrue(ARController.addReferee(systemUser));
     }
+
     @Test
     public void addRefereeITest() {
         SystemUser systemUser = getSystemUserAR();
 
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",93131));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 93131));
         UIController.setSelector(9311);
 
         assertTrue(ARController.addReferee(systemUser));
     }
+
     @Test
     public void addReferee2ITest() {
         SystemUser systemUser = getSystemUserAR();
 
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",93132));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 93132));
         UIController.setSelector(9311);
 
         assertFalse(ARController.addReferee(systemUser));
@@ -207,7 +216,7 @@ public class ARControllerTest {
 
         assertNotNull(refereeUser);
         assertTrue(refereeUser.isType(RoleTypes.REFEREE));
-        Referee refRole = (Referee)refereeUser.getRole(RoleTypes.REFEREE);
+        Referee refRole = (Referee) refereeUser.getRole(RoleTypes.REFEREE);
         assertTrue(refRole.getTraining().equals("VAR"));
     }
 
@@ -221,7 +230,7 @@ public class ARControllerTest {
 
         assertNotNull(refereeUser);
         assertTrue(refereeUser.isType(RoleTypes.REFEREE));
-        Referee refRole = (Referee)refereeUser.getRole(RoleTypes.REFEREE);
+        Referee refRole = (Referee) refereeUser.getRole(RoleTypes.REFEREE);
         assertTrue(refRole.getTraining().equals("VAR"));
     }
 
@@ -229,7 +238,7 @@ public class ARControllerTest {
     public void addReferee5ITest() {
         SystemUser systemUser = getSystemUserAR();
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
-        new Referee(refereeUser,"training");
+        new Referee(refereeUser, "training");
 
         UIController.setSelector(9311);
         //The user is already a referee
@@ -253,7 +262,7 @@ public class ARControllerTest {
     public void removeReferee3UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         AssociationRepresentativeStub.setSelector(0);
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 9311));
         UIController.setSelector(9321);
 
         assertFalse(ARController.removeReferee(systemUser));
@@ -263,7 +272,7 @@ public class ARControllerTest {
     public void removeReferee4UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         AssociationRepresentativeStub.setSelector(1);
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 9311));
         UIController.setSelector(9321);
 
         assertTrue(ARController.removeReferee(systemUser));
@@ -273,7 +282,7 @@ public class ARControllerTest {
     public void removeRefereeITest() {
         SystemUser systemUser = getSystemUserAR();
 
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName",9311));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "refName", 9311));
         UIController.setSelector(9321);
 
         assertTrue(ARController.removeReferee(systemUser));
@@ -336,7 +345,7 @@ public class ARControllerTest {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         UIController.setSelector(0);
         EntityManager.getInstance().addLeague(new League("newLeagueName"));
-        League league= EntityManager.getInstance().getLeagues().get(0);
+        League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         /*
         Expected: Choose a League Number
@@ -384,7 +393,7 @@ public class ARControllerTest {
         UIController.setSelector(0);
         AssociationRepresentativeStub.setSelector(1);
         EntityManager.getInstance().addLeague(new League("newLeagueName"));
-        League league= EntityManager.getInstance().getLeagues().get(0);
+        League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
         new Referee(refereeUser, "VAR");
@@ -400,7 +409,7 @@ public class ARControllerTest {
         UIController.setSelector(0);
         AssociationRepresentativeStub.setSelector(0);
         EntityManager.getInstance().addLeague(new League("newLeagueName"));
-        League league= EntityManager.getInstance().getLeagues().get(0);
+        League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
         new Referee(refereeUser, "VAR");
@@ -416,7 +425,7 @@ public class ARControllerTest {
         SystemUser systemUser = getSystemUserAR();
         UIController.setSelector(0);
         EntityManager.getInstance().addLeague(new League("newLeagueName"));
-        League league= EntityManager.getInstance().getLeagues().get(0);
+        League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
         new Referee(refereeUser, "VAR");
@@ -432,7 +441,7 @@ public class ARControllerTest {
         UIController.setSelector(0);
 
         EntityManager.getInstance().addLeague(new League("newLeagueName"));
-        League league= EntityManager.getInstance().getLeagues().get(0);
+        League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
         new Referee(refereeUser, "VAR");
@@ -461,8 +470,7 @@ public class ARControllerTest {
         try {
             ARController.registerNewTeam(arSystemUser);
             Assert.fail();
-        }
-        catch (TeamAlreadyExistsException e){
+        } catch (TeamAlreadyExistsException e) {
             e.printStackTrace();
         }
     }
@@ -474,8 +482,7 @@ public class ARControllerTest {
         try {
             ARController.registerNewTeam(arSystemUser);
             Assert.fail();
-        }
-        catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -483,7 +490,7 @@ public class ARControllerTest {
     @Test
     public void registerNewTeam4UTest() throws TeamAlreadyExistsException, UserNotFoundException {
         SystemUser arSystemUser = new SystemUserStub("stubUsername", "stub", 9104); //AR
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "toName",91041));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "toName", 91041));
         UIController.setSelector(91041);
         assertTrue(ARController.registerNewTeam(arSystemUser));
     }
@@ -491,7 +498,7 @@ public class ARControllerTest {
     @Test
     public void registerNewTeamITest() throws TeamAlreadyExistsException, UserNotFoundException {
         SystemUser systemUser = getSystemUserAR();
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "toName",91051));
+        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "toName", 91051));
         UIController.setSelector(91051);
         assertTrue(ARController.registerNewTeam(systemUser));
     }
@@ -526,7 +533,7 @@ public class ARControllerTest {
     }
 
     @Test
-    public void addTeamsToSeasonUTest(){
+    public void addTeamsToSeasonUTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 91121);
         //not ar
         assertFalse(ARController.addTeamsToSeason(systemUser));
@@ -553,7 +560,7 @@ public class ARControllerTest {
     }
 
     @Test
-    public void addTeamsToSeasonITest(){
+    public void addTeamsToSeasonITest() {
         SystemUser arSystemUser = getSystemUserAR();
         new TeamOwner(arSystemUser);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
@@ -597,9 +604,8 @@ public class ARControllerTest {
     }
 
 
-
     @Test
-    public void removeTeamsFromSeasonUTest(){
+    public void removeTeamsFromSeasonUTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 91221);
         //not ar
         assertFalse(ARController.removeTeamsFromSeason(systemUser));
@@ -625,7 +631,7 @@ public class ARControllerTest {
     }
 
     @Test
-    public void removeTeamsFromSeasonITest(){
+    public void removeTeamsFromSeasonITest() {
         SystemUser arSystemUser = getSystemUserAR();
         new TeamOwner(arSystemUser);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
@@ -775,6 +781,7 @@ public class ARControllerTest {
         assertTrue(ARController.setPointsPolicy(systemUser));
         assertTrue(league.getSeasons().get(0).getPointsPolicy().equals(3, 0, 1));
     }
+
     @Test
     public void setPointsPolicy5ITest() {
         SystemUser systemUser = getSystemUserAR();
@@ -782,9 +789,9 @@ public class ARControllerTest {
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
 
-        AssociationRepresentative aR = (AssociationRepresentative)systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        AssociationRepresentative aR = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
         try {
-            aR.addPointsPolicy(1,-1,0);
+            aR.addPointsPolicy(1, -1, 0);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -837,6 +844,7 @@ public class ARControllerTest {
         assertFalse(ARController.addSchedulingPolicy(systemUser));
         //The number of games on the same day must be positive integer
     }
+
     @Test
     public void addSchedulingPolicy5ITest() {
         SystemUser systemUser = getSystemUserAR();
@@ -849,5 +857,10 @@ public class ARControllerTest {
     @After
     public void tearDown() throws Exception {
         EntityManager.getInstance().clearAll();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
     }
 }

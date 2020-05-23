@@ -1,14 +1,20 @@
 package Domain.Game;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import DB.DBManager;
+import DB.DBManagerForTest;
+import org.junit.*;
 
 import static org.junit.Assert.*;
 
 public class LeagueTest {
 
     private League league;
+
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        DBManager.getInstance().startTest();
+        DBManagerForTest.startConnection();
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -45,5 +51,10 @@ public class LeagueTest {
     @After
     public void tearDown() throws Exception {
         this.league = null;
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
     }
 }

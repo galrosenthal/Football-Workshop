@@ -18,7 +18,7 @@ public class Controller {
     public static boolean systemBoot() {
         //Establishing connections to external DBMS
         //access DB
-        DBManager.getInstance().startConnection("jdbc:mysql://132.72.65.105:3306/fwdb_test");
+        DBManager.getInstance().startConnection();
         //extract system admins
 
         String username = UIController.receiveString("Please enter a system administrator username: ");

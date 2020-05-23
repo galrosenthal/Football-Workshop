@@ -1,6 +1,7 @@
 package Domain.Controllers;
 
 import DB.DBManager;
+import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.Exceptions.AssetCantBeModifiedException;
 import Domain.Exceptions.AssetsNotExistsException;
@@ -11,7 +12,6 @@ import Domain.Users.*;
 import Service.UIController;
 import org.junit.*;
 
-import java.io.IOException;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -34,8 +34,9 @@ public class TeamControllerTest {
     SystemUser teamOwnerUser4 = new SystemUser("merav", "Merav12345", "Mer","test@gmail.com", false);
 
     @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.getInstance().startConnection("jdbc:mysql://132.72.65.105:3306/fwdb_test");
+    public static void beforeClass(){
+        DBManager.getInstance().startTest();
+        DBManagerForTest.startConnection();
     }
 
     @Before
@@ -60,6 +61,11 @@ public class TeamControllerTest {
         EntityManager.getInstance().removeUserByReference(teamOwnerUser);
         EntityManager.getInstance().removeUserByReference(teamOwnerToAdd);
         hapoelBash.removeTeamOwner((TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
+        try {
+            DBManager.deleteData("fwdb_test");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -739,14 +745,6 @@ public class TeamControllerTest {
         EntityManager.getInstance().removeStadiumByReference(st1);
 
     }
-
-    @After
-    public void runAfterEachTest() throws Exception {
-        DBManager.deleteData("fwdb_test");
-    }
-
-
-
 
     @AfterClass
     public static void afterClass() {

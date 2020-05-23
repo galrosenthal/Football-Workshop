@@ -1,12 +1,12 @@
 package Domain.Users;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.Game.League;
 import Domain.Game.Season;
 import Domain.Game.SeasonStub;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,11 @@ import static org.junit.Assert.*;
 public class RefereeTest {
 
     private Referee referee;
+
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        DBManager.getInstance().startTest();
+        DBManagerForTest.startConnection();    }
 
     @Before
     public void setUp() {
@@ -100,5 +105,10 @@ public class RefereeTest {
     public void tearDown() {
         this.referee = null;
         EntityManager.getInstance().clearAll();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
     }
 }
