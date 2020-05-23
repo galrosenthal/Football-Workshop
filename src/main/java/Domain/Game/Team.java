@@ -614,7 +614,12 @@ public class Team {
         return removePlayerOrCoach(coach);
     }
     public boolean removeTeamManager(TeamManager teamManager){
-        return teamManagers.remove(teamManager);
+        if (teamManagers.remove(teamManager))
+        {
+            this.permissionsPerTeamManager.remove(teamManager);
+            return true;
+        }
+        return false;
     }
 
 
