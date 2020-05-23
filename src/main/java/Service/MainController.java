@@ -532,9 +532,12 @@ public class MainController {
     }
 
     public static boolean logout(String username) {
+        System.out.println("MAIN_CONTROLLER: Searching for username");
         SystemUser logoutUser = EntityManager.getInstance().getUser(username);
+        System.out.println("MAIN_CONTROLLER: Got the username");
         if(UIController.getConfirmation("Are you sure you want to logout?"))
         {
+            System.out.println("MAIN_CONTROLLER: Got Confirmation from user");
             EntityManager.getInstance().logout(logoutUser);
             AllSubscribers.getInstance().logout(username);
             return true;

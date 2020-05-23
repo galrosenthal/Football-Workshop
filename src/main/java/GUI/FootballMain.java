@@ -188,14 +188,23 @@ public class FootballMain extends AppLayout implements RouterLayout{
         Thread t = new Thread(() -> {
             UI.setCurrent(lastUI);
             VaadinSession.setCurrent(userSession);
+            System.out.println("Trying to logout");
             if(MainController.logout(username)){
+                System.out.println("MainController logged out successfully");
                 userSession.access(()-> userSession.setAttribute(USERNAME_ATTRIBUTE_NAME, null));
-                lastUI.access(() -> {
+                lastUI.accessSynchronously(() -> {
 
                     getUI().get().navigate("");
                     getUI().get().getPage().reload();
+                    System.out.println("Changed UI");
                 });
 
+                System.out.println("Logged out Successfully");
+
+            }
+            else
+            {
+                System.out.println("Could not logout something went wrong");
             }
         });
         t.setName("LOGOUT");
@@ -528,6 +537,8 @@ public class FootballMain extends AppLayout implements RouterLayout{
     public static void showConfirmBox(UI usedUI, String msg, StringBuilder answer ,Thread callingThread)
     {
         usedUI.access(() -> {
+            System.out.println("FOOTBALL_MAIN: Creating window");
+
             Dialog confirmBox = new Dialog();
             confirmBox.setCloseOnOutsideClick(false);
             confirmBox.setCloseOnEsc(false);
@@ -545,6 +556,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
             dismiss.getElement().setAttribute("theme", "error tertiary");
             Button approve = new Button("Submit");
             approve.addClickListener(e -> {
+                System.out.println("FOOTBALL_MAIN: User confirmed");
                 confirmBox.close();
                 callingThread.interrupt();
             });

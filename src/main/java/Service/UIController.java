@@ -643,12 +643,14 @@ public class UIController {
     public static boolean getConfirmation(String msg) {
         if(!isTest)
         {
+            System.out.println("UI_CONTROLLER: Asking user for Confirmation");
             UI lastUI = UI.getCurrent();
             VaadinSession se = VaadinSession.getCurrent();
             StringBuilder result = new StringBuilder();
             se.access(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
+                System.out.println("UI_CONTROLLER: access to GUI");
                 FootballMain.showConfirmBox(lastUI, msg, result, Thread.currentThread());
             });
 
