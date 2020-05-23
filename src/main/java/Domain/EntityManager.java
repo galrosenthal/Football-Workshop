@@ -72,62 +72,7 @@ public class EntityManager{
     }
 
 
-    public void initSystem() throws Exception {
-        Table systemUsersTable = DBManager.getInstance().getSystemUsers();
-        for (int i = 0; i < systemUsersTable.size(); i++) {
-            String username = systemUsersTable.getRecordValue(i, "username");
-            String name = systemUsersTable.getRecordValue(i, "name");
-            String[] roles = systemUsersTable.getRecordValue(i, "role").split(";");
 
-            SystemUser newUser = new SystemUser(username, name);
-            for (String role : roles) {
-                switch (role) {
-                    case "fan":
-                        newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.FAN));
-                        break;
-                    case "player":
-                        newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.PLAYER));
-                        break;
-                    case "coach":
-                        newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.COACH));
-                        break;
-                    case "team manager":
-                        newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.TEAM_MANAGER));
-                        break;
-                    case "team owner":
-                        newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.TEAM_OWNER));
-                        break;
-                    case "system admin":
-                        newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.SYSTEM_ADMIN));
-                        break;
-                    case "referee":
-                        newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.REFEREE));
-                        break;
-                    case "association representative":
-                        newUser.addNewRole(recreateRoleFromDB(username, RoleTypes.ASSOCIATION_REPRESENTATIVE));
-                        break;
-                    default:
-                        throw new Exception("Error in Role type in the DB");
-                }
-
-            }
-            allUsers.add(newUser);
-
-        }
-    }
-
-    private Role recreateRoleFromDB(String username, RoleTypes roleType) {
-        Role newRole;
-
-        try {
-            Table roleRecords = DBManager.getInstance().getRelevantRecords(username, roleType);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-
-    }
 
     public List<League> getLeagues() {
         return new ArrayList<League>(allLeagues);
@@ -608,6 +553,12 @@ public class EntityManager{
     }
 
 
+    /**
+     * validate String to Email REGEX
+     * @param emailStr
+     * @return true - valid Email
+     *         false - otherwise
+     */
     private static boolean validate(String emailStr) {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
         return matcher.find();
