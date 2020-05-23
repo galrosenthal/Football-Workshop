@@ -7,7 +7,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
 
 @Route(value = "AR", layout = FootballMain.class)
@@ -26,13 +25,101 @@ public class ARControls extends VerticalLayout {
     private void buildUI() {
 
         createRegNewTeamButton();
-//        createDefinePointsPolicyButton();
-//        createDefineGamesPolicyButton();
+        createDefinePointsPolicyButton();
+        createChangePointsPolicyButton();
+        createDefineGamesPolicyButton();
+        createActivateSchedulingPolicyButton();
         createAddLeaugeButton();
         createAddSeasonToLeagueButton();
         createAddRefereeButton();
         createRemoveRefereeButton();
         createAssignRefereeButton();
+        createAddTeamsToSeasonButton();
+        createRemoveTeamsFromSeasonButton();
+    }
+
+    private void createActivateSchedulingPolicyButton() {
+        String buttonTaskName = "Activate Scheduling Policy";
+        Button removeTeamsFromSeason = new Button(buttonTaskName);
+        removeTeamsFromSeason.addClickListener(e -> {
+
+            UI lastUI = UI.getCurrent();
+            VaadinSession se = VaadinSession.getCurrent();
+            String username = getUsernameFromSession();
+            Thread t = new Thread(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                MainController.activateSchedulingPolicy(username);
+            });
+            t.setName(buttonTaskName.toUpperCase());
+            t.start();
+
+        });
+
+        add(removeTeamsFromSeason);
+    }
+
+    private void createChangePointsPolicyButton() {
+        String buttonTaskName = "Set Points Policy";
+        Button removeTeamsFromSeason = new Button(buttonTaskName);
+        removeTeamsFromSeason.addClickListener(e -> {
+
+            UI lastUI = UI.getCurrent();
+            VaadinSession se = VaadinSession.getCurrent();
+            String username = getUsernameFromSession();
+            Thread t = new Thread(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                MainController.changePointsPolicy(username);
+            });
+            t.setName(buttonTaskName.toUpperCase());
+            t.start();
+
+        });
+
+        add(removeTeamsFromSeason);
+    }
+
+    private void createRemoveTeamsFromSeasonButton() {
+        String buttonTaskName = "Remove Teams To Season";
+        Button removeTeamsFromSeason = new Button(buttonTaskName);
+        removeTeamsFromSeason.addClickListener(e -> {
+
+            UI lastUI = UI.getCurrent();
+            VaadinSession se = VaadinSession.getCurrent();
+            String username = getUsernameFromSession();
+            Thread t = new Thread(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                MainController.removeTeamsFromSeason(username);
+            });
+            t.setName(buttonTaskName.toUpperCase());
+            t.start();
+
+        });
+
+        add(removeTeamsFromSeason);
+    }
+
+    private void createAddTeamsToSeasonButton() {
+        String buttonTaskName = "Add Teams To Season";
+        Button addTeamsToSeason = new Button(buttonTaskName);
+        addTeamsToSeason.addClickListener(e -> {
+
+            UI lastUI = UI.getCurrent();
+            VaadinSession se = VaadinSession.getCurrent();
+            String username = getUsernameFromSession();
+            Thread t = new Thread(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                MainController.addTeamsToSeason(username);
+            });
+            t.setName(buttonTaskName.toUpperCase());
+            t.start();
+
+        });
+
+        add(addTeamsToSeason);
     }
 
     private void createAssignRefereeButton() {
@@ -144,7 +231,7 @@ public class ARControls extends VerticalLayout {
 
 
     private void createDefineGamesPolicyButton() {
-        Button defineGamePolicy = new Button("Define Games Policy");
+        Button defineGamePolicy = new Button("Create New Games Policy");
         defineGamePolicy.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -153,9 +240,9 @@ public class ARControls extends VerticalLayout {
             Thread t = new Thread(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
-//                MainController.registerNewTeam(username);
+                MainController.createGamePolicy(username);
             });
-            t.setName("DEFINE POINTS POLICY");
+            t.setName("DEFINE GAME POLICY");
             t.start();
 
         });
@@ -164,7 +251,7 @@ public class ARControls extends VerticalLayout {
     }
 
     private void createDefinePointsPolicyButton() {
-        Button definePointPolicy = new Button("Define Points Policy");
+        Button definePointPolicy = new Button("Create New Points Policy");
         definePointPolicy.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -173,7 +260,7 @@ public class ARControls extends VerticalLayout {
             Thread t = new Thread(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
-//                MainController.registerNewTeam(username);
+                MainController.addPointPolicy(username);
             });
             t.setName("DEFINE POINTS POLICY");
             t.start();

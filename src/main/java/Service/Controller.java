@@ -205,7 +205,7 @@ public class Controller {
         int assetIndex;
 
         do{
-            assetIndex = UIController.receiveInt("Choose Asset Type: ");
+            assetIndex = UIController.receiveInt("Choose Asset Type: ", assetTypes);
         }while (!(assetIndex >= 0 && assetIndex < TeamAsset.values().length));
 
         return TeamAsset.values()[assetIndex];
@@ -245,7 +245,7 @@ public class Controller {
      * @return The user in the system with those credentials.
      * @throws UsernameOrPasswordIncorrectException If user name or password are incorrect.
      */
-    public static SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException {
+    public static SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException, AlreadyLoggedInUser {
         SystemUser SystemUser =  EntityManager.getInstance().login(usrNm, pswrd);
         return SystemUser;
     }
