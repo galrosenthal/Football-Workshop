@@ -457,6 +457,18 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
     }
 
+    /**
+     * /**
+     *  This function is adding {@code numOfInputs} text field to the Dialog window
+     *  each has a Label from the {@code messagesToDisplay} in the correct order
+     *
+     * @param verticalLayout the layout to add the Text Fields into
+     * @param numOfInputs the number of inputs to create
+     * @param multiInputsFromList the array of ComboBoxes to create
+     * @param close button of submit, needs to be removed.
+     * @param messagesToDisplay the array of messages splitted from the received message
+     * @param displayValues
+     */
     private static void createMultiListInputs(VerticalLayout verticalLayout, int numOfInputs, ComboBox<String>[] multiInputsFromList, Button close, String[] messagesToDisplay, Collection<String>... displayValues) {
         for (int i = 0; i < numOfInputs; i++) {
             multiInputsFromList[i] = new ComboBox<>();
@@ -470,7 +482,15 @@ public class FootballMain extends AppLayout implements RouterLayout{
         }
     }
 
-    private static void checkValidToSubmit(Button close, AbstractField[] fieldArray) {
+
+    /**
+     * Receives a button and Array of fields assocciated with the modal window
+     * and validates the each field in the array has value to inorder to enable
+     * the button
+     * @param close the button of the modal window
+     * @param fieldArray the array of all the fields in the window
+     */
+    private static void checkValidToSubmit(Button close, AbstractField... fieldArray) {
         for (AbstractField field:
                 fieldArray) {
             if(field.getValue() == null)
