@@ -177,7 +177,7 @@ public class MainController {
                 {
                     return false;
                 }
-                new Referee(user,allRelevantDetails[1]);
+                new Referee(user,RefereeQualification.valueOf(allRelevantDetails[1]));
                 break;
             case "system_admin":
                 new SystemAdmin(user);

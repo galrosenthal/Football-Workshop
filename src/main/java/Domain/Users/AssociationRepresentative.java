@@ -44,11 +44,11 @@ public class AssociationRepresentative extends Role {
      * If the user is already a referee then throw exception.
      *
      * @param newRefereeUser - SystemUser - a user to add a referee role to.
-     * @param training       - String - the training of the referee
+     * @param training       - RefereeQualification - the training of the referee
      * @return - boolean - true if the referee role was added successfully.
      * @throws RoleExistsAlreadyException - if the user is already a referee.
      */
-    public boolean addReferee(SystemUser newRefereeUser, String training) throws RoleExistsAlreadyException {
+    public boolean addReferee(SystemUser newRefereeUser, RefereeQualification training) throws RoleExistsAlreadyException {
         if (newRefereeUser.getRole(RoleTypes.REFEREE) != null) {
             throw new RoleExistsAlreadyException("Already a referee");
         }

@@ -27,7 +27,8 @@ public class EventsLoggerTest {
     @Test
     public void logGoalITest() {
         assertNull(eventsLogger.getGoals());
-        eventsLogger.logGoal(new TeamStub(0), new TeamStub(0), 1);
+        eventsLogger.logGoal(new TeamStub(0), new TeamStub(0),
+                new PlayerStub(new SystemUserStub("a", "a",555)),1);
         assertNotNull(eventsLogger.getGoals());
     }
 

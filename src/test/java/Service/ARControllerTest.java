@@ -208,7 +208,7 @@ public class ARControllerTest {
         assertNotNull(refereeUser);
         assertTrue(refereeUser.isType(RoleTypes.REFEREE));
         Referee refRole = (Referee)refereeUser.getRole(RoleTypes.REFEREE);
-        assertTrue(refRole.getTraining().equals("VAR"));
+        assertTrue(refRole.getTraining() == RefereeQualification.VAR_REFEREE);
     }
 
     @Test
@@ -222,14 +222,14 @@ public class ARControllerTest {
         assertNotNull(refereeUser);
         assertTrue(refereeUser.isType(RoleTypes.REFEREE));
         Referee refRole = (Referee)refereeUser.getRole(RoleTypes.REFEREE);
-        assertTrue(refRole.getTraining().equals("VAR"));
+        assertTrue(refRole.getTraining()== RefereeQualification.VAR_REFEREE);
     }
 
     @Test
     public void addReferee5ITest() {
         SystemUser systemUser = getSystemUserAR();
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
-        new Referee(refereeUser,"training");
+        new Referee(refereeUser,RefereeQualification.SIDE_REFEREE);
 
         UIController.setSelector(9311);
         //The user is already a referee
@@ -293,7 +293,7 @@ public class ARControllerTest {
     public void removeReferee3ITest() {
         SystemUser systemUser = getSystemUserAR();
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
-        new Referee(refereeUser, "VAR");
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
         UIController.setSelector(9321);
         //There are no referees
         assertTrue(ARController.removeReferee(systemUser));
@@ -387,7 +387,7 @@ public class ARControllerTest {
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
-        new Referee(refereeUser, "VAR");
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
         /*
         Expected: The referee has been assigned to the season successfully
          */
@@ -403,7 +403,7 @@ public class ARControllerTest {
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
-        new Referee(refereeUser, "VAR");
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
         /*
         Expected: This referee is already assigned to the chosen season
          */
@@ -419,7 +419,7 @@ public class ARControllerTest {
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
-        new Referee(refereeUser, "VAR");
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
         /*
         Expected: The referee has been assigned to the season successfully
          */
@@ -435,7 +435,7 @@ public class ARControllerTest {
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
-        new Referee(refereeUser, "VAR");
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
         /*
         Expected: The referee has been assigned to the season successfully
          */

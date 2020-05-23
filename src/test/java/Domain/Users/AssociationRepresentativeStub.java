@@ -23,7 +23,7 @@ public class AssociationRepresentativeStub extends AssociationRepresentative{
         return true;
     }
     @Override
-    public boolean addReferee(SystemUser newRefereeUser, String training) throws RoleExistsAlreadyException {
+    public boolean addReferee(SystemUser newRefereeUser, RefereeQualification training) throws RoleExistsAlreadyException {
         if (selector ==0) {
             throw new RoleExistsAlreadyException("Already a referee");
         }
