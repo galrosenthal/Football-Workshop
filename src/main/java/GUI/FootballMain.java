@@ -285,6 +285,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
             newWindow.setCloseOnEsc(false);
             int numOfInputs = msg.split(UIController.STRING_DELIMETER).length;
             TextField[] textFieldsArray = new TextField[numOfInputs];
+            ComboBox<String>[] multiInputsFromList = new ComboBox[numOfInputs];
 
             ComboBox<String> valuesForInt = new ComboBox<>();
             MultiSelectListBox<String> valuesForString = new MultiSelectListBox<>();
@@ -347,6 +348,10 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 {
                     returnedValue.append(picker.getValue().toString());
                 }
+                else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_MULTIPLE_INPUTS))
+                {
+
+                }
                 newWindow.close();
                 callingThread.interrupt();
 //            UI.setCurrent(lastUI);
@@ -357,7 +362,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
             {
                 String[] messages = msg.split(UIController.STRING_DELIMETER);
                 if(displayValues.length <= 0) {
-                    createMultiInputs(vl, numOfInputs, textFieldsArray, submit, messages);
+                    createMultiStringInputs(vl, numOfInputs, textFieldsArray, submit, messages);
                 }
                 else
                 {
@@ -401,7 +406,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
             else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS))
             {
                 String[] messages = msg.split(UIController.STRING_DELIMETER);
-                createMultiInputs(vl,numOfInputs,textFieldsArray,submit, messages);
+                createMultiStringInputs(vl,numOfInputs,textFieldsArray,submit, messages);
             }
             else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_DATE))
             {
@@ -418,6 +423,11 @@ public class FootballMain extends AppLayout implements RouterLayout{
                    }
                 });
             }
+            else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_MULTIPLE_INPUTS))
+            {
+                String[] messages = msg.split(UIController.STRING_DELIMETER);
+                createMultiListInputs(vl, numOfInputs,multiInputsFromList,submit, messages, displayValues);
+            }
 
 
             HorizontalLayout buttons = new HorizontalLayout();
@@ -431,30 +441,50 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
     }
 
+    private static void createMultiListInputs(VerticalLayout verticalLayout, int numOfInputs, ComboBox<String>[] multiInputsFromList, Button close, String[] messagesToDisplay, Collection<String>... displayValues) {
+        for (int i = 0; i < numOfInputs; i++) {
+            multiInputsFromList[i] = new ComboBox<>();
+            verticalLayout.add(new Label(messagesToDisplay[i]));
+            multiInputsFromList[i].setClearButtonVisible(true);
+            multiInputsFromList[i].setItems(displayValues[i]);
+            multiInputsFromList[i].addValueChangeListener(e -> {
+                    checkValidToSubmit(close,multiInputsFromList);
+            });
+            verticalLayout.add(multiInputsFromList[i]);
+        }
+    }
+
+    private static void checkValidToSubmit(Button close, AbstractField[] fieldArray) {
+        for (AbstractField field:
+                fieldArray) {
+            if(field.getValue() == null)
+            {
+                close.setEnabled(false);
+                return;
+            }
+        }
+        close.setEnabled(true);
+    }
 
 
     /**
      * This function is adding {@code numOfInputs} text field to the Dialog window
      * each has a Label from the {@code messagesToDisplay} in the correct order
-     * @param vl the layout to add the Text Fields into
+     * @param verticalLayout the layout to add the Text Fields into
      * @param numOfInputs the number of inputs to create
      * @param textFieldsArray the array of Text Fields which is empty
      * @param close button of submit, needs to be removed,
      * @param messagesToDisplay the array of messages splitted from the received message
      */
-    private static void createMultiInputs(VerticalLayout vl, int numOfInputs, TextField[] textFieldsArray, Button close, String[] messagesToDisplay) {
+    private static void createMultiStringInputs(VerticalLayout verticalLayout, int numOfInputs, TextField[] textFieldsArray, Button close, String[] messagesToDisplay) {
         for (int i = 0; i < numOfInputs; i++) {
             textFieldsArray[i] = new TextField();
-            textFieldsArray[i].setLabel(messagesToDisplay[i]);
+            verticalLayout.add(new Label(messagesToDisplay[i]));
             textFieldsArray[i].setValueChangeMode(ValueChangeMode.EAGER);
             textFieldsArray[i].addValueChangeListener(e -> {
-                if (!e.getValue().isEmpty()) {
-                    close.setEnabled(true);
-                } else {
-                    close.setEnabled(false);
-                }
+                checkValidToSubmit(close,textFieldsArray);
             });
-            vl.add(textFieldsArray[i]);
+            verticalLayout.add(textFieldsArray[i]);
         }
     }
 

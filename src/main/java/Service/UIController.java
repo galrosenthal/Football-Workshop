@@ -29,6 +29,7 @@ public class UIController {
     public static final String SEND_TYPE_FOR_GUI_INT = "int";
     public static final String SEND_TYPE_FOR_GUI_DATE = "date";
     public static final String SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS = "multiple";
+    public static final String SEND_TYPE_FOR_GUI_MULTIPLE_INPUTS = "multiple_inputs";
     public static final String CANCEL_TASK_VALUE = "canceled";
 
 
@@ -202,7 +203,14 @@ public class UIController {
             Future<Void> returnValue = se.access(() -> {
                 UI.setCurrent(lastUI);
                 VaadinSession.setCurrent(se);
-                FootballMain.showDialog(lastUI, messagesToDisplay, SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS, line,t ,valuesToChooseFrom);
+                if(valuesToChooseFrom.length <= 1)
+                {
+                    FootballMain.showDialog(lastUI, messagesToDisplay, SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS, line,t ,valuesToChooseFrom);
+                }
+                else
+                {
+                    FootballMain.showDialog(lastUI, messagesToDisplay, SEND_TYPE_FOR_GUI_MULTIPLE_INPUTS, line,t ,valuesToChooseFrom);
+                }
                 lastUI.access(()-> {
                     lastUI.push();
                 });
