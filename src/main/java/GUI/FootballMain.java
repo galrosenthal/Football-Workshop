@@ -12,6 +12,7 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Image;
@@ -26,14 +27,12 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Push;
-import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 
@@ -66,9 +65,9 @@ public class FootballMain extends AppLayout implements RouterLayout{
         final DrawerToggle drawerToggle = new DrawerToggle();
         drawerToggle.addClassName("menu-toggle");
         addToNavbar(drawerToggle);
-
         // image, logo
         final HorizontalLayout top = new HorizontalLayout();
+        top.setWidth("100%");
         top.setDefaultVerticalComponentAlignment(Alignment.CENTER);
         top.setClassName("menu-header");
 
@@ -88,15 +87,24 @@ public class FootballMain extends AppLayout implements RouterLayout{
             getUI().get().navigate("Registration");
         });
 
+        HorizontalLayout left = new HorizontalLayout();
+        left.setWidth("80%");
+        left.add(image,title);
+
+
+
         final HorizontalLayout buttons = new HorizontalLayout();
+//        buttons.setWidth("100%");
         buttons.setDefaultVerticalComponentAlignment(Alignment.CENTER);
         buttons.setAlignItems(Alignment.END);
         buttons.add(loginBtn,signupBtn);
-        buttons.setAlignSelf(Alignment.STRETCH);
+//        buttons.setAlignSelf(Alignment.STRETCH);
 
-        top.add(image, title);
-        top.add(title);
-        top.addAndExpand(buttons);
+        HorizontalLayout right = new HorizontalLayout();
+        right.setAlignItems(Alignment.END);
+        right.add(buttons);
+
+        top.addAndExpand(left,right);
 
         addToNavbar(top);
 
@@ -112,8 +120,8 @@ public class FootballMain extends AppLayout implements RouterLayout{
         logoutButton.getElement().setAttribute("title", "Logout (Ctrl+L)");
     }
 
-    public static void showAlert(String message) {
-        UI.getCurrent().access(() -> {
+    public static void showAlert(String message,UI seUI) {
+        seUI.access(() -> {
             Dialog alertWindow = new Dialog();
             VerticalLayout alertView = new VerticalLayout();
             Label msg = new Label(message);
@@ -125,9 +133,9 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
             alertWindow.add(alertView);
             alertWindow.setCloseOnOutsideClick(false);
+//            UI.getCurrent().access(alertWindow::open);
             alertWindow.open();
-
-            UI.getCurrent().push();
+            seUI.push();
         });
     }
 
@@ -172,6 +180,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
     private void logout() {
         VaadinSession userSession = VaadinSession.getCurrent();
+        MainController.logout((String)userSession.getAttribute(USERNAME_ATTRIBUTE_NAME));
         userSession.setAttribute(USERNAME_ATTRIBUTE_NAME, null);
         getUI().get().navigate("");
         getUI().get().getPage().reload();
@@ -276,9 +285,13 @@ public class FootballMain extends AppLayout implements RouterLayout{
             newWindow.setCloseOnEsc(false);
             int numOfInputs = msg.split(UIController.STRING_DELIMETER).length;
             TextField[] textFieldsArray = new TextField[numOfInputs];
+            ComboBox<String>[] multiInputsFromList = new ComboBox[numOfInputs];
 
             ComboBox<String> valuesForInt = new ComboBox<>();
             MultiSelectListBox<String> valuesForString = new MultiSelectListBox<>();
+
+            DatePicker picker = new DatePicker();
+
 
             Button submit = new Button("Submit");
             Button cancel = new Button("Cancel");
@@ -331,6 +344,14 @@ public class FootballMain extends AppLayout implements RouterLayout{
                     }
                     returnedValue.setLength(returnedValue.length()-1);
                 }
+                else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_DATE))
+                {
+                    returnedValue.append(picker.getValue().toString());
+                }
+                else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_MULTIPLE_INPUTS))
+                {
+
+                }
                 newWindow.close();
                 callingThread.interrupt();
 //            UI.setCurrent(lastUI);
@@ -341,12 +362,22 @@ public class FootballMain extends AppLayout implements RouterLayout{
             {
                 String[] messages = msg.split(UIController.STRING_DELIMETER);
                 if(displayValues.length <= 0) {
-                    createMultiInputs(vl, numOfInputs, textFieldsArray, submit, messages);
+                    createMultiStringInputs(vl, numOfInputs, textFieldsArray, submit, messages);
                 }
                 else
                 {
                     vl.add(valuesForString);
                     valuesForString.setItems(displayValues[0]);
+                    valuesForString.addValueChangeListener(e -> {
+                       if(valuesForString.getSelectedItems().size() > 0)
+                       {
+                           submit.setEnabled(true);
+                       }
+                       else
+                       {
+                           submit.setEnabled(false);
+                       }
+                    });
                 }
 
             }
@@ -375,7 +406,27 @@ public class FootballMain extends AppLayout implements RouterLayout{
             else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS))
             {
                 String[] messages = msg.split(UIController.STRING_DELIMETER);
-                createMultiInputs(vl,numOfInputs,textFieldsArray,submit, messages);
+                createMultiStringInputs(vl,numOfInputs,textFieldsArray,submit, messages);
+            }
+            else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_DATE))
+            {
+                vl.add(picker);
+                picker.setLabel(msg);
+                picker.addValueChangeListener(e -> {
+                   if(picker.getValue() != null)
+                   {
+                       submit.setEnabled(true);
+                   }
+                   else
+                   {
+                       submit.setEnabled(false);
+                   }
+                });
+            }
+            else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_MULTIPLE_INPUTS))
+            {
+                String[] messages = msg.split(UIController.STRING_DELIMETER);
+                createMultiListInputs(vl, numOfInputs,multiInputsFromList,submit, messages, displayValues);
             }
 
 
@@ -390,30 +441,50 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
     }
 
+    private static void createMultiListInputs(VerticalLayout verticalLayout, int numOfInputs, ComboBox<String>[] multiInputsFromList, Button close, String[] messagesToDisplay, Collection<String>... displayValues) {
+        for (int i = 0; i < numOfInputs; i++) {
+            multiInputsFromList[i] = new ComboBox<>();
+            verticalLayout.add(new Label(messagesToDisplay[i]));
+            multiInputsFromList[i].setClearButtonVisible(true);
+            multiInputsFromList[i].setItems(displayValues[i]);
+            multiInputsFromList[i].addValueChangeListener(e -> {
+                    checkValidToSubmit(close,multiInputsFromList);
+            });
+            verticalLayout.add(multiInputsFromList[i]);
+        }
+    }
+
+    private static void checkValidToSubmit(Button close, AbstractField[] fieldArray) {
+        for (AbstractField field:
+                fieldArray) {
+            if(field.getValue() == null)
+            {
+                close.setEnabled(false);
+                return;
+            }
+        }
+        close.setEnabled(true);
+    }
 
 
     /**
      * This function is adding {@code numOfInputs} text field to the Dialog window
      * each has a Label from the {@code messagesToDisplay} in the correct order
-     * @param vl the layout to add the Text Fields into
+     * @param verticalLayout the layout to add the Text Fields into
      * @param numOfInputs the number of inputs to create
      * @param textFieldsArray the array of Text Fields which is empty
      * @param close button of submit, needs to be removed,
      * @param messagesToDisplay the array of messages splitted from the received message
      */
-    private static void createMultiInputs(VerticalLayout vl, int numOfInputs, TextField[] textFieldsArray, Button close, String[] messagesToDisplay) {
+    private static void createMultiStringInputs(VerticalLayout verticalLayout, int numOfInputs, TextField[] textFieldsArray, Button close, String[] messagesToDisplay) {
         for (int i = 0; i < numOfInputs; i++) {
             textFieldsArray[i] = new TextField();
-            textFieldsArray[i].setLabel(messagesToDisplay[i]);
+            verticalLayout.add(new Label(messagesToDisplay[i]));
             textFieldsArray[i].setValueChangeMode(ValueChangeMode.EAGER);
             textFieldsArray[i].addValueChangeListener(e -> {
-                if (!e.getValue().isEmpty()) {
-                    close.setEnabled(true);
-                } else {
-                    close.setEnabled(false);
-                }
+                checkValidToSubmit(close,textFieldsArray);
             });
-            vl.add(textFieldsArray[i]);
+            verticalLayout.add(textFieldsArray[i]);
         }
     }
 

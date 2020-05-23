@@ -2,6 +2,7 @@ package Service;
 
 
 import Domain.Users.SystemUser;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class AllSubscribers implements Observer {
 
     private static AllSubscribers allSubscribersInstance = null;
 
-    private Map<String , VaadinSession> systemUsers;
+    private Map<String , UI> systemUsers;
 
 
 
@@ -50,13 +51,13 @@ public class AllSubscribers implements Observer {
 
     //add user after login
     //todo: check if after signUp - user is login????
-    public void login(String systemUser, VaadinSession session)
+    public void login(String systemUser, UI sessionUI)
     {
-        systemUsers.put(systemUser, session);
+        systemUsers.put(systemUser, sessionUI);
     }
     //remove user after logout
     //fixme! need to add logout function - UC
-    public void logout(SystemUser systemUser)
+    public void logout(String systemUser)
     {
         systemUsers.remove(systemUser);
     }
@@ -66,9 +67,9 @@ public class AllSubscribers implements Observer {
     {
         for (int i = 0; i < systemUsers.size(); i++) {
             //todo: alert!
-            VaadinSession session = this.systemUsers.get(systemUsers.get(i).getUsername());
+            UI sessionUI = this.systemUsers.get(systemUsers.get(i).getUsername());
             //session
-            UIController.showAlert(session , alert);
+            UIController.showAlert(sessionUI , alert);
         }
     }
 }

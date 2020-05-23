@@ -534,7 +534,7 @@ public class Team {
     private Date getPlayerBirthDate() {
         String bDate;
         do {
-            bDate = UIController.receiveString("Please insert Player Birth Date in format dd/MM/yyyy");
+            bDate = UIController.receiveDate("Please insert Player Birth Date in format dd/MM/yyyy");
         }while (!bDate.matches("^(3[01]|[12][0-9]|0[1-9])/(1[0-2]|0[1-9])/[0-9]{4}$"));
 
         try {
