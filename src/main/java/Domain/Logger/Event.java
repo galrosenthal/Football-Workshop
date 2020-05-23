@@ -24,6 +24,7 @@ public class Event {
         eventTypes.add("Penalty");
         eventTypes.add("Switch Players");
         eventTypes.add("Injury");
+        eventTypes.add("Game End");
         return eventTypes;
     }
 

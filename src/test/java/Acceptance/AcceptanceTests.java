@@ -559,7 +559,7 @@ public class AcceptanceTests {
         assertNotNull(refereeUser);
         assertTrue(refereeUser.isType(RoleTypes.REFEREE));
         Referee refRole = (Referee) refereeUser.getRole(RoleTypes.REFEREE);
-        assertTrue(refRole.getTraining().equals("VAR"));
+        assertTrue(refRole.getTraining().equals(RefereeQualification.VAR_REFEREE));
     }
 
     /**
@@ -571,7 +571,7 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         new AssociationRepresentative(systemUser);
         SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
-        new Referee(refereeUser, "training");
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
 
         UIController.setSelector(9311);
         //The user is already a referee
@@ -588,7 +588,7 @@ public class AcceptanceTests {
         new AssociationRepresentative(systemUser);
 
         SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
-        new Referee(refereeUser, "VAR");
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
         UIController.setSelector(9321);
         //There are no referees
         assertTrue(ARController.removeReferee(systemUser));
@@ -624,7 +624,7 @@ public class AcceptanceTests {
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
         SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
-        new Referee(refereeUser, "VAR");
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
         /*
         Expected: The referee has been assigned to the season successfully
          */
@@ -644,7 +644,7 @@ public class AcceptanceTests {
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
         SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
-        new Referee(refereeUser, "VAR");
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
         /*
         Expected: The referee has been assigned to the season successfully
          */
@@ -941,7 +941,7 @@ public class AcceptanceTests {
     @Test
     public void updateGameEventsATest() {
         SystemUser systemUser = new SystemUser("username", "name");
-        systemUser.addNewRole(new Referee(systemUser,"VAR"));
+        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.VAR_REFEREE));
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
         SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");

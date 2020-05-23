@@ -71,7 +71,7 @@ public class EntityManager{
         return entityManagerInstance;
     }
 
-/*
+
     public void initSystem() throws Exception {
         Table systemUsersTable = DBManager.getInstance().getSystemUsers();
         for (int i = 0; i < systemUsersTable.size(); i++) {
@@ -116,8 +116,6 @@ public class EntityManager{
         }
     }
 
- */
-/*
     private Role recreateRoleFromDB(String username, RoleTypes roleType) {
         Role newRole;
 
@@ -131,12 +129,10 @@ public class EntityManager{
 
     }
 
- */
-
     public List<League> getLeagues() {
-        return new ArrayList<>(allLeagues);
-        //return leagues;
+        return new ArrayList<League>(allLeagues);
     }
+
     public List<Team> getTeams() {
         return new ArrayList<Team>(allTeams);
     }
@@ -146,19 +142,12 @@ public class EntityManager{
      * @param username
      * @return The SystemUser with the username, if exists in the system.
      */
-    //todo: check is username in allUsers list,
-    // if yes return SystemUser,
-    // otherwise ask dbManager.getUserDetails(String username) and receive all Details to create user system
-    // then ask dbManager.getUserRoles(String username) - ask dbManager for each role Details.
     public SystemUser getUser(String username) {
-
         for (SystemUser su : allUsers) {
             if (su.getUsername().equals(username)) {
                 return su;
             }
         }
-
-
         return null;
     }
 
@@ -229,13 +218,11 @@ public class EntityManager{
      * @return - boolean - True if a league with a name that matches the given name already exists, else false
      */
     public boolean doesLeagueExists(String name){
-
         for (League league : allLeagues) {
             if (league.getName().equals(name)) {
                 return true;
             }
         }
-
         return false;
     }
 

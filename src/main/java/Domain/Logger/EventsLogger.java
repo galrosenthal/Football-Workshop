@@ -4,6 +4,7 @@ import Domain.Game.Team;
 import Domain.Users.Player;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class EventsLogger {
@@ -46,8 +47,8 @@ public class EventsLogger {
      * @param scoredOnTeam - Team - The scored on team - must play in this game
      * @param minute       - int - The minute the goal was scored - positive integer
      */
-    public void logGoal(Team scoringTeam, Team scoredOnTeam, int minute) {
-        Goal goal = new Goal(scoringTeam, scoredOnTeam, minute);
+    public void logGoal(Team scoringTeam, Team scoredOnTeam, Player playerScored, int minute) {
+        Goal goal = new Goal(scoringTeam, scoredOnTeam, playerScored,  minute);
         this.gameEvents.add(goal);
     }
 
@@ -113,7 +114,18 @@ public class EventsLogger {
         this.gameEvents.add(new Injury(player, minute));
     }
 
+    /**
+     * Adds a new game end event based on the given parameters
+     * @param endDate - Date - The time the game ended
+     * @param minute - int - The minute game ended (maybe it ended before the 90th or 120th minute)
+     */
+    public void logEndGameEvent(Date endDate, int minute) {
+        this.gameEvents.add(new GameEnd(endDate, minute));
+    }
+
     public List<Event> getGameEvents() {
         return gameEvents;
     }
+
+
 }
