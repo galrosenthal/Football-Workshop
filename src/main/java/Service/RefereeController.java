@@ -87,6 +87,7 @@ public class RefereeController {
             UIController.showNotification(e.getMessage());
             return false;
         }
+        UIController.showNotification("Game report saved successfully");
         return true;
     }
 

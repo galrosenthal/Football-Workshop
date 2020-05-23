@@ -28,6 +28,6 @@ public class Goal extends Event {
     @Override
     public String toString() {
         return super.toString()+" Goal scoringTeam=" + scoringTeam.getTeamName() + ", scoredOnTeam=" + scoredOnTeam.getTeamName() +
-                ", playerScored" + playerScored.getAssetName()+".";
+                ", playerScored=" + playerScored.getAssetName()+".";
     }
 }

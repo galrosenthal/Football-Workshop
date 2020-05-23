@@ -5,14 +5,16 @@ import Domain.Game.Game;
 import Domain.Game.League;
 import Domain.Game.StadiumStub;
 import Domain.Game.TeamStub;
-import Domain.Users.Player;
-import Domain.Users.PlayerStub;
-import Domain.Users.SystemUserStub;
+import Domain.Users.*;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -25,9 +27,13 @@ public class GameReportTest {
 
     @Before
     public void setUp() throws Exception {
-        firstTeam = new TeamStub(9511);
-        secondTeam =  new TeamStub(9512);
-        game = new Game(new StadiumStub("staName", "staLoca"), firstTeam,secondTeam, new Date(2020, 01, 01), null);
+        firstTeam = new TeamStub(10411);
+        secondTeam =  new TeamStub(10412);
+        List<Referee> referees = new ArrayList<>();
+        referees.add(new RefereeStub(new SystemUser("a","a","a"), RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("b","b","b"),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("c","c","c"),RefereeQualification.VAR_REFEREE));
+        game = new Game(new StadiumStub("staName", "staLoca"), firstTeam,secondTeam, new Date(2020, 01, 01), referees);
         gameReport = new GameReport(game);
     }
 
@@ -60,9 +66,22 @@ public class GameReportTest {
         game.addEndGame(new Date(),90);
 
         //Success
+        File file = null;
         try {
-            gameReport.produceReport("D:\\ZData");
+            //gameReport.produceReport("D:\\ZData");
+            file = gameReport.produceReport(".");//save to current project path
         } catch (Exception e) {
+        }
+        //Fail, file already exists
+        try {
+            gameReport.produceReport(".");
+            Assert.fail();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //Now delete the file
+        if(file != null){
+            assertTrue(file.delete());
         }
     }
 }
