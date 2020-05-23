@@ -138,6 +138,8 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
+        String notification =  scoringTeam.getTeamName() +" scored on "+scoredOnTeam.getTeamName();
+        notifyObservers(notification);
         this.eventsLogger.logGoal(scoringTeam, scoredOnTeam, minute);
     }
 
@@ -267,6 +269,11 @@ public class Game extends Observable {
     @Override
     public synchronized void addObserver(Observer o) {
         super.addObserver(o);
+    }
+
+    @Override
+    public void notifyObservers(Object arg) {
+        super.notifyObservers(arg);
     }
 
     @Override

@@ -11,12 +11,11 @@ import java.util.List;
 import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.activation.*;
 
 public class Alert implements Subject, Observer {
     private static Alert alertInstance = null;
-    private final String emailAddress = ""; //fixme!!!!!!!
-    private final String host =  "smtp.gmail.com";//todo: check
+    private final String emailAddress = "notifyfootballworkshop@gmail.com";
+    private final String host =  "smtp.gmail.com";
 
     /**
      * Returns an instance of dbManager. part of the Singleton design
@@ -63,11 +62,8 @@ public class Alert implements Subject, Observer {
      *         false - otherwise
      */
     public boolean sendEmail(String to, String from, String subject, String content) {
-        // Put recipient’s address
 
-        // Add recipient
-
-        // Add sender
+        // Add sender detail's
         final String username = "notifyfootballworkshop@gmail.com";//your Gmail username
         final String password = "footBALL!!12";//your Gmail password
 

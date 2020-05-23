@@ -441,6 +441,8 @@ public class EntityManager{
      * @param name Name.
      * @param usrNm User name.
      * @param pswrd Password.
+     * @param email  email address
+     * @param emailAlert - boolean  - if send via email - true, otherwise false
      * @return New user with those credentials.
      * @throws Exception If user name is already belongs to a user in the system, or
      * the password does not meet the security requirements.

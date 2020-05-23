@@ -69,6 +69,8 @@ public class MainController {
      *                              [1] = First name
      *                              [2] = Last name
      *                              [3] = Password
+     *                              [4] = email
+     *                              [5] = alert on Email - true , alert on application - false
      * @return true if the user was signed up successfully
      */
     public static boolean signup(List<String> userDetailsToRegister)
