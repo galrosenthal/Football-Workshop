@@ -17,17 +17,19 @@ public class Alert implements Subject, Observer {
     private final String emailAddress = "notifyfootballworkshop@gmail.com";
     private final String host =  "smtp.gmail.com";
 
+    private Alert()
+    {
+
+    }
+
     /**
-     * Returns an instance of dbManager. part of the Singleton design
+     * Returns an instance of Alert. part of the Singleton design
      *
-     * @return - DBManager - an instance of dbManager
+     * @return - Alert - an instance of dbManager
      */
     public static Alert getInstance() {
         if (alertInstance == null) {
             alertInstance = new Alert();
-            SystemUser a = new SystemUser("Administrator", "Aa123456", "admin", "test@gmail.com", false);
-            a.addNewRole(new SystemAdmin(a));
-            a.addNewRole(new AssociationRepresentative(a));
         }
 
         return alertInstance;
