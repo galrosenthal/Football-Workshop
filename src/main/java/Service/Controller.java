@@ -1,5 +1,6 @@
 package Service;
 
+import DB.DBManager;
 import Domain.Controllers.TeamController;
 import Domain.EntityManager;
 import Domain.Exceptions.*;
@@ -256,14 +257,16 @@ public class Controller {
      * @param name Name.
      * @param usrNm User name.
      * @param pswrd Password.
+     * @param email  email address
+     * @param emailAlert - boolean  - if send via email - true, otherwise false
      * @return New user with those credentials.
      * @throws Exception If user name is already belongs to a user in the system, or
      * the password does not meet the security requirements.
      */
-    public static SystemUser signUp(String name, String usrNm, String pswrd)
-            throws UsernameAlreadyExistsException, WeakPasswordException {
+    public static SystemUser signUp(String name, String usrNm, String pswrd, String email, boolean emailAlert)
+            throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException {
 
-        return EntityManager.getInstance().signUp(name, usrNm, pswrd);
+        return EntityManager.getInstance().signUp(name, usrNm, pswrd, email, emailAlert);
 
 
     }

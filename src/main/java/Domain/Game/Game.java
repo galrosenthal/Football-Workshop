@@ -7,11 +7,9 @@ import Domain.Users.Player;
 import Domain.Users.Referee;
 import Domain.Users.SystemUser;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-public class Game {
+public class Game extends Observable {
 
     private Stadium stadium;
     private Team homeTeam;
@@ -139,6 +137,8 @@ public class Game {
             throw new IllegalArgumentException("minute must be positive integer");
         }
         this.eventsLogger.logGoal(scoringTeam, scoredOnTeam,playerScored, minute);
+        String notification =  scoringTeam.getTeamName() +" scored on "+scoredOnTeam.getTeamName();
+        notifyObservers(notification);
     }
 
     /**
@@ -296,6 +296,26 @@ public class Game {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+//    public void setScore(Score score) {
+//        this.score = score;
+//    }
+
+
+    @Override
+    public synchronized void addObserver(Observer o) {
+        super.addObserver(o);
+    }
+
+    @Override
+    public void notifyObservers(Object arg) {
+        super.notifyObservers(arg);
+    }
+
+    @Override
+    public void notifyObservers() {
+        super.notifyObservers();
     }
 
 }
