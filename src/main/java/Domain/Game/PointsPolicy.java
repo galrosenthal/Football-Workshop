@@ -27,6 +27,17 @@ public class PointsPolicy {
         return EntityManager.getInstance().getPointsPolicy(3, 0, 1);
     }
 
+    public int getVictoryPoints() {
+        return victoryPoints;
+    }
+
+    public int getLossPoints() {
+        return lossPoints;
+    }
+
+    public int getTiePoints() {
+        return tiePoints;
+    }
 
     /**
      * Calculates and returns the points for each team for a given game.

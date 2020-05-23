@@ -23,7 +23,7 @@ public class SystemUserStub extends SystemUser{
 
     public SystemUserStub(String username,String name,String password, int selector)
     {
-        super(username,name,password);
+        super(username,name,password,"test@gmail.com", false);
         this.selector = selector;
         EntityManager.getInstance().addUser(this);
     }

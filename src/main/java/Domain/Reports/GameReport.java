@@ -25,8 +25,8 @@ public class GameReport extends Report implements Subject, Observer {
     List<SystemUser> fans;
 
     /**
-     *
      * constructor
+     *
      * @param game
      */
     public GameReport(Game game) {
@@ -37,6 +37,7 @@ public class GameReport extends Report implements Subject, Observer {
 
     /**
      * Add fan to fans list
+     *
      * @param systemUser - system user who wants to get alert of this game
      * @return true - if the fan added successfully to fans list and false otherwise
      */
@@ -53,7 +54,7 @@ public class GameReport extends Report implements Subject, Observer {
      * notify fans and referees - game has been start
      */
     public void getGameDate() {
-        if(java.time.LocalDate.now().equals(this.game.getGameDate())) {
+        if (java.time.LocalDate.now().equals(this.game.getGameDate())) {
             //notify referees and fans
             notifyReferees("Game has been started");
             notifyFans("Game has been started");
@@ -93,7 +94,7 @@ public class GameReport extends Report implements Subject, Observer {
     @Override
     public void notifyObserver(List<SystemUser> systemUsers, String alert) {
         Alert alertInstance = Alert.getInstance();
-        alertInstance.update(systemUsers , alert);
+        alertInstance.update(systemUsers, alert);
 
     }
 
@@ -105,6 +106,7 @@ public class GameReport extends Report implements Subject, Observer {
         }
 
     }
+
 
 
     /**
