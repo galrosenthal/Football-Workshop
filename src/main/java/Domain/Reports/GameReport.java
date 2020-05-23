@@ -2,13 +2,18 @@ package Domain.Reports;
 
 import Domain.Alert;
 import Domain.EntityManager;
-import Domain.Game.Game;
-import Domain.Game.Score;
+import Domain.Game.*;
 import Domain.Subject;
 import Domain.Users.Referee;
 import Domain.Users.SystemUser;
+import com.itextpdf.layout.element.Text;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfWriter;
 
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class GameReport extends Report implements Subject {
@@ -93,5 +98,51 @@ public class GameReport extends Report implements Subject {
         Alert alertInstance = Alert.getInstance();
         alertInstance.update(systemUsers , alert);
 
+    }
+
+
+    public void produceReport(String folderPath) throws Exception {
+        if(!game.hasFinished()){
+            throw new Exception("error, the game is not finished yet");
+        }
+        Team homeTeam = game.getHomeTeam();
+        Team awayTeam = game.getAwayTeam();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String startingDateInString = simpleDateFormat.format( game.getGameDate());
+        String homeTeamName = homeTeam.getTeamName();
+        String awayTeamName = awayTeam.getTeamName();
+        String docPath = folderPath+"/GameReport_"+homeTeamName+"_vs_"+awayTeamName+"_"+startingDateInString+".pdf";
+        //StringBuilder docContent = new StringBuilder();
+        /*docContent.append("Game Report");
+        docContent.append("\n\n"+homeTeamName+"\tvs.\t"+awayTeamName);
+        docContent.append("\nStadium: "+game.getStadium().getName());
+        docContent.append("\nStarting Date: "+game.getGameDate());
+        docContent.append("\nEnding Date: "+game.getEndDate());
+        docContent.append("\nEvents:");
+        for(String event : game.getGameEventsStringList()){
+            docContent.append("\n"+event);
+        }
+        Score gameScore = game.getScore();
+        docContent.append("\n\n"+gameScore.toString());*/
+
+        Document document = new Document();
+        PdfWriter.getInstance(document, new FileOutputStream(docPath));
+
+        document.open();
+        Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
+        //document.add(new Text("Game Report"));
+        document.add(new Chunk("\n\n"+homeTeamName+"\tvs.\t"+awayTeamName,font));
+        /*chunk.append("\n\n"+homeTeamName+"\tvs.\t"+awayTeamName);
+        chunk.append("\nStadium: "+game.getStadium().getName());
+        chunk.append("\nStarting Date: "+game.getGameDate());
+        chunk.append("\nEnding Date: "+game.getEndDate());
+        chunk.append("\nEvents:");
+        for(String event : game.getGameEventsStringList()){
+            chunk.append("\n"+event);
+        }
+        Score gameScore = game.getScore();
+        chunk.append("\n\n"+gameScore.toString());
+        document.add(chunk);*/
+        document.close();
     }
 }

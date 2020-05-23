@@ -3,6 +3,7 @@ package Domain.Game;
 import Domain.EntityManager;
 import Domain.Logger.EventsLogger;
 import Domain.Logger.Goal;
+import Domain.Reports.GameReport;
 import Domain.Users.Player;
 import Domain.Users.Referee;
 import Domain.Users.SystemUser;
@@ -20,6 +21,7 @@ public class Game {
     private Date endDate;
     private List<Referee> referees; // - maybe array?
     private EventsLogger eventsLogger;
+    private GameReport gameReport;
 
     public Game(Stadium stadium, Team homeTeam, Team awayTeam, Date gameDate, List<Referee> referees) {
         this.stadium = stadium;
@@ -29,6 +31,7 @@ public class Game {
         this.referees = referees;
         this.eventsLogger = new EventsLogger();
         this.endDate = null;
+        this.gameReport = new GameReport(this);
         //TODO: Add to EntityManager?
     }
 
@@ -298,4 +301,7 @@ public class Game {
         this.endDate = endDate;
     }
 
+    public GameReport getGameReport() {
+        return gameReport;
+    }
 }

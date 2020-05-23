@@ -11,6 +11,6 @@ public class RedCard extends Card {
 
     @Override
     public String toString() {
-        return "Red Card " + super.toString() ;
+        return super.toString()+" Red Card.";
     }
 }

@@ -578,4 +578,19 @@ public class UIController {
         }
         return null;
     }
+
+    /**
+     * Get a path to a folder, from the user.
+     * @return String that represents the path to a folder.
+     */
+    public static String receiveFolderPath() {
+        if (!isTest) {
+            //TODO: fill
+        } else {
+         //   if (selector == 0) {
+
+           // }
+        }
+        return null;
+    }
 }

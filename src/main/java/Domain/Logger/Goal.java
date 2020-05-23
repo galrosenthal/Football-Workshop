@@ -27,7 +27,7 @@ public class Goal extends Event {
 
     @Override
     public String toString() {
-        return "Goal scoringTeam=" + scoringTeam.getTeamName() + ", scoredOnTeam=" + scoredOnTeam.getTeamName() +
-                ", playerScored" + playerScored.getAssetName()+" "+super.toString();
+        return super.toString()+" Goal scoringTeam=" + scoringTeam.getTeamName() + ", scoredOnTeam=" + scoredOnTeam.getTeamName() +
+                ", playerScored" + playerScored.getAssetName()+".";
     }
 }

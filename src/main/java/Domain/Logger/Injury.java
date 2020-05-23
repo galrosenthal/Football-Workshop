@@ -16,6 +16,6 @@ public class Injury extends Event {
 
     @Override
     public String toString() {
-        return "Injury injuredPlayer=" + injuredPlayer.getAssetName() +" "+super.toString();
+        return super.toString()+" Injury injuredPlayer=" + injuredPlayer.getAssetName()+".";
     }
 }
