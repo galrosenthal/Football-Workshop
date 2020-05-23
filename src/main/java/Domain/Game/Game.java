@@ -301,7 +301,11 @@ public class Game extends Observable {
         this.endDate = endDate;
     }
 
-//    public void setScore(Score score) {
+    public GameReport getGameReport() {
+        return gameReport;
+    }
+
+    //    public void setScore(Score score) {
 //        this.score = score;
 //    }
 
