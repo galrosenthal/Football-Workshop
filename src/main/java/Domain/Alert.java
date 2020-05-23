@@ -66,7 +66,7 @@ public class Alert implements Subject, Observer {
     public boolean sendEmail(String to, String from, String subject, String content) {
 
         // Add sender detail's
-        final String username = "notifyfootballworkshop@gmail.com";//your Gmail username
+        final String username = this.emailAddress;//your Gmail username
         final String password = "footBALL!!12";//your Gmail password
 
         Properties props = new Properties();
