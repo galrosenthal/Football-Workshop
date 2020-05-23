@@ -31,8 +31,8 @@ public class DBManager {
         return dbManagerInstance;
     }
 
-    public static void deleteData() throws Exception {
-        DBHandler.getInstance().deleteData();
+    public static void deleteData(String dbName) throws Exception {
+        DBHandler.getInstance().deleteData(dbName);
     }
 
 

@@ -51,8 +51,6 @@ public class TeamControllerTest {
         EntityManager.getInstance().addUser(teamOwnerUser3);
         EntityManager.getInstance().addUser(teamOwnerUser4);
         UIController.setIsTest(true);
-
-
     }
 
     @After
@@ -684,7 +682,6 @@ public class TeamControllerTest {
 
     @Test
     public void reopenTeam2UTest(){
-
         TeamStub teamStub = new TeamStub(66271);
         SystemUserStub su1 = new SystemUserStub("rosengal", "gal",662721);
         PlayerStub p1 = (PlayerStub)su1.getRole(RoleTypes.PLAYER);
@@ -745,8 +742,10 @@ public class TeamControllerTest {
 
     @After
     public void runAfterEachTest() throws Exception {
-        DBManager.deleteData();
+        DBManager.deleteData("fwdb_test");
     }
+
+
 
 
     @AfterClass

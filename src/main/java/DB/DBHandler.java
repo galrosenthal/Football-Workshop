@@ -1,16 +1,17 @@
 package DB;
 
+import DB.Tables.Fwdb;
 import org.apache.ibatis.jdbc.ScriptRunner;
-import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Result;
-import org.jooq.SQLDialect;
+import org.jooq.*;
+import org.jooq.Table;
 import org.jooq.impl.*;
 
 import java.io.*;
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.jooq.impl.DSL.name;
@@ -68,11 +69,26 @@ public class DBHandler implements CRUD {
         return create;
     }
 
-    public void deleteData() throws Exception {
+    public void deleteData(String dbName) {
+        List<Table<?>> fwdbTables = Fwdb.FWDB.getTables();
+        DSLContext create = DBHandler.getContext();
+        create.fetch("SET FOREIGN_KEY_CHECKS = 0;");
+        for (int i = 0; i < fwdbTables.size(); i++) {
+            String tableName = "`"+dbName+"`.`"+fwdbTables.get(i).getName()+"`";
+            List<? extends ForeignKey<?, ?>> indexes = fwdbTables.get(i).getReferences();
+            create.truncate(DSL.table(tableName)).execute();
+        }
+        create.fetch("SET FOREIGN_KEY_CHECKS = 1;");
+
+
+        /*
         File url  = new File(
                 getClass().getClassLoader().getResource("backup-file.sql").getFile()
         );
         this.scriptRunner(url);
+
+         */
+
 
     }
 
