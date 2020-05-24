@@ -279,7 +279,6 @@ public class FootballMain extends AppLayout implements RouterLayout{
             newWindow.setCloseOnOutsideClick(false);
             newWindow.setCloseOnEsc(false);
             newWindow.setVisible(true);
-            newWindow.setWidth("500px");
             newWindow.setHeight("175px");
             VerticalLayout vl = new VerticalLayout();
             newWindow.setCloseOnEsc(false);
