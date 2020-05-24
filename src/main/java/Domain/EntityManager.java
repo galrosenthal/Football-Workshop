@@ -3,6 +3,7 @@ package Domain;
 import DB.DBManager;
 import DB.Table;
 import Domain.Exceptions.InvalidEmailException;
+import Domain.Exceptions.AlreadyLoggedInUser;
 import Domain.Exceptions.UsernameAlreadyExistsException;
 import Domain.Exceptions.UsernameOrPasswordIncorrectException;
 import Domain.Exceptions.WeakPasswordException;
@@ -34,22 +35,18 @@ public class EntityManager{
 
     private List<PointsPolicy> pointsPolicies;
     private List<SchedulingPolicy> schedulingPolicies;
+    private HashMap<SystemUser, Boolean> loggedInMap;
 
-    public boolean isLoggedIn() {
-        return loggedIn;
-    }
 
-    public void setLoggedIn(boolean loggedIn) {
-        this.loggedIn = loggedIn;
-    }
 
-    private boolean loggedIn = false;
+
 
     private EntityManager() {
         allUsers = new ArrayList<>();
         allLeagues = new HashSet<>();
         allTeams = new ArrayList<>();
         allStadiums = new ArrayList<>();
+        loggedInMap = new HashMap<>();
         systemAdmins = new ArrayList<>();
         pointsPolicies = new ArrayList<>();
         schedulingPolicies = new ArrayList<>();
@@ -63,16 +60,19 @@ public class EntityManager{
     public static EntityManager getInstance() {
         if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
-            SystemUser a = new SystemUser("Administrator","Aa123456","admin","test@gmail.com", false);
-            a.addNewRole(new SystemAdmin(a));
-            a.addNewRole(new AssociationRepresentative(a));
+
+            SystemUser admin = new SystemUser("Administrator",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"admin" , "test@gmail.com" , false);
+            SystemUser arnav = new SystemUser("arnav",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"arnav" , "test@gmail.com" , false);
+            admin.addNewRole(new SystemAdmin(admin));
+            admin.addNewRole(new AssociationRepresentative(admin));
         }
 
         return entityManagerInstance;
     }
 
-/*
-    public void initSystem() throws Exception {
+
+    /*
+     public void initSystem() throws Exception {
         Table systemUsersTable = DBManager.getInstance().getSystemUsers();
         for (int i = 0; i < systemUsersTable.size(); i++) {
             String username = systemUsersTable.getRecordValue(i, "username");
@@ -116,8 +116,6 @@ public class EntityManager{
         }
     }
 
- */
-/*
     private Role recreateRoleFromDB(String username, RoleTypes roleType) {
         Role newRole;
 
@@ -130,25 +128,14 @@ public class EntityManager{
         return null;
 
     }
+     */
 
- */
+
 
     public List<League> getLeagues() {
-        List<String> allLeaguesList = DBManager.getInstance().getLeagues();
-        List<League> leagues =  new ArrayList<>();
-        for (int i = 0; i < allLeaguesList.size(); i++) {
-            leagues.add(new League((allLeaguesList.get(i))));
-        }
-
-        if(leagues.isEmpty())
-        {
-            return  new ArrayList<>(this.allLeagues);
-        }
-        else {
-            return leagues;
-        }
-      //
+        return new ArrayList<League>(allLeagues);
     }
+
     public List<Team> getTeams() {
         return new ArrayList<Team>(allTeams);
     }
@@ -158,19 +145,12 @@ public class EntityManager{
      * @param username
      * @return The SystemUser with the username, if exists in the system.
      */
-    //todo: check is username in allUsers list,
-    // if yes return SystemUser,
-    // otherwise ask dbManager.getUserDetails(String username) and receive all Details to create user system
-    // then ask dbManager.getUserRoles(String username) - ask dbManager for each role Details.
     public SystemUser getUser(String username) {
-
         for (SystemUser su : allUsers) {
             if (su.getUsername().equals(username)) {
                 return su;
             }
         }
-
-
         return null;
     }
 
@@ -241,15 +221,12 @@ public class EntityManager{
      * @return - boolean - True if a league with a name that matches the given name already exists, else false
      */
     public boolean doesLeagueExists(String name){
-
         for (League league : allLeagues) {
             if (league.getName().equals(name)) {
                 return true;
             }
         }
-        return DBManager.getInstance().doesLeagueExists(name);
-
-        //return false;
+        return false;
     }
 
     /**
@@ -312,8 +289,7 @@ public class EntityManager{
             this.allLeagues.add(league);
             return true;
         }
-        return DBManager.getInstance().addLeagueRecord(league.getName());
-        //return false;
+        return false;
     }
 
 
@@ -374,6 +350,7 @@ public class EntityManager{
         allTeams = new ArrayList<>();
         pointsPolicies = new ArrayList<>();
         schedulingPolicies = new ArrayList<>();
+        loggedInMap = new HashMap<>();
     }
 
     private void clearAllUsers() {
@@ -414,13 +391,18 @@ public class EntityManager{
      * @return The user in the system with those credentials.
      * @throws UsernameOrPasswordIncorrectException If user name or password are incorrect.
      */
-    public SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException {
+    public SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException,AlreadyLoggedInUser {
         SystemUser userWithUsrNm = getUser(usrNm);
+        if(loggedInMap.containsKey(userWithUsrNm) && loggedInMap.get(userWithUsrNm))
+        {
+            throw new AlreadyLoggedInUser("Error: The user " + usrNm + " is already logged in");
+        }
         if(userWithUsrNm == null) //User name does not exists.
             throw new UsernameOrPasswordIncorrectException("Username or Password was incorrect!");
 
         //User name exists, checking password.
         if(authenticate(userWithUsrNm, pswrd)){
+            loggedInMap.put(userWithUsrNm,true);
             return userWithUsrNm;
         }
 
@@ -455,6 +437,8 @@ public class EntityManager{
      * @param name Name.
      * @param usrNm User name.
      * @param pswrd Password.
+     * @param email  email address
+     * @param emailAlert - boolean  - if send via email - true, otherwise false
      * @return New user with those credentials.
      * @throws Exception If user name is already belongs to a user in the system, or
      * the password does not meet the security requirements.
@@ -512,6 +496,11 @@ public class EntityManager{
         }
 
         return null;
+    }
+
+    public void logout(SystemUser logoutUser) {
+        loggedInMap.put(logoutUser,false);
+
     }
 
 /*
@@ -632,18 +621,13 @@ public class EntityManager{
         return schedulingPolicies;
     }
 
-    public boolean doesSeasonExist(String leagueName, String seasonYears) {
-       return  DBManager.getInstance().doesSeasonExists(leagueName , seasonYears);
-    }
 
-    public boolean addSeason(String leagueName, Season season) {
-        PointsPolicy pointsPolicy = season.getPointsPolicy();
-        int pointsPolicyID = DBManager.getInstance().getPointsPolicyID(pointsPolicy.getVictoryPoints(),pointsPolicy.getLossPoints(),pointsPolicy.getTiePoints());
-
-        return  DBManager.getInstance().addSeasonToLeague(leagueName , season.getYears() , season.getIsUnderway(), pointsPolicyID);
-
-    }
-
+    /**
+     * validate String to Email REGEX
+     * @param emailStr
+     * @return true - valid Email
+     *         false - otherwise
+     */
     private static boolean validate(String emailStr) {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
         return matcher.find();

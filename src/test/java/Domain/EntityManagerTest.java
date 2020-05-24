@@ -3,10 +3,7 @@ package Domain;
 import Domain.Game.League;
 import Domain.Game.PointsPolicy;
 import Domain.Game.SchedulingPolicy;
-import Domain.Users.Referee;
-import Domain.Users.RoleTypes;
-import Domain.Users.SystemUser;
-import Domain.Users.SystemUserStub;
+import Domain.Users.*;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -52,7 +49,7 @@ public class EntityManagerTest {
     public void getRefereesITest() {
         assertTrue(EntityManager.getInstance().getReferees().isEmpty());
         SystemUser systemUser = new SystemUser("stubUsername","name");
-        new Referee(systemUser, "Training");
+        new Referee(systemUser, RefereeQualification.VAR_REFEREE);
         List<SystemUser> referees = EntityManager.getInstance().getReferees();
         assertFalse(referees.isEmpty());
         assertTrue(referees.size()==1);

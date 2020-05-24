@@ -7,6 +7,7 @@ import Domain.Users.PlayerStub;
 import Domain.Users.SystemUserStub;
 import org.junit.*;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -39,21 +40,24 @@ public class GameTest {
     @Test
     public void getScore2ITest() {
         try {
-            game.addGoal(game.getHomeTeam(), game.getAwayTeam(), 1);
+            game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),1);
         } catch (Exception e) {
         }
         Score score = game.getScore();
         assertTrue(score.getHomeTeamGoalCount()==1);
         assertTrue(score.getAwayTeamGoalCount()==0);
         try {
-            game.addGoal(game.getHomeTeam(), game.getAwayTeam(), 2);
+            game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),2);
         } catch (Exception e) {
         }
         score = game.getScore();
         assertTrue(score.getHomeTeamGoalCount()==2);
         assertTrue(score.getAwayTeamGoalCount()==0);
         try {
-            game.addGoal( game.getAwayTeam(),game.getHomeTeam(), 3);
+            game.addGoal( game.getAwayTeam(),game.getHomeTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),3);
         } catch (Exception e) {
         }
         score = game.getScore();
@@ -64,7 +68,8 @@ public class GameTest {
     @Test
     public void addGoalITest() {
         try {
-            game.addGoal(game.getAwayTeam(), game.getAwayTeam(), 1);
+            game.addGoal(game.getAwayTeam(), game.getAwayTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),1);
             Assert.fail();
         } catch (Exception e) {
             assertEquals("The teams given are the same team", e.getMessage());
@@ -73,13 +78,15 @@ public class GameTest {
     @Test
     public void addGoal2ITest() {
         try {
-            game.addGoal(game.getHomeTeam(), game.getAwayTeam(), -1);
+            game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),-1);
             Assert.fail();
         } catch (Exception e) {
             assertEquals("minute must be positive integer", e.getMessage());
         }
         try {
-            game.addGoal(game.getHomeTeam(), game.getAwayTeam(), 0);
+            game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),0);
         } catch (Exception e) {
         }
         assertTrue(game.getEventsLogger().getGoals().size()==1);
@@ -87,7 +94,8 @@ public class GameTest {
     @Test
     public void addGoal3ITest() {
         try {
-            game.addGoal(game.getHomeTeam(), game.getAwayTeam(), 1);
+            game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),1);
         } catch (Exception e) {
         }
         assertTrue(game.getEventsLogger().getGoals().size()==1);
@@ -95,7 +103,8 @@ public class GameTest {
     @Test
     public void addGoal4ITest() {
         try {
-            game.addGoal(new TeamStub(9513), game.getAwayTeam(), 1);
+            game.addGoal(new TeamStub(9513), game.getAwayTeam(),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),1);
         } catch (Exception e) {
             assertEquals("The given scoring Team doesn't play in this game", e.getMessage());
         }
@@ -103,7 +112,8 @@ public class GameTest {
     @Test
     public void addGoal5ITest() {
         try {
-            game.addGoal(game.getHomeTeam(), new TeamStub(9513), 1);
+            game.addGoal(game.getHomeTeam(), new TeamStub(9513),
+                    new PlayerStub(new SystemUserStub("a", "a",555)),1);
         } catch (Exception e) {
             assertEquals("The given scored On Team doesn't play in this game", e.getMessage());
         }
@@ -258,6 +268,19 @@ public class GameTest {
         assertTrue(found);
     }
 
+    @Test
+    public void addEndGameITest() {
+        game.addEndGame(new Date(),90);
+        boolean found = false;
+        for (Event event : game.getEventsLogger().getGameEvents()) {
+            if (event instanceof GameEnd) {
+                assertTrue(((GameEnd) event).getMinute() == 90);
+                found = true;
+            }
+        }
+        assertTrue(found);
+    }
+
 
     @Test
     public void addSwitchPlayersITest() {
@@ -326,5 +349,29 @@ public class GameTest {
             }
         }
         assertTrue(found);
+    }
+
+    @Test
+    public void getHoursPassedSinceGameEndITest(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, 2020);
+        calendar.set(Calendar.MONTH, 11);
+        calendar.set(Calendar.DATE, 05);
+        calendar.set(Calendar.HOUR_OF_DAY,20);
+        calendar.set(Calendar.MINUTE,30);
+        calendar.set(Calendar.SECOND,0);
+        Date currDate = calendar.getTime();
+        //Game has not finished yet
+        assertEquals(0, game.getHoursPassedSinceGameEnd(currDate));
+
+        calendar.set(Calendar.YEAR, 2020);
+        calendar.set(Calendar.MONTH, 11);
+        calendar.set(Calendar.DATE, 05);
+        calendar.set(Calendar.HOUR_OF_DAY,17);
+        calendar.set(Calendar.MINUTE,30);
+        calendar.set(Calendar.SECOND,0);
+        game.setEndDate(calendar.getTime());
+
+        assertEquals(3, game.getHoursPassedSinceGameEnd(currDate));
     }
 }

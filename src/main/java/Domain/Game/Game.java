@@ -15,10 +15,9 @@ public class Game extends Observable {
     private Team homeTeam;
     private Team awayTeam;
     private Date gameDate;
+    private Date endDate;
     private List<Referee> referees; // - maybe array?
     private EventsLogger eventsLogger;
-    private boolean hasFinished;
-    //TODO: should be more properties
 
     public Game(Stadium stadium, Team homeTeam, Team awayTeam, Date gameDate, List<Referee> referees) {
         this.stadium = stadium;
@@ -27,7 +26,7 @@ public class Game extends Observable {
         this.gameDate = gameDate;
         this.referees = referees;
         this.eventsLogger = new EventsLogger();
-        this.hasFinished = false;
+        this.endDate = null;
         //TODO: Add to EntityManager?
     }
 
@@ -67,8 +66,7 @@ public class Game extends Observable {
      * @return - boolean - true if the game has finished, else false
      */
     public boolean hasFinished() {
-        //TODO: Check dates or game status
-        return hasFinished;
+        return endDate != null;
     }
 
 
@@ -125,7 +123,7 @@ public class Game extends Observable {
      * @param minute       - int - The minute the goal was scored - positive integer
      * @throws IllegalArgumentException - if the arguments aren't valid
      */
-    public void addGoal(Team scoringTeam, Team scoredOnTeam, int minute) throws IllegalArgumentException {
+    public void addGoal(Team scoringTeam, Team scoredOnTeam, Player playerScored, int minute) throws IllegalArgumentException {
         if ((!scoringTeam.equals(homeTeam)) && (!scoringTeam.equals(awayTeam))) {
             throw new IllegalArgumentException("The given scoring Team doesn't play in this game");
         }
@@ -138,7 +136,9 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
-        this.eventsLogger.logGoal(scoringTeam, scoredOnTeam, minute);
+        this.eventsLogger.logGoal(scoringTeam, scoredOnTeam,playerScored, minute);
+        String notification =  scoringTeam.getTeamName() +" scored on "+scoredOnTeam.getTeamName();
+        notifyObservers(notification);
     }
 
     /**
@@ -219,7 +219,7 @@ public class Game extends Observable {
     }
 
     /**
-     * Adds a injury event to the game
+     * Adds an injury event to the game
      *
      * @param player - Player - The player who got injured
      * @param minute - int - The minute the event happened
@@ -235,28 +235,67 @@ public class Game extends Observable {
         this.eventsLogger.logInjuryEvent(player, minute);
     }
 
-
-    public void setHasFinished(boolean hasFinished) {
-        this.hasFinished = hasFinished;
+    /**
+     * Adds an game-end event to the game
+     * @param endDate - Date - The time the game ended
+     * @param minute - int - The minute game ended (maybe it ended before the 90th or 120th minute)
+     */
+    public void addEndGame(Date endDate, int minute){
+        this.endDate = endDate;
+        this.eventsLogger.logEndGameEvent(endDate, minute);
     }
+
 
     public void addReferee(Referee referee) {
         this.referees.add(referee);
     }
 
+    /**
+     * Returns how many hours passed since the game ended, from a given date.
+     * @param currDate The date to measure the difference from the endDate to.
+     * @return
+     */
+    public int getHoursPassedSinceGameEnd(Date currDate){
+        if(!hasFinished())
+            return 0;
+        //milliseconds
+        long different = currDate.getTime() - endDate.getTime();
+
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+
+        long elapsedHours = different / hoursInMilli;
+        return (int) elapsedHours;
+    }
+
     @Override
     public String toString() {
-        return "Game{" +
+        String str = "Game{" +
                 "stadium=" + stadium.getName() +
                 ", homeTeam=" + homeTeam.getTeamName() +
                 ", awayTeam=" + awayTeam.getTeamName() +
-                ", gameDate=" + gameDate + '}';
+                ", gameDate=" + gameDate;
+        if(endDate != null){
+            str += ", endDate=" + endDate;
+        }
+        str += '}';
+        return str;
     }
 
 
     public Date getGameDate()
     {
         return this.gameDate;
+    }
+
+    public Date getEndDate()
+    {
+        return this.endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
 //    public void setScore(Score score) {
@@ -267,6 +306,11 @@ public class Game extends Observable {
     @Override
     public synchronized void addObserver(Observer o) {
         super.addObserver(o);
+    }
+
+    @Override
+    public void notifyObservers(Object arg) {
+        super.notifyObservers(arg);
     }
 
     @Override

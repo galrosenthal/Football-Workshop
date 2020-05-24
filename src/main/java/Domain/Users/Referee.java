@@ -8,12 +8,12 @@ import java.util.List;
 
 public class Referee extends Role {
 
-    private String training;
+    private RefereeQualification training;
     private List<Game> games;
     private List<Season> seasons;
 
 
-    public Referee(SystemUser systemUser, String training) {
+    public Referee(SystemUser systemUser, RefereeQualification training) {
         super(RoleTypes.REFEREE, systemUser);
         this.training = training;
         this.games = new ArrayList<>();
@@ -23,9 +23,9 @@ public class Referee extends Role {
     /**
      * Getter for this referee's training
      *
-     * @return - String - this referee's training
+     * @return - RefereeQualification - this referee's training
      */
-    public String getTraining() {
+    public RefereeQualification getTraining() {
         return training;
     }
 
@@ -86,5 +86,9 @@ public class Referee extends Role {
 
     public void addGame(Game game) {
         this.games.add(game);
+    }
+
+    public void removeGame(Game game){
+        this.games.remove(game);
     }
 }

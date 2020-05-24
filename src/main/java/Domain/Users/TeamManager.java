@@ -51,11 +51,29 @@ public class TeamManager extends Role implements Asset {
 
     private boolean addPermission(Team team , TeamManagerPermissions permission)
     {
+        if(this.permissionsPerTeam.containsKey(team))
+        {
+            List<TeamManagerPermissions> permissions = this.permissionsPerTeam.get(team);
+            permissions.add(permission);
+            this.permissionsPerTeam.put(team , permissions);
+            return true;
+        }
         return false;
     }
 
     private boolean removePermission(Team team , TeamManagerPermissions permission)
     {
+        if(this.permissionsPerTeam.containsKey(team))
+        {
+            List<TeamManagerPermissions> permissions = this.permissionsPerTeam.get(team);
+            if(permissions.contains(permission))
+            {
+                permissions.remove(permission);
+                this.permissionsPerTeam.put(team , permissions);
+                return true;
+            }
+            return false;
+        }
         return false;
     }
 
@@ -193,13 +211,19 @@ public class TeamManager extends Role implements Asset {
     public boolean addTeam(Team team){
         if(!this.managedTeams.contains(team)) {
             this.managedTeams.add(team);
+            this.permissionsPerTeam.put(team,new ArrayList<>());
             return true;
         }
         return false;
     }
 
     public boolean removeTeam(Team team){
-        return this.managedTeams.remove(team);
+         if(this.managedTeams.remove(team))
+         {
+             this.permissionsPerTeam.remove(team);
+             return true;
+         }
+         return false;
     }
 
     public List<Team> getTeamsManaged() {

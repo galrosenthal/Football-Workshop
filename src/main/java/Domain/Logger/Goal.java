@@ -1,17 +1,19 @@
 package Domain.Logger;
 
 import Domain.Game.Team;
+import Domain.Users.Player;
 
 public class Goal extends Event {
     private Team scoringTeam;
     private Team scoredOnTeam;
-    //todo:Add Player who scored
+    private Player playerScored;
 
 
-    public Goal(Team scoringTeam, Team scoredOnTeam, int goalMinute) {
+    public Goal(Team scoringTeam, Team scoredOnTeam, Player playerScored, int goalMinute) {
         super(goalMinute);
         this.scoringTeam = scoringTeam;
         this.scoredOnTeam = scoredOnTeam;
+        this.playerScored = playerScored;
     }
 
     public Team getScoringTeam() {
@@ -25,6 +27,7 @@ public class Goal extends Event {
 
     @Override
     public String toString() {
-        return "Goal scoringTeam=" + scoringTeam.getTeamName() + ", scoredOnTeam=" + scoredOnTeam.getTeamName() +" "+super.toString();
+        return "Goal scoringTeam=" + scoringTeam.getTeamName() + ", scoredOnTeam=" + scoredOnTeam.getTeamName() +
+                ", playerScored" + playerScored.getAssetName()+" "+super.toString();
     }
 }

@@ -25,7 +25,9 @@ public class DBHandler implements CRUD {
 
     private static DBHandler DBHandlerInstance = null;
 
-
+    /**
+     * Constructor
+     */
     private DBHandler() {
     }
 
@@ -39,6 +41,10 @@ public class DBHandler implements CRUD {
         return DBHandlerInstance;
     }
 
+    /**
+     * start connection to DB
+     * @param url - for DB connection
+     */
     public static void startConnection(String url) {
         //connect to DB and save to field in class.
         try {
@@ -52,6 +58,11 @@ public class DBHandler implements CRUD {
         }
     }
 
+    /**
+     * close connection
+     * @return - true if closing connection successfully
+     *         - false otherwise
+     */
     public static boolean closeConnection()
     {
         try {
@@ -64,11 +75,19 @@ public class DBHandler implements CRUD {
         return true;
     }
 
+    /**
+     * create context to JOOQ
+     * @return DSLContext - create
+     */
     public static DSLContext getContext() {
         DSLContext create = DSL.using(connection, SQLDialect.MARIADB);
         return create;
     }
 
+    /**
+     * delete all records from DB
+     * @throws Exception
+     */
     public void deleteData(String dbName) {
         List<Table<?>> fwdbTables = Fwdb.FWDB.getTables();
         DSLContext create = DBHandler.getContext();
@@ -92,6 +111,11 @@ public class DBHandler implements CRUD {
 
     }
 
+    /**
+     * run sql script
+     * @param url- to script file
+     * @throws Exception - wrong input url FILE
+     */
     private void scriptRunner(File url) throws Exception {
       //Initialize the script runner
         ScriptRunner sr = new ScriptRunner(connection);

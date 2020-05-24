@@ -1,6 +1,7 @@
 package Domain.Game;
 
 import Domain.Users.Referee;
+import Domain.Users.RefereeQualification;
 import Domain.Users.RefereeStub;
 import Domain.Users.SystemUser;
 import org.junit.Assert;
@@ -50,11 +51,12 @@ public class SchedulingPolicyTest {
         teams.add(team5);
         teams.add(team6);
         List<Referee> referees = new ArrayList<>();
-        referees.add(new RefereeStub(new SystemUser("a","a","a","test@gmail.com", false),"Var"));
-        referees.add(new RefereeStub(new SystemUser("b","b","b","test@gmail.com", false),"Var"));
-        referees.add(new RefereeStub(new SystemUser("c","c","c","test@gmail.com", false),"Var"));
-        referees.add(new RefereeStub(new SystemUser("d","d","d","test@gmail.com", false),"Var"));
-        referees.add(new RefereeStub(new SystemUser("e","e","e","test@gmail.com", false),"Var"));
+        referees.add(new RefereeStub(new SystemUser("a","a","a","test@gmail.com", false),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("b","b","b","test@gmail.com", false),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("c","c","c","test@gmail.com", false),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("d","d","d","test@gmail.com", false),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("e","e","e","test@gmail.com", false),RefereeQualification.VAR_REFEREE));
+
         List<ScheduleMatch> scheduleMatches = sp.generateSchedule(new Date(),teams,referees );
         assertEquals(30,scheduleMatches.size());
 

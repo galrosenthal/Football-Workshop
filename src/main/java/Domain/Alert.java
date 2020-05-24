@@ -11,24 +11,25 @@ import java.util.List;
 import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.activation.*;
 
 public class Alert implements Subject, Observer {
     private static Alert alertInstance = null;
-    private final String emailAddress = ""; //fixme!!!!!!!
-    private final String host =  "smtp.gmail.com";//todo: check
+    private final String emailAddress = "notifyfootballworkshop@gmail.com";
+    private final String host =  "smtp.gmail.com";
+
+    private Alert()
+    {
+
+    }
 
     /**
-     * Returns an instance of dbManager. part of the Singleton design
+     * Returns an instance of Alert. part of the Singleton design
      *
-     * @return - DBManager - an instance of dbManager
+     * @return - Alert - an instance of dbManager
      */
     public static Alert getInstance() {
         if (alertInstance == null) {
             alertInstance = new Alert();
-            SystemUser a = new SystemUser("Administrator", "Aa123456", "admin", "test@gmail.com", false);
-            a.addNewRole(new SystemAdmin(a));
-            a.addNewRole(new AssociationRepresentative(a));
         }
 
         return alertInstance;
@@ -63,12 +64,9 @@ public class Alert implements Subject, Observer {
      *         false - otherwise
      */
     public boolean sendEmail(String to, String from, String subject, String content) {
-        // Put recipient’s address
 
-        // Add recipient
-
-        // Add sender
-        final String username = "notifyfootballworkshop@gmail.com";//your Gmail username
+        // Add sender detail's
+        final String username = this.emailAddress;//your Gmail username
         final String password = "footBALL!!12";//your Gmail password
 
         Properties props = new Properties();

@@ -18,7 +18,6 @@ public class Controller {
     public static boolean systemBoot() {
         //Establishing connections to external DBMS
         //access DB
-        DBManager.getInstance().startConnection("jdbc:mysql://132.72.65.105:3306/fwdb_test");
         //extract system admins
 
         String username = UIController.receiveString("Please enter a system administrator username: ");
@@ -206,7 +205,7 @@ public class Controller {
         int assetIndex;
 
         do{
-            assetIndex = UIController.receiveInt("Choose Asset Type: ");
+            assetIndex = UIController.receiveInt("Choose Asset Type: ", assetTypes);
         }while (!(assetIndex >= 0 && assetIndex < TeamAsset.values().length));
 
         return TeamAsset.values()[assetIndex];
@@ -246,7 +245,7 @@ public class Controller {
      * @return The user in the system with those credentials.
      * @throws UsernameOrPasswordIncorrectException If user name or password are incorrect.
      */
-    public static SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException {
+    public static SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException, AlreadyLoggedInUser {
         SystemUser SystemUser =  EntityManager.getInstance().login(usrNm, pswrd);
         return SystemUser;
     }
@@ -258,6 +257,8 @@ public class Controller {
      * @param name Name.
      * @param usrNm User name.
      * @param pswrd Password.
+     * @param email  email address
+     * @param emailAlert - boolean  - if send via email - true, otherwise false
      * @return New user with those credentials.
      * @throws Exception If user name is already belongs to a user in the system, or
      * the password does not meet the security requirements.

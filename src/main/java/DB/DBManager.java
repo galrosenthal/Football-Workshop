@@ -31,16 +31,29 @@ public class DBManager {
         return dbManagerInstance;
     }
 
+    /**
+     * clear all records from DB
+     * @throws Exception
+     */
     public static void deleteData(String dbName) throws Exception {
         DBHandler.getInstance().deleteData(dbName);
+
     }
 
 
+    /**
+     * start connection to DB
+     * @param url - to DB
+     */
     public void startConnection(String url) {
 
         DBHandler.startConnection(url);
     }
 
+    /**
+     * close connection to DB
+     *
+     */
     public void closeConnection() {
 
         DBHandler.closeConnection();
@@ -77,6 +90,13 @@ public class DBManager {
         return true;
     }
 
+    /**
+     *Add league record
+     * @param name - league name to add
+     * @return true - added successfully
+     *         false - otherwise
+     */
+
     public boolean addLeagueRecord(String name) {
         DSLContext dslContext = DBHandler.getContext();
         //todo: check!!!!
@@ -88,6 +108,10 @@ public class DBManager {
         return true;
     }
 
+    /**
+     *  Get all leagues name from DB
+     * @return - List<String> - Leagues name
+     */
     public List<String> getLeagues() {
         List<String> leaguesName = new ArrayList<>();
         DSLContext dslContext = DBHandler.getContext();
@@ -98,6 +122,13 @@ public class DBManager {
         return  leaguesName;
     }
 
+    /**
+     * Check if season Exists in DB
+     * @param leagueName
+     * @param seasonYears
+     * @return true - if  season Exists
+     *         false - otherwise
+     */
     public boolean doesSeasonExists(String leagueName, String seasonYears) {
         DSLContext dslContext = DBHandler.getContext();
         Result<?> result = dslContext.select().
@@ -111,6 +142,13 @@ public class DBManager {
     }
 
 
+    /**
+     *get Points Policy ID fom DB
+     * @param victoryPoints
+     * @param lossPoints
+     * @param tiePoints
+     * @return int  - Points Policy ID
+     */
     public int getPointsPolicyID(int victoryPoints, int lossPoints, int tiePoints) {
         DSLContext dslContext = DBHandler.getContext();
         Result<?> result = dslContext.select().
@@ -122,7 +160,15 @@ public class DBManager {
         return result.get(0).indexOf(POINTS_POLICY.POLICY_ID);
     }
 
-    //todo: auto excremental index check
+    /**
+     * add Season To League
+     * @param leagueName
+     * @param years
+     * @param isUnderway
+     * @param pointsPolicyID
+     * @return true - added successfully
+     *         false - otherwise
+     */
     public boolean addSeasonToLeague(String leagueName, String years, boolean isUnderway, int pointsPolicyID) {
         DSLContext dslContext = DBHandler.getContext();
         int succeed = dslContext.insertInto(SEASON, SEASON.LEAGUE_NAME,  SEASON.YEARS,
