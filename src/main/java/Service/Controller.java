@@ -1,11 +1,9 @@
 package Service;
 
+import DB.DBManager;
 import Domain.Controllers.TeamController;
 import Domain.EntityManager;
-import Domain.Exceptions.NoTeamExistsException;
-import Domain.Exceptions.UsernameAlreadyExistsException;
-import Domain.Exceptions.UsernameOrPasswordIncorrectException;
-import Domain.Exceptions.WeakPasswordException;
+import Domain.Exceptions.*;
 import Domain.Game.Team;
 import Domain.Game.TeamAsset;
 import Domain.Game.TeamStatus;
@@ -207,7 +205,7 @@ public class Controller {
         int assetIndex;
 
         do{
-            assetIndex = UIController.receiveInt("Choose Asset Type: ");
+            assetIndex = UIController.receiveInt("Choose Asset Type: ", assetTypes);
         }while (!(assetIndex >= 0 && assetIndex < TeamAsset.values().length));
 
         return TeamAsset.values()[assetIndex];
@@ -247,7 +245,7 @@ public class Controller {
      * @return The user in the system with those credentials.
      * @throws UsernameOrPasswordIncorrectException If user name or password are incorrect.
      */
-    public static SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException {
+    public static SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException, AlreadyLoggedInUser {
         SystemUser SystemUser =  EntityManager.getInstance().login(usrNm, pswrd);
         return SystemUser;
     }
@@ -259,14 +257,16 @@ public class Controller {
      * @param name Name.
      * @param usrNm User name.
      * @param pswrd Password.
+     * @param email  email address
+     * @param emailAlert - boolean  - if send via email - true, otherwise false
      * @return New user with those credentials.
      * @throws Exception If user name is already belongs to a user in the system, or
      * the password does not meet the security requirements.
      */
-    public static SystemUser signUp(String name, String usrNm, String pswrd)
-            throws UsernameAlreadyExistsException, WeakPasswordException {
+    public static SystemUser signUp(String name, String usrNm, String pswrd, String email, boolean emailAlert)
+            throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException {
 
-        return EntityManager.getInstance().signUp(name, usrNm, pswrd);
+        return EntityManager.getInstance().signUp(name, usrNm, pswrd, email, emailAlert);
 
 
     }

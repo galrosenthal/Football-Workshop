@@ -61,7 +61,7 @@ public class ControllerTest {
         Assert.assertEquals("nir", result2.getUsername());
         Assert.assertEquals("Nir", result2.getName());
         Assert.assertEquals(hashedPassword, result2.getPassword());
-
+        EntityManager.getInstance().logout(result2);
         //password incorrect
         try{
             Controller.login("nir", "pswrdNotCorrect");
@@ -77,7 +77,7 @@ public class ControllerTest {
     @Test
     public void signUpUTest() throws Exception {
         //success
-        SystemUser newUser = Controller.signUp("Avi", "avi", "1234cB57");
+        SystemUser newUser = Controller.signUp("Avi", "avi", "1234cB57","test@gmail.com", false);
         Assert.assertNotNull(newUser);
         Assert.assertEquals("avi", newUser.getUsername());
         Assert.assertEquals("Avi", newUser.getName());
@@ -88,7 +88,7 @@ public class ControllerTest {
         //userName already exists
         EntityManager.getInstance().addUser(systemUser);
         try{
-            Controller.signUp("Avi", "nir", "1234cB57");
+            Controller.signUp("Avi", "nir", "1234cB57","test@gmail.com", false);
             Assert.fail();
         }
         catch(Exception e) {
@@ -98,7 +98,7 @@ public class ControllerTest {
 
         try {
             //password does not meet security req
-            Controller.signUp("Yosi", "yos", "12a34567");
+            Controller.signUp("Yosi", "yos", "12a34567","test@gmail.com", false);
             Assert.fail();
         }
         catch(Exception e) {
@@ -108,7 +108,7 @@ public class ControllerTest {
 
         try {
             //password does not meet security req
-            Controller.signUp("Yossi", "yos1", "55bB");
+            Controller.signUp("Yossi", "yos1", "55bB","test@gmail.com", false);
             Assert.fail();
         }
         catch(Exception e) {

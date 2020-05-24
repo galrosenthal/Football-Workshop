@@ -330,6 +330,12 @@ public class SchedulingPolicy {
         return minimumRestDays;
     }
 
+    @Override
+    public String toString() {
+        return "Games Per Day = " + gamesPerDay + ", Games Per Season = " + gamesPerSeason +", Minimum rest days = " + minimumRestDays;
+    }
+
+
     /**
      * Class that represents a pair of 2 teams.
      */

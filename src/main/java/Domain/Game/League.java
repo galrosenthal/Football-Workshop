@@ -1,6 +1,6 @@
 package Domain.Game;
 
-import Domain.Users.SystemUser;
+import Domain.EntityManager;
 
 import java.util.ArrayList;
 import java.util.List;
