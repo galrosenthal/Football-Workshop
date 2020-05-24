@@ -8,10 +8,12 @@ import Domain.Game.Team;
 import Domain.Game.TeamAsset;
 import Domain.Game.TeamStatus;
 import Domain.Users.*;
+import sun.rmi.rmic.Main;
 
 import java.util.ArrayList;
 import java.util.List;
 import static Service.UIController.getUsernameFromUser;
+import static Service.UIController.showAlert;
 
 public class Controller {
 
@@ -27,14 +29,22 @@ public class Controller {
         SystemUser admin = null;
         try {
             admin = Controller.login(username, password);
+            if(!MainController.getUserRoles(username).contains(RoleTypes.SYSTEM_ADMIN.name()))
+            {
+                UIController.showNotification("You are not a System Admin please try different user");
+                MainController.logout(username);
+                return false;
+            }
         } catch (Exception e) {
             UIController.showNotification("Username or Password was incorrect!!!!!");
             e.printStackTrace();
+            return false;
         }
         UIController.showNotification("Successful login. Welcome back, " + admin.getName());
         //system boot choice
         boolean choice = UIController.receiveChoice("Would you like to boot the system? y/n");
         if (!choice) {
+                MainController.logout(username);
             return false;
         }
 
@@ -42,6 +52,7 @@ public class Controller {
 
         //Establishing connections to external tax system
         UIController.showNotification("The system was booted successfully");
+        MainController.logout(username);
         return true;
     }
 

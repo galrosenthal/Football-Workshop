@@ -37,6 +37,8 @@ public class EntityManager{
     private List<SchedulingPolicy> schedulingPolicies;
     private HashMap<SystemUser, Boolean> loggedInMap;
 
+    private boolean isSystemBooted = false;
+
 
 
 
@@ -631,5 +633,13 @@ public class EntityManager{
     private static boolean validate(String emailStr) {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
         return matcher.find();
+    }
+
+    public boolean isSystemBooted() {
+        return isSystemBooted;
+    }
+
+    public void setIsBooted(boolean isSystemBoot) {
+        isSystemBooted = isSystemBoot;
     }
 }
