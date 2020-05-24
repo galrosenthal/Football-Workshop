@@ -17,6 +17,6 @@ public class GameEnd extends Event  {
 
     @Override
     public String toString() {
-        return "GameEnd endDate=" + endDate +" "+super.toString();
+        return super.toString() +" GameEnd endDate=" + endDate+".";
     }
 }

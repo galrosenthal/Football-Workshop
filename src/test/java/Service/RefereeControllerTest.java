@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -398,6 +399,64 @@ public class RefereeControllerTest {
         assertTrue(event instanceof Injury);
         assertTrue(((Injury) event).getMinute()==1);
         assertTrue(((Injury) event).getInjuredPlayer().equals(player1));
+    }
+
+    @Test
+    public void produceGameReportUTest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 0);
+        assertFalse(RefereeController.produceGameReport(systemUser));
+    }
+
+    @Test
+    public void produceGameReportITest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 1031);
+        assertFalse(RefereeController.produceGameReport(systemUser));
+        //"There are no games for this referee"
+    }
+
+    @Test
+    public void produceGameReport2ITest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 1031);
+        Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
+
+        Team firstTeam = new TeamStub(9511);
+        Team secondTeam = new TeamStub(9512);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+
+        game.addReferee(referee);
+        referee.addGame(game);
+
+        assertFalse(RefereeController.produceGameReport(systemUser));
+        //"There are no finished games for this referee"
+    }
+
+    @Test
+    public void produceGameReport3ITest() {
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 1031);
+        Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
+
+        Team firstTeam = new TeamStub(9511);
+        Team secondTeam = new TeamStub(9512);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        game.setEndDate(new Date()); // end the game, for the test
+
+        game.addReferee(referee);
+        referee.addGame(game);
+
+        UIController.setSelector(10411);//0,"."
+        boolean succeeded = RefereeController.produceGameReport(systemUser);
+        assertTrue(succeeded);
+        if(succeeded){
+            //delete the created report
+            File dir = new File(".");
+            File[] directoryListing = dir.listFiles();
+            for (File file : directoryListing) {
+                if(file.getName().startsWith("GameReport_stubTeam9511")){
+                    assertTrue(file.delete());
+                }
+            }
+        }
+
     }
 
     @After

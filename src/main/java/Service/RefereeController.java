@@ -19,7 +19,7 @@ public class RefereeController {
         Referee refereeRole = (Referee) systemUser.getRole(RoleTypes.REFEREE);
         Game chosenGame = null;
         try {
-            chosenGame = getRefereeNotFinishedGameByChoice(refereeRole);
+            chosenGame = getRefereeGameByChoice(refereeRole, false); //get a not-finished game
         } catch (Exception e) {
             UIController.showNotification(e.getMessage());
             return false;
@@ -62,6 +62,32 @@ public class RefereeController {
         }
 
         UIController.showNotification("The new " + eventType + " has been added successfully");
+        return true;
+    }
+
+    public static boolean produceGameReport(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.REFEREE)) {
+            return false;
+        }
+        Referee refereeRole = (Referee) systemUser.getRole(RoleTypes.REFEREE);
+        Game chosenGame = null;
+        try {
+            //get a finished game to produce its report
+            chosenGame = getRefereeGameByChoice(refereeRole, true);
+        } catch (Exception e) {
+            UIController.showNotification(e.getMessage());
+            return false;
+        }
+
+        String folderPath = UIController.receiveFolderPath();
+        try {
+            //produce the report
+            chosenGame.getGameReport().produceReport(folderPath);
+        } catch (Exception e) {
+            UIController.showNotification(e.getMessage());
+            return false;
+        }
+        UIController.showNotification("Game report saved successfully");
         return true;
     }
 
@@ -118,7 +144,7 @@ public class RefereeController {
         UIController.showNotification(stringBuilder.toString());
     }
 
-    private static Game getRefereeNotFinishedGameByChoice(Referee refereeRole) throws Exception {
+    private static Game getRefereeGameByChoice(Referee refereeRole, boolean finished) throws Exception {
         List<Game> gamesOfReferee = refereeRole.getGames();
         if (gamesOfReferee == null || gamesOfReferee.isEmpty()) {
             throw new Exception("There are no games for this referee");
@@ -126,21 +152,30 @@ public class RefereeController {
         List<String> gamesList = new ArrayList<>();
         for (int i = 0; i < gamesOfReferee.size(); i++) {
             Game gameOfReferee = gamesOfReferee.get(i);
-            if (!gameOfReferee.hasFinished()) { //only games which didn't finish
-                gamesList.add(gameOfReferee.toString());
-            }
-            else{ // If this is MAIN_REFEREE he can still edit the game if 5 hours have not passed.
-                if(refereeRole.getTraining() == RefereeQualification.MAIN_REFEREE){
-                    Date currDate = new Date();
-                    if(gameOfReferee.getHoursPassedSinceGameEnd(currDate) <= 5){
-                        gamesList.add(gameOfReferee.toString());
+            if(!finished) { //add only not-finished games
+                if (!gameOfReferee.hasFinished()) { //only games which didn't finish
+                    gamesList.add(gameOfReferee.toString());
+                } else { // If this is MAIN_REFEREE he can still edit the game if 5 hours have not passed.
+                    if (refereeRole.getTraining() == RefereeQualification.MAIN_REFEREE) {
+                        Date currDate = new Date();
+                        if (gameOfReferee.getHoursPassedSinceGameEnd(currDate) <= 5) {
+                            gamesList.add(gameOfReferee.toString());
+                        }
                     }
+                }
+            }
+            else{ //add only finished games
+                if (gameOfReferee.hasFinished()) { //only games which finish
+                    gamesList.add(gameOfReferee.toString());
                 }
             }
 
         }
         if (gamesList.isEmpty()) {
-            throw new Exception("There are no ongoing games for this referee");
+            if(!finished)
+                throw new Exception("There are no ongoing games for this referee");
+            else
+                throw new Exception("There are no finished games for this referee");
         }
         int Index;
         do {
@@ -149,6 +184,7 @@ public class RefereeController {
 
         return gamesOfReferee.get(Index);
     }
+
 
     private static String getEventTypeByChoice() {
         List<String> eventType = Event.getEventsTypes();

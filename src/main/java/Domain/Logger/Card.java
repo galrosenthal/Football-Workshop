@@ -16,6 +16,6 @@ public abstract class Card extends Event {
 
     @Override
     public String toString() {
-        return "offender=" + offender.getAssetName() +" "+super.toString();
+        return super.toString()+" offender=" + offender.getAssetName()+".";
     }
 }
