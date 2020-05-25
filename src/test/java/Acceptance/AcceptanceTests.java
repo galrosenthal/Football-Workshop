@@ -195,7 +195,7 @@ public class AcceptanceTests {
         //add team manager
         TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
-        tmanager.addTeam(team);
+        tmanager.addTeam(team,teamOwner);
         //add to Entity manager
         EntityManager.getInstance().addUser(existingUser);
         EntityManager.getInstance().addUser(aviCohenSu);
@@ -234,7 +234,7 @@ public class AcceptanceTests {
         //add team manager
         TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
-        tmanager.addTeam(team);
+        tmanager.addTeam(team,teamOwner);
         //add to Entity manager
         EntityManager.getInstance().addUser(existingUser);
         EntityManager.getInstance().addUser(aviCohenSu);

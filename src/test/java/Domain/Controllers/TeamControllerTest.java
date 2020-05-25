@@ -568,7 +568,7 @@ public class TeamControllerTest {
 
         SystemUserStub su2 = new SystemUserStub("nirdz", "nir",661722);
         TeamManagerStub tm1 = (TeamManagerStub)su2.getRole(RoleTypes.TEAM_MANAGER);
-        tm1.addTeam(teamStub);
+        tm1.addTeam(teamStub,teamOwnerStub);
         teamStub.addTeamManager(tm1);
 
         SystemUserStub su3 = new SystemUserStub("coach", "coach",661723);

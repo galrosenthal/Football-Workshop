@@ -375,18 +375,18 @@ public class TeamController {
                 i--;
             }
         }
-
-        for(int i =0 ; i < teamToReOpen.getTeamManagers().size(); i++){
+        int numOfManagers = teamToReOpen.getTeamManagers().size();
+        for(int i =0 ; i < numOfManagers; i++){
             TeamManager tmRole = teamToReOpen.getTeamManagers().get(i);
             if(roleStillExists(tmRole) &&
                     tmRole.getSystemUser().getRole(RoleTypes.TEAM_MANAGER) instanceof TeamManager)//Check in the db that the tm still exists
             {
-                tmRole.addTeam(teamToReOpen);
+                tmRole.addTeam(teamToReOpen,teamOwner);
             }
             else {
                 //Removes Team Manager from the team because he is no longer exists.
                 teamToReOpen.removeTeamManager(tmRole);
-                i--;
+                //i--;
                 if(tmRole == null || tmRole.getSystemUser() == null
                         || EntityManager.getInstance().getUser(tmRole.getSystemUser().getUsername()) == null) {
                     //the user deleted entirely from the system
