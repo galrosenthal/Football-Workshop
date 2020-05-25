@@ -218,7 +218,7 @@ public class RefereeController {
         return gamesOfReferee.get(Index);
     }
 
-    private static String getEventTypeByChoice() {
+    private static String getEventTypeByChoice(Game chosenGame) {
         List<String> eventType = Event.getEventsTypes();
         int Index;
         do {
