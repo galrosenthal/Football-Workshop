@@ -20,7 +20,7 @@ public class GameTest {
 
     @BeforeClass
     public static void beforeClass() {
-        DBManager.getInstance().startTest();
+        DBManager.startTest();
         DBManagerForTest.startConnection();
     }
 

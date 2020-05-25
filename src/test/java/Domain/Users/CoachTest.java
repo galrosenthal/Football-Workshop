@@ -14,7 +14,7 @@ public class CoachTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        DBManager.getInstance().startTest();
+        DBManager.startTest();
         DBManagerForTest.startConnection();    }
 
     @Test

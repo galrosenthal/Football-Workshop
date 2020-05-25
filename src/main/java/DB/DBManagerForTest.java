@@ -1,10 +1,14 @@
 package DB;
 
+import Domain.Exceptions.UserNotFoundException;
+import javafx.util.Pair;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.Result;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import static DB.Tables_Test.Tables.*;
 
 
@@ -109,6 +113,51 @@ public class DBManagerForTest extends DBManager {
                 POINTS_POLICY.VICTORY_POINTS, POINTS_POLICY.LOSS_POINTS,
                 POINTS_POLICY.TIE_POINTS)
                 .values(victoryPoints, lossPoints, tiePoints).execute();
+        if (succeed == 0) {
+            return false;
+        }
+        return true;
+    }
+
+
+    @Override
+    public List<Pair<String, String>> getUser(String username) throws UserNotFoundException {
+        Result<?> user = getSystemUser(username);
+        if (user == null) {
+            throw new UserNotFoundException("A user with the given username dose't exists");
+        }
+
+        List<Pair<String, String>> userDetails = new ArrayList<>();
+
+        for (int i = 0; i < user.fields().length; i++) {
+            String fieldName = ((Field) (user.fields()[i])).getName();
+            String fieldValue = user.getValues(i).get(0).toString();
+            Pair<String, String> pair = new Pair<>(fieldName, fieldValue);
+            userDetails.add(pair);
+        }
+
+        return userDetails;
+    }
+
+
+    private Result<?> getSystemUser(String username) {
+        DSLContext dslContext = DBHandler.getContext();
+        Result<?> result = dslContext.select().
+                from(SYSTEMUSER)
+                .where(SYSTEMUSER.USERNAME.eq(username)).fetch();
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result;
+    }
+
+    @Override
+    public boolean addUser(String username, String name, String password, String email, boolean alertEmail) {
+        DSLContext dslContext = DBHandler.getContext();
+        int succeed = dslContext.insertInto(SYSTEMUSER,
+                SYSTEMUSER.USERNAME, SYSTEMUSER.NAME, SYSTEMUSER.PASSWORD,
+                SYSTEMUSER.EMAIL, SYSTEMUSER.NOTIFY_BY_EMAIL)
+                .values(username, name, password, email, alertEmail).execute();
         if (succeed == 0) {
             return false;
         }

@@ -3,10 +3,7 @@ package Domain;
 import DB.DBManager;
 import DB.DBManagerForTest;
 import DB.Table;
-import Domain.Exceptions.InvalidEmailException;
-import Domain.Exceptions.UsernameAlreadyExistsException;
-import Domain.Exceptions.UsernameOrPasswordIncorrectException;
-import Domain.Exceptions.WeakPasswordException;
+import Domain.Exceptions.*;
 import Domain.Game.*;
 import Domain.Users.Role;
 import Domain.Users.RoleTypes;
@@ -17,6 +14,7 @@ import Domain.Game.Stadium;
 import Service.AllSubscribers;
 import Service.Observer;
 import Service.UIController;
+import javafx.util.Pair;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -164,14 +162,21 @@ public class EntityManager {
     // otherwise ask dbManager.getUserDetails(String username) and receive all Details to create user system
     // then ask dbManager.getUserRoles(String username) - ask dbManager for each role Details.
     public SystemUser getUser(String username) {
+        List<Pair<String, String>> userDetails = null;
+        try {
+            userDetails = DBManager.getInstance().getUser(username);
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+        HashMap<String/*RoleType*/, List<Pair<String, String>>> rolesDetails = DBManager.getInstance().getUserRoles(username);
+
 
         for (SystemUser su : allUsers) {
             if (su.getUsername().equals(username)) {
                 return su;
             }
         }
-
-
         return null;
     }
 
@@ -264,9 +269,13 @@ public class EntityManager {
      * @return true if successfully added the SystemUser to the system.
      */
     public boolean addUser(SystemUser systemUser) {
+        boolean succeeded = false;
         if (!(this.allUsers.contains(systemUser))) {
-            this.allUsers.add(systemUser);
-            return true;
+            succeeded = DBManager.getInstance().addUser(systemUser.getUsername(), systemUser.getName(), systemUser.getPassword(), systemUser.getEmail(), systemUser.isAlertEmail());
+            if (succeeded) {
+                this.allUsers.add(systemUser);
+                return true;
+            }
         }
         return false;
     }
@@ -600,7 +609,7 @@ public class EntityManager {
         if (newPointsPolicy != null) {
             this.pointsPolicies.add(newPointsPolicy);
             DBManager dbManager = DBManager.getInstance();
-            DBManager.getInstance().addPointsPolicy(newPointsPolicy.getVictoryPoints(),newPointsPolicy.getLossPoints(),newPointsPolicy.getTiePoints());
+            DBManager.getInstance().addPointsPolicy(newPointsPolicy.getVictoryPoints(), newPointsPolicy.getLossPoints(), newPointsPolicy.getTiePoints());
         }
     }
 

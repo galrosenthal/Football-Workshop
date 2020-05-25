@@ -35,7 +35,7 @@ public class TeamControllerTest {
 
     @BeforeClass
     public static void beforeClass(){
-        DBManager.getInstance().startTest();
+        DBManager.startTest();
         DBManagerForTest.startConnection();
     }
 

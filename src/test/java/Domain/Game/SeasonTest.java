@@ -19,7 +19,7 @@ public class SeasonTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        DBManager.getInstance().startTest();
+        DBManager.startTest();
         DBManagerForTest.startConnection();
     }
 

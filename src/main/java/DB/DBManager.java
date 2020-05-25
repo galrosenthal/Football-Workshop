@@ -2,13 +2,15 @@ package DB;
 
 import static DB.Tables.Tables.*;
 
+import Domain.Exceptions.UserNotFoundException;
+import javafx.util.Pair;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
-
-
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class DBManager {
@@ -32,6 +34,7 @@ public class DBManager {
             dbManagerInstance = new DBManager();
         return dbManagerInstance;
     }
+
     /**
      * Returns an instance of dbManagerForTest. part of the Singleton design
      *
@@ -51,7 +54,7 @@ public class DBManager {
         DBHandler.closeConnection();
     }
 
-    public static void startConnection(){
+    public static void startConnection() {
         DBHandler.startConnection("jdbc:mysql://132.72.65.105:3306/fwdb");
     }
 
@@ -158,5 +161,137 @@ public class DBManager {
             return false;
         }
         return true;
+    }
+
+    public List<Pair<String, String>> getUser(String username) throws UserNotFoundException {
+        Result<?> user = getSystemUser(username);
+        if (user == null) {
+            throw new UserNotFoundException("A user with the given username dose't exists");
+        }
+
+        List<Pair<String, String>> userDetails = new ArrayList<>();
+
+        for (int i = 0; i < user.fields().length; i++) {
+            String fieldName = ((Field) (user.fields()[i])).getName();
+            String fieldValue = user.getValues(i).get(0).toString();
+            Pair<String, String> pair = new Pair<>(fieldName, fieldValue);
+            userDetails.add(pair);
+        }
+
+        return userDetails;
+    }
+
+    private Result<?> getSystemUser(String username) {
+        DSLContext dslContext = DBHandler.getContext();
+        Result<?> result = dslContext.select().
+                from(SYSTEMUSER)
+                .where(SYSTEMUSER.USERNAME.eq(username)).fetch();
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result;
+    }
+
+    public boolean addUser(String username, String name, String password, String email, boolean alertEmail) {
+        DSLContext dslContext = DBHandler.getContext();
+        int succeed = dslContext.insertInto(SYSTEMUSER,
+                SYSTEMUSER.USERNAME, SYSTEMUSER.NAME, SYSTEMUSER.PASSWORD,
+                SYSTEMUSER.EMAIL, SYSTEMUSER.NOTIFY_BY_EMAIL)
+                .values(username, name, password, email, alertEmail).execute();
+        if (succeed == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    public HashMap<String, List<Pair<String, String>>> getUserRoles(String username) {
+        List<String> userRolesTypes = getUserRolesTypes(username);
+
+        HashMap<String, List<Pair<String, String>>> userRoles = new HashMap<>();
+        for (String roleType : userRolesTypes) {
+            List<Pair<String, String>> roleDetails = null;
+            switch (roleType) {
+                case "PLAYER":
+                    roleDetails = getPlayerDetails(username);
+                    break;
+                case "COACH":
+                    roleDetails = getCoachDetails(username);
+                    break;
+                case "TEAM_MANAGER":
+                    roleDetails = getTeamMangerDetails(username);
+                    break;
+                case "TEAM_OWNER":
+                    roleDetails = getTeamOwnerDetails(username);
+                    break;
+                case "SYSTEM_ADMIN":
+                    roleDetails = getSystemAdminDetails(username);
+                    break;
+                case "REFEREE":
+                    roleDetails = getRefereeDetails(username);
+                    break;
+                case "ASSOCIATION_REPRESENTATIVE":
+                    roleDetails = getARRoleDetails(username);
+                    break;
+            }
+            userRoles.put(roleType, roleDetails);
+        }
+
+        return userRoles;
+    }
+
+    private List<Pair<String, String>> getARRoleDetails(String username) {
+        //TODO:
+        return null;
+    }
+
+    private List<Pair<String, String>> getRefereeDetails(String username) {
+        //TODO:
+        return null;
+    }
+
+    private List<Pair<String, String>> getSystemAdminDetails(String username) {
+        //TODO:
+        return null;
+    }
+
+    private List<Pair<String, String>> getTeamOwnerDetails(String username) {
+        //TODO:
+        return null;
+    }
+
+    private List<Pair<String, String>> getTeamMangerDetails(String username) {
+        //TODO:
+        return null;
+    }
+
+    private List<Pair<String, String>> getCoachDetails(String username) {
+        //TODO:
+        return null;
+    }
+
+    private List<Pair<String, String>> getPlayerDetails(String username) {
+
+        List<Pair<String, String>> playerDetails;
+        return null;
+    }
+
+
+
+
+
+
+    private List<String> getUserRolesTypes(String username) {
+        DSLContext dslContext = DBHandler.getContext();
+        Result<?> result = dslContext.select().
+                from(USER_ROLES)
+                .where(USER_ROLES.USERNAME.eq(username)).fetch();
+        if (result.isEmpty()) {
+            return null;
+        }
+        List<String> rolesTypes = new ArrayList<>();
+        for (int i = 0; i < result.fields().length; i++) {
+            rolesTypes.add(result.getValues(i).get(1).toString());
+        }
+        return rolesTypes;
     }
 }

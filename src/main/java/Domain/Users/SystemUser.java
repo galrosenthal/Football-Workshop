@@ -57,7 +57,8 @@ public class SystemUser extends User implements Fan {
         this.roles = new ArrayList<>();
         this.username = username;
         this.name = name;
-        gamesAlert = new ArrayList<>();
+        this.gamesAlert = new ArrayList<>();
+        this.password = "";
         this.email = "";
         this.alertEmail = false;
         EntityManager.getInstance().addUser(this);

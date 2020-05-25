@@ -19,8 +19,7 @@ public class ARControllerTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        EntityManager.getInstance().clearAll();
-        DBManager.getInstance().startTest();
+        DBManager.startTest();
         DBManagerForTest.startConnection();
     }
 
