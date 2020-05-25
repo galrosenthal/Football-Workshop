@@ -578,7 +578,7 @@ public class TeamControllerTest {
 
         SystemUserStub su4 = new SystemUserStub("iamowner", "owner",661724);
         TeamOwnerStub to = (TeamOwnerStub)su4.getRole(RoleTypes.TEAM_OWNER);
-        to.addTeamToOwn(teamStub);
+        to.addTeamToOwn(teamStub,su4);
         teamStub.addTeamOwner(to);
 
 
@@ -632,7 +632,7 @@ public class TeamControllerTest {
 
         SystemUserStub su4 = new SystemUserStub("iamowner", "owner",662724);
         TeamOwnerStub to = (TeamOwnerStub)su4.getRole(RoleTypes.TEAM_OWNER);
-        to.addTeamToOwn(teamStub);
+        to.addTeamToOwn(teamStub,su4);
         teamStub.addTeamOwner(to);
 
         StadiumStub st1 = new StadiumStub("stadiumStub", "stub street 22");
@@ -690,7 +690,7 @@ public class TeamControllerTest {
 
         SystemUserStub su4 = new SystemUserStub("iamowner", "owner",662724);
         TeamOwnerStub to = (TeamOwnerStub)su4.getRole(RoleTypes.TEAM_OWNER);
-        to.addTeamToOwn(teamStub);
+        to.addTeamToOwn(teamStub,su4);
         teamStub.addTeamOwner(to);
 
         StadiumStub st1 = new StadiumStub("stadiumStub", "stub street 22");

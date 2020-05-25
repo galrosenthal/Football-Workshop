@@ -209,7 +209,7 @@ public class ControllerTest {
         TeamOwner to = new TeamOwner(test);
         Team team = new Team();
         team.getTeamOwners().add(to);
-        assertTrue(to.addTeamToOwn(team));
+        assertTrue(to.addTeamToOwn(team,test));
         UIController.setSelector(61114);
         assertTrue(Controller.addAsset(test));
     }
@@ -218,11 +218,11 @@ public class ControllerTest {
     public void addAssetSystemUserNoStubITest() throws Exception
     {
         SystemUser test = new SystemUser("test","test User");
-        new SystemUser("anotherUser","another test User");
+        SystemUser anotherUser =new SystemUser("anotherUser","another test User");
         TeamOwner to = new TeamOwner(test);
         Team team = new Team();
         team.getTeamOwners().add(to);
-        assertTrue(to.addTeamToOwn(team));
+        assertTrue(to.addTeamToOwn(team,test));
         UIController.setSelector(61115);
         assertTrue(Controller.addAsset(test));
     }
@@ -258,7 +258,7 @@ public class ControllerTest {
         SystemUser systemUser = new SystemUser("rosengal", "gal");
         TeamOwner teamOwner = new TeamOwner(systemUser);
         Team team = new Team();
-        teamOwner.addTeamToOwn(team);
+        teamOwner.addTeamToOwn(team,systemUser);
         Stadium stadium = new Stadium("AESEAL" , "New York");
         team.addStadium(stadium);
         UIController.setSelector(6139);
