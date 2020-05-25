@@ -31,4 +31,10 @@ public class Score {
     public int getAwayTeamGoalCount() {
         return awayTeamGoalCount;
     }
+
+    @Override
+    public String toString() {
+        return homeTeamGoalCount+":"+awayTeamGoalCount+" "+homeTeam.getTeamName()
+                +" vs. "+awayTeam.getTeamName()+".";
+    }
 }

@@ -1,7 +1,9 @@
 package Service;
 
 import Domain.EntityManager;
+import Domain.Exceptions.NoRoleForUser;
 import Domain.Game.Game;
+import Domain.Game.Stadium;
 import Domain.Game.Team;
 import Domain.Logger.Event;
 import Domain.Users.*;
@@ -13,23 +15,21 @@ import java.util.List;
 public class RefereeController {
 
     public static boolean updateGameEvents(SystemUser systemUser) {
+            //createGameForTest();
         if (!systemUser.isType(RoleTypes.REFEREE)) {
             return false;
         }
         Referee refereeRole = (Referee) systemUser.getRole(RoleTypes.REFEREE);
         Game chosenGame = null;
         try {
-            chosenGame = getRefereeNotFinishedGameByChoice(refereeRole);
+            chosenGame = getRefereeGameByChoice(refereeRole, false); //get a not-finished game
         } catch (Exception e) {
             UIController.showNotification(e.getMessage());
             return false;
         }
 
-        //Show existing events
-        showExistingEvents(chosenGame);
-
         //Get new event type
-        String eventType = getEventTypeByChoice();
+        String eventType = getEventTypeByChoice(chosenGame);
 
         //Adding the new event
         try {
@@ -64,6 +64,64 @@ public class RefereeController {
         UIController.showNotification("The new " + eventType + " has been added successfully");
         return true;
     }
+
+    public static boolean produceGameReport(SystemUser systemUser) {
+        if (!systemUser.isType(RoleTypes.REFEREE)) {
+            return false;
+        }
+        Referee refereeRole = (Referee) systemUser.getRole(RoleTypes.REFEREE);
+        Game chosenGame = null;
+        try {
+            //get a finished game to produce its report
+            chosenGame = getRefereeGameByChoice(refereeRole, true);
+        } catch (Exception e) {
+            UIController.showNotification(e.getMessage());
+            return false;
+        }
+
+        String folderPath = UIController.receiveFolderPath();
+        try {
+            //produce the report
+            chosenGame.getGameReport().produceReport(folderPath);
+        } catch (Exception e) {
+            UIController.showNotification(e.getMessage());
+            return false;
+        }
+        UIController.showNotification("Game report saved successfully");
+        return true;
+    }
+
+    /**
+     * Only for tests
+     */
+//    public static boolean alreadyARun = false;
+//    private static void createGameForTest() {
+//        if(!alreadyARun) {
+//            alreadyARun = true;
+//            SystemUser systemUser = EntityManager.getInstance().getUser("Administrator");
+//
+//            Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
+//
+//            SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
+//            new AssociationRepresentative(arSystemUser);
+//            new TeamOwner(arSystemUser);
+//            TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+//            Team firstTeam = new Team("Hapoel Beit Shan", toRole);
+//            EntityManager.getInstance().addTeam(firstTeam);
+//            Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
+//            EntityManager.getInstance().addTeam(secondTeam);
+//
+//            Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+//            SystemUser avi = new SystemUser("AviCohen", "Avi Cohen");
+//            Player player1 = new Player(avi, new Date(2001, 01, 01));
+//            avi.addNewRole(player1);
+//            EntityManager.getInstance().addUser(avi);
+//            firstTeam.addTeamPlayer(toRole, player1);
+//
+//            game.addReferee(referee);
+//            referee.addGame(game);
+//        }
+//    }
 
 
     /**
@@ -104,21 +162,22 @@ public class RefereeController {
     }
 
 
-    public static void showExistingEvents(Game chosenGame) {
+    public static String showExistingEvents(Game chosenGame) {
         List<String> gameEventsStringList = chosenGame.getGameEventsStringList();
-        StringBuilder stringBuilder = new StringBuilder();
+        String existingEvents;
         if (gameEventsStringList.isEmpty()) {
-            stringBuilder.append("the chosen game doesn't have events yet");
+            existingEvents = "The chosen game doesn't have events yet.;";
         } else {
-            stringBuilder.append("the chosen game already have the following events:\n");
+            existingEvents = "The chosen game already have the following events:;";
             for (String string : gameEventsStringList) {
-                stringBuilder.append(string + "\n");
+                existingEvents = existingEvents + (string + ";");
             }
         }
-        UIController.showNotification(stringBuilder.toString());
+        //UIController.showNotification(stringBuilder.toString());
+        return existingEvents;
     }
 
-    private static Game getRefereeNotFinishedGameByChoice(Referee refereeRole) throws Exception {
+    private static Game getRefereeGameByChoice(Referee refereeRole, boolean finished) throws Exception {
         List<Game> gamesOfReferee = refereeRole.getGames();
         if (gamesOfReferee == null || gamesOfReferee.isEmpty()) {
             throw new Exception("There are no games for this referee");
@@ -126,21 +185,30 @@ public class RefereeController {
         List<String> gamesList = new ArrayList<>();
         for (int i = 0; i < gamesOfReferee.size(); i++) {
             Game gameOfReferee = gamesOfReferee.get(i);
-            if (!gameOfReferee.hasFinished()) { //only games which didn't finish
-                gamesList.add(gameOfReferee.toString());
-            }
-            else{ // If this is MAIN_REFEREE he can still edit the game if 5 hours have not passed.
-                if(refereeRole.getTraining() == RefereeQualification.MAIN_REFEREE){
-                    Date currDate = new Date();
-                    if(gameOfReferee.getHoursPassedSinceGameEnd(currDate) <= 5){
-                        gamesList.add(gameOfReferee.toString());
+            if(!finished) { //add only not-finished games
+                if (!gameOfReferee.hasFinished()) { //only games which didn't finish
+                    gamesList.add(gameOfReferee.toString());
+                } else { // If this is MAIN_REFEREE he can still edit the game if 5 hours have not passed.
+                    if (refereeRole.getTraining() == RefereeQualification.MAIN_REFEREE) {
+                        Date currDate = new Date();
+                        if (gameOfReferee.getHoursPassedSinceGameEnd(currDate) <= 5) {
+                            gamesList.add(gameOfReferee.toString());
+                        }
                     }
+                }
+            }
+            else{ //add only finished games
+                if (gameOfReferee.hasFinished()) { //only games which finish
+                    gamesList.add(gameOfReferee.toString());
                 }
             }
 
         }
         if (gamesList.isEmpty()) {
-            throw new Exception("There are no ongoing games for this referee");
+            if(!finished)
+                throw new Exception("There are no ongoing games for this referee");
+            else
+                throw new Exception("There are no finished games for this referee");
         }
         int Index;
         do {
@@ -150,11 +218,11 @@ public class RefereeController {
         return gamesOfReferee.get(Index);
     }
 
-    private static String getEventTypeByChoice() {
+    private static String getEventTypeByChoice(Game chosenGame) {
         List<String> eventType = Event.getEventsTypes();
         int Index;
         do {
-            Index = UIController.receiveInt("Choose an event number you would like to add", eventType);
+            Index = UIController.receiveInt(showExistingEvents(chosenGame)  + "Choose an event number you would like to add", eventType);
         } while (!(Index >= 0 && Index < eventType.size()));
 
         return eventType.get(Index);
@@ -272,4 +340,34 @@ public class RefereeController {
     }
 
 
+    /**
+     * Display all future referee games
+     * @param systemUser - the referee user
+     * @throws NoRoleForUser - The user is not a referee
+     * @throws Exception - There are no games for this referee
+     */
+    public static void displayScheduledGames(SystemUser systemUser) throws Exception {
+        if (!systemUser.isType(RoleTypes.REFEREE)) {
+            throw new NoRoleForUser("The user is not a referee");
+        }
+        Referee refereeRole = (Referee) systemUser.getRole(RoleTypes.REFEREE);
+        List<Game> gamesOfReferee = refereeRole.getGames();
+        if (gamesOfReferee == null || gamesOfReferee.isEmpty() ) {
+            throw new Exception("There are no games for this referee");
+        }
+
+        List<String> gamesByString = new ArrayList<>();
+        Date currentDate = new Date();
+        for (Game game: gamesOfReferee){
+            if(game.getGameDate().after(currentDate)){
+                gamesByString.add(game.toString());
+            }
+        }
+
+        if (gamesByString.isEmpty()) {
+            throw new Exception("There are no games for this referee");
+        }
+
+        UIController.showModal(gamesByString);
+    }
 }

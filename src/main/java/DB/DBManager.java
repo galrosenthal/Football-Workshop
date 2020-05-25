@@ -1,59 +1,24 @@
 package DB;
 
+import static DB.Tables.Tables.*;
 
-import Domain.Users.RoleTypes;
+import org.jooq.DSLContext;
+import org.jooq.Result;
 
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DBManager {
 
     private static DBManager dbManagerInstance = null;
 
-    private final String tablesDetailsPath = "src/main/resources/Tables/tablesDetails.csv";
-    private Table tablesDetails;
-
-    private Table systemUsers;
-    private Table team;
-    private Table teamManager;
-    private Table teamOwner;
-    private Table fan;
-    private Table player;
-    private Table coach;
-    private Table associationRepresentative;
-    private Table referee;
-    private Table systemAdmin;
-    //TODO: add fields for different tables
-
     /**
      * Constructor
      */
     private DBManager() {
-        //read tables details from csv, init
-        //TODO: Maybe we should change this, and implemet Strategey Design Pattern here?
-        
-        tablesDetails = CSVEditor.readTableFromCSV(tablesDetailsPath);
-        //init lists
-        String path = "";
-        for (int i = 0; i < tablesDetails.size(); i++) {
-            switch (tablesDetails.getRecordValue(i, "name")) {
-                case "SystemUsers":
-                     path = tablesDetails.getRecordValue(i, "path");
-                    this.systemUsers = CSVEditor.readTableFromCSV(path);
-                    //this.initSystemUsers(path);
-                    break;
-                case "Team":
-                    path = tablesDetails.getRecordValue(i, "path");
-                    this.team = CSVEditor.readTableFromCSV(path);
-                    break;
-                case "coaches":
-
-                    break;
-                //TODO: add cases for different tables
-            }
-        }
     }
-
-
 
 
     /**
@@ -67,13 +32,39 @@ public class DBManager {
     }
 
     /**
+     * clear all records from DB
+     * @throws Exception
+     */
+    public static void deleteData() throws Exception {
+        DBHandler.getInstance().deleteData();
+    }
+
+
+    /**
+     * start connection to DB
+     * @param url - to DB
+     */
+    public void startConnection(String url) {
+
+        DBHandler.startConnection(url);
+    }
+
+    /**
+     * close connection to DB
+     *
+     */
+    public void closeConnection() {
+
+        DBHandler.closeConnection();
+    }
+
+    /**
      * Saves all the tables to their original files
      * @return - boolean - true if all the tables have been saved successfully, else false
      */
     public boolean close() {
         boolean finished = true;
         //save all the changes to files.
-        finished = CSVEditor.writeTableToCSV(systemUsers,tablesDetails.getRecord(new String[]{"name"},new String[]{"SystemUsers"}).get(1));
 
 
         if (finished) {
@@ -83,44 +74,109 @@ public class DBManager {
     }
 
     /**
-     * Returns the system users table
-     * @return - Table - The system users table
+     *
+     * @param name - league name
+     * @return true if league name exists in table -league, false otherwise
      */
-    public Table getSystemUsers() {
-        return systemUsers;
+    public boolean doesLeagueExists(String name) {
+        DSLContext dslContext = DBHandler.getContext();
+        Result<?> result = dslContext.select().
+                from(LEAGUE)
+                .where(LEAGUE.NAME.eq(name)).fetch();
+        if (result.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
-    //Might be redundant. Use Table.getRecord() for the same purpose.
-    public List<String> getUser(String username){
-        for (int i = 0; i < this.systemUsers.size(); i++) {
-            if((this.systemUsers.getRecordValue(i,"username")).equals(username)){
-                return this.systemUsers.getRecord(i);
-            }
+    /**
+     *Add league record
+     * @param name - league name to add
+     * @return true - added successfully
+     *         false - otherwise
+     */
+
+    public boolean addLeagueRecord(String name) {
+        DSLContext dslContext = DBHandler.getContext();
+        //todo: check!!!!
+        int succeed = dslContext.insertInto(LEAGUE, LEAGUE.NAME).values(name).execute();
+        if(succeed == 0)
+        {
+               return false;
         }
-        return null;
+        return true;
     }
 
-    public Table getRelevantRecords(String username, RoleTypes roleType) throws Exception {
-        switch (roleType) {
-            case FAN:
-                return fan.getRecords(new String[]{"username"}, new String[]{username});
-            case PLAYER:
-                return player.getRecords(new String[]{"username"}, new String[]{username});
-            case COACH:
-                return coach.getRecords(new String[]{"username"}, new String[]{username});
-            case TEAM_MANAGER:
-                return teamManager.getRecords(new String[]{"username"}, new String[]{username});
-            case TEAM_OWNER:
-                return teamOwner.getRecords(new String[]{"username"}, new String[]{username});
-            case SYSTEM_ADMIN:
-                return systemAdmin.getRecords(new String[]{"username"}, new String[]{username});
-            case REFEREE:
-                return referee.getRecords(new String[]{"username"}, new String[]{username});
-            case ASSOCIATION_REPRESENTATIVE:
-                return associationRepresentative.getRecords(new String[]{"username"}, new String[]{username});
-            default:
-                throw new Exception("Error in Role type in the DB");
-        }
+    /**
+     *  Get all leagues name from DB
+     * @return - List<String> - Leagues name
+     */
+    public List<String> getLeagues() {
+        List<String> leaguesName = new ArrayList<>();
+        DSLContext dslContext = DBHandler.getContext();
+        Result<?> result = dslContext.select().
+                from(LEAGUE).fetch();
 
+        leaguesName = result.getValues(LEAGUE.NAME);
+        return  leaguesName;
+    }
+
+    /**
+     * Check if season Exists in DB
+     * @param leagueName
+     * @param seasonYears
+     * @return true - if  season Exists
+     *         false - otherwise
+     */
+    public boolean doesSeasonExists(String leagueName, String seasonYears) {
+        DSLContext dslContext = DBHandler.getContext();
+        Result<?> result = dslContext.select().
+                from(SEASON)
+                .where(SEASON.LEAGUE_NAME.eq(leagueName)).and(SEASON.YEARS.eq(leagueName)).fetch();
+        if (result.isEmpty()) {
+            return false;
+        }
+        return true;
+
+    }
+
+
+    /**
+     *get Points Policy ID fom DB
+     * @param victoryPoints
+     * @param lossPoints
+     * @param tiePoints
+     * @return int  - Points Policy ID
+     */
+    public int getPointsPolicyID(int victoryPoints, int lossPoints, int tiePoints) {
+        DSLContext dslContext = DBHandler.getContext();
+        Result<?> result = dslContext.select().
+                from(POINTS_POLICY)
+                .where(POINTS_POLICY.VICTORY_POINTS.eq(victoryPoints)).and(POINTS_POLICY.LOSS_POINTS.eq(lossPoints).and(POINTS_POLICY.TIE_POINTS.eq(tiePoints))).fetch();
+        if (result.isEmpty()) {
+            return -1;
+        }
+        return result.get(0).indexOf(POINTS_POLICY.POLICY_ID);
+    }
+
+    /**
+     * add Season To League
+     * @param leagueName
+     * @param years
+     * @param isUnderway
+     * @param pointsPolicyID
+     * @return true - added successfully
+     *         false - otherwise
+     */
+    public boolean addSeasonToLeague(String leagueName, String years, boolean isUnderway, int pointsPolicyID) {
+        DSLContext dslContext = DBHandler.getContext();
+        int succeed = dslContext.insertInto(SEASON, SEASON.LEAGUE_NAME,  SEASON.YEARS,
+               SEASON.IS_UNDER_WAY, SEASON.POINTS_POLICY_ID)
+                .values(leagueName,years, isUnderway, pointsPolicyID).execute();
+        if(succeed == 0)
+        {
+            return false;
+        }
+        return true;
     }
 }

@@ -51,11 +51,12 @@ public class SchedulingPolicyTest {
         teams.add(team5);
         teams.add(team6);
         List<Referee> referees = new ArrayList<>();
-        referees.add(new RefereeStub(new SystemUser("a","a","a"), RefereeQualification.VAR_REFEREE));
-        referees.add(new RefereeStub(new SystemUser("b","b","b"),RefereeQualification.VAR_REFEREE));
-        referees.add(new RefereeStub(new SystemUser("c","c","c"),RefereeQualification.VAR_REFEREE));
-        referees.add(new RefereeStub(new SystemUser("d","d","d"),RefereeQualification.VAR_REFEREE));
-        referees.add(new RefereeStub(new SystemUser("e","e","e"),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("a","a","a","test@gmail.com", false),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("b","b","b","test@gmail.com", false),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("c","c","c","test@gmail.com", false),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("d","d","d","test@gmail.com", false),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("e","e","e","test@gmail.com", false),RefereeQualification.VAR_REFEREE));
+
         List<ScheduleMatch> scheduleMatches = sp.generateSchedule(new Date(),teams,referees );
         assertEquals(30,scheduleMatches.size());
 

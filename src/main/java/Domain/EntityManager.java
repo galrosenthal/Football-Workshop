@@ -2,6 +2,7 @@ package Domain;
 
 import DB.DBManager;
 import DB.Table;
+import Domain.Exceptions.InvalidEmailException;
 import Domain.Exceptions.AlreadyLoggedInUser;
 import Domain.Exceptions.UsernameAlreadyExistsException;
 import Domain.Exceptions.UsernameOrPasswordIncorrectException;
@@ -18,14 +19,20 @@ import Service.Observer;
 import Service.UIController;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EntityManager{
     private static EntityManager entityManagerInstance = null;
 
+    private static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private List<SystemUser> allUsers;
     private List<Team> allTeams;
     private List<Stadium> allStadiums;
     private HashSet<League> allLeagues;
+    private List<SystemAdmin> systemAdmins;
+
     private List<PointsPolicy> pointsPolicies;
     private List<SchedulingPolicy> schedulingPolicies;
     private HashMap<SystemUser, Boolean> loggedInMap;
@@ -40,6 +47,7 @@ public class EntityManager{
         allTeams = new ArrayList<>();
         allStadiums = new ArrayList<>();
         loggedInMap = new HashMap<>();
+        systemAdmins = new ArrayList<>();
         pointsPolicies = new ArrayList<>();
         schedulingPolicies = new ArrayList<>();
     }
@@ -53,17 +61,19 @@ public class EntityManager{
         if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
 
-            SystemUser admin = new SystemUser("Administrator",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"admin");
-            SystemUser arnav = new SystemUser("arnav",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"arnav");
+            SystemUser admin = new SystemUser("Administrator",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"admin" , "test@gmail.com" , false);
+            SystemUser arnav = new SystemUser("arnav",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"arnav" , "test@gmail.com" , false);
             admin.addNewRole(new SystemAdmin(admin));
             admin.addNewRole(new AssociationRepresentative(admin));
+            admin.addNewRole(new Referee(admin,RefereeQualification.VAR_REFEREE));
         }
 
         return entityManagerInstance;
     }
 
 
-    public void initSystem() throws Exception {
+    /*
+     public void initSystem() throws Exception {
         Table systemUsersTable = DBManager.getInstance().getSystemUsers();
         for (int i = 0; i < systemUsersTable.size(); i++) {
             String username = systemUsersTable.getRecordValue(i, "username");
@@ -119,6 +129,9 @@ public class EntityManager{
         return null;
 
     }
+     */
+
+
 
     public List<League> getLeagues() {
         return new ArrayList<League>(allLeagues);
@@ -425,11 +438,13 @@ public class EntityManager{
      * @param name Name.
      * @param usrNm User name.
      * @param pswrd Password.
+     * @param email  email address
+     * @param emailAlert - boolean  - if send via email - true, otherwise false
      * @return New user with those credentials.
      * @throws Exception If user name is already belongs to a user in the system, or
      * the password does not meet the security requirements.
      */
-    public SystemUser signUp(String name, String usrNm, String pswrd) throws UsernameAlreadyExistsException, WeakPasswordException {
+    public SystemUser signUp(String name, String usrNm, String pswrd,String email, boolean emailAlert) throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException {
         //Checking if user name is already exists
         if(getUser(usrNm) != null){
             throw new UsernameAlreadyExistsException("Username already exists");
@@ -445,10 +460,14 @@ public class EntityManager{
         if(!pswrd.matches(pswrdRegEx)){
             throw new WeakPasswordException("Password does not meet the requirements");
         }
+        if(!validate(email))
+        {
+            throw new InvalidEmailException("Invalid Email");
+        }
 
         //hash the password
         String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pswrd);
-        SystemUser newUser = new SystemUser(usrNm, hashedPassword, name);
+        SystemUser newUser = new SystemUser(usrNm, hashedPassword, name, email,emailAlert);
         addUser(newUser);
 
 
@@ -601,5 +620,17 @@ public class EntityManager{
 
     public List<SchedulingPolicy> getSchedulingPolicies() {
         return schedulingPolicies;
+    }
+
+
+    /**
+     * validate String to Email REGEX
+     * @param emailStr
+     * @return true - valid Email
+     *         false - otherwise
+     */
+    private static boolean validate(String emailStr) {
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
+        return matcher.find();
     }
 }

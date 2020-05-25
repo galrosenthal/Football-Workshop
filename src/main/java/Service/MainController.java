@@ -69,6 +69,8 @@ public class MainController {
      *                              [1] = First name
      *                              [2] = Last name
      *                              [3] = Password
+     *                              [4] = email
+     *                              [5] = alert on Email - true , alert on application - false
      * @return true if the user was signed up successfully
      */
     public static boolean signup(List<String> userDetailsToRegister)
@@ -80,7 +82,17 @@ public class MainController {
 
         try {
             String name = userDetailsToRegister.get(1) + " " + userDetailsToRegister.get(2);
-            return Controller.signUp(name, userDetailsToRegister.get(0), userDetailsToRegister.get(3)) != null;
+            try {
+                boolean alert = false;
+                if(userDetailsToRegister.get(5).equals("true"))
+                {
+                    alert = true;
+                }
+                return Controller.signUp(name, userDetailsToRegister.get(0), userDetailsToRegister.get(3), userDetailsToRegister.get(4),alert) != null;
+            } catch (InvalidEmailException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
         catch (UsernameAlreadyExistsException | WeakPasswordException e){
             e.printStackTrace();
@@ -605,6 +617,39 @@ public class MainController {
         try
         {
             ARController.activateSchedulingPolicy(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+    public static void DisplayScheduledGame(String username) {
+        SystemUser refereeUser = EntityManager.getInstance().getUser(username);
+        if(refereeUser == null)
+        {
+            return;
+        }
+        try
+        {
+            RefereeController.displayScheduledGames(refereeUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static void updateGameEvents(String username) {
+        SystemUser refeeeUser = EntityManager.getInstance().getUser(username);
+        if(refeeeUser == null)
+        {
+            return;
+        }
+        try
+        {
+            RefereeController.updateGameEvents(refeeeUser);
         }
         catch (Exception e )
         {

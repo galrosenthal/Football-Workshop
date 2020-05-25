@@ -16,6 +16,7 @@ import org.junit.*;
 import org.junit.experimental.categories.Category;
 
 
+import java.io.File;
 import java.util.*;
 import java.util.Date;
 
@@ -31,11 +32,11 @@ public class AcceptanceTests {
     public static void setUp() { //Will be called only once
         String hashedPasswordForEu = org.apache.commons.codec.digest.DigestUtils.sha256Hex("aBc12345");
         String hashedPasswordForAviYosi = org.apache.commons.codec.digest.DigestUtils.sha256Hex("123Ab456");
-        existingUser = new SystemUser("abc", hashedPasswordForEu, "abc");
+        existingUser = new SystemUser("abc", hashedPasswordForEu, "abc", "test@gmail.com", false);
         existingUser.addNewRole(new TeamOwner(existingUser));
-        aviCohenSu = new SystemUser("avicohen", hashedPasswordForAviYosi, "Avi Cohen");
+        aviCohenSu = new SystemUser("avicohen", hashedPasswordForAviYosi, "Avi Cohen","test@gmail.com", false);
         aviCohenSu.addNewRole(new TeamOwner(aviCohenSu));
-        yosiManagerSu = new SystemUser("yosilevi", hashedPasswordForAviYosi, "Yosi Levi");
+        yosiManagerSu = new SystemUser("yosilevi", hashedPasswordForAviYosi, "Yosi Levi","test@gmail.com", false);
         yosiManagerSu.addNewRole(new TeamManager(yosiManagerSu));
         UIController.setIsTest(true);
     }
@@ -51,7 +52,7 @@ public class AcceptanceTests {
 
     private void initEntities() {
         String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex("12345678");
-        SystemUser adminUser = new SystemUser("admin", hashedPassword, "administrator");
+        SystemUser adminUser = new SystemUser("admin", hashedPassword, "administrator","test@gmail.com", false);
         adminUser.addNewRole(new SystemAdmin(adminUser));
         EntityManager.getInstance().addUser(adminUser);
     }
@@ -110,7 +111,7 @@ public class AcceptanceTests {
     public void signUpATest() throws Exception {
         EntityManager.getInstance().removeUserByReference(existingUser);
         //success
-        SystemUser user = Controller.signUp("abc", "abc", "aBc12345");
+        SystemUser user = Controller.signUp("abc", "abc", "aBc12345","test@gmail.com", false);
     }
 
     @Test
@@ -118,7 +119,7 @@ public class AcceptanceTests {
         //username already exists
         EntityManager.getInstance().addUser(existingUser);
         try {
-            SystemUser user2 = Controller.signUp("abc", "abc", "aBc12345");
+            SystemUser user2 = Controller.signUp("abc", "abc", "aBc12345","test@gmail.com", false);
             Assert.fail();
         } catch (Exception e) {
             e.printStackTrace();
@@ -133,7 +134,7 @@ public class AcceptanceTests {
         //password not strong
         EntityManager.getInstance().removeUserByReference(existingUser);
         try {
-            SystemUser user3 = Controller.signUp("abc", "abc", "123");
+            SystemUser user3 = Controller.signUp("abc", "abc", "123","test@gmail.com", false);
             Assert.fail();
         } catch (Exception e) {
             e.printStackTrace();
@@ -412,7 +413,7 @@ public class AcceptanceTests {
         Team beitShean = new Team();
 
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345");
+        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
@@ -439,7 +440,7 @@ public class AcceptanceTests {
 
         beitShean.setTeamName("Beit Shean");
 
-        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345");
+        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
@@ -478,7 +479,7 @@ public class AcceptanceTests {
     public void modifyTeamAssetDetails1ATest() throws Exception {
         Team beitShean = new Team();
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345");
+        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
@@ -486,7 +487,7 @@ public class AcceptanceTests {
         SystemUser abc = Controller.login("abc1", "aBc12345");
         assertEquals(abc, abcCreate);
 
-        SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");
+        SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy","test@gmail.com", false);
         Player playerElisha = new Player(elivyCreate, new Date());
         beitShean.addTeamPlayer(abcOwner, playerElisha);
         UIController.setIsTest(true);
@@ -510,7 +511,7 @@ public class AcceptanceTests {
     public void modifyTeamAssetDetails2ATest() throws Exception {
         Team beitShean = new Team();
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345");
+        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate);
         abcOwner.addTeamToOwn(beitShean);
         beitShean.getTeamOwners().add(abcOwner);
@@ -518,7 +519,7 @@ public class AcceptanceTests {
         SystemUser abc = Controller.login("abc1", "aBc12345");
         assertEquals(abc, abcCreate);
 
-        SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy");
+        SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy","test@gmail.com", false);
         Player playerElisha = new Player(elivyCreate, new Date());
 
         UIController.setIsTest(true);
@@ -970,6 +971,51 @@ public class AcceptanceTests {
          */
     }
 
+    /**
+     * 10.4.a
+     * Main success scenario - A Game  Report is produced
+     */
+    @Test
+    public void produceGameReportATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.VAR_REFEREE));
+        Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
+
+        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
+        new AssociationRepresentative(arSystemUser);
+        new TeamOwner(arSystemUser);
+        TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        Team firstTeam = new Team("Hapoel Beit Shan", toRole);
+        Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
+
+        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen"),new Date(2001, 01, 01));
+        firstTeam.addTeamPlayer(toRole,player1);
+
+        game.addReferee(referee);
+        referee.addGame(game);
+
+        try {
+            game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
+                   player1,2);
+        } catch (Exception e) {
+        }
+        game.addEndGame(new Date(),90); // end the game
+
+        UIController.setSelector(10411);//0,"."
+        boolean succeeded = RefereeController.produceGameReport(systemUser);
+        assertTrue(succeeded);
+        if(succeeded){
+            //delete the created report
+            File dir = new File(".");
+            File[] directoryListing = dir.listFiles();
+            for (File file : directoryListing) {
+                if(file.getName().startsWith("GameReport_Hapoel")){
+                    assertTrue(file.delete());
+                }
+            }
+        }
+    }
 
     @After
     public void tearDown() throws Exception {
