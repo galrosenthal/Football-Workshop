@@ -4,6 +4,7 @@ import Domain.EntityManager;
 import Domain.Game.Game;
 import Domain.Game.Team;
 import Domain.GameLogger.Event;
+import Domain.SystemLogger.*;
 import Domain.Users.*;
 
 import java.util.ArrayList;
@@ -62,6 +63,9 @@ public class RefereeController {
         }
 
         UIController.showNotification("The new " + eventType + " has been added successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(RefereeController.class,
+                new AddGameEventLogMsg(systemUser.getUsername(), eventType, chosenGame.getGameTitle()));
         return true;
     }
 
@@ -88,6 +92,9 @@ public class RefereeController {
             return false;
         }
         UIController.showNotification("Game report saved successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(RefereeController.class,
+                new ProduceGameReportLogMsg(systemUser.getUsername(), chosenGame.getGameTitle()));
         return true;
     }
 

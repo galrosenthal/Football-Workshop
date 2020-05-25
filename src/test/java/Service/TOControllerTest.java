@@ -1,15 +1,22 @@
 package Service;
 
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.SystemUser;
 import Domain.Users.SystemUserStub;
 import Domain.Users.TeamOwnerStub;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class TOControllerTest {
+
+    @BeforeClass
+    public static void setUpBeforeAll() { //Will be called only once
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+    }
 
     @Test
     public void closeTeamUTest() throws Exception {

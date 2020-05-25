@@ -1,5 +1,6 @@
 package Domain.Game;
 
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.PlayerStub;
 import Domain.Users.SystemUserStub;
 import org.junit.Before;
@@ -13,6 +14,11 @@ import static org.junit.Assert.*;
 public class PointsPolicyTest {
 
     private PointsPolicy pointsPolicy;
+
+    @BeforeClass
+    public static void setUpBeforeAll() { //Will be called only once
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+    }
 
     @Before
     public void setUp() throws Exception {

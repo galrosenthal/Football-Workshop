@@ -40,7 +40,7 @@ public class AcceptanceTests {
         yosiManagerSu = new SystemUser("yosilevi", hashedPasswordForAviYosi, "Yosi Levi","test@gmail.com", false);
         yosiManagerSu.addNewRole(new TeamManager(yosiManagerSu));
         UIController.setIsTest(true);
-       // SystemLoggerManager.disableLoggers(); // disable loggers in tests
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
     }
 
 

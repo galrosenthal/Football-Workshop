@@ -7,6 +7,7 @@ import Domain.Exceptions.*;
 import Domain.Game.Team;
 import Domain.Game.TeamAsset;
 import Domain.Game.TeamStatus;
+import Domain.SystemLogger.*;
 import Domain.Users.*;
 
 import java.util.ArrayList;
@@ -42,6 +43,8 @@ public class Controller {
 
         //Establishing connections to external tax system
         UIController.showNotification("The system was booted successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(Controller.class, new SystemBootLogMsg(admin.getUsername()));
         return true;
     }
 

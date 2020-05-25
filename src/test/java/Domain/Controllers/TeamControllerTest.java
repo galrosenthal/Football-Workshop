@@ -6,6 +6,7 @@ import Domain.Exceptions.AssetsNotExistsException;
 import Domain.Exceptions.NoTeamExistsException;
 import Domain.Exceptions.NotATeamOwner;
 import Domain.Game.*;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
 import Service.UIController;
 import org.junit.*;
@@ -29,6 +30,11 @@ public class TeamControllerTest {
     SystemUser teamOwnerUser2 = new SystemUser("rosengal", "Gal12345", "Gal" , "test@gmail.com" , false);
     SystemUser teamOwnerUser3 = new SystemUser("nirdz", "Nir12345", "Nir" , "test@gmail.com" , false);
     SystemUser teamOwnerUser4 = new SystemUser("merav", "Merav12345", "Mer" , "test@gmail.com" , false);
+
+    @BeforeClass
+    public static void setUp() { //Will be called only once
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+    }
 
     @Before
     public void runBeforeTests(){

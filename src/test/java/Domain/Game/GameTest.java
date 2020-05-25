@@ -2,6 +2,7 @@ package Domain.Game;
 
 import Domain.EntityManager;
 import Domain.GameLogger.*;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.Player;
 import Domain.Users.PlayerStub;
 import Domain.Users.SystemUserStub;
@@ -16,6 +17,11 @@ public class GameTest {
     private Game game;
     private TeamStub firstTeam;
     private TeamStub secondTeam;
+
+    @BeforeClass
+    public static void setUpBeforeAll() { //Will be called only once
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+    }
 
     @Before
     public void setUp() throws Exception {

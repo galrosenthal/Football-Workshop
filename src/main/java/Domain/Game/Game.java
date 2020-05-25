@@ -323,4 +323,8 @@ public class Game extends Observable {
         super.notifyObservers();
     }
 
+    public String getGameTitle(){
+        return homeTeam.getTeamName() + " vs. " + awayTeam.getTeamName();
+    }
+
 }
