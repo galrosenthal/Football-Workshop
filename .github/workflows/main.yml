@@ -17,6 +17,19 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - name: Start MariaDB
+      uses: getong/mariadb-action@v1.1
+      with:
+        # The port of host
+        host port: 3306 # optional, default is 3306
+        # The port of container
+        container port: 3306 # optional, default is 3306
+        # --character-set-server - The character set of MySQL server
+        character set server: utf8mb4# optional, default is utf8mb4
+        # MYSQL_ROOT_PASSWORD - root superuser password ??????
+        # MYSQL_DATABASE - name for the default database that is created
+        mysql database: Test_table # optional, default is 
+
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
