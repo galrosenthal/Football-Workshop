@@ -8,9 +8,11 @@ import DB.Tables.tables.Alert;
 import DB.Tables.tables.AssociationRepresentative;
 import DB.Tables.tables.Coach;
 import DB.Tables.tables.CoachInTeam;
+import DB.Tables.tables.ErrorLog;
 import DB.Tables.tables.EventCard;
 import DB.Tables.tables.EventGoal;
 import DB.Tables.tables.EventInjury;
+import DB.Tables.tables.EventLog;
 import DB.Tables.tables.EventOffside;
 import DB.Tables.tables.EventPenalty;
 import DB.Tables.tables.EventSwitchPlayers;
@@ -52,7 +54,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Fwdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -651893468;
+    private static final long serialVersionUID = 1109205500;
 
     /**
      * The reference instance of <code>fwdb</code>
@@ -80,6 +82,11 @@ public class Fwdb extends SchemaImpl {
     public final CoachInTeam COACH_IN_TEAM = CoachInTeam.COACH_IN_TEAM;
 
     /**
+     * The table <code>fwdb.error_log</code>.
+     */
+    public final ErrorLog ERROR_LOG = ErrorLog.ERROR_LOG;
+
+    /**
      * The table <code>fwdb.event_card</code>.
      */
     public final EventCard EVENT_CARD = EventCard.EVENT_CARD;
@@ -93,6 +100,11 @@ public class Fwdb extends SchemaImpl {
      * The table <code>fwdb.event_injury</code>.
      */
     public final EventInjury EVENT_INJURY = EventInjury.EVENT_INJURY;
+
+    /**
+     * The table <code>fwdb.event_log</code>.
+     */
+    public final EventLog EVENT_LOG = EventLog.EVENT_LOG;
 
     /**
      * The table <code>fwdb.event_offside</code>.
@@ -244,9 +256,11 @@ public class Fwdb extends SchemaImpl {
             AssociationRepresentative.ASSOCIATION_REPRESENTATIVE,
             Coach.COACH,
             CoachInTeam.COACH_IN_TEAM,
+            ErrorLog.ERROR_LOG,
             EventCard.EVENT_CARD,
             EventGoal.EVENT_GOAL,
             EventInjury.EVENT_INJURY,
+            EventLog.EVENT_LOG,
             EventOffside.EVENT_OFFSIDE,
             EventPenalty.EVENT_PENALTY,
             EventSwitchPlayers.EVENT_SWITCH_PLAYERS,

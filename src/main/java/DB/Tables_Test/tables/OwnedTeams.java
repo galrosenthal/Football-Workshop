@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row2;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OwnedTeams extends TableImpl<OwnedTeamsRecord> {
 
-    private static final long serialVersionUID = 1479350607;
+    private static final long serialVersionUID = 1823271819;
 
     /**
      * The reference instance of <code>fwdb_test.owned_teams</code>
@@ -55,6 +55,11 @@ public class OwnedTeams extends TableImpl<OwnedTeamsRecord> {
      * The column <code>fwdb_test.owned_teams.team_name</code>.
      */
     public final TableField<OwnedTeamsRecord, String> TEAM_NAME = createField(DSL.name("team_name"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
+
+    /**
+     * The column <code>fwdb_test.owned_teams.appointer</code>.
+     */
+    public final TableField<OwnedTeamsRecord, String> APPOINTER = createField(DSL.name("appointer"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
      * Create a <code>fwdb_test.owned_teams</code> table reference
@@ -106,7 +111,7 @@ public class OwnedTeams extends TableImpl<OwnedTeamsRecord> {
 
     @Override
     public List<ForeignKey<OwnedTeamsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<OwnedTeamsRecord, ?>>asList(Keys.FK__TEAM_OWNER, Keys.FK__TEAM);
+        return Arrays.<ForeignKey<OwnedTeamsRecord, ?>>asList(Keys.FK__TEAM_OWNER, Keys.FK__TEAM, Keys.FK_OWNED_TEAMS_SYSTEMUSER);
     }
 
     public TeamOwner teamOwner() {
@@ -115,6 +120,10 @@ public class OwnedTeams extends TableImpl<OwnedTeamsRecord> {
 
     public Team team() {
         return new Team(this, Keys.FK__TEAM);
+    }
+
+    public Systemuser systemuser() {
+        return new Systemuser(this, Keys.FK_OWNED_TEAMS_SYSTEMUSER);
     }
 
     @Override
@@ -144,11 +153,11 @@ public class OwnedTeams extends TableImpl<OwnedTeamsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row2 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<String, String> fieldsRow() {
-        return (Row2) super.fieldsRow();
+    public Row3<String, String, String> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }

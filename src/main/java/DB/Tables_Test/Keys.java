@@ -8,9 +8,11 @@ import DB.Tables_Test.tables.Alert;
 import DB.Tables_Test.tables.AssociationRepresentative;
 import DB.Tables_Test.tables.Coach;
 import DB.Tables_Test.tables.CoachInTeam;
+import DB.Tables_Test.tables.ErrorLog;
 import DB.Tables_Test.tables.EventCard;
 import DB.Tables_Test.tables.EventGoal;
 import DB.Tables_Test.tables.EventInjury;
+import DB.Tables_Test.tables.EventLog;
 import DB.Tables_Test.tables.EventOffside;
 import DB.Tables_Test.tables.EventPenalty;
 import DB.Tables_Test.tables.EventSwitchPlayers;
@@ -41,9 +43,11 @@ import DB.Tables_Test.tables.records.AlertRecord;
 import DB.Tables_Test.tables.records.AssociationRepresentativeRecord;
 import DB.Tables_Test.tables.records.CoachInTeamRecord;
 import DB.Tables_Test.tables.records.CoachRecord;
+import DB.Tables_Test.tables.records.ErrorLogRecord;
 import DB.Tables_Test.tables.records.EventCardRecord;
 import DB.Tables_Test.tables.records.EventGoalRecord;
 import DB.Tables_Test.tables.records.EventInjuryRecord;
+import DB.Tables_Test.tables.records.EventLogRecord;
 import DB.Tables_Test.tables.records.EventOffsideRecord;
 import DB.Tables_Test.tables.records.EventPenaltyRecord;
 import DB.Tables_Test.tables.records.EventSwitchPlayersRecord;
@@ -90,9 +94,11 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final Identity<AlertRecord, Integer> IDENTITY_ALERT = Identities0.IDENTITY_ALERT;
+    public static final Identity<ErrorLogRecord, Integer> IDENTITY_ERROR_LOG = Identities0.IDENTITY_ERROR_LOG;
     public static final Identity<EventCardRecord, Integer> IDENTITY_EVENT_CARD = Identities0.IDENTITY_EVENT_CARD;
     public static final Identity<EventGoalRecord, Integer> IDENTITY_EVENT_GOAL = Identities0.IDENTITY_EVENT_GOAL;
     public static final Identity<EventInjuryRecord, Integer> IDENTITY_EVENT_INJURY = Identities0.IDENTITY_EVENT_INJURY;
+    public static final Identity<EventLogRecord, Integer> IDENTITY_EVENT_LOG = Identities0.IDENTITY_EVENT_LOG;
     public static final Identity<EventOffsideRecord, Integer> IDENTITY_EVENT_OFFSIDE = Identities0.IDENTITY_EVENT_OFFSIDE;
     public static final Identity<EventPenaltyRecord, Integer> IDENTITY_EVENT_PENALTY = Identities0.IDENTITY_EVENT_PENALTY;
     public static final Identity<EventSwitchPlayersRecord, Integer> IDENTITY_EVENT_SWITCH_PLAYERS = Identities0.IDENTITY_EVENT_SWITCH_PLAYERS;
@@ -108,9 +114,11 @@ public class Keys {
     public static final UniqueKey<AssociationRepresentativeRecord> KEY_ASSOCIATION_REPRESENTATIVE_PRIMARY = UniqueKeys0.KEY_ASSOCIATION_REPRESENTATIVE_PRIMARY;
     public static final UniqueKey<CoachRecord> KEY_COACH_PRIMARY = UniqueKeys0.KEY_COACH_PRIMARY;
     public static final UniqueKey<CoachInTeamRecord> KEY_COACH_IN_TEAM_PRIMARY = UniqueKeys0.KEY_COACH_IN_TEAM_PRIMARY;
+    public static final UniqueKey<ErrorLogRecord> KEY_ERROR_LOG_PRIMARY = UniqueKeys0.KEY_ERROR_LOG_PRIMARY;
     public static final UniqueKey<EventCardRecord> KEY_EVENT_CARD_PRIMARY = UniqueKeys0.KEY_EVENT_CARD_PRIMARY;
     public static final UniqueKey<EventGoalRecord> KEY_EVENT_GOAL_PRIMARY = UniqueKeys0.KEY_EVENT_GOAL_PRIMARY;
     public static final UniqueKey<EventInjuryRecord> KEY_EVENT_INJURY_PRIMARY = UniqueKeys0.KEY_EVENT_INJURY_PRIMARY;
+    public static final UniqueKey<EventLogRecord> KEY_EVENT_LOG_PRIMARY = UniqueKeys0.KEY_EVENT_LOG_PRIMARY;
     public static final UniqueKey<EventOffsideRecord> KEY_EVENT_OFFSIDE_PRIMARY = UniqueKeys0.KEY_EVENT_OFFSIDE_PRIMARY;
     public static final UniqueKey<EventPenaltyRecord> KEY_EVENT_PENALTY_PRIMARY = UniqueKeys0.KEY_EVENT_PENALTY_PRIMARY;
     public static final UniqueKey<EventSwitchPlayersRecord> KEY_EVENT_SWITCH_PLAYERS_PRIMARY = UniqueKeys0.KEY_EVENT_SWITCH_PLAYERS_PRIMARY;
@@ -155,6 +163,7 @@ public class Keys {
     public static final ForeignKey<EventGoalRecord, PlayerRecord> FK_EVENT_GOAL_PLAYER = ForeignKeys0.FK_EVENT_GOAL_PLAYER;
     public static final ForeignKey<EventInjuryRecord, GameRecord> FK_EVENT_INJURY_GAME = ForeignKeys0.FK_EVENT_INJURY_GAME;
     public static final ForeignKey<EventInjuryRecord, PlayerRecord> FK__PLAYER_INJURED = ForeignKeys0.FK__PLAYER_INJURED;
+    public static final ForeignKey<EventLogRecord, SystemuserRecord> FK_EVENT_LOG_SYSTEMUSER = ForeignKeys0.FK_EVENT_LOG_SYSTEMUSER;
     public static final ForeignKey<EventOffsideRecord, GameRecord> FK_EVENT_OFFSIDE_GAME = ForeignKeys0.FK_EVENT_OFFSIDE_GAME;
     public static final ForeignKey<EventOffsideRecord, TeamRecord> FK__TEAM_OFFSIDE = ForeignKeys0.FK__TEAM_OFFSIDE;
     public static final ForeignKey<EventPenaltyRecord, GameRecord> FK_EVENT_PENALTY_GAME = ForeignKeys0.FK_EVENT_PENALTY_GAME;
@@ -168,9 +177,12 @@ public class Keys {
     public static final ForeignKey<GameRecord, TeamRecord> FK_GAME_TEAM_2 = ForeignKeys0.FK_GAME_TEAM_2;
     public static final ForeignKey<GamesInSeasonRecord, SeasonRecord> FK_GAMES_IN_SEASON_SEASON = ForeignKeys0.FK_GAMES_IN_SEASON_SEASON;
     public static final ForeignKey<GamesInSeasonRecord, GameRecord> FK_GAMES_IN_SEASON_GAME = ForeignKeys0.FK_GAMES_IN_SEASON_GAME;
+    public static final ForeignKey<ManagerInTeamsRecord, TeamManagerRecord> FK_MANAGED_TEAMS_TEAM_MANAGER = ForeignKeys0.FK_MANAGED_TEAMS_TEAM_MANAGER;
     public static final ForeignKey<ManagerInTeamsRecord, TeamRecord> FK_MANAGED_TEAMS_TEAM = ForeignKeys0.FK_MANAGED_TEAMS_TEAM;
+    public static final ForeignKey<ManagerInTeamsRecord, SystemuserRecord> FK_MANAGER_IN_TEAMS_SYSTEMUSER = ForeignKeys0.FK_MANAGER_IN_TEAMS_SYSTEMUSER;
     public static final ForeignKey<OwnedTeamsRecord, TeamOwnerRecord> FK__TEAM_OWNER = ForeignKeys0.FK__TEAM_OWNER;
     public static final ForeignKey<OwnedTeamsRecord, TeamRecord> FK__TEAM = ForeignKeys0.FK__TEAM;
+    public static final ForeignKey<OwnedTeamsRecord, SystemuserRecord> FK_OWNED_TEAMS_SYSTEMUSER = ForeignKeys0.FK_OWNED_TEAMS_SYSTEMUSER;
     public static final ForeignKey<PlayerRecord, UserRolesRecord> FK_PLAYER_USER_ROLES = ForeignKeys0.FK_PLAYER_USER_ROLES;
     public static final ForeignKey<PlayerInTeamRecord, PlayerRecord> FK__PLAYER = ForeignKeys0.FK__PLAYER;
     public static final ForeignKey<PlayerInTeamRecord, TeamRecord> FK_PLAYER_IN_TEAM_TEAM = ForeignKeys0.FK_PLAYER_IN_TEAM_TEAM;
@@ -185,9 +197,7 @@ public class Keys {
     public static final ForeignKey<StadiumHomeTeamsRecord, TeamRecord> FK__TEAM_STADIUM = ForeignKeys0.FK__TEAM_STADIUM;
     public static final ForeignKey<SystemAdminRecord, UserRolesRecord> FK__USER_ROLES_SYSTEM_ADMIN = ForeignKeys0.FK__USER_ROLES_SYSTEM_ADMIN;
     public static final ForeignKey<TeamManagerRecord, UserRolesRecord> FK_TEAM_MANAGER_USER_ROLES = ForeignKeys0.FK_TEAM_MANAGER_USER_ROLES;
-    public static final ForeignKey<TeamManagerRecord, TeamOwnerRecord> FK_TEAM_MANAGER_TEAM_OWNER = ForeignKeys0.FK_TEAM_MANAGER_TEAM_OWNER;
     public static final ForeignKey<TeamOwnerRecord, UserRolesRecord> FK__USER_ROLES = ForeignKeys0.FK__USER_ROLES;
-    public static final ForeignKey<TeamOwnerRecord, SystemuserRecord> FK_TEAM_OWNER_SYSTEMUSER = ForeignKeys0.FK_TEAM_OWNER_SYSTEMUSER;
     public static final ForeignKey<TeamsInSeasonRecord, SeasonRecord> FK_TEAMS_IN_SEASON_SEASON = ForeignKeys0.FK_TEAMS_IN_SEASON_SEASON;
     public static final ForeignKey<TeamsInSeasonRecord, TeamRecord> FK__TEAM_NAME = ForeignKeys0.FK__TEAM_NAME;
     public static final ForeignKey<UserComplaintRecord, SystemuserRecord> FK__SYSTEMUSER = ForeignKeys0.FK__SYSTEMUSER;
@@ -199,9 +209,11 @@ public class Keys {
 
     private static class Identities0 {
         public static Identity<AlertRecord, Integer> IDENTITY_ALERT = Internal.createIdentity(Alert.ALERT, Alert.ALERT.ALERT_ID);
+        public static Identity<ErrorLogRecord, Integer> IDENTITY_ERROR_LOG = Internal.createIdentity(ErrorLog.ERROR_LOG, ErrorLog.ERROR_LOG.ID);
         public static Identity<EventCardRecord, Integer> IDENTITY_EVENT_CARD = Internal.createIdentity(EventCard.EVENT_CARD, EventCard.EVENT_CARD.EVENT_ID);
         public static Identity<EventGoalRecord, Integer> IDENTITY_EVENT_GOAL = Internal.createIdentity(EventGoal.EVENT_GOAL, EventGoal.EVENT_GOAL.EVENT_ID);
         public static Identity<EventInjuryRecord, Integer> IDENTITY_EVENT_INJURY = Internal.createIdentity(EventInjury.EVENT_INJURY, EventInjury.EVENT_INJURY.EVENT_ID);
+        public static Identity<EventLogRecord, Integer> IDENTITY_EVENT_LOG = Internal.createIdentity(EventLog.EVENT_LOG, EventLog.EVENT_LOG.ID);
         public static Identity<EventOffsideRecord, Integer> IDENTITY_EVENT_OFFSIDE = Internal.createIdentity(EventOffside.EVENT_OFFSIDE, EventOffside.EVENT_OFFSIDE.EVENT_ID);
         public static Identity<EventPenaltyRecord, Integer> IDENTITY_EVENT_PENALTY = Internal.createIdentity(EventPenalty.EVENT_PENALTY, EventPenalty.EVENT_PENALTY.EVENT_ID);
         public static Identity<EventSwitchPlayersRecord, Integer> IDENTITY_EVENT_SWITCH_PLAYERS = Internal.createIdentity(EventSwitchPlayers.EVENT_SWITCH_PLAYERS, EventSwitchPlayers.EVENT_SWITCH_PLAYERS.EVENT_ID);
@@ -215,9 +227,11 @@ public class Keys {
         public static final UniqueKey<AssociationRepresentativeRecord> KEY_ASSOCIATION_REPRESENTATIVE_PRIMARY = Internal.createUniqueKey(AssociationRepresentative.ASSOCIATION_REPRESENTATIVE, "KEY_association_representative_PRIMARY", new TableField[] { AssociationRepresentative.ASSOCIATION_REPRESENTATIVE.USERNAME }, true);
         public static final UniqueKey<CoachRecord> KEY_COACH_PRIMARY = Internal.createUniqueKey(Coach.COACH, "KEY_coach_PRIMARY", new TableField[] { Coach.COACH.USERNAME }, true);
         public static final UniqueKey<CoachInTeamRecord> KEY_COACH_IN_TEAM_PRIMARY = Internal.createUniqueKey(CoachInTeam.COACH_IN_TEAM, "KEY_coach_in_team_PRIMARY", new TableField[] { CoachInTeam.COACH_IN_TEAM.USERNAME, CoachInTeam.COACH_IN_TEAM.TEAM_NAME }, true);
+        public static final UniqueKey<ErrorLogRecord> KEY_ERROR_LOG_PRIMARY = Internal.createUniqueKey(ErrorLog.ERROR_LOG, "KEY_error_log_PRIMARY", new TableField[] { ErrorLog.ERROR_LOG.ID }, true);
         public static final UniqueKey<EventCardRecord> KEY_EVENT_CARD_PRIMARY = Internal.createUniqueKey(EventCard.EVENT_CARD, "KEY_event_card_PRIMARY", new TableField[] { EventCard.EVENT_CARD.EVENT_ID }, true);
         public static final UniqueKey<EventGoalRecord> KEY_EVENT_GOAL_PRIMARY = Internal.createUniqueKey(EventGoal.EVENT_GOAL, "KEY_event_goal_PRIMARY", new TableField[] { EventGoal.EVENT_GOAL.EVENT_ID }, true);
         public static final UniqueKey<EventInjuryRecord> KEY_EVENT_INJURY_PRIMARY = Internal.createUniqueKey(EventInjury.EVENT_INJURY, "KEY_event_injury_PRIMARY", new TableField[] { EventInjury.EVENT_INJURY.EVENT_ID }, true);
+        public static final UniqueKey<EventLogRecord> KEY_EVENT_LOG_PRIMARY = Internal.createUniqueKey(EventLog.EVENT_LOG, "KEY_event_log_PRIMARY", new TableField[] { EventLog.EVENT_LOG.ID }, true);
         public static final UniqueKey<EventOffsideRecord> KEY_EVENT_OFFSIDE_PRIMARY = Internal.createUniqueKey(EventOffside.EVENT_OFFSIDE, "KEY_event_offside_PRIMARY", new TableField[] { EventOffside.EVENT_OFFSIDE.EVENT_ID }, true);
         public static final UniqueKey<EventPenaltyRecord> KEY_EVENT_PENALTY_PRIMARY = Internal.createUniqueKey(EventPenalty.EVENT_PENALTY, "KEY_event_penalty_PRIMARY", new TableField[] { EventPenalty.EVENT_PENALTY.EVENT_ID }, true);
         public static final UniqueKey<EventSwitchPlayersRecord> KEY_EVENT_SWITCH_PLAYERS_PRIMARY = Internal.createUniqueKey(EventSwitchPlayers.EVENT_SWITCH_PLAYERS, "KEY_event_switch_players_PRIMARY", new TableField[] { EventSwitchPlayers.EVENT_SWITCH_PLAYERS.EVENT_ID }, true);
@@ -239,7 +253,7 @@ public class Keys {
         public static final UniqueKey<SystemAdminRecord> KEY_SYSTEM_ADMIN_PRIMARY = Internal.createUniqueKey(SystemAdmin.SYSTEM_ADMIN, "KEY_system_admin_PRIMARY", new TableField[] { SystemAdmin.SYSTEM_ADMIN.USERNAME }, true);
         public static final UniqueKey<SystemuserRecord> KEY_SYSTEMUSER_PRIMARY = Internal.createUniqueKey(Systemuser.SYSTEMUSER, "KEY_systemuser_PRIMARY", new TableField[] { Systemuser.SYSTEMUSER.USERNAME }, true);
         public static final UniqueKey<TeamRecord> KEY_TEAM_PRIMARY = Internal.createUniqueKey(Team.TEAM, "KEY_team_PRIMARY", new TableField[] { Team.TEAM.NAME }, true);
-        public static final UniqueKey<TeamManagerRecord> KEY_TEAM_MANAGER_PRIMARY = Internal.createUniqueKey(TeamManager.TEAM_MANAGER, "KEY_team_manager_PRIMARY", new TableField[] { TeamManager.TEAM_MANAGER.APPOINTER, TeamManager.TEAM_MANAGER.USERNAME }, true);
+        public static final UniqueKey<TeamManagerRecord> KEY_TEAM_MANAGER_PRIMARY = Internal.createUniqueKey(TeamManager.TEAM_MANAGER, "KEY_team_manager_PRIMARY", new TableField[] { TeamManager.TEAM_MANAGER.USERNAME }, true);
         public static final UniqueKey<TeamOwnerRecord> KEY_TEAM_OWNER_PRIMARY = Internal.createUniqueKey(TeamOwner.TEAM_OWNER, "KEY_team_owner_PRIMARY", new TableField[] { TeamOwner.TEAM_OWNER.USERNAME }, true);
         public static final UniqueKey<TeamsInSeasonRecord> KEY_TEAMS_IN_SEASON_PRIMARY = Internal.createUniqueKey(TeamsInSeason.TEAMS_IN_SEASON, "KEY_teams_in_season_PRIMARY", new TableField[] { TeamsInSeason.TEAMS_IN_SEASON.SEASON_ID, TeamsInSeason.TEAMS_IN_SEASON.TEAM_NAME }, true);
         public static final UniqueKey<UserComplaintRecord> KEY_USER_COMPLAINT_PRIMARY = Internal.createUniqueKey(UserComplaint.USER_COMPLAINT, "KEY_user_complaint_PRIMARY", new TableField[] { UserComplaint.USER_COMPLAINT.COMPLAINT_ID }, true);
@@ -260,6 +274,7 @@ public class Keys {
         public static final ForeignKey<EventGoalRecord, PlayerRecord> FK_EVENT_GOAL_PLAYER = Internal.createForeignKey(Keys.KEY_PLAYER_PRIMARY, EventGoal.EVENT_GOAL, "FK_event_goal_player", new TableField[] { EventGoal.EVENT_GOAL.SCORER_NAME }, true);
         public static final ForeignKey<EventInjuryRecord, GameRecord> FK_EVENT_INJURY_GAME = Internal.createForeignKey(Keys.KEY_GAME_PRIMARY, EventInjury.EVENT_INJURY, "FK_event_injury_game", new TableField[] { EventInjury.EVENT_INJURY.GAME_ID }, true);
         public static final ForeignKey<EventInjuryRecord, PlayerRecord> FK__PLAYER_INJURED = Internal.createForeignKey(Keys.KEY_PLAYER_PRIMARY, EventInjury.EVENT_INJURY, "FK__player_injured", new TableField[] { EventInjury.EVENT_INJURY.INJURED_NAME }, true);
+        public static final ForeignKey<EventLogRecord, SystemuserRecord> FK_EVENT_LOG_SYSTEMUSER = Internal.createForeignKey(Keys.KEY_SYSTEMUSER_PRIMARY, EventLog.EVENT_LOG, "FK_event_log_systemuser", new TableField[] { EventLog.EVENT_LOG.USERNAME }, true);
         public static final ForeignKey<EventOffsideRecord, GameRecord> FK_EVENT_OFFSIDE_GAME = Internal.createForeignKey(Keys.KEY_GAME_PRIMARY, EventOffside.EVENT_OFFSIDE, "FK_event_offside_game", new TableField[] { EventOffside.EVENT_OFFSIDE.GAME_ID }, true);
         public static final ForeignKey<EventOffsideRecord, TeamRecord> FK__TEAM_OFFSIDE = Internal.createForeignKey(Keys.KEY_TEAM_PRIMARY, EventOffside.EVENT_OFFSIDE, "FK__team_offside", new TableField[] { EventOffside.EVENT_OFFSIDE.TEAM_NAME }, true);
         public static final ForeignKey<EventPenaltyRecord, GameRecord> FK_EVENT_PENALTY_GAME = Internal.createForeignKey(Keys.KEY_GAME_PRIMARY, EventPenalty.EVENT_PENALTY, "FK_event_penalty_game", new TableField[] { EventPenalty.EVENT_PENALTY.GAME_ID }, true);
@@ -273,9 +288,12 @@ public class Keys {
         public static final ForeignKey<GameRecord, TeamRecord> FK_GAME_TEAM_2 = Internal.createForeignKey(Keys.KEY_TEAM_PRIMARY, Game.GAME, "FK_game_team_2", new TableField[] { Game.GAME.AWAY_TEAM }, true);
         public static final ForeignKey<GamesInSeasonRecord, SeasonRecord> FK_GAMES_IN_SEASON_SEASON = Internal.createForeignKey(Keys.KEY_SEASON_PRIMARY, GamesInSeason.GAMES_IN_SEASON, "FK_games_in_season_season", new TableField[] { GamesInSeason.GAMES_IN_SEASON.SEASON_ID }, true);
         public static final ForeignKey<GamesInSeasonRecord, GameRecord> FK_GAMES_IN_SEASON_GAME = Internal.createForeignKey(Keys.KEY_GAME_PRIMARY, GamesInSeason.GAMES_IN_SEASON, "FK_games_in_season_game", new TableField[] { GamesInSeason.GAMES_IN_SEASON.GAME_ID }, true);
+        public static final ForeignKey<ManagerInTeamsRecord, TeamManagerRecord> FK_MANAGED_TEAMS_TEAM_MANAGER = Internal.createForeignKey(Keys.KEY_TEAM_MANAGER_PRIMARY, ManagerInTeams.MANAGER_IN_TEAMS, "FK_managed_teams_team_manager", new TableField[] { ManagerInTeams.MANAGER_IN_TEAMS.USERNAME }, true);
         public static final ForeignKey<ManagerInTeamsRecord, TeamRecord> FK_MANAGED_TEAMS_TEAM = Internal.createForeignKey(Keys.KEY_TEAM_PRIMARY, ManagerInTeams.MANAGER_IN_TEAMS, "FK_managed_teams_team", new TableField[] { ManagerInTeams.MANAGER_IN_TEAMS.TEAM_NAME }, true);
+        public static final ForeignKey<ManagerInTeamsRecord, SystemuserRecord> FK_MANAGER_IN_TEAMS_SYSTEMUSER = Internal.createForeignKey(Keys.KEY_SYSTEMUSER_PRIMARY, ManagerInTeams.MANAGER_IN_TEAMS, "FK_manager_in_teams_systemuser", new TableField[] { ManagerInTeams.MANAGER_IN_TEAMS.APPOINTER }, true);
         public static final ForeignKey<OwnedTeamsRecord, TeamOwnerRecord> FK__TEAM_OWNER = Internal.createForeignKey(Keys.KEY_TEAM_OWNER_PRIMARY, OwnedTeams.OWNED_TEAMS, "FK__team_owner", new TableField[] { OwnedTeams.OWNED_TEAMS.USERNAME }, true);
         public static final ForeignKey<OwnedTeamsRecord, TeamRecord> FK__TEAM = Internal.createForeignKey(Keys.KEY_TEAM_PRIMARY, OwnedTeams.OWNED_TEAMS, "FK__team", new TableField[] { OwnedTeams.OWNED_TEAMS.TEAM_NAME }, true);
+        public static final ForeignKey<OwnedTeamsRecord, SystemuserRecord> FK_OWNED_TEAMS_SYSTEMUSER = Internal.createForeignKey(Keys.KEY_SYSTEMUSER_PRIMARY, OwnedTeams.OWNED_TEAMS, "FK_owned_teams_systemuser", new TableField[] { OwnedTeams.OWNED_TEAMS.APPOINTER }, true);
         public static final ForeignKey<PlayerRecord, UserRolesRecord> FK_PLAYER_USER_ROLES = Internal.createForeignKey(Keys.KEY_USER_ROLES_PRIMARY, Player.PLAYER, "FK_player_user_roles", new TableField[] { Player.PLAYER.USERNAME }, true);
         public static final ForeignKey<PlayerInTeamRecord, PlayerRecord> FK__PLAYER = Internal.createForeignKey(Keys.KEY_PLAYER_PRIMARY, PlayerInTeam.PLAYER_IN_TEAM, "FK__player", new TableField[] { PlayerInTeam.PLAYER_IN_TEAM.USERNAME }, true);
         public static final ForeignKey<PlayerInTeamRecord, TeamRecord> FK_PLAYER_IN_TEAM_TEAM = Internal.createForeignKey(Keys.KEY_TEAM_PRIMARY, PlayerInTeam.PLAYER_IN_TEAM, "FK_player_in_team_team", new TableField[] { PlayerInTeam.PLAYER_IN_TEAM.TEAM_NAME }, true);
@@ -290,9 +308,7 @@ public class Keys {
         public static final ForeignKey<StadiumHomeTeamsRecord, TeamRecord> FK__TEAM_STADIUM = Internal.createForeignKey(Keys.KEY_TEAM_PRIMARY, StadiumHomeTeams.STADIUM_HOME_TEAMS, "FK__team_stadium", new TableField[] { StadiumHomeTeams.STADIUM_HOME_TEAMS.TEAM_NAME }, true);
         public static final ForeignKey<SystemAdminRecord, UserRolesRecord> FK__USER_ROLES_SYSTEM_ADMIN = Internal.createForeignKey(Keys.KEY_USER_ROLES_PRIMARY, SystemAdmin.SYSTEM_ADMIN, "FK__user_roles_system_admin", new TableField[] { SystemAdmin.SYSTEM_ADMIN.USERNAME }, true);
         public static final ForeignKey<TeamManagerRecord, UserRolesRecord> FK_TEAM_MANAGER_USER_ROLES = Internal.createForeignKey(Keys.KEY_USER_ROLES_PRIMARY, TeamManager.TEAM_MANAGER, "FK_team_manager_user_roles", new TableField[] { TeamManager.TEAM_MANAGER.USERNAME }, true);
-        public static final ForeignKey<TeamManagerRecord, TeamOwnerRecord> FK_TEAM_MANAGER_TEAM_OWNER = Internal.createForeignKey(Keys.KEY_TEAM_OWNER_PRIMARY, TeamManager.TEAM_MANAGER, "FK_team_manager_team_owner", new TableField[] { TeamManager.TEAM_MANAGER.APPOINTER }, true);
         public static final ForeignKey<TeamOwnerRecord, UserRolesRecord> FK__USER_ROLES = Internal.createForeignKey(Keys.KEY_USER_ROLES_PRIMARY, TeamOwner.TEAM_OWNER, "FK__user_roles", new TableField[] { TeamOwner.TEAM_OWNER.USERNAME }, true);
-        public static final ForeignKey<TeamOwnerRecord, SystemuserRecord> FK_TEAM_OWNER_SYSTEMUSER = Internal.createForeignKey(Keys.KEY_SYSTEMUSER_PRIMARY, TeamOwner.TEAM_OWNER, "FK_team_owner_systemuser", new TableField[] { TeamOwner.TEAM_OWNER.APPOINTER }, true);
         public static final ForeignKey<TeamsInSeasonRecord, SeasonRecord> FK_TEAMS_IN_SEASON_SEASON = Internal.createForeignKey(Keys.KEY_SEASON_PRIMARY, TeamsInSeason.TEAMS_IN_SEASON, "FK_teams_in_season_season", new TableField[] { TeamsInSeason.TEAMS_IN_SEASON.SEASON_ID }, true);
         public static final ForeignKey<TeamsInSeasonRecord, TeamRecord> FK__TEAM_NAME = Internal.createForeignKey(Keys.KEY_TEAM_PRIMARY, TeamsInSeason.TEAMS_IN_SEASON, "FK__team_name", new TableField[] { TeamsInSeason.TEAMS_IN_SEASON.TEAM_NAME }, true);
         public static final ForeignKey<UserComplaintRecord, SystemuserRecord> FK__SYSTEMUSER = Internal.createForeignKey(Keys.KEY_SYSTEMUSER_PRIMARY, UserComplaint.USER_COMPLAINT, "FK__systemuser", new TableField[] { UserComplaint.USER_COMPLAINT.USERNAME }, true);

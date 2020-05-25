@@ -8,9 +8,11 @@ import DB.Tables_Test.tables.Alert;
 import DB.Tables_Test.tables.AssociationRepresentative;
 import DB.Tables_Test.tables.Coach;
 import DB.Tables_Test.tables.CoachInTeam;
+import DB.Tables_Test.tables.ErrorLog;
 import DB.Tables_Test.tables.EventCard;
 import DB.Tables_Test.tables.EventGoal;
 import DB.Tables_Test.tables.EventInjury;
+import DB.Tables_Test.tables.EventLog;
 import DB.Tables_Test.tables.EventOffside;
 import DB.Tables_Test.tables.EventPenalty;
 import DB.Tables_Test.tables.EventSwitchPlayers;
@@ -52,7 +54,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FwdbTest extends SchemaImpl {
 
-    private static final long serialVersionUID = -138432874;
+    private static final long serialVersionUID = 153676646;
 
     /**
      * The reference instance of <code>fwdb_test</code>
@@ -80,6 +82,11 @@ public class FwdbTest extends SchemaImpl {
     public final CoachInTeam COACH_IN_TEAM = CoachInTeam.COACH_IN_TEAM;
 
     /**
+     * The table <code>fwdb_test.error_log</code>.
+     */
+    public final ErrorLog ERROR_LOG = ErrorLog.ERROR_LOG;
+
+    /**
      * The table <code>fwdb_test.event_card</code>.
      */
     public final EventCard EVENT_CARD = EventCard.EVENT_CARD;
@@ -93,6 +100,11 @@ public class FwdbTest extends SchemaImpl {
      * The table <code>fwdb_test.event_injury</code>.
      */
     public final EventInjury EVENT_INJURY = EventInjury.EVENT_INJURY;
+
+    /**
+     * The table <code>fwdb_test.event_log</code>.
+     */
+    public final EventLog EVENT_LOG = EventLog.EVENT_LOG;
 
     /**
      * The table <code>fwdb_test.event_offside</code>.
@@ -244,9 +256,11 @@ public class FwdbTest extends SchemaImpl {
             AssociationRepresentative.ASSOCIATION_REPRESENTATIVE,
             Coach.COACH,
             CoachInTeam.COACH_IN_TEAM,
+            ErrorLog.ERROR_LOG,
             EventCard.EVENT_CARD,
             EventGoal.EVENT_GOAL,
             EventInjury.EVENT_INJURY,
+            EventLog.EVENT_LOG,
             EventOffside.EVENT_OFFSIDE,
             EventPenalty.EVENT_PENALTY,
             EventSwitchPlayers.EVENT_SWITCH_PLAYERS,

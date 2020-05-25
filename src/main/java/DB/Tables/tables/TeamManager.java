@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row2;
+import org.jooq.Row1;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TeamManager extends TableImpl<TeamManagerRecord> {
 
-    private static final long serialVersionUID = 319744598;
+    private static final long serialVersionUID = -486856695;
 
     /**
      * The reference instance of <code>fwdb.team_manager</code>
@@ -50,11 +50,6 @@ public class TeamManager extends TableImpl<TeamManagerRecord> {
      * The column <code>fwdb.team_manager.username</code>.
      */
     public final TableField<TeamManagerRecord, String> USERNAME = createField(DSL.name("username"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
-
-    /**
-     * The column <code>fwdb.team_manager.appointer</code>.
-     */
-    public final TableField<TeamManagerRecord, String> APPOINTER = createField(DSL.name("appointer"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
      * Create a <code>fwdb.team_manager</code> table reference
@@ -106,15 +101,11 @@ public class TeamManager extends TableImpl<TeamManagerRecord> {
 
     @Override
     public List<ForeignKey<TeamManagerRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<TeamManagerRecord, ?>>asList(Keys.FK_TEAM_MANAGER_USER_ROLES, Keys.FK_TEAM_MANAGER_TEAM_OWNER);
+        return Arrays.<ForeignKey<TeamManagerRecord, ?>>asList(Keys.FK_TEAM_MANAGER_USER_ROLES);
     }
 
     public UserRoles userRoles() {
         return new UserRoles(this, Keys.FK_TEAM_MANAGER_USER_ROLES);
-    }
-
-    public TeamOwner teamOwner() {
-        return new TeamOwner(this, Keys.FK_TEAM_MANAGER_TEAM_OWNER);
     }
 
     @Override
@@ -144,11 +135,11 @@ public class TeamManager extends TableImpl<TeamManagerRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row2 type methods
+    // Row1 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<String, String> fieldsRow() {
-        return (Row2) super.fieldsRow();
+    public Row1<String> fieldsRow() {
+        return (Row1) super.fieldsRow();
     }
 }
