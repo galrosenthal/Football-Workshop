@@ -8,7 +8,7 @@ import Domain.Exceptions.UsernameAlreadyExistsException;
 import Domain.Exceptions.UsernameOrPasswordIncorrectException;
 import Domain.Exceptions.WeakPasswordException;
 import Domain.Game.*;
-import Domain.SystemLogger.SystemLoggerManager;
+import Domain.SystemLogger.*;
 import Domain.Users.Role;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
@@ -409,6 +409,8 @@ public class EntityManager{
         //User name exists, checking password.
         if(authenticate(userWithUsrNm, pswrd)){
             loggedInMap.put(userWithUsrNm,true);
+            //Log the action
+            SystemLoggerManager.logInfo(this.getClass(), new LoginLogMsg(userWithUsrNm.getUsername()));
             return userWithUsrNm;
         }
 
@@ -483,7 +485,8 @@ public class EntityManager{
         SystemUser newUser = new SystemUser(usrNm, hashedPassword, name, email,emailAlert);
         addUser(newUser);
 
-
+        //Log the action
+        SystemLoggerManager.logInfo(this.getClass(), new SignUpLogMsg(newUser.getUsername()));
         return newUser;
 
     }

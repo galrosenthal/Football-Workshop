@@ -16,3 +16,7 @@
 25-05-2020 15:21:19 | Domain.EntityManager | ERROR  | Username or Password was incorrect!
 25-05-2020 15:21:19 | Service.ARController | ERROR  | There are no referees
 25-05-2020 15:21:19 | Domain.Controllers.TeamController | ERROR  | Could not find a user by the given username
+25-05-2020 17:08:14 | Service.ARController | ERROR  | There are no leagues that their latest season hasn't started
+25-05-2020 17:13:53 | Domain.EntityManager | ERROR  | Username or Password was incorrect!
+25-05-2020 17:18:17 | Domain.EntityManager | ERROR  | Username or Password was incorrect!
+25-05-2020 17:21:53 | Domain.EntityManager | ERROR  | Username or Password was incorrect!

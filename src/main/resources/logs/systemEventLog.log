@@ -64,3 +64,6 @@
 25-05-2020 15:21:19 | Service.ARController | INFO | username | Create Season | Created new season "2020/21" for league "Premier League"
 25-05-2020 15:21:19 | Service.ARController | INFO | username | Create Season | Created new season "2021/22" for league "Premier League"
 25-05-2020 15:21:19 | Service.ARController | INFO | username | Remove Referee | User: AviCohen is no longer Referee
+25-05-2020 17:20:14 | Domain.EntityManager | INFO | Administrator | Login | User logged in
+25-05-2020 17:21:36 | Domain.EntityManager | INFO | nirdz | Sign Up | User signed up
+25-05-2020 17:22:10 | Domain.EntityManager | INFO | nirdz | Login | User logged in
