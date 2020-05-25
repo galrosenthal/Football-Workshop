@@ -10,6 +10,8 @@ import Domain.Users.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
+
 import static Service.UIController.getUsernameFromUser;
 
 public class Controller {
@@ -18,13 +20,14 @@ public class Controller {
         //Establishing connections to external DBMS
         //access DB
         //extract system admins
-
-        String username = UIController.receiveString("Please enter a system administrator username: ");
-        String password = UIController.receiveString("Please enter your password: ");
-
-        //Retrieve system user
-        SystemUser admin = null;
         try {
+            String usernameAndPassword = UIController.receiveUserLoginInfo("Please enter a system administrator username:;Please enter the password");
+            String username = usernameAndPassword.split(UIController.STRING_DELIMETER)[0];
+            String password = usernameAndPassword.split(UIController.STRING_DELIMETER)[1];
+
+            //Retrieve system user
+            SystemUser admin = null;
+
             admin = Controller.login(username, password);
             if(!MainController.getUserRoles(username).contains(RoleTypes.SYSTEM_ADMIN.name()))
             {
@@ -32,25 +35,31 @@ public class Controller {
                 MainController.logout(username);
                 return false;
             }
-        } catch (Exception e) {
+
+            UIController.showNotification("Successful login. Welcome back, " + admin.getName());
+            //system boot choice
+            boolean choice = UIController.receiveChoice("Would you like to boot the system? y/n");
+            if (!choice) {
+                MainController.logout(username);
+                return false;
+            }
+
+            //Establishing connections to external financial system
+
+            //Establishing connections to external tax system
+            UIController.showNotification("The system was booted successfully");
+            MainController.logout(username);
+            return true;
+        } catch (CancellationException ce)
+        {
+            ce.printStackTrace();
+            return false;
+        }
+        catch (Exception e) {
             UIController.showNotification("Username or Password was incorrect!!!!!");
             e.printStackTrace();
             return false;
         }
-        UIController.showNotification("Successful login. Welcome back, " + admin.getName());
-        //system boot choice
-        boolean choice = UIController.receiveChoice("Would you like to boot the system? y/n");
-        if (!choice) {
-                MainController.logout(username);
-            return false;
-        }
-
-        //Establishing connections to external financial system
-
-        //Establishing connections to external tax system
-        UIController.showNotification("The system was booted successfully");
-        MainController.logout(username);
-        return true;
     }
 
     /**
@@ -156,7 +165,7 @@ public class Controller {
         List<String> teamsToShow = new ArrayList<>();
         for (int i = 0; i < myTeams.size() ; i++) {
             if(myTeams.get(i).getStatus() == TeamStatus.CLOSED)
-                 teamsToShow.add(myTeams.get(i).getTeamName()+" (closed)");
+                teamsToShow.add(myTeams.get(i).getTeamName()+" (closed)");
             else if(myTeams.get(i).getStatus() == TeamStatus.PERMENENTLY_CLOSED)
                 teamsToShow.add(myTeams.get(i).getTeamName()+" (closed forever)");
             else //open

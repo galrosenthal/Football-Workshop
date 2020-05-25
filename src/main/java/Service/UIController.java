@@ -28,6 +28,7 @@ public class UIController {
     public static final String SEND_TYPE_FOR_GUI_STRING = "string";
     public static final String SEND_TYPE_FOR_GUI_INT = "int";
     public static final String SEND_TYPE_FOR_GUI_DATE = "date";
+    public static final String SEND_TYPE_FOR_GUI_LOGIN = "login";
     public static final String SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS = "multiple";
     public static final String SEND_TYPE_FOR_GUI_MULTIPLE_INPUTS = "multiple_inputs";
     public static final String CANCEL_TASK_VALUE = "canceled";
@@ -103,11 +104,6 @@ public class UIController {
                 return "rosengal";
             } else if (selector == 2) {
                 return "newTOUsername";
-            } else if (selector == 3) {
-                selector = 4;
-                return "admin";
-            } else if (selector == 4) {
-                return "12345678";
             } else if (selector == 5) {
                 return "newLeagueName";
             } else if (selector == 6) {
@@ -151,8 +147,8 @@ public class UIController {
                 selector = 9311;
                 return "NOTaUSERNAME";
             } //else if (selector == 9313) { //training
-             //  return "VAR";
-           // }
+            //  return "VAR";
+            // }
             else if (selector == 91011 || selector == 91021 || selector == 91031 || selector == 9103
                     || selector == 91041 || selector == 91051 || selector == 91052 || selector == 91053 || selector == 912321 || selector == 911321) { //team name
                 if (selector == 91031)
@@ -423,8 +419,8 @@ public class UIController {
                 return 0;
             }
             else if (selector == 9313) { //training
-              return 2; // VAR
-             }
+                return 2; // VAR
+            }
             else if (selector == 9514) {
                 setSelector(9511);
                 return 1;
@@ -534,13 +530,33 @@ public class UIController {
     }
 
     public static boolean receiveChoice(String message) {
-        String choice = "";
         if (!isTest) {
-            do {
-                choice = UIController.receiveString(message);
-            } while (!(choice.equals("y") || choice.equals("n")));
+            StringBuilder choice = new StringBuilder();
+            UI lastUI = UI.getCurrent();
+            Thread t = Thread.currentThread();
+            VaadinSession se = VaadinSession.getCurrent();
 
-            if (choice.equals("y")) {
+            Future<Void> returnValue = se.access(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                FootballMain.showYesNoDialog(lastUI, message, choice, t);
+            });
+
+
+            while (choice.length() == 0) {
+                try {
+                    //waiting for the user to close the dialog
+                    sleep(100);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (choice.toString().equals(CANCEL_TASK_VALUE)) {
+                throw new CancellationException();
+            }
+
+
+            if (choice.toString().equals("y")) {
                 return true;
             }
             return false;
@@ -654,5 +670,44 @@ public class UIController {
                 return "."; //current folder path
         }
         return null;
+    }
+
+    public static String receiveUserLoginInfo(String message) {
+        if(!isTest) {
+            StringBuilder line = new StringBuilder();
+            UI lastUI = UI.getCurrent();
+            Thread t = Thread.currentThread();
+            VaadinSession se = VaadinSession.getCurrent();
+
+            Future<Void> returnValue = se.access(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                FootballMain.showLoginDialog(lastUI, message, line, t);
+            });
+
+
+            while (line.length() == 0) {
+                try {
+                    //waiting for the user to close the dialog
+                    sleep(100);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (line.toString().equals(CANCEL_TASK_VALUE)) {
+                throw new CancellationException();
+            }
+            return line.toString();
+        }
+        else
+        {
+            if (selector == 3) {
+                selector = 4;
+                return "admin;12345678";
+            }
+            else{
+                return "";
+            }
+        }
     }
 }
