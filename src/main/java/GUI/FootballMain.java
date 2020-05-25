@@ -514,8 +514,6 @@ public class FootballMain extends AppLayout implements RouterLayout{
         newWindow.setCloseOnOutsideClick(false);
         newWindow.setCloseOnEsc(false);
         newWindow.setVisible(true);
-        newWindow.setWidth("500px");
-        newWindow.setHeight("200px");
         VerticalLayout vl = new VerticalLayout();
         newWindow.setCloseOnEsc(false);
 
@@ -526,25 +524,6 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 ta.setMaxHeight("100px");
             vl.add(ta);
         }
-
-//        TextArea ta = new TextArea();
-//            ta.setSizeFull();
-//            ta.setMaxHeight("100px");
-//            ta.setValue("Oran the king");
-//            vl.add(ta);
-//        TextArea ta1 = new TextArea();
-//            ta1.setSizeFull();
-//            ta1.setMaxHeight("100px");
-//            ta1.setValue("Oran the king2");
-//            vl.add(ta1);
-//        TextArea ta2 = new TextArea();
-//            ta2.setSizeFull();
-//            ta2.setMaxHeight("100px");
-//            ta2.setValue("Oran the king3");
-//            vl.add(ta2);
-//        vl.add(ta);
-//        vl.add(ta1);
-//        vl.add(ta2);
 
         Button ok = new Button("Ok");
         ok.addClickListener(e -> { newWindow.close(); });
