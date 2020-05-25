@@ -1,12 +1,10 @@
 package Domain.Game;
 
-import Domain.EntityManager;
-import Domain.Logger.EventsLogger;
-import Domain.Logger.Goal;
+import Domain.GameLogger.EventsLogger;
+import Domain.GameLogger.Goal;
 import Domain.Reports.GameReport;
 import Domain.Users.Player;
 import Domain.Users.Referee;
-import Domain.Users.SystemUser;
 
 import java.util.*;
 

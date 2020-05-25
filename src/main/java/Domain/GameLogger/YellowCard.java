@@ -1,4 +1,4 @@
-package Domain.Logger;
+package Domain.GameLogger;
 
 import Domain.Users.Player;
 

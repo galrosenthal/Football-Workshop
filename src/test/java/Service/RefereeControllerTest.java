@@ -2,7 +2,7 @@ package Service;
 
 import Domain.EntityManager;
 import Domain.Game.*;
-import Domain.Logger.*;
+import Domain.GameLogger.*;
 import Domain.Users.*;
 import org.junit.After;
 import org.junit.Before;

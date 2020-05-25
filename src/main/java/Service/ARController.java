@@ -9,6 +9,7 @@ import Domain.Game.PointsPolicy;
 import Domain.Game.SchedulingPolicy;
 import Domain.Game.Season;
 import Domain.Game.Team;
+import Domain.SystemLogger.*;
 import Domain.Users.*;
 
 import java.text.ParseException;
@@ -46,6 +47,9 @@ public class ARController {
             return false;
         }
         UIController.showNotification("The league was created successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(ARController.class,
+                new CreateNewLeagueLogMsg(systemUser.getUsername(), leagueName));
         return true;
     }
 
@@ -88,6 +92,9 @@ public class ARController {
 
         chosenLeague.addSeason(seasonYears);
         UIController.showNotification("The season was created successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(ARController.class,
+                new CreateNewSeasonLogMsg(systemUser.getUsername(), seasonYears, chosenLeague.getName()));
         return true;
 //        }
 //        UIController.printMessage("The season creation failed");
@@ -172,6 +179,9 @@ public class ARController {
         if (succeeded) {
             //TODO: Send notification to newRefereeUser
             UIController.showNotification("The referee has been added successfully");
+            //Log the action
+            SystemLoggerManager.logInfo(ARController.class,
+                    new AddRefereeLogMsg(systemUser.getUsername(), refereeUser.getUsername()));
         }
         return true;
     }
@@ -212,6 +222,9 @@ public class ARController {
 
         if (ARRole.removeReferee(chosenUser)) {
             UIController.showNotification("The referee has been removed successfully");
+            //Log the action
+            SystemLoggerManager.logInfo(ARController.class,
+                    new RemoveRefereeLogMsg(systemUser.getUsername(), chosenUser.getUsername()));
             return true;
         }
         return false;
@@ -287,6 +300,10 @@ public class ARController {
         }
 
         UIController.showNotification("The referee has been assigned to the season successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(ARController.class,
+                new AssignRefereeLogMsg(systemUser.getUsername(), chosenRefereeUser.getUsername(),
+                        chosenSeason.getYears(), chosenLeague.getName()));
         return true;
     }
 
@@ -322,6 +339,9 @@ public class ARController {
         boolean succeeded = ARRole.addTeam(teamName, newTeamOwnerUser);
         if (succeeded) {
             UIController.showNotification("The team " + teamName + " has been created successfully");
+            //Log the action
+            SystemLoggerManager.logInfo(ARController.class,
+                    new RegisterNewTeamLogMsg(systemUser.getUsername(), teamName));
         }
         return succeeded;
     }
@@ -380,10 +400,20 @@ public class ARController {
         else  // "remove"
             succeeded = ARRole.removeTeamsFromSeason(chosenTeams, currLeagueSeason);
         if (succeeded) {
-            if (action.equals("add"))
+            if (action.equals("add")) {
                 UIController.showNotification("The teams have been successfully assigned to the league's latest season");
-            else  // "remove"
+                //Log the action
+                SystemLoggerManager.logInfo(ARController.class,
+                        new AddTeamsToSeason(systemUser.getUsername(),
+                        ""+chosenTeams.size(),currLeagueSeason.getYears(), chosenLeague.getName() ));
+            }
+            else {  // "remove"
                 UIController.showNotification("The teams have been successfully removed from the league's latest season");
+                //Log the action
+                SystemLoggerManager.logInfo(ARController.class,
+                        new RemoveTeamsFromSeason(systemUser.getUsername(),
+                        ""+chosenTeams.size(),currLeagueSeason.getYears(), chosenLeague.getName() ));
+            }
         }
         return succeeded;
     }
@@ -523,6 +553,10 @@ public class ARController {
         }
 
         UIController.showNotification("The new points policy has been added successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(ARController.class,
+                new AddPointsPolicyLogMsg(systemUser.getUsername()));
+
         return true;
     }
 
@@ -563,6 +597,9 @@ public class ARController {
         ARRole.setPointsPolicy(chosenSeason, pointsPolicy);
 
         UIController.showNotification("The chosen points policy was set successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(ARController.class,
+                new SetPointsPolicyLogMsg(systemUser.getUsername(),chosenSeason.getYears(), chosenLeague.getName()));
         return true;
     }
 
@@ -607,6 +644,9 @@ public class ARController {
         }
 
         UIController.showNotification("The new scheduling policy has been added successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(ARController.class,
+                new AddSchedulingPolicyLogMsg(systemUser.getUsername()));
         return true;
     }
 
@@ -661,6 +701,10 @@ public class ARController {
         }
 
         UIController.showNotification("The chosen points policy was set successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(ARController.class,
+                new ActivateSchedulingPolicyLogMsg(systemUser.getUsername(),chosenSeason.getYears(),
+                        chosenLeague.getName(), ""+chosenSeason.getGames().size()));
         return true;
     }
 

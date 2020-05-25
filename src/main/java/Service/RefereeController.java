@@ -3,7 +3,7 @@ package Service;
 import Domain.EntityManager;
 import Domain.Game.Game;
 import Domain.Game.Team;
-import Domain.Logger.Event;
+import Domain.GameLogger.Event;
 import Domain.Users.*;
 
 import java.util.ArrayList;

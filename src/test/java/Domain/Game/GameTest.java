@@ -1,7 +1,7 @@
 package Domain.Game;
 
 import Domain.EntityManager;
-import Domain.Logger.*;
+import Domain.GameLogger.*;
 import Domain.Users.Player;
 import Domain.Users.PlayerStub;
 import Domain.Users.SystemUserStub;

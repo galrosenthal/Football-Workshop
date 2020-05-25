@@ -7,7 +7,9 @@ import Domain.Game.Season;
 import Domain.Game.Team;
 import Domain.Game.TeamStatus;
 import Domain.Game.TeamAsset;
+import Domain.SystemLogger.*;
 import Domain.Users.*;
+import Service.TOController;
 import Service.UIController;
 import Domain.Exceptions.*;
 import com.vaadin.flow.component.UI;
@@ -69,7 +71,9 @@ public class TeamController {
             teamOwner.setAppointedOwner(owner.getSystemUser());
         }
 
-
+        //Log the action
+        SystemLoggerManager.logInfo(TeamController.class,
+                new AddTeamOwnerLogMsg(username,owner.getSystemUser().getUsername(), teamToOwn.getTeamName()));
         return true;
     }
 
@@ -105,7 +109,15 @@ public class TeamController {
             throw new NotATeamOwner("Not One of the Team Owners");
         }
 
-        return teamToAddAsset.addAsset(assetName, teamOwner, assetType);
+        boolean success = teamToAddAsset.addAsset(assetName, teamOwner, assetType);
+        if(success){
+            //Log the action
+            SystemLoggerManager.logInfo(TeamController.class,
+                    new AddAssetLogMsg(teamOwner.getSystemUser().getUsername(),
+                            assetType.name().toLowerCase(),
+                            assetName, teamToAddAsset.getTeamName()));
+        }
+        return success;
     }
 
     /**
@@ -447,6 +459,9 @@ public class TeamController {
         for (TeamOwner toRemove:
                 teamOwnersToRemove) {
             team.removeTeamOwner(toRemove);
+            //Log the action
+            SystemLoggerManager.logInfo(TeamController.class,
+                    new RemoveTeamOwnerLogMsg(username,toRemove.getSystemUser().getUsername(), team.getTeamName()));
         }
 
         return true;

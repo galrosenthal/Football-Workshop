@@ -5,8 +5,9 @@ import Domain.Exceptions.AssetsNotExistsException;
 import Domain.Exceptions.TeamAlreadyExistsException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.*;
-import Domain.Logger.Event;
-import Domain.Logger.Injury;
+import Domain.GameLogger.Event;
+import Domain.GameLogger.Injury;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
 import Domain.Users.AssociationRepresentative;
 import Domain.Users.SystemAdmin;
@@ -39,6 +40,7 @@ public class AcceptanceTests {
         yosiManagerSu = new SystemUser("yosilevi", hashedPasswordForAviYosi, "Yosi Levi","test@gmail.com", false);
         yosiManagerSu.addNewRole(new TeamManager(yosiManagerSu));
         UIController.setIsTest(true);
+       // SystemLoggerManager.disableLoggers(); // disable loggers in tests
     }
 
 
