@@ -710,4 +710,13 @@ public class UIController {
             }
         }
     }
+
+    public static void showModal(Collection<String>... valuesToDisplay) {
+
+            //FootballMain.showModal(s,valuesToDisplay);
+        UI lastUI = UI.getCurrent();
+
+        VaadinSession se = VaadinSession.getCurrent();
+        se.access(() -> FootballMain.showModal(valuesToDisplay));
+    }
 }

@@ -3,6 +3,7 @@ package GUI;
 
 import GUI.About.AboutView;
 import GUI.RoleRelatedViews.AssociationRepresentative.ARControls;
+import GUI.RoleRelatedViews.Referee.RefereeControls;
 import GUI.RoleRelatedViews.TeamOwner.TOControls;
 import Service.MainController;
 import Service.UIController;
@@ -249,6 +250,11 @@ public class FootballMain extends AppLayout implements RouterLayout{
                     VaadinIcon.USER.create()));
         }
 
+        if(userRoles.contains("REFEREE")){
+            addToDrawer(createMenuLink(RefereeControls.class, RefereeControls.VIEW_NAME,
+                    VaadinIcon.USER.create()));
+        }
+
     }
 
     private void logout() {
@@ -361,6 +367,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
             ComboBox<String>[] multiInputsFromList = new ComboBox[numOfInputs];
 
             ComboBox<String> valuesForInt = new ComboBox<>();
+            valuesForInt.setWidth("100%");
             MultiSelectListBox<String> valuesForString = new MultiSelectListBox<>();
 
             DatePicker picker = new DatePicker();
@@ -456,8 +463,13 @@ public class FootballMain extends AppLayout implements RouterLayout{
             }
             else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_INT))
             {
-                Label lbl = new Label(msg);
-                vl.add(lbl);
+                String[] messeages = msg.split(UIController.STRING_DELIMETER);
+                for (String message : messeages){
+                    Label lbl = new Label(message);
+                    lbl.setWidth("100%");
+                    vl.add(lbl);
+                }
+
                 if(displayValues.length > 0) {
                     valuesForInt.setItems(displayValues[0]);
                     valuesForInt.setClearButtonVisible(true);
@@ -517,8 +529,9 @@ public class FootballMain extends AppLayout implements RouterLayout{
     private static void apendValuesToReturnValue(StringBuilder returnedValue, ComboBox<String>[] multiInputsFromList) {
         for (ComboBox<String> singleComboBox:
              multiInputsFromList) {
-            returnedValue.append(singleComboBox.getValue());
+            returnedValue.append(singleComboBox.getValue()).append(UIController.STRING_DELIMETER);
         }
+        returnedValue.setLength(returnedValue.length()-1);
     }
 
     private static void createMultiListInputs(VerticalLayout verticalLayout, int numOfInputs, ComboBox<String>[] multiInputsFromList, Button close, String[] messagesToDisplay, Collection<String>... displayValues) {
@@ -559,6 +572,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
     private static void createMultiStringInputs(VerticalLayout verticalLayout, int numOfInputs, TextField[] textFieldsArray, Button close, String[] messagesToDisplay) {
         for (int i = 0; i < numOfInputs; i++) {
             textFieldsArray[i] = new TextField();
+            //textFieldsArray[i].setLabel(messagesToDisplay[i]);
             verticalLayout.add(new Label(messagesToDisplay[i]));
             textFieldsArray[i].setValueChangeMode(ValueChangeMode.EAGER);
             textFieldsArray[i].addValueChangeListener(e -> {
@@ -568,6 +582,28 @@ public class FootballMain extends AppLayout implements RouterLayout{
         }
     }
 
+    public static void showModal(Collection<String>... displayValues){
+        Dialog newWindow = new Dialog();
+        newWindow.setCloseOnOutsideClick(false);
+        newWindow.setCloseOnEsc(false);
+        newWindow.setVisible(true);
+        VerticalLayout vl = new VerticalLayout();
+        newWindow.setCloseOnEsc(false);
+
+        for (String game : displayValues[0]){
+
+            Label ta = new Label(game);
+                ta.setSizeFull();
+                ta.setMaxHeight("100px");
+            vl.add(ta);
+        }
+
+        Button ok = new Button("Ok");
+        ok.addClickListener(e -> { newWindow.close(); });
+        vl.add(ok);
+        newWindow.add(vl);
+        newWindow.open();
+    }
 }
 
 
