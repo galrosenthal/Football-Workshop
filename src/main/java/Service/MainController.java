@@ -617,4 +617,37 @@ public class MainController {
             UIController.showNotification(e.getMessage());
         }
     }
+    public static void DisplayScheduledGame(String username) {
+        SystemUser refereeUser = EntityManager.getInstance().getUser(username);
+        if(refereeUser == null)
+        {
+            return;
+        }
+        try
+        {
+            RefereeController.displayScheduledGames(refereeUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static void updateGameEvents(String username) {
+        SystemUser refeeeUser = EntityManager.getInstance().getUser(username);
+        if(refeeeUser == null)
+        {
+            return;
+        }
+        try
+        {
+            RefereeController.updateGameEvents(refeeeUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
 }
