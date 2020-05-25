@@ -15,7 +15,7 @@ import java.util.List;
 public class RefereeController {
 
     public static boolean updateGameEvents(SystemUser systemUser) {
-            createGameForTest();
+            //createGameForTest();
         if (!systemUser.isType(RoleTypes.REFEREE)) {
             return false;
         }
@@ -94,34 +94,34 @@ public class RefereeController {
     /**
      * Only for tests
      */
-    public static boolean alreadyARun = false;
-    private static void createGameForTest() {
-        if(!alreadyARun) {
-            alreadyARun = true;
-            SystemUser systemUser = EntityManager.getInstance().getUser("Administrator");
-
-            Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
-
-            SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
-            new AssociationRepresentative(arSystemUser);
-            new TeamOwner(arSystemUser);
-            TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
-            Team firstTeam = new Team("Hapoel Beit Shan", toRole);
-            EntityManager.getInstance().addTeam(firstTeam);
-            Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
-            EntityManager.getInstance().addTeam(secondTeam);
-
-            Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-            SystemUser avi = new SystemUser("AviCohen", "Avi Cohen");
-            Player player1 = new Player(avi, new Date(2001, 01, 01));
-            avi.addNewRole(player1);
-            EntityManager.getInstance().addUser(avi);
-            firstTeam.addTeamPlayer(toRole, player1);
-
-            game.addReferee(referee);
-            referee.addGame(game);
-        }
-    }
+//    public static boolean alreadyARun = false;
+//    private static void createGameForTest() {
+//        if(!alreadyARun) {
+//            alreadyARun = true;
+//            SystemUser systemUser = EntityManager.getInstance().getUser("Administrator");
+//
+//            Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
+//
+//            SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
+//            new AssociationRepresentative(arSystemUser);
+//            new TeamOwner(arSystemUser);
+//            TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+//            Team firstTeam = new Team("Hapoel Beit Shan", toRole);
+//            EntityManager.getInstance().addTeam(firstTeam);
+//            Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
+//            EntityManager.getInstance().addTeam(secondTeam);
+//
+//            Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+//            SystemUser avi = new SystemUser("AviCohen", "Avi Cohen");
+//            Player player1 = new Player(avi, new Date(2001, 01, 01));
+//            avi.addNewRole(player1);
+//            EntityManager.getInstance().addUser(avi);
+//            firstTeam.addTeamPlayer(toRole, player1);
+//
+//            game.addReferee(referee);
+//            referee.addGame(game);
+//        }
+//    }
 
 
     /**
