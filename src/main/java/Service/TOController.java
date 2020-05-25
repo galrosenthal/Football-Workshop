@@ -37,7 +37,9 @@ public class TOController {
                 }
             }
             else{
-                throw new Exception("Expected \"close\" or \"reopen\" command");
+                String msg = "Expected \"close\" or \"reopen\" command";
+                SystemLoggerManager.logError(TOController.class, msg);
+                throw new Exception(msg);
             }
         }
 

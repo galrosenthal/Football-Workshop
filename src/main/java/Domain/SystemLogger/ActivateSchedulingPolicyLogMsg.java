@@ -1,6 +1,6 @@
 package Domain.SystemLogger;
 
-public class ActivateSchedulingPolicyLogMsg extends LoggerMessage {
+public class ActivateSchedulingPolicyLogMsg extends LoggerInfoMessage {
     public ActivateSchedulingPolicyLogMsg(String usernamePerformed, String season, String league, String numGamesCreated) {
         super(usernamePerformed, "Activate Scheduling Policy",
                 "Scheduling policy activated on season \""+season+"\"" +

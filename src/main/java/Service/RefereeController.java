@@ -154,7 +154,9 @@ public class RefereeController {
     private static Game getRefereeGameByChoice(Referee refereeRole, boolean finished) throws Exception {
         List<Game> gamesOfReferee = refereeRole.getGames();
         if (gamesOfReferee == null || gamesOfReferee.isEmpty()) {
-            throw new Exception("There are no games for this referee");
+            String msg = "There are no games for this referee";
+            SystemLoggerManager.logError(RefereeController.class, msg);
+            throw new Exception(msg);
         }
         List<String> gamesList = new ArrayList<>();
         for (int i = 0; i < gamesOfReferee.size(); i++) {
@@ -179,10 +181,16 @@ public class RefereeController {
 
         }
         if (gamesList.isEmpty()) {
-            if(!finished)
-                throw new Exception("There are no ongoing games for this referee");
-            else
-                throw new Exception("There are no finished games for this referee");
+            if(!finished) {
+                String msg = "There are no ongoing games for this referee";
+                SystemLoggerManager.logError(RefereeController.class, msg);
+                throw new Exception(msg);
+            }
+            else {
+                String msg = "There are no finished games for this referee";
+                SystemLoggerManager.logError(RefereeController.class, msg);
+                throw new Exception(msg);
+            }
         }
         int Index;
         do {
@@ -223,7 +231,7 @@ public class RefereeController {
      *
      * @param game - Game - The game to log the event to
      */
-    private static void addGoalEvent(Game game) throws Exception {
+    private static void addGoalEvent(Game game){
         String msg = "Choose a team who scored;Choose a team who got scored on;Choose the player who scored;" +
                 "Choose the minute of the event";
         String chosenArgs = UIController.receiveStringFromMultipleInputs(msg,

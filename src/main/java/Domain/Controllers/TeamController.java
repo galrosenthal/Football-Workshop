@@ -36,12 +36,16 @@ public class TeamController {
         List<TeamOwner> teamOwners = teamToOwn.getTeamOwners();
 
         if (!teamOwners.contains(owner)) {
-            throw new NotATeamOwner("Only the owner of this team can add a new owner");
+            String msg = "Only the owner of this team can add a new owner";
+            SystemLoggerManager.logError(TeamController.class, msg);
+            throw new NotATeamOwner(msg);
         }
         SystemUser newTeamOwnerUser = EntityManager.getInstance().getUser(username);
 
         if (newTeamOwnerUser == null) {
-            throw new UserNotFoundException("Could not find a user by the given username");
+            String msg = "Could not find a user by the given username";
+            SystemLoggerManager.logError(TeamController.class, msg);
+            throw new UserNotFoundException(msg);
         }
 
         Role newTeamOwnerRole = newTeamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
@@ -55,11 +59,15 @@ public class TeamController {
 
             teamOwner = (TeamOwner) newTeamOwnerRole;
             if (teamOwners.contains(teamOwner)) {
-                throw new RoleExistsAlreadyException("This User is already a team owner of this team");
+                String msg = "This User is already a team owner of this team";
+                SystemLoggerManager.logError(TeamController.class, msg);
+                throw new RoleExistsAlreadyException(msg);
             }
 
             if (isAlreadyOwnedAnotherTeamInSeason(teamToOwn, teamOwner)) {
-                throw new OwnedTeamInLeague("This User is already a team owner of a different team in same league");
+                String msg = "This User is already a team owner of a different team in same league";
+                SystemLoggerManager.logError(TeamController.class, msg);
+                throw new OwnedTeamInLeague(msg);
             }
 
         }
@@ -100,13 +108,19 @@ public class TeamController {
             throws NoTeamExistsException, NotATeamOwner, NullPointerException, UserNotFoundException
             , StadiumNotFoundException {
         if (teamToAddAsset == null) {
-            throw new NoTeamExistsException("No Team was given");
+            String msg = "No Team was given";
+            SystemLoggerManager.logError(TeamController.class, msg);
+            throw new NoTeamExistsException(msg);
         }
         if (assetType == null) {
-            throw new NullPointerException("No Asset Type was given");
+            String msg = "No Asset Type was given";
+            SystemLoggerManager.logError(TeamController.class, msg);
+            throw new NullPointerException(msg);
         }
         if (!teamToAddAsset.isTeamOwner(teamOwner)) {
-            throw new NotATeamOwner("Not One of the Team Owners");
+            String msg = "Not One of the Team Owners";
+            SystemLoggerManager.logError(TeamController.class, msg);
+            throw new NotATeamOwner(msg);
         }
 
         boolean success = teamToAddAsset.addAsset(assetName, teamOwner, assetType);
@@ -133,8 +147,9 @@ public class TeamController {
     public static boolean editAssets(Team chosenTeam) throws AssetsNotExistsException, AssetCantBeModifiedException {
         List<Asset> allAssetsTeam = chosenTeam.getAllAssets();
         if (allAssetsTeam.size() == 0) {
-
-            throw new AssetsNotExistsException("There is not assets to team");
+            String msg = "There is not assets to team";
+            SystemLoggerManager.logError(TeamController.class, msg);
+            throw new AssetsNotExistsException(msg);
         }
 
         List<String> objects = new ArrayList<>();
@@ -146,8 +161,9 @@ public class TeamController {
         int assetIndex = TeamController.choosePropertiesUI("Choose asset to Modify: ",objects);
         List<String> properties = allAssetsTeam.get(assetIndex).getProperties();
         if (properties.size() == 0) {
-
-            throw new AssetCantBeModifiedException("Nothing can be modify in this asset");
+            String msg = "Nothing can be modify in this asset";
+            SystemLoggerManager.logError(TeamController.class, msg);
+            throw new AssetCantBeModifiedException(msg);
 
         }
         objects = new ArrayList<>();
@@ -159,8 +175,9 @@ public class TeamController {
             if (action == 0) {
                 boolean isAdded = addProperty(allAssetsTeam.get(assetIndex), properties.get(propertyIndexToModify), chosenTeam);
                 if (!isAdded) {
-
-                    throw new AssetCantBeModifiedException("Can not modify asset");
+                    String msg = "Can not modify asset";
+                    SystemLoggerManager.logError(TeamController.class, msg);
+                    throw new AssetCantBeModifiedException(msg);
 
                 } else {
                     return true;
@@ -168,8 +185,9 @@ public class TeamController {
             } else {
                 boolean isRemoved = removeProperty(allAssetsTeam.get(assetIndex), properties.get(propertyIndexToModify), chosenTeam);
                 if (!isRemoved) {
-
-                    throw new AssetCantBeModifiedException("Can not modify asset");
+                    String msg = "Can not modify asset";
+                    SystemLoggerManager.logError(TeamController.class, msg);
+                    throw new AssetCantBeModifiedException(msg);
 
                 } else {
                     return true;
@@ -438,19 +456,25 @@ public class TeamController {
         List<TeamOwner> teamOwners = team.getTeamOwners();
 
         if (!teamOwners.contains(owner)) {
-            throw new NotATeamOwner("Only the owner of this team can remove owner");
+            String msg = "Only the owner of this team can remove owner";
+            SystemLoggerManager.logError(TeamController.class, msg);
+            throw new NotATeamOwner(msg);
         }
         SystemUser newTeamOwnerUser = EntityManager.getInstance().getUser(username);
 
         if (newTeamOwnerUser == null) {
-            throw new UserNotFoundException("Could not find a user by the given username");
+            String msg = "Could not find a user by the given username";
+            SystemLoggerManager.logError(TeamController.class, msg);
+            throw new UserNotFoundException(msg);
         }
 
         Role TeamOwnerRole = newTeamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
         TeamOwner teamOwner = (TeamOwner)TeamOwnerRole;
 
         if(!teamOwners.contains(teamOwner)){
-            throw new NotATeamOwner("The user is not a owner of this team");
+            String msg = "The user is not a owner of this team";
+            SystemLoggerManager.logError(TeamController.class, msg);
+            throw new NotATeamOwner(msg);
         }
 
         List<TeamOwner> teamOwnersToRemove= allTeamOwnersToRemove(teamOwner,teamOwners);

@@ -104,7 +104,9 @@ public class ARController {
     private static League getLeagueByChoice() throws Exception {
         List<League> leagues = EntityManager.getInstance().getLeagues();
         if (leagues == null || leagues.isEmpty()) {
-            throw new Exception("There are no leagues");
+            String msg = "There are no leagues";
+            SystemLoggerManager.logError(ARController.class, msg);
+            throw new Exception(msg);
         }
         List<String> leaguesList = new ArrayList<>();
         for (int i = 0; i < leagues.size(); i++) {
@@ -128,7 +130,9 @@ public class ARController {
     private static Season getSeasonByChoice(League league) throws Exception {
         List<Season> seasons = league.getSeasons();
         if (seasons == null || seasons.isEmpty()) {
-            throw new Exception("There are no seasons in the league");
+            String msg = "There are no seasons in the league";
+            SystemLoggerManager.logError(ARController.class, msg);
+            throw new Exception(msg);
         }
         List<String> seasonsList = new ArrayList<>();
         for (int i = 0; i < seasons.size(); i++) {
@@ -239,7 +243,9 @@ public class ARController {
     private static SystemUser getRefereeByChoice() throws Exception {
         List<SystemUser> referees = EntityManager.getInstance().getReferees();
         if (referees.isEmpty()) {
-            throw new Exception("There are no referees");
+            String msg = "There are no referees";
+            SystemLoggerManager.logError(ARController.class, msg);
+            throw new Exception(msg);
         }
 
         List<String> refereesList = new ArrayList<>();
@@ -326,13 +332,17 @@ public class ARController {
 
         boolean teamExists = EntityManager.getInstance().doesTeamExists(teamName);
         if (teamExists) {
-            throw new TeamAlreadyExistsException("The team \"" + teamName + "\" already exists in the system");
+            String msg = "The team \"" + teamName + "\" already exists in the system";
+            SystemLoggerManager.logError(ARController.class, msg);
+            throw new TeamAlreadyExistsException(msg);
         }
 
         String newTeamOwnerUsername = UIController.getUsernameFromUser("Team Owner");
         SystemUser newTeamOwnerUser = EntityManager.getInstance().getUser(newTeamOwnerUsername);
         if (newTeamOwnerUser == null) {
-            throw new UserNotFoundException("Could not find a user by the given username");
+            String msg = "Could not find a user by the given username";
+            SystemLoggerManager.logError(ARController.class, msg);
+            throw new UserNotFoundException(msg);
         }
 
         //delegate the operation responsibility to AssociationRepresentative
@@ -438,7 +448,9 @@ public class ARController {
     private static List<Team> getTeamsBySeasonByChoice(Season season, String action) throws Exception {
         List<Team> teams = EntityManager.getInstance().getTeams();
         if (teams == null || teams.isEmpty()) {
-            throw new Exception("There are no teams");
+            String msg = "There are no teams";
+            SystemLoggerManager.logError(ARController.class, msg);
+            throw new Exception(msg);
         }
         List<Team> teamsInSeason = season.getTeams();
 
@@ -455,10 +467,16 @@ public class ARController {
             }
         }
         if (teamChoices.isEmpty()) {
-            if (action.equals("not in season"))
-                throw new Exception("There are no teams that do not belong already to the chosen league's latest season");
-            else //"in season"
-                throw new Exception("There are no teams that belong to the chosen league's latest season");
+            if (action.equals("not in season")) {
+                String msg = "There are no teams that do not belong already to the chosen league's latest season";
+                SystemLoggerManager.logError(ARController.class, msg);
+                throw new Exception(msg);
+            }
+            else{ //"in season"
+                String msg = "There are no teams that belong to the chosen league's latest season";
+                SystemLoggerManager.logError(ARController.class, msg);
+                throw new Exception(msg);
+            }
         }
         String messageToShow = "";
         if (action.equals("not in season")) {
@@ -491,7 +509,9 @@ public class ARController {
     private static League getLeagueThatHasntStartedByChoice() throws Exception {
         List<League> leagues = EntityManager.getInstance().getLeagues();
         if (leagues == null || leagues.isEmpty()) {
-            throw new Exception("There are no leagues");
+            String msg = "There are no leagues";
+            SystemLoggerManager.logError(ARController.class, msg);
+            throw new Exception(msg);
         }
         List<String> leaguesChoices = new ArrayList<>();
         for (int i = 0; i < leagues.size(); i++) {
@@ -499,7 +519,9 @@ public class ARController {
                 leaguesChoices.add(leagues.get(i).getName());
         }
         if (leaguesChoices.isEmpty()) {
-            throw new Exception("There are no leagues that their latest season hasn't started");
+            String msg = "There are no leagues that their latest season hasn't started";
+            SystemLoggerManager.logError(ARController.class, msg);
+            throw new Exception(msg);
         }
 
         String messeage = ("Choose a League from the list of " +

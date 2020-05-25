@@ -185,7 +185,9 @@ public class Controller {
 
         if(chosenTeam == null)
         {
-            throw new NoTeamExistsException("There was no Team found");
+            String msg = "There was no Team found";
+            SystemLoggerManager.logError(Controller.class, msg);
+            throw new NoTeamExistsException(msg);
         }
 
         TeamAsset ass = getAssetTypeFromUser();
@@ -229,7 +231,9 @@ public class Controller {
         Team chosenTeam = getTeamByChoice(myTeamOwner);
 
         if (chosenTeam == null) {
-            throw new NoTeamExistsException("There was no Team found");
+            String msg = "There was no Team found";
+            SystemLoggerManager.logError(Controller.class, msg);
+            throw new NoTeamExistsException(msg);
         }
 
         boolean isSuccess = TeamController.editAssets(chosenTeam);

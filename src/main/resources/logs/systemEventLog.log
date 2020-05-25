@@ -1,0 +1,66 @@
+25-05-2020 14:24:18 | Service.Controller | INFO | admin | System Boot | System booted
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Create Season | Created new season "2020/21" for league "Premier League"
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Assign Referee | Referee: AviCohen is assigned to season "2019/20" in league "Premier League"
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Set Points Policy | New points policy was set to season "2019/20" in league "Premier League"
+25-05-2020 14:24:18 | Service.RefereeController | INFO | username | Produce Game Report | Game report produced for game "Hapoel Beit Shan vs. Hapoel Beer Sheva"
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Remove Teams from Season | 2 teams were removed from season "2020/21" in league "Ligat ul"
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Add Teams to Season | 2 teams were assigned to season "2020/21" in league "Ligat ul"
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Register New Team | Registered new team: "Hapoel Beit Shan"
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Add Points Policy | New points policy added to the system
+25-05-2020 14:24:18 | Service.TOController | INFO | abc | Close Team | Team: "Hapoel Beit Shan" is now closed
+25-05-2020 14:24:18 | Service.TOController | INFO | abc | Reopen Team | Team: "Hapoel Beit Shan" is reopend
+25-05-2020 14:24:18 | Service.TOController | INFO | abc | Reopen Team | Team: "Hapoel Beit Shan" is reopend
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Assign Referee | Referee: AviCohen is assigned to season "2019/20" in league "Premier League"
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Add Referee | User: AviCohen is now Referee
+25-05-2020 14:24:18 | Service.RefereeController | INFO | username | Add Game Event | Injury event added to game "Hapoel Beit Shan vs. Hapoel Beer Sheva"
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Create League | Created new league: "Premier League"
+25-05-2020 14:24:18 | Domain.Controllers.TeamController | INFO | abc1 | Add Asset | New player, elevy, added to team "Beit Shean"
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Add Points Policy | New points policy added to the system
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Add Scheduling Policy | New scheduling policy added to the system
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Add Referee | User: AviCohen is now Referee
+25-05-2020 14:24:18 | Service.ARController | INFO | oran | Register New Team | Registered new team: "Hapoel Ta"
+25-05-2020 14:24:18 | Domain.Controllers.TeamController | INFO | merav | Add Team Owner | User: gal is now Team Owner of team: "Hapoel Ta"
+25-05-2020 14:24:18 | Domain.Controllers.TeamController | INFO | merav | Remove Team Owner | User: merav is no longer Team Owner of team: "Hapoel Ta"
+25-05-2020 14:24:18 | Service.ARController | INFO | oran | Register New Team | Registered new team: "Hapoel Ta"
+25-05-2020 14:24:18 | Domain.Controllers.TeamController | INFO | merav | Add Team Owner | User: gal is now Team Owner of team: "Hapoel Ta"
+25-05-2020 14:24:18 | Domain.Controllers.TeamController | INFO | nir | Add Team Owner | User: merav is now Team Owner of team: "Hapoel Ta"
+25-05-2020 14:24:18 | Domain.Controllers.TeamController | INFO | merav | Remove Team Owner | User: merav is no longer Team Owner of team: "Hapoel Ta"
+25-05-2020 14:24:18 | Domain.Controllers.TeamController | INFO | merav | Remove Team Owner | User: nir is no longer Team Owner of team: "Hapoel Ta"
+25-05-2020 14:24:18 | Service.ARController | INFO | oran | Register New Team | Registered new team: "Hapoel Ta"
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Add Scheduling Policy | New scheduling policy added to the system
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Create Season | Created new season "2020/21" for league "Premier League"
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Create Season | Created new season "2021/22" for league "Premier League"
+25-05-2020 14:24:18 | Service.ARController | INFO | username | Remove Referee | User: AviCohen is no longer Referee
+25-05-2020 15:21:19 | Service.Controller | INFO | admin | System Boot | System booted
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Create Season | Created new season "2020/21" for league "Premier League"
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Assign Referee | Referee: AviCohen is assigned to season "2019/20" in league "Premier League"
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Set Points Policy | New points policy was set to season "2019/20" in league "Premier League"
+25-05-2020 15:21:19 | Service.RefereeController | INFO | username | Produce Game Report | Game report produced for game "Hapoel Beit Shan vs. Hapoel Beer Sheva"
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Remove Teams from Season | 2 teams were removed from season "2020/21" in league "Ligat ul"
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Add Teams to Season | 2 teams were assigned to season "2020/21" in league "Ligat ul"
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Register New Team | Registered new team: "Hapoel Beit Shan"
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Add Points Policy | New points policy added to the system
+25-05-2020 15:21:19 | Service.TOController | INFO | abc | Close Team | Team: "Hapoel Beit Shan" is now closed
+25-05-2020 15:21:19 | Service.TOController | INFO | abc | Reopen Team | Team: "Hapoel Beit Shan" is reopend
+25-05-2020 15:21:19 | Service.TOController | INFO | abc | Reopen Team | Team: "Hapoel Beit Shan" is reopend
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Assign Referee | Referee: AviCohen is assigned to season "2019/20" in league "Premier League"
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Add Referee | User: AviCohen is now Referee
+25-05-2020 15:21:19 | Service.RefereeController | INFO | username | Add Game Event | Injury event added to game "Hapoel Beit Shan vs. Hapoel Beer Sheva"
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Create League | Created new league: "Premier League"
+25-05-2020 15:21:19 | Domain.Controllers.TeamController | INFO | abc1 | Add Asset | New player, elevy, added to team "Beit Shean"
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Add Points Policy | New points policy added to the system
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Add Scheduling Policy | New scheduling policy added to the system
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Add Referee | User: AviCohen is now Referee
+25-05-2020 15:21:19 | Service.ARController | INFO | oran | Register New Team | Registered new team: "Hapoel Ta"
+25-05-2020 15:21:19 | Domain.Controllers.TeamController | INFO | merav | Add Team Owner | User: gal is now Team Owner of team: "Hapoel Ta"
+25-05-2020 15:21:19 | Domain.Controllers.TeamController | INFO | merav | Remove Team Owner | User: merav is no longer Team Owner of team: "Hapoel Ta"
+25-05-2020 15:21:19 | Service.ARController | INFO | oran | Register New Team | Registered new team: "Hapoel Ta"
+25-05-2020 15:21:19 | Domain.Controllers.TeamController | INFO | merav | Add Team Owner | User: gal is now Team Owner of team: "Hapoel Ta"
+25-05-2020 15:21:19 | Domain.Controllers.TeamController | INFO | nir | Add Team Owner | User: merav is now Team Owner of team: "Hapoel Ta"
+25-05-2020 15:21:19 | Domain.Controllers.TeamController | INFO | merav | Remove Team Owner | User: merav is no longer Team Owner of team: "Hapoel Ta"
+25-05-2020 15:21:19 | Domain.Controllers.TeamController | INFO | merav | Remove Team Owner | User: nir is no longer Team Owner of team: "Hapoel Ta"
+25-05-2020 15:21:19 | Service.ARController | INFO | oran | Register New Team | Registered new team: "Hapoel Ta"
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Add Scheduling Policy | New scheduling policy added to the system
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Create Season | Created new season "2020/21" for league "Premier League"
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Create Season | Created new season "2021/22" for league "Premier League"
+25-05-2020 15:21:19 | Service.ARController | INFO | username | Remove Referee | User: AviCohen is no longer Referee
