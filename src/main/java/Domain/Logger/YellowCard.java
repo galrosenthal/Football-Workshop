@@ -10,6 +10,6 @@ public class YellowCard extends Card {
 
     @Override
     public String toString() {
-        return "Yellow Card " + super.toString() +" " ;
+        return super.toString()+" Yellow Card.";
     }
 }

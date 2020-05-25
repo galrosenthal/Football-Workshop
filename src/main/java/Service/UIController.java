@@ -227,7 +227,6 @@ public class UIController {
                 catch (Exception e)
                 {
                     e.printStackTrace();
-                    System.out.println("dosh");
                 }
             }
             if(line.toString().equals(CANCEL_TASK_VALUE))
@@ -316,7 +315,9 @@ public class UIController {
             return Integer.parseInt(line.toString());
         } else {
             printMessageAndValuesForTest(messageToDisplay, valuesToDisplay);
-            if (selector == 0 || selector == 1 || selector == 2 || selector == 6117 || selector == 6118 || selector == 921 || selector == 922 || selector == 924 || selector == 9321) {
+            if (selector == 0 || selector == 1 || selector == 2 || selector == 6117
+                    || selector == 6118 || selector == 921 || selector == 922 || selector == 924
+                    || selector == 9321 || selector == 10411) {
                 return 0;
             } else if (selector == 61111) {
                 setSelector(61112);
@@ -639,6 +640,20 @@ public class UIController {
         String[] dateSplitted = dateInWrongFormat.split("-");
         date.append(dateSplitted[2]).append("/").append(dateSplitted[1]).append("/").append(dateSplitted[0]);
         return date.toString();
+    }
+
+    /**
+     * Get a path to a folder, from the user.
+     * @return String that represents the path to a folder.
+     */
+    public static String receiveFolderPath() {
+        if (!isTest) {
+            //TODO: fill
+        } else {
+            if(selector == 10411)
+                return "."; //current folder path
+        }
+        return null;
     }
 
     public static void showModal(Collection<String>... valuesToDisplay) {

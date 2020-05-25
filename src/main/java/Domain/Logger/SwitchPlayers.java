@@ -29,6 +29,7 @@ public class SwitchPlayers extends Event {
 
     @Override
     public String toString() {
-        return "SwitchPlayers team=" + team.getTeamName() +", enteringPlayer=" + enteringPlayer.getAssetName() +", exitingPlayer=" + exitingPlayer.getAssetName() +" "+super.toString();
+        return super.toString()+" SwitchPlayers team=" + team.getTeamName() +", enteringPlayer=" +
+                enteringPlayer.getAssetName() +", exitingPlayer=" + exitingPlayer.getAssetName()+".";
     }
 }

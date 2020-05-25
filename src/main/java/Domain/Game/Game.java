@@ -3,6 +3,7 @@ package Domain.Game;
 import Domain.EntityManager;
 import Domain.Logger.EventsLogger;
 import Domain.Logger.Goal;
+import Domain.Reports.GameReport;
 import Domain.Users.Player;
 import Domain.Users.Referee;
 import Domain.Users.SystemUser;
@@ -18,6 +19,7 @@ public class Game extends Observable {
     private Date endDate;
     private List<Referee> referees; // - maybe array?
     private EventsLogger eventsLogger;
+    private GameReport gameReport;
 
     public Game(Stadium stadium, Team homeTeam, Team awayTeam, Date gameDate, List<Referee> referees) {
         this.stadium = stadium;
@@ -27,6 +29,7 @@ public class Game extends Observable {
         this.referees = referees;
         this.eventsLogger = new EventsLogger();
         this.endDate = null;
+        this.gameReport = new GameReport(this);
         //TODO: Add to EntityManager?
     }
 
@@ -298,7 +301,11 @@ public class Game extends Observable {
         this.endDate = endDate;
     }
 
-//    public void setScore(Score score) {
+    public GameReport getGameReport() {
+        return gameReport;
+    }
+
+    //    public void setScore(Score score) {
 //        this.score = score;
 //    }
 
