@@ -35,9 +35,15 @@ public class EntityManager {
     private List<SchedulingPolicy> schedulingPolicies;
     private HashMap<SystemUser, Boolean> loggedInMap;
 
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
 
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
 
-
+    private boolean loggedIn = false;
 
     private EntityManager() {
         allUsers = new ArrayList<>();
@@ -155,6 +161,10 @@ public class EntityManager {
      * @param username
      * @return The SystemUser with the username, if exists in the system.
      */
+    //todo: check is username in allUsers list,
+    // if yes return SystemUser,
+    // otherwise ask dbManager.getUserDetails(String username) and receive all Details to create user system
+    // then ask dbManager.getUserRoles(String username) - ask dbManager for each role Details.
     public SystemUser getUser(String username) {
         List<Pair<String, String>> userDetails = null;
         try {
@@ -250,7 +260,9 @@ public class EntityManager {
                 return true;
             }
         }
-        return false;
+        return DBManager.getInstance().doesLeagueExists(name);
+
+        //return false;
     }
 
     /**
@@ -322,7 +334,8 @@ public class EntityManager {
             this.allLeagues.add(league);
             return true;
         }
-        return false;
+        return DBManager.getInstance().addLeagueRecord(league.getName());
+        //return false;
     }
 
 
@@ -679,6 +692,8 @@ public class EntityManager {
         PointsPolicy pointsPolicy = season.getPointsPolicy();
         int pointsPolicyID = DBManager.getInstance().getPointsPolicyID(pointsPolicy.getVictoryPoints(), pointsPolicy.getLossPoints(), pointsPolicy.getTiePoints());
 
+        return DBManager.getInstance().addSeasonToLeague(leagueName, season.getYears(), season.getIsUnderway(), pointsPolicyID);
+    }
     /**
      * validate String to Email REGEX
      * @param emailStr

@@ -59,7 +59,7 @@ public class League {
                 return true;
             }
         }
-        return false;
+        return EntityManager.getInstance().doesSeasonExist(this.name,seasonYears);
     }
 
     /**
@@ -71,6 +71,7 @@ public class League {
     public boolean addSeason(String seasonYears) {
         Season season = new Season(this, seasonYears);
         this.seasons.add(season);
+        EntityManager.getInstance().addSeason(this.name , season);
         return true;
     }
 

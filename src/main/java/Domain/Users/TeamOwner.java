@@ -6,11 +6,13 @@ import Domain.Game.Team;
 import Domain.Subject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class TeamOwner extends Role implements Subject {
 
     private List<Team> ownedTeams;
+    private HashMap<Team, SystemUser> teamSystemUserHashMap;
     private SystemUser appointedOwner; /** The team owner who appointed -this- team owner */
 
     public TeamOwner(SystemUser systemUser) {
