@@ -227,6 +227,7 @@ public class UIController {
                 catch (Exception e)
                 {
                     e.printStackTrace();
+                    System.out.println("dosh");
                 }
             }
             if(line.toString().equals(CANCEL_TASK_VALUE))

@@ -287,7 +287,6 @@ public class FootballMain extends AppLayout implements RouterLayout{
             newWindow.setCloseOnOutsideClick(false);
             newWindow.setCloseOnEsc(false);
             newWindow.setVisible(true);
-            newWindow.setHeight("175px");
             VerticalLayout vl = new VerticalLayout();
             newWindow.setCloseOnEsc(false);
             int numOfInputs = msg.split(UIController.STRING_DELIMETER).length;
@@ -295,7 +294,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
             ComboBox<String>[] multiInputsFromList = new ComboBox[numOfInputs];
 
             ComboBox<String> valuesForInt = new ComboBox<>();
-            valuesForInt.setWidth("400px");
+            valuesForInt.setWidth("100%");
             MultiSelectListBox<String> valuesForString = new MultiSelectListBox<>();
 
             DatePicker picker = new DatePicker();
@@ -358,7 +357,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 }
                 else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_MULTIPLE_INPUTS))
                 {
-
+                    apendValuesToReturnValue(returnedValue, multiInputsFromList);
                 }
                 newWindow.close();
                 callingThread.interrupt();
@@ -394,8 +393,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 String[] messeages = msg.split(UIController.STRING_DELIMETER);
                 for (String message : messeages){
                     Label lbl = new Label(message);
-                    lbl.setSizeFull();
-                    lbl.setWidth("400px");
+                    lbl.setWidth("100%");
                     vl.add(lbl);
                 }
 
@@ -453,6 +451,14 @@ public class FootballMain extends AppLayout implements RouterLayout{
         });
 
 
+    }
+
+    private static void apendValuesToReturnValue(StringBuilder returnedValue, ComboBox<String>[] multiInputsFromList) {
+        for (ComboBox<String> singleComboBox:
+             multiInputsFromList) {
+            returnedValue.append(singleComboBox.getValue()).append(UIController.STRING_DELIMETER);
+        }
+        returnedValue.setLength(returnedValue.length()-1);
     }
 
     private static void createMultiListInputs(VerticalLayout verticalLayout, int numOfInputs, ComboBox<String>[] multiInputsFromList, Button close, String[] messagesToDisplay, Collection<String>... displayValues) {

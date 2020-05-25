@@ -15,7 +15,7 @@ import java.util.List;
 public class RefereeController {
 
     public static boolean updateGameEvents(SystemUser systemUser) {
-            //createGameForTest();
+            createGameForTest();
         if (!systemUser.isType(RoleTypes.REFEREE)) {
             return false;
         }
@@ -68,7 +68,7 @@ public class RefereeController {
     /**
      * Only for tests
      */
-    /*public static boolean alreadyARun = false;
+    public static boolean alreadyARun = false;
     private static void createGameForTest() {
         if(!alreadyARun) {
             alreadyARun = true;
@@ -95,7 +95,7 @@ public class RefereeController {
             game.addReferee(referee);
             referee.addGame(game);
         }
-    }*/
+    }
 
 
     /**
