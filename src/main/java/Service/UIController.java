@@ -642,6 +642,38 @@ public class UIController {
         return date.toString();
     }
 
+    public static boolean getConfirmation(String msg) {
+        if(!isTest)
+        {
+            System.out.println("UI_CONTROLLER: Asking user for Confirmation");
+            UI lastUI = UI.getCurrent();
+            VaadinSession se = VaadinSession.getCurrent();
+            StringBuilder result = new StringBuilder();
+            se.access(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                System.out.println("UI_CONTROLLER: access to GUI");
+                FootballMain.showConfirmBox(lastUI, msg, result, Thread.currentThread());
+            });
+
+            while(!result.equals(CANCEL_TASK_VALUE))
+            {
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    return true;
+                }
+            }
+
+        }
+        else
+        {
+            return false;
+        }
+        return false;
+    }
+
     /**
      * Get a path to a folder, from the user.
      * @return String that represents the path to a folder.
@@ -654,5 +686,14 @@ public class UIController {
                 return "."; //current folder path
         }
         return null;
+    }
+
+    public static void showModal(Collection<String>... valuesToDisplay) {
+
+            //FootballMain.showModal(s,valuesToDisplay);
+        UI lastUI = UI.getCurrent();
+
+        VaadinSession se = VaadinSession.getCurrent();
+        se.access(() -> FootballMain.showModal(valuesToDisplay));
     }
 }

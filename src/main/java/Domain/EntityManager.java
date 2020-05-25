@@ -66,6 +66,7 @@ public class EntityManager{
             SystemUser arnav = new SystemUser("arnav",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"arnav" , "test@gmail.com" , false);
             admin.addNewRole(new SystemAdmin(admin));
             admin.addNewRole(new AssociationRepresentative(admin));
+            admin.addNewRole(new Referee(admin,RefereeQualification.VAR_REFEREE));
         }
 
         return entityManagerInstance;

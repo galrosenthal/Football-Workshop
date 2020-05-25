@@ -32,3 +32,5 @@ webpack.generated.js
 .driver
 error-screenshots/
 .DS_Store
+/package.json
+/package-lock.json
