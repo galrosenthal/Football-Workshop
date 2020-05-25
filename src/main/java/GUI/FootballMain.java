@@ -350,7 +350,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 }
                 else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_MULTIPLE_INPUTS))
                 {
-
+                    apendValuesToReturnValue(returnedValue, multiInputsFromList);
                 }
                 newWindow.close();
                 callingThread.interrupt();
@@ -439,6 +439,13 @@ public class FootballMain extends AppLayout implements RouterLayout{
         });
 
 
+    }
+
+    private static void apendValuesToReturnValue(StringBuilder returnedValue, ComboBox<String>[] multiInputsFromList) {
+        for (ComboBox<String> singleComboBox:
+             multiInputsFromList) {
+            returnedValue.append(singleComboBox.getValue());
+        }
     }
 
     private static void createMultiListInputs(VerticalLayout verticalLayout, int numOfInputs, ComboBox<String>[] multiInputsFromList, Button close, String[] messagesToDisplay, Collection<String>... displayValues) {
