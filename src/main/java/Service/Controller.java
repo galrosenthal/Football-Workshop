@@ -1,6 +1,5 @@
 package Service;
 
-import DB.DBManager;
 import Domain.Controllers.TeamController;
 import Domain.EntityManager;
 import Domain.Exceptions.*;
@@ -8,12 +7,10 @@ import Domain.Game.Team;
 import Domain.Game.TeamAsset;
 import Domain.Game.TeamStatus;
 import Domain.Users.*;
-import sun.rmi.rmic.Main;
 
 import java.util.ArrayList;
 import java.util.List;
 import static Service.UIController.getUsernameFromUser;
-import static Service.UIController.showAlert;
 
 public class Controller {
 
