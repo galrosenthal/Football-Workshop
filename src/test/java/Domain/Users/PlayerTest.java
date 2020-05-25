@@ -1,11 +1,12 @@
 package Domain.Users;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
+import Domain.EntityManager;
 import Domain.Game.Team;
 import Domain.Game.TeamStub;
 import Service.UIController;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,15 +22,16 @@ public class PlayerTest {
     Player playerToTest;
     SystemUser testUser;
 
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        DBManager.startTest();
+        DBManagerForTest.startConnection();    }
 
     @Before
     public void setUp() throws Exception {
         teamStub = new TeamStub(0);
         testUser = new SystemUserStub("test","testUser",4);
         ownerStub = new TeamOwnerStub(testUser);
-
-
-
     }
 
     @Test
@@ -222,5 +224,13 @@ public class PlayerTest {
         Assert.assertFalse(player.removeProperty(player.fieldJobString ,PlayerFieldJobs.FRONT ,new TeamStub(6131)));
     }
 
+    @After
+    public void tearDown() {
+        EntityManager.getInstance().clearAll();
+    }
 
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
+    }
 }

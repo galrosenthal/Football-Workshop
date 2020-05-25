@@ -1,15 +1,14 @@
 package Domain.Users;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.Exceptions.ExistsAlreadyException;
 import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Game.League;
-import Domain.Game.Points;
 import Domain.Game.PointsPolicy;
 import Domain.Game.Season;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.*;
 
 
 import static org.junit.Assert.*;
@@ -17,6 +16,11 @@ import static org.junit.Assert.*;
 public class AssociationRepresentativeTest {
 
     private AssociationRepresentative aR;
+
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        DBManager.startTest();
+        DBManagerForTest.startConnection();    }
 
     @Test
     public void testAddLeagueITest() throws Exception {
@@ -393,6 +397,11 @@ public class AssociationRepresentativeTest {
     @After
     public void tearDown() {
         EntityManager.getInstance().clearAll();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
     }
 }
 

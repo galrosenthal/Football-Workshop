@@ -1,9 +1,18 @@
 package Domain.Users;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
+import Domain.EntityManager;
 import Domain.Game.Team;
 import org.junit.Test;
 import org.junit.*;
+
 public class TeamOwnerTest {
+
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        DBManager.startTest();
+        DBManagerForTest.startConnection();    }
 
     /**
      * Check if teamOwner is added successfully
@@ -46,7 +55,17 @@ public class TeamOwnerTest {
         TeamOwner newTeamOwner = new TeamOwner(sysUserTO);
         Assert.assertFalse(newTeamOwner.setAppointedOwner(null));
         newTeamOwner.setAppointedOwner(newTeamOwner.getSystemUser());
-        Assert.assertEquals(newTeamOwner.getSystemUser(),newTeamOwner.getAppointedOwner());
+        Assert.assertEquals(newTeamOwner.getSystemUser(), newTeamOwner.getAppointedOwner());
 
+    }
+
+    @After
+    public void tearDown() {
+        EntityManager.getInstance().clearAll();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
     }
 }

@@ -1,12 +1,12 @@
 package Service;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.Game.*;
 import Domain.Logger.*;
 import Domain.Users.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,6 +15,12 @@ import java.util.Date;
 import static org.junit.Assert.*;
 
 public class RefereeControllerTest {
+
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        DBManager.startTest();
+        DBManagerForTest.startConnection();    }
+
     @Before
     public void setUp() throws Exception {
         UIController.setIsTest(true);
@@ -50,6 +56,7 @@ public class RefereeControllerTest {
         assertFalse(RefereeController.updateGameEvents(systemUser));
         //"There are no ongoing games for this referee"
     }
+
     @Test
     public void updateGameEventsSuccessRedCardITest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 1031);
@@ -58,8 +65,8 @@ public class RefereeControllerTest {
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
         Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
+        Player player1 = new PlayerStub(new SystemUserStub("AviCohen", "Name1", 10312));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2", "Name2", 0));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -77,9 +84,10 @@ public class RefereeControllerTest {
 
         Event event = game.getEventsLogger().getGameEvents().get(0);
         assertTrue(event instanceof RedCard);
-        assertTrue(((RedCard) event).getMinute()==1);
+        assertTrue(((RedCard) event).getMinute() == 1);
         assertTrue(((RedCard) event).getOffender().equals(player1));
     }
+
     @Test
     public void updateGameEventsSuccessRedCard2ITest() {
         SystemUser systemUser = getSystemUserVarReferee();
@@ -88,8 +96,8 @@ public class RefereeControllerTest {
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
         Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
+        Player player1 = new PlayerStub(new SystemUserStub("AviCohen", "Name1", 10312));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2", "Name2", 0));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -107,13 +115,13 @@ public class RefereeControllerTest {
 
         Event event = game.getEventsLogger().getGameEvents().get(0);
         assertTrue(event instanceof RedCard);
-        assertTrue(((RedCard) event).getMinute()==1);
+        assertTrue(((RedCard) event).getMinute() == 1);
         assertTrue(((RedCard) event).getOffender().equals(player1));
     }
 
     private SystemUser getSystemUserVarReferee() {
         SystemUser systemUser = new SystemUser("username", "name");
-        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.VAR_REFEREE));
+        systemUser.addNewRole(new Referee(systemUser, RefereeQualification.VAR_REFEREE));
         return systemUser;
     }
 
@@ -189,8 +197,8 @@ public class RefereeControllerTest {
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
         Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
+        Player player1 = new PlayerStub(new SystemUserStub("AviCohen", "Name1", 10312));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2", "Name2", 0));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -208,7 +216,7 @@ public class RefereeControllerTest {
         //The new Yellow Card has been added successfully
         Event event = game.getEventsLogger().getGameEvents().get(0);
         assertTrue(event instanceof YellowCard);
-        assertTrue(((YellowCard) event).getMinute()==1);
+        assertTrue(((YellowCard) event).getMinute() == 1);
         assertTrue(((YellowCard) event).getOffender().equals(player1));
     }
 
@@ -220,8 +228,8 @@ public class RefereeControllerTest {
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
         Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
+        Player player1 = new PlayerStub(new SystemUserStub("UserName1", "Name1", 0));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2", "Name2", 0));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -238,7 +246,7 @@ public class RefereeControllerTest {
         //The new Goal has been added successfully
         Event event = game.getEventsLogger().getGameEvents().get(0);
         assertTrue(event instanceof Goal);
-        assertTrue(((Goal) event).getMinute()==1);
+        assertTrue(((Goal) event).getMinute() == 1);
         assertTrue(((Goal) event).getScoringTeam().equals(secondTeam));
         assertTrue(((Goal) event).getScoredOnTeam().equals(firstTeam));
     }
@@ -251,8 +259,8 @@ public class RefereeControllerTest {
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
         Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
+        Player player1 = new PlayerStub(new SystemUserStub("UserName1", "Name1", 0));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2", "Name2", 0));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -269,7 +277,7 @@ public class RefereeControllerTest {
         //The new Offside has been added successfully
         Event event = game.getEventsLogger().getGameEvents().get(0);
         assertTrue(event instanceof Offside);
-        assertTrue(((Offside) event).getMinute()==1);
+        assertTrue(((Offside) event).getMinute() == 1);
         assertTrue(((Offside) event).getTeamWhoCommitted().equals(firstTeam));
     }
 
@@ -281,8 +289,8 @@ public class RefereeControllerTest {
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
         Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
+        Player player1 = new PlayerStub(new SystemUserStub("UserName1", "Name1", 0));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2", "Name2", 0));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -299,7 +307,7 @@ public class RefereeControllerTest {
         //The new Penalty has been added successfully
         Event event = game.getEventsLogger().getGameEvents().get(0);
         assertTrue(event instanceof Penalty);
-        assertTrue(((Penalty) event).getMinute()==1);
+        assertTrue(((Penalty) event).getMinute() == 1);
         assertTrue(((Penalty) event).getTeamWhoCommitted().equals(firstTeam));
     }
 
@@ -311,8 +319,8 @@ public class RefereeControllerTest {
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
         Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",10312 ));
+        Player player1 = new PlayerStub(new SystemUserStub("AviCohen", "Name1", 10312));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2", "Name2", 10312));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -329,7 +337,7 @@ public class RefereeControllerTest {
         //The new Switch Players has been added successfully
         Event event = game.getEventsLogger().getGameEvents().get(0);
         assertTrue(event instanceof SwitchPlayers);
-        assertTrue(((SwitchPlayers) event).getMinute()==1);
+        assertTrue(((SwitchPlayers) event).getMinute() == 1);
         assertTrue(((SwitchPlayers) event).getTeam().equals(firstTeam));
         assertTrue(((SwitchPlayers) event).getEnteringPlayer().equals(player2));
         assertTrue(((SwitchPlayers) event).getExitingPlayer().equals(player1));
@@ -347,8 +355,8 @@ public class RefereeControllerTest {
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
         Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
+        Player player1 = new PlayerStub(new SystemUserStub("AviCohen", "Name1", 10312));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2", "Name2", 0));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -365,9 +373,10 @@ public class RefereeControllerTest {
         //The new Penalty has been added successfully
         Event event = game.getEventsLogger().getGameEvents().get(0);
         assertTrue(event instanceof Injury);
-        assertTrue(((Injury) event).getMinute()==1);
+        assertTrue(((Injury) event).getMinute() == 1);
         assertTrue(((Injury) event).getInjuredPlayer().equals(player1));
     }
+
     @Test
     public void updateGameEventsSuccessInjury2ITest() {
         SystemUser systemUser = getSystemUserVarReferee();
@@ -381,8 +390,8 @@ public class RefereeControllerTest {
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
 
         Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new Player(new SystemUser("AviCohen","Name1"),new Date(2001, 01, 01));
-        firstTeam.addTeamPlayer(toRole,player1);
+        Player player1 = new Player(new SystemUser("AviCohen", "Name1"), new Date(2001, 01, 01));
+        firstTeam.addTeamPlayer(toRole, player1);
 
         game.addReferee(referee);
         referee.addGame(game);
@@ -396,12 +405,17 @@ public class RefereeControllerTest {
         //The new Injury has been added successfully
         Event event = game.getEventsLogger().getGameEvents().get(0);
         assertTrue(event instanceof Injury);
-        assertTrue(((Injury) event).getMinute()==1);
+        assertTrue(((Injury) event).getMinute() == 1);
         assertTrue(((Injury) event).getInjuredPlayer().equals(player1));
     }
 
     @After
     public void tearDown() throws Exception {
         EntityManager.getInstance().clearAll();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
     }
 }
