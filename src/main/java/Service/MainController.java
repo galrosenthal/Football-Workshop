@@ -624,6 +624,19 @@ public class MainController {
             UIController.showNotification(e.getMessage());
         }
     }
+
+    public static boolean isSystemBooted() {
+        return EntityManager.getInstance().isSystemBooted();
+    }
+
+    public static boolean systemBoot() {
+        if(Controller.systemBoot())
+        {
+            EntityManager.getInstance().setIsBooted(true);
+            return true;
+        }
+        return false;
+    }
     public static void DisplayScheduledGame(String username) {
         SystemUser refereeUser = EntityManager.getInstance().getUser(username);
         if(refereeUser == null)

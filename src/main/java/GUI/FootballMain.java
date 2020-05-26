@@ -23,12 +23,14 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
+import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Push;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
@@ -140,6 +142,77 @@ public class FootballMain extends AppLayout implements RouterLayout{
 //            UI.getCurrent().access(alertWindow::open);
             alertWindow.open();
             seUI.push();
+        });
+    }
+
+    public static void showLoginDialog(UI lastUI, String message, StringBuilder returnedValue, Thread callingThread) {
+        lastUI.access(() -> {
+            Dialog loginDialog = new Dialog();
+            loginDialog.setCloseOnEsc(false);
+            loginDialog.setCloseOnOutsideClick(false);
+
+            VerticalLayout usernameAndPassword = new VerticalLayout();
+
+            usernameAndPassword.add(new Label(message.split(UIController.STRING_DELIMETER)[0]));
+            TextField username = new TextField();
+            usernameAndPassword.add(username);
+            usernameAndPassword.add(new Label(message.split(UIController.STRING_DELIMETER)[1]));
+            PasswordField password = new PasswordField();
+            usernameAndPassword.add(password);
+
+            HorizontalLayout buttons = new HorizontalLayout();
+            Button submit = new Button("Submit");
+            submit.addClickListener(e -> {
+               returnedValue.append(username.getValue()).append(UIController.STRING_DELIMETER).append(password.getValue());
+               loginDialog.close();
+               callingThread.interrupt();
+            });
+            Button close = new Button("Close");
+            close.addClickListener(e -> {
+                loginDialog.close();
+                returnedValue.append(UIController.CANCEL_TASK_VALUE);
+                callingThread.interrupt();
+            });
+            buttons.add(submit, close);
+
+            loginDialog.add(usernameAndPassword,buttons);
+            loginDialog.open();
+            lastUI.push();
+
+
+        });
+    }
+
+    public static void showYesNoDialog(UI lastUI, String message, StringBuilder choiceSelected, Thread callingThread) {
+        lastUI.access(() -> {
+            Dialog choiceDialog = new Dialog();
+            choiceDialog.setCloseOnEsc(false);
+            choiceDialog.setCloseOnOutsideClick(false);
+
+            VerticalLayout labelAndButtons = new VerticalLayout();
+            Label questionForChoice = new Label(message);
+            labelAndButtons.add(questionForChoice);
+
+            HorizontalLayout buttons = new HorizontalLayout();
+            Button yes = new Button("Yes");
+            yes.addClickListener(e -> {
+                choiceSelected.append("y");
+                choiceDialog.close();
+                callingThread.interrupt();
+            });
+            Button no = new Button("No");
+            no.addClickListener(e -> {
+                choiceDialog.close();
+                choiceSelected.append("No");
+                callingThread.interrupt();
+            });
+            buttons.add(yes, no);
+
+            choiceDialog.add(labelAndButtons,buttons);
+            choiceDialog.open();
+            lastUI.push();
+
+
         });
     }
 
@@ -281,7 +354,8 @@ public class FootballMain extends AppLayout implements RouterLayout{
                     msg.toLowerCase().contains("already exists") ||
                     msg.toLowerCase().contains("there is no") ||
                     msg.toLowerCase().contains("there was no") ||
-                    msg.toLowerCase().contains("there are no"))
+                    msg.toLowerCase().contains("there are no") ||
+                    msg.toLowerCase().contains("you are not"))
             {
                 notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
@@ -313,7 +387,6 @@ public class FootballMain extends AppLayout implements RouterLayout{
             newWindow.setCloseOnEsc(false);
             newWindow.setVisible(true);
             VerticalLayout vl = new VerticalLayout();
-            newWindow.setCloseOnEsc(false);
             int numOfInputs = msg.split(UIController.STRING_DELIMETER).length;
             TextField[] textFieldsArray = new TextField[numOfInputs];
             ComboBox<String>[] multiInputsFromList = new ComboBox[numOfInputs];
