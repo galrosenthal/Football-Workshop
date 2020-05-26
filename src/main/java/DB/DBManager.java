@@ -2,13 +2,12 @@ package DB;
 
 import static DB.Tables.Tables.*;
 
+import DB.Tables.enums.TeamStatus;
 import Domain.Exceptions.UserNotFoundException;
 import javafx.util.Pair;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Result;
-import org.jooq.impl.DSL;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +52,38 @@ public class DBManager {
     public static void deleteData(String dbName) throws Exception {
         DBHandler.getInstance().deleteData(dbName);
 
+    }
+
+    public  List<Pair<String,String>> getTeams(String name) {
+        List<String> teamsName = new ArrayList<>();
+        List<TeamStatus> statues = new ArrayList<>();
+        List<Pair<String,String>> teams = new ArrayList<>();
+        DSLContext create = DBHandler.getContext();
+        Result<?> result = create.select()
+                .from(OWNED_TEAMS.where(OWNED_TEAMS.USERNAME.eq(name)).join(TEAM)
+                        .on(TEAM.NAME.eq(OWNED_TEAMS.TEAM_NAME)))
+                .fetch();
+        teamsName = result.getValues(OWNED_TEAMS.TEAM_NAME);
+        statues = result.getValues(TEAM.STATUS);
+        for (int i = 0; i < teamsName.size(); i++) {
+            Pair<String,String> pair = new Pair(teamsName.get(i),statues.get(i));
+            teams.add(pair);
+        }
+        return teams;
+    }
+
+    public List<String> getStadium(String stadiumName) {
+        DSLContext create = DBHandler.getContext();
+        List<String> stadium;
+        Result<?> result = create.select()
+                .from(STADIUM.where(STADIUM.NAME.eq(stadiumName))).fetch();
+        if (result.size() == 0)
+        {
+            return null;
+        }
+        stadium = result.getValues(STADIUM.NAME);
+        stadium.addAll(result.getValues(STADIUM.LOCATION));
+        return stadium;
     }
 
 
@@ -293,44 +324,96 @@ public class DBManager {
     }
 
     private List<Pair<String, String>> getARRoleDetails(String username) {
-        //TODO:
-        return null;
+        DSLContext create = DBHandler.getContext();
+        Result<?> result = create.select().
+                from(ASSOCIATION_REPRESENTATIVE)
+                .where(ASSOCIATION_REPRESENTATIVE.USERNAME.eq(username)).fetch();
+        if (result.isEmpty()) {
+            return null;
+        }
+        return getDetails(result);
     }
 
     private List<Pair<String, String>> getRefereeDetails(String username) {
-        //TODO:
-        return null;
+        DSLContext create = DBHandler.getContext();
+        Result<?> result = create.select().
+                from(REFEREE)
+                .where(REFEREE.USERNAME.eq(username)).fetch();
+        if (result.isEmpty()) {
+            return null;
+        }
+        return getDetails(result);
     }
 
     private List<Pair<String, String>> getSystemAdminDetails(String username) {
-        //TODO:
-        return null;
+        DSLContext create = DBHandler.getContext();
+        Result<?> result = create.select().
+                from(SYSTEM_ADMIN)
+                .where(SYSTEM_ADMIN.USERNAME.eq(username)).fetch();
+        if (result.isEmpty()) {
+            return null;
+        }
+        return getDetails(result);
     }
 
     private List<Pair<String, String>> getTeamOwnerDetails(String username) {
-        //TODO:
-        return null;
+        DSLContext create = DBHandler.getContext();
+        Result<?> result = create.select().
+                from(TEAM_OWNER)
+                .where(TEAM_OWNER.USERNAME.eq(username)).fetch();
+        if (result.isEmpty()) {
+            return null;
+        }
+        return getDetails(result);
     }
 
     private List<Pair<String, String>> getTeamMangerDetails(String username) {
-        //TODO:
-        return null;
+        DSLContext create = DBHandler.getContext();
+        Result<?> result = create.select().
+                from(TEAM_MANAGER)
+                .where(TEAM_MANAGER.USERNAME.eq(username)).fetch();
+        if (result.isEmpty()) {
+            return null;
+        }
+        return getDetails(result);
     }
 
+
     private List<Pair<String, String>> getCoachDetails(String username) {
-        //TODO:
-        return null;
+        DSLContext create = DBHandler.getContext();
+        Result<?> result = create.select().
+                from(COACH)
+                .where(COACH.USERNAME.eq(username)).fetch();
+        if (result.isEmpty()) {
+            return null;
+        }
+        return getDetails(result);
     }
 
     private List<Pair<String, String>> getPlayerDetails(String username) {
-
-        List<Pair<String, String>> playerDetails;
-        return null;
+        DSLContext create = DBHandler.getContext();
+        Result<?> result = create.select().
+                from(PLAYER)
+                .where(PLAYER.USERNAME.eq(username)).fetch();
+        if (result.isEmpty()) {
+            return null;
+        }
+        return getDetails(result);
     }
 
+    private List<Pair<String, String>> getDetails(Result<?> user)
+    {
+        List<Pair<String, String>> details = new ArrayList<>();
+        for (int i = 0; i < user.fields().length; i++) {
+            String fieldName = user.fields()[i].getName();
+            String fieldValue = user.getValues(i).get(0).toString();
+            Pair<String, String> pair = new Pair<>(fieldName, fieldValue);
+            details.add(pair);
+        }
 
+        return details;
 
-
+    }
 
 
     private List<String> getUserRolesTypes(String username) {

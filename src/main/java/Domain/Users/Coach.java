@@ -17,6 +17,11 @@ public class Coach extends PartOfTeam {
         super(RoleTypes.COACH, systemUser);
         coachedTeams = new ArrayList<>();
     }
+    public Coach(SystemUser systemUser, CoachQualification qualification) {
+        super(RoleTypes.COACH, systemUser);
+        coachedTeams = new ArrayList<>();
+        this.qualification = qualification;
+    }
 
 
     @Override

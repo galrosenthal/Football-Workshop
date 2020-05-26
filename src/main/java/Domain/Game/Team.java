@@ -22,32 +22,6 @@ public class Team {
     private HashMap<TeamManager, List<TeamManagerPermissions>> permissionsPerTeamManager;
 
 
-    public List<TeamOwner> getTeamOwners() {
-        return teamOwners;
-    }
-
-    public List<String> getTeamOwnersString() {
-        List<String> teamOwnersString = new ArrayList<>();
-
-        for (TeamOwner to : teamOwners){
-            teamOwnersString.add(to.toString());
-        }
-
-        return teamOwnersString;
-    }
-
-    public Team(Team anotherTeam) {
-        teamManagers = new ArrayList<>(anotherTeam.teamManagers);
-        teamOwners = new ArrayList<>(anotherTeam.teamOwners);
-        stadiums = new ArrayList<>(anotherTeam.stadiums);
-        teamName = new String(anotherTeam.teamName);
-        playersAndCoaches = new HashSet<>(anotherTeam.playersAndCoaches);
-        status = TeamStatus.OPEN;
-        seasons = new ArrayList<>();
-        permissionsPerTeamManager = new HashMap<>(anotherTeam.permissionsPerTeamManager);
-
-    }
-
     public Team() {
         teamOwners = new ArrayList<>();
         playersAndCoaches = new HashSet<>();
@@ -69,6 +43,36 @@ public class Team {
         this.teamName = teamName;
         permissionsPerTeamManager = new HashMap<>();
     }
+
+    public Team(Team anotherTeam) {
+        teamManagers = new ArrayList<>(anotherTeam.teamManagers);
+        teamOwners = new ArrayList<>(anotherTeam.teamOwners);
+        stadiums = new ArrayList<>(anotherTeam.stadiums);
+        teamName = new String(anotherTeam.teamName);
+        playersAndCoaches = new HashSet<>(anotherTeam.playersAndCoaches);
+        status = TeamStatus.OPEN;
+        seasons = new ArrayList<>();
+        permissionsPerTeamManager = new HashMap<>(anotherTeam.permissionsPerTeamManager);
+
+    }
+
+    public List<TeamOwner> getTeamOwners() {
+        return teamOwners;
+    }
+
+    public List<String> getTeamOwnersString() {
+        List<String> teamOwnersString = new ArrayList<>();
+
+        for (TeamOwner to : teamOwners){
+            teamOwnersString.add(to.toString());
+        }
+
+        return teamOwnersString;
+    }
+
+
+
+
 
 
     /**
@@ -499,6 +503,7 @@ public class Team {
             }
         }
 
+        /*TODO*/
         if(!teamAsset.addTeam(this,teamOwner))
         {
             return false;

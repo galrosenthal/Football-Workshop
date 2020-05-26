@@ -22,7 +22,9 @@ public class TeamOwner extends Role implements Subject {
 
 
     public List<Team> getOwnedTeams() {
-        return ownedTeams;
+        List<Team> teams = EntityManager.getInstance().getOwnedTeams(this);
+        return teams;
+        //return ownedTeams;
     }
 
 //    public boolean addPplToTeam(Role regUser)

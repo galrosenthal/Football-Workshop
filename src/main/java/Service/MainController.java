@@ -8,6 +8,7 @@ import Domain.Game.Team;
 import Domain.Users.*;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -90,7 +91,7 @@ public class MainController {
                     alert = true;
                 }
                 return Controller.signUp(name, userDetailsToRegister.get(0), userDetailsToRegister.get(3), userDetailsToRegister.get(4),alert) != null;
-            } catch (InvalidEmailException e) {
+            } catch (InvalidEmailException | Invalid e) {
                 e.printStackTrace();
                 return false;
             }
