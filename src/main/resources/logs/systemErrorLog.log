@@ -27,3 +27,9 @@
 26-05-2020 02:38:56 | Domain.EntityManager | ERROR  | Error: The user Administrator is already logged in
 26-05-2020 02:49:33 | Service.RefereeController | ERROR  | There are no games for this referee
 26-05-2020 02:49:54 | Service.RefereeController | ERROR  | There are no games for this referee
+26-05-2020 11:34:53 | Domain.EntityManager | ERROR  | Error: The user Administrator is already logged in
+26-05-2020 11:35:08 | Domain.EntityManager | ERROR  | Error: The user Administrator is already logged in
+26-05-2020 11:35:22 | Domain.EntityManager | ERROR  | Error: The user Administrator is already logged in
+26-05-2020 11:37:34 | Domain.EntityManager | ERROR  | Username or Password was incorrect!
+26-05-2020 11:39:05 | Domain.EntityManager | ERROR  | Error: The user Administrator is already logged in
+26-05-2020 14:39:00 | Domain.EntityManager | ERROR  | Username or Password was incorrect!

@@ -82,3 +82,9 @@
 26-05-2020 02:47:04 | Service.ARController | INFO | Administrator | Register New Team | Registered new team: "t2"
 26-05-2020 02:47:17 | Service.ARController | INFO | Administrator | Add Teams to Season | 2 teams were assigned to season "2020/21" in league "aa"
 26-05-2020 02:49:25 | Service.ARController | INFO | Administrator | Remove Teams from Season | 1 teams were removed from season "2020/21" in league "aa"
+26-05-2020 11:34:00 | Domain.EntityManager | INFO | arnav | Login | User logged in
+26-05-2020 11:34:22 | Domain.EntityManager | INFO | Administrator | Login | User logged in
+26-05-2020 11:38:00 | Domain.EntityManager | INFO | Administrator | Login | User logged in
+26-05-2020 14:24:17 | Domain.EntityManager | INFO | Administrator | Login | User logged in
+26-05-2020 14:39:12 | Domain.EntityManager | INFO | Administrator | Login | User logged in
+26-05-2020 14:52:24 | Domain.EntityManager | INFO | Administrator | Login | User logged in
