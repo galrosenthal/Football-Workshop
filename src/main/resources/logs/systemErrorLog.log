@@ -20,3 +20,10 @@
 25-05-2020 17:13:53 | Domain.EntityManager | ERROR  | Username or Password was incorrect!
 25-05-2020 17:18:17 | Domain.EntityManager | ERROR  | Username or Password was incorrect!
 25-05-2020 17:21:53 | Domain.EntityManager | ERROR  | Username or Password was incorrect!
+26-05-2020 02:36:27 | Domain.EntityManager | ERROR  | Username or Password was incorrect!
+26-05-2020 02:36:48 | Service.RefereeController | ERROR  | There are no games for this referee
+26-05-2020 02:38:49 | Domain.EntityManager | ERROR  | Error: The user Administrator is already logged in
+26-05-2020 02:38:52 | Domain.EntityManager | ERROR  | Error: The user Administrator is already logged in
+26-05-2020 02:38:56 | Domain.EntityManager | ERROR  | Error: The user Administrator is already logged in
+26-05-2020 02:49:33 | Service.RefereeController | ERROR  | There are no games for this referee
+26-05-2020 02:49:54 | Service.RefereeController | ERROR  | There are no games for this referee
