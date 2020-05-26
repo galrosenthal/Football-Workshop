@@ -32,7 +32,7 @@ public class Controller {
             if(!MainController.getUserRoles(username).contains(RoleTypes.SYSTEM_ADMIN.name()))
             {
                 UIController.showNotification("You are not a System Admin please try different user");
-                MainController.logout(username);
+                MainController.performLogout(username,admin);
                 return false;
             }
 
@@ -40,7 +40,7 @@ public class Controller {
             //system boot choice
             boolean choice = UIController.receiveChoice("Would you like to boot the system? y/n");
             if (!choice) {
-                MainController.logout(username);
+                MainController.performLogout(username,admin);
                 return false;
             }
 
@@ -48,7 +48,7 @@ public class Controller {
 
             //Establishing connections to external tax system
             UIController.showNotification("The system was booted successfully");
-            MainController.logout(username);
+            MainController.performLogout(username,admin);
             return true;
         } catch (CancellationException ce)
         {
