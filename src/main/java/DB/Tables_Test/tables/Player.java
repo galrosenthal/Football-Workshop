@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Player extends TableImpl<PlayerRecord> {
 
-    private static final long serialVersionUID = -174272399;
+    private static final long serialVersionUID = 2031836639;
 
     /**
      * The reference instance of <code>fwdb_test.player</code>
@@ -53,9 +53,9 @@ public class Player extends TableImpl<PlayerRecord> {
     public final TableField<PlayerRecord, String> USERNAME = createField(DSL.name("username"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
-     * The column <code>fwdb_test.player.birthdate</code>.
+     * The column <code>fwdb_test.player.birthday</code>.
      */
-    public final TableField<PlayerRecord, LocalDate> BIRTHDATE = createField(DSL.name("birthdate"), org.jooq.impl.SQLDataType.LOCALDATE.nullable(false), this, "");
+    public final TableField<PlayerRecord, LocalDate> BIRTHDAY = createField(DSL.name("birthday"), org.jooq.impl.SQLDataType.LOCALDATE.nullable(false), this, "");
 
     /**
      * Create a <code>fwdb_test.player</code> table reference
