@@ -17,7 +17,7 @@ target/**/*.properties
 **/*.lst
 **/*.csv
 /src/main/resources/logs/*
-!/src/main/resources/log4j.xml
+!/src/main/resources/*.xml
 !/pom.xml
 
 
