@@ -7,6 +7,7 @@ import GUI.RoleRelatedViews.Referee.RefereeControls;
 import GUI.RoleRelatedViews.TeamOwner.TOControls;
 import Service.MainController;
 import Service.UIController;
+import com.sun.jmx.snmp.Timestamp;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -16,6 +17,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
@@ -27,17 +29,23 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.PWA;
+import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+//import org.vaadin.filesystemdataprovider.FilesystemDataProvider;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 
@@ -140,6 +148,50 @@ public class FootballMain extends AppLayout implements RouterLayout{
         });
     }
 
+    public static void downloadReport(String report,UI lastUI) {
+        String timeStamp = (new Timestamp(new Date().getTime())).toString();
+        String [] gameReport = report.split(UIController.STRING_DELIMETER);
+        String reportText = gameReport[0];
+        String gameDate = gameReport[1];
+        lastUI.access(() -> {
+            Dialog newWindow = new Dialog();
+            newWindow.setCloseOnOutsideClick(false);
+            newWindow.setCloseOnEsc(false);
+            newWindow.setVisible(true);
+            VerticalLayout vl = new VerticalLayout();
+            newWindow.setCloseOnEsc(false);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            DataOutputStream out = new DataOutputStream(byteArrayOutputStream);
+
+
+            InputStream is = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            StreamResource myResource = new StreamResource(report, () -> is);
+            Anchor downloadLink = new Anchor(new StreamResource("GameReport_" + gameDate + ".txt", () -> createResource(reportText)), "");
+            downloadLink.setId(timeStamp);
+            downloadLink.getElement().getStyle().set("display", "none");
+            downloadLink.getElement().setAttribute("download", true);
+            vl.add(downloadLink);
+            Label lbl = new Label("The report is Downloading!!");
+            lbl.setWidth("100%");
+            vl.add(lbl);
+            Button ok = new Button("Ok");
+
+            ok.addClickListener(e -> {
+                newWindow.close();
+            });
+            Page page = UI.getCurrent().getPage();
+            page.executeJavaScript("document.getElementById('"+timeStamp+"').click();");
+
+            newWindow.add(vl);
+            newWindow.add(ok);
+            newWindow.open();
+            lastUI.push();
+        });
+    }
+
+    private static InputStream createResource(String report) {
+        return new ByteArrayInputStream(report.getBytes(StandardCharsets.UTF_8));
+    }
 
     private void createNavItems() {
         VaadinSession userSession = VaadinSession.getCurrent();
@@ -359,6 +411,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 {
                     apendValuesToReturnValue(returnedValue, multiInputsFromList);
                 }
+
                 newWindow.close();
                 callingThread.interrupt();
 //            UI.setCurrent(lastUI);
@@ -531,6 +584,8 @@ public class FootballMain extends AppLayout implements RouterLayout{
         newWindow.add(vl);
         newWindow.open();
     }
+
+
 }
 
 
