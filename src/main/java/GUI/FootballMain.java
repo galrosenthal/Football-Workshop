@@ -2,6 +2,7 @@ package GUI;
 
 
 import GUI.About.AboutView;
+import GUI.Registration.ConfirmPassValidator;
 import GUI.RoleRelatedViews.AssociationRepresentative.ARControls;
 import GUI.RoleRelatedViews.Referee.RefereeControls;
 import GUI.RoleRelatedViews.TeamOwner.TOControls;
@@ -24,6 +25,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
+import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
@@ -31,6 +33,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.page.Push;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
@@ -38,15 +41,16 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.Version;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
-//import org.vaadin.filesystemdataprovider.FilesystemDataProvider;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 
 
 /**
@@ -148,6 +152,77 @@ public class FootballMain extends AppLayout implements RouterLayout{
         });
     }
 
+    public static void showLoginDialog(UI lastUI, String message, StringBuilder returnedValue, Thread callingThread) {
+        lastUI.access(() -> {
+            Dialog loginDialog = new Dialog();
+            loginDialog.setCloseOnEsc(false);
+            loginDialog.setCloseOnOutsideClick(false);
+
+            VerticalLayout usernameAndPassword = new VerticalLayout();
+
+            usernameAndPassword.add(new Label(message.split(UIController.STRING_DELIMETER)[0]));
+            TextField username = new TextField();
+            usernameAndPassword.add(username);
+            usernameAndPassword.add(new Label(message.split(UIController.STRING_DELIMETER)[1]));
+            PasswordField password = new PasswordField();
+            usernameAndPassword.add(password);
+
+            HorizontalLayout buttons = new HorizontalLayout();
+            Button submit = new Button("Submit");
+            submit.addClickListener(e -> {
+               returnedValue.append(username.getValue()).append(UIController.STRING_DELIMETER).append(password.getValue());
+               loginDialog.close();
+               callingThread.interrupt();
+            });
+            Button close = new Button("Close");
+            close.addClickListener(e -> {
+                loginDialog.close();
+                returnedValue.append(UIController.CANCEL_TASK_VALUE);
+                callingThread.interrupt();
+            });
+            buttons.add(submit, close);
+
+            loginDialog.add(usernameAndPassword,buttons);
+            loginDialog.open();
+            lastUI.push();
+
+
+        });
+    }
+
+    public static void showYesNoDialog(UI lastUI, String message, StringBuilder choiceSelected, Thread callingThread) {
+        lastUI.access(() -> {
+            Dialog choiceDialog = new Dialog();
+            choiceDialog.setCloseOnEsc(false);
+            choiceDialog.setCloseOnOutsideClick(false);
+
+            VerticalLayout labelAndButtons = new VerticalLayout();
+            Label questionForChoice = new Label(message);
+            labelAndButtons.add(questionForChoice);
+
+            HorizontalLayout buttons = new HorizontalLayout();
+            Button yes = new Button("Yes");
+            yes.addClickListener(e -> {
+                choiceSelected.append("y");
+                choiceDialog.close();
+                callingThread.interrupt();
+            });
+            Button no = new Button("No");
+            no.addClickListener(e -> {
+                choiceDialog.close();
+                choiceSelected.append("No");
+                callingThread.interrupt();
+            });
+            buttons.add(yes, no);
+
+            choiceDialog.add(labelAndButtons,buttons);
+            choiceDialog.open();
+            lastUI.push();
+
+
+        });
+    }
+
     public static void downloadReport(String report,UI lastUI) {
         String timeStamp = (new Timestamp(new Date().getTime())).toString();
         String [] gameReport = report.split(UIController.STRING_DELIMETER);
@@ -238,10 +313,32 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
     private void logout() {
         VaadinSession userSession = VaadinSession.getCurrent();
-        MainController.logout((String)userSession.getAttribute(USERNAME_ATTRIBUTE_NAME));
-        userSession.setAttribute(USERNAME_ATTRIBUTE_NAME, null);
-        getUI().get().navigate("");
-        getUI().get().getPage().reload();
+        UI lastUI = UI.getCurrent();
+        String username = (String)userSession.getAttribute(USERNAME_ATTRIBUTE_NAME);
+        Thread t = new Thread(() -> {
+            UI.setCurrent(lastUI);
+            VaadinSession.setCurrent(userSession);
+            System.out.println("Trying to logout");
+            if(MainController.logout(username)){
+                System.out.println("MainController logged out successfully");
+                userSession.access(()-> userSession.setAttribute(USERNAME_ATTRIBUTE_NAME, null));
+                lastUI.accessSynchronously(() -> {
+
+                    getUI().get().navigate("");
+                    getUI().get().getPage().reload();
+                    System.out.println("Changed UI");
+                });
+
+                System.out.println("Logged out Successfully");
+
+            }
+            else
+            {
+                System.out.println("Could not logout something went wrong");
+            }
+        });
+        t.setName("LOGOUT");
+        t.start();
 
     }
 
@@ -308,7 +405,8 @@ public class FootballMain extends AppLayout implements RouterLayout{
                     msg.toLowerCase().contains("already exists") ||
                     msg.toLowerCase().contains("there is no") ||
                     msg.toLowerCase().contains("there was no") ||
-                    msg.toLowerCase().contains("there are no"))
+                    msg.toLowerCase().contains("there are no") ||
+                    msg.toLowerCase().contains("you are not"))
             {
                 notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
@@ -340,7 +438,6 @@ public class FootballMain extends AppLayout implements RouterLayout{
             newWindow.setCloseOnEsc(false);
             newWindow.setVisible(true);
             VerticalLayout vl = new VerticalLayout();
-            newWindow.setCloseOnEsc(false);
             int numOfInputs = msg.split(UIController.STRING_DELIMETER).length;
             TextField[] textFieldsArray = new TextField[numOfInputs];
             ComboBox<String>[] multiInputsFromList = new ComboBox[numOfInputs];
@@ -429,14 +526,14 @@ public class FootballMain extends AppLayout implements RouterLayout{
                     vl.add(valuesForString);
                     valuesForString.setItems(displayValues[0]);
                     valuesForString.addValueChangeListener(e -> {
-                       if(valuesForString.getSelectedItems().size() > 0)
-                       {
-                           submit.setEnabled(true);
-                       }
-                       else
-                       {
-                           submit.setEnabled(false);
-                       }
+                        if(valuesForString.getSelectedItems().size() > 0)
+                        {
+                            submit.setEnabled(true);
+                        }
+                        else
+                        {
+                            submit.setEnabled(false);
+                        }
                     });
                 }
 
@@ -478,14 +575,14 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 vl.add(picker);
                 picker.setLabel(msg);
                 picker.addValueChangeListener(e -> {
-                   if(picker.getValue() != null)
-                   {
-                       submit.setEnabled(true);
-                   }
-                   else
-                   {
-                       submit.setEnabled(false);
-                   }
+                    if(picker.getValue() != null)
+                    {
+                        submit.setEnabled(true);
+                    }
+                    else
+                    {
+                        submit.setEnabled(false);
+                    }
                 });
             }
             else if(receiveType.equals(UIController.SEND_TYPE_FOR_GUI_MULTIPLE_INPUTS))
@@ -506,6 +603,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
     }
 
+
     private static void apendValuesToReturnValue(StringBuilder returnedValue, ComboBox<String>[] multiInputsFromList) {
         for (ComboBox<String> singleComboBox:
              multiInputsFromList) {
@@ -514,6 +612,18 @@ public class FootballMain extends AppLayout implements RouterLayout{
         returnedValue.setLength(returnedValue.length()-1);
     }
 
+    /**
+     * /**
+     *  This function is adding {@code numOfInputs} text field to the Dialog window
+     *  each has a Label from the {@code messagesToDisplay} in the correct order
+     *
+     * @param verticalLayout the layout to add the Text Fields into
+     * @param numOfInputs the number of inputs to create
+     * @param multiInputsFromList the array of ComboBoxes to create
+     * @param close button of submit, needs to be removed.
+     * @param messagesToDisplay the array of messages splitted from the received message
+     * @param displayValues
+     */
     private static void createMultiListInputs(VerticalLayout verticalLayout, int numOfInputs, ComboBox<String>[] multiInputsFromList, Button close, String[] messagesToDisplay, Collection<String>... displayValues) {
         for (int i = 0; i < numOfInputs; i++) {
             multiInputsFromList[i] = new ComboBox<>();
@@ -527,7 +637,15 @@ public class FootballMain extends AppLayout implements RouterLayout{
         }
     }
 
-    private static void checkValidToSubmit(Button close, AbstractField[] fieldArray) {
+
+    /**
+     * Receives a button and Array of fields assocciated with the modal window
+     * and validates the each field in the array has value to inorder to enable
+     * the button
+     * @param close the button of the modal window
+     * @param fieldArray the array of all the fields in the window
+     */
+    private static void checkValidToSubmit(Button close, AbstractField... fieldArray) {
         for (AbstractField field:
                 fieldArray) {
             if(field.getValue() == null)
@@ -560,6 +678,44 @@ public class FootballMain extends AppLayout implements RouterLayout{
             });
             verticalLayout.add(textFieldsArray[i]);
         }
+    }
+
+
+    public static void showConfirmBox(UI usedUI, String msg, StringBuilder answer ,Thread callingThread)
+    {
+        usedUI.access(() -> {
+            System.out.println("FOOTBALL_MAIN: Creating window");
+
+            Dialog confirmBox = new Dialog();
+            confirmBox.setCloseOnOutsideClick(false);
+            confirmBox.setCloseOnEsc(false);
+            VerticalLayout confirmLayout = new VerticalLayout();
+
+            Label message = new Label(msg);
+            confirmLayout.add(message);
+
+            HorizontalLayout buttons = new HorizontalLayout();
+            Button dismiss = new Button("Dismiss");
+            dismiss.addClickListener(e -> {
+                confirmBox.close();
+                answer.append(UIController.CANCEL_TASK_VALUE);
+            });
+            dismiss.getElement().setAttribute("theme", "error tertiary");
+            Button approve = new Button("Submit");
+            approve.addClickListener(e -> {
+                System.out.println("FOOTBALL_MAIN: User confirmed");
+                confirmBox.close();
+                callingThread.interrupt();
+            });
+            approve.getElement().setAttribute("theme", "primary");
+            buttons.setAlignSelf(Alignment.END,approve);
+            buttons.add(dismiss,approve);
+
+            confirmLayout.add(buttons);
+            confirmBox.add(confirmLayout);
+            confirmBox.open();
+            usedUI.push();
+        });
     }
 
     public static void showModal(Collection<String>... displayValues){

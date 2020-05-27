@@ -54,16 +54,25 @@ public class Welcome extends FlexLayout
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
-        WrappedSession userSession = VaadinService.getCurrentRequest().getWrappedSession();
+        try{
+            WrappedSession userSession = VaadinService.getCurrentRequest().getWrappedSession();
 
-        //This is just a button disable for fun not needed!
-        if(userSession.getAttribute("username") != null)
-        {
-            next.setVisible(true);
+
+            //This is just a button disable for fun not needed!
+            if(userSession.getAttribute("username") != null)
+            {
+                next.setVisible(true);
+            }
+            else
+            {
+                next.setVisible(false);
+            }
         }
-        else
+        catch (Exception e)
         {
-            next.setVisible(false);
+            getUI().get().getPage().reload();
         }
+
+
     }
 }
