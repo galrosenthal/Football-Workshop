@@ -5,16 +5,22 @@ import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.Exceptions.StadiumNotFoundException;
 import Domain.Exceptions.UserNotFoundException;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
 import Service.UIController;
 import org.junit.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 public class TeamTest {
 
@@ -26,6 +32,8 @@ public class TeamTest {
     public static void beforeClass() throws Exception {
         DBManager.startTest();
         DBManagerForTest.startConnection();
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+
     }
 
     @Before
@@ -51,7 +59,7 @@ public class TeamTest {
         team.getTeamOwners().add(localTeamOwner);
         SystemUser anotherUser = new SystemUserStub("test2", "Test User2", 0);
         Player p1 = new PlayerStub(anotherUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
-        team.addTeamPlayer(localTeamOwner, p1);
+        team.addTeamPlayer(localTeamOwner,p1);
         assertEquals(1, team.getTeamPlayers().size());
         copyTeam = new Team(team);
         assertEquals(1, copyTeam.getTeamPlayers().size());
@@ -62,7 +70,7 @@ public class TeamTest {
         copyTeam = null;
         anotherUser = new SystemUserStub("test3", "Test User3", 0);
         Coach c = new CoachStub(anotherUser);
-        team.addTeamCoach(localTeamOwner, c);
+        team.addTeamCoach(localTeamOwner,c);
         assertEquals(1, team.getTeamCoaches().size());
         copyTeam = new Team(team);
         assertEquals(1, copyTeam.getTeamCoaches().size());
@@ -150,10 +158,10 @@ public class TeamTest {
         Team copyTeam = new Team(team);
         assertTrue(copyTeam.addTeamOwner(localTeamOwner));
         Player p1 = new PlayerStub(testUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
-        assertTrue(copyTeam.addTeamPlayer(localTeamOwner, p1));
+        assertTrue(copyTeam.addTeamPlayer(localTeamOwner,p1));
         assertNotEquals(team, copyTeam);
         Player p2 = new PlayerStub(anotherUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
-        team.addTeamPlayer(localTeamOwner, p2);
+        team.addTeamPlayer(localTeamOwner,p2);
         assertNotEquals(team, copyTeam);
     }
 
@@ -169,14 +177,14 @@ public class TeamTest {
         SystemUser anotherUser = new SystemUserStub("test2", "UserTest2", 0);
         Coach c1 = new CoachStub(testUser);
         copyTeam.addTeamOwner(localTeamOwner);
-        copyTeam.addTeamCoach(localTeamOwner, c1);
+        copyTeam.addTeamCoach(localTeamOwner,c1);
         assertNotEquals(team, copyTeam);
         UIController.setIsTest(true);
         UIController.setSelector(6118);
         Coach c2 = new Coach(anotherUser);
         c2.addAllProperties(team);
         team.addTeamOwner(localTeamOwner);
-        team.addTeamCoach(localTeamOwner, c2);
+        team.addTeamCoach(localTeamOwner,c2);
         assertNotEquals(team, copyTeam);
     }
 
@@ -297,9 +305,9 @@ public class TeamTest {
         UIController.setSelector(6118);
         Coach c2 = new Coach(testUser);
         c2.addAllProperties(team);
-        team.addTeamCoach(localTeamOwner, c2);
+        team.addTeamCoach(localTeamOwner,c2);
         Player p2 = new PlayerStub(testUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
-        team.addTeamPlayer(localTeamOwner, p2);
+        team.addTeamPlayer(localTeamOwner,p2);
 
         String toString = team.toString();
         Assert.assertEquals("Team {\n" +
@@ -360,10 +368,10 @@ public class TeamTest {
         Player p1 = new PlayerStub(testUser, new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993"));
         ((PlayerStub) p1).setSelector(0);
         team.addTeamOwner(localTeamOwner);
-        team.addTeamPlayer(localTeamOwner, p1);
+        team.addTeamPlayer(localTeamOwner,p1);
         result = team.getAllAssets();
         assertEquals(1, result.size());
-        team.addTeamCoach(localTeamOwner, new CoachStub(testUser));
+        team.addTeamCoach(localTeamOwner,new CoachStub(testUser));
         result = team.getAllAssets();
         assertEquals(2, result.size());
         team.getTeamManagers().add(new TeamManagerStub(testUser));
@@ -414,6 +422,7 @@ public class TeamTest {
     }
 
 
+
     @Test(expected = StadiumNotFoundException.class)
     public void testAddAssetStadiumNotFoundUTest() throws Exception {
         team.addAsset("NotAnExistingStadiumName", localTeamOwner, TeamAsset.STADIUM);
@@ -434,7 +443,7 @@ public class TeamTest {
         assertFalse(team.addAsset("vas", localTeamOwner, TeamAsset.STADIUM));
 
         team.getTeamOwners().add(localTeamOwner);
-        stadiumStub.changeProperty(team, "name", "vas");
+        stadiumStub.changeProperty(team,"name", "vas");
         assertTrue(team.addAsset("vas", localTeamOwner, TeamAsset.STADIUM));
     }
 
@@ -472,7 +481,7 @@ public class TeamTest {
         assertNull(enumList);
         asset = new AssetStub(6132);
         enumList = team.getAllProperty(asset, "Test");
-        assertEquals(0, enumList.size());
+        assertEquals( 0  , enumList.size());
     }
 
 
@@ -496,7 +505,6 @@ public class TeamTest {
         assertTrue(team.addTeamCoach(teamOwner, coach));
         assertTrue(team.getAllAssets().size() == 4);
     }
-
     /*Stadium*/
     @Test
     public void getAllAssets1ITest() {
@@ -527,7 +535,7 @@ public class TeamTest {
         team.addStadium(stadium);
         assertTrue(team.getAllAssets().size() == 1);
         Player player = new Player(new SystemUser("teamTest1", "gal"), new Date());
-        TeamOwner teamOwner = new TeamOwnerStub(new SystemUser("teamTest2", "gal"));
+        TeamOwner teamOwner = new TeamOwnerStub( new SystemUser("teamTest2", "gal"));
         team.addTeamOwner(teamOwner);
         team.addTeamPlayer(teamOwner, player);
         assertTrue(team.getAllAssets().size() == 2);
@@ -548,7 +556,7 @@ public class TeamTest {
         team.addStadium(stadium);
         assertTrue(team.getAllAssets().size() == 1);
         Player player = new Player(new SystemUser("teamTest1", "gal"), new Date());
-        TeamOwner teamOwner = new TeamOwnerStub(new SystemUser("teamTest2", "gal"));
+        TeamOwner teamOwner = new TeamOwnerStub( new SystemUser("teamTest2", "gal"));
         team.addTeamOwner(teamOwner);
         team.addTeamPlayer(teamOwner, player);
         assertTrue(team.getAllAssets().size() == 2);
@@ -569,7 +577,7 @@ public class TeamTest {
         team.addStadium(stadium);
         assertTrue(team.getAllAssets().size() == 1);
         Player player = new Player(new SystemUser("teamTest1", "gal"), new Date());
-        TeamOwner teamOwner = new TeamOwnerStub(new SystemUser("teamTest2", "gal"));
+        TeamOwner teamOwner = new TeamOwnerStub( new SystemUser("teamTest2", "gal"));
         team.addTeamOwner(teamOwner);
         team.addTeamPlayer(teamOwner, player);
         assertTrue(team.getAllAssets().size() == 2);
@@ -593,7 +601,7 @@ public class TeamTest {
         team.addStadium(stadium);
         assertTrue(team.getAllAssets().size() == 1);
         Player player = new Player(new SystemUser("teamTest1", "gal"), new Date());
-        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamTest2", "gal"));
+        TeamOwner teamOwner = new TeamOwner( new SystemUser("teamTest2", "gal"));
         team.addTeamOwner(teamOwner);
         team.addTeamPlayer(teamOwner, player);
         assertTrue(team.getAllAssets().size() == 2);
@@ -614,8 +622,8 @@ public class TeamTest {
     public void getAllProperty1ITest() {
         Team team = new Team();
         Stadium stadium = new Stadium("vas", "BS");
-        team.addStadium(stadium);
-        List<Enum> enumList = team.getAllProperty(stadium, stadium.namePropertyString);
+        team.addStadium( stadium);
+        List<Enum> enumList = team.getAllProperty(stadium , stadium.namePropertyString);
         assertNull(enumList);
     }
 
@@ -624,10 +632,10 @@ public class TeamTest {
     public void getAllProperty2ITest() {
         Team team = new Team();
         Player player = new Player(new SystemUser("teamTest1", "gal"), new Date());
-        TeamOwner teamOwner = new TeamOwnerStub(new SystemUser("teamTest2", "gal"));
+        TeamOwner teamOwner = new TeamOwnerStub( new SystemUser("teamTest2", "gal"));
         team.addTeamOwner(teamOwner);
-        team.addTeamPlayer(teamOwner, player);
-        List<Enum> enumList = team.getAllProperty(player, player.fieldJobString);
+        team.addTeamPlayer( teamOwner , player);
+        List<Enum> enumList = team.getAllProperty(player , player.fieldJobString);
         assertNull(enumList);
     }
 
@@ -636,10 +644,10 @@ public class TeamTest {
     public void getAllProperty3ITest() {
         Team team = new Team();
         Coach coach = new Coach(new SystemUser("teamTest3", "gal"));
-        TeamOwner teamOwner = new TeamOwnerStub(new SystemUser("teamTest2", "gal"));
+        TeamOwner teamOwner = new TeamOwnerStub( new SystemUser("teamTest2", "gal"));
         team.addTeamOwner(teamOwner);
-        team.addTeamCoach(teamOwner, coach);
-        List<Enum> enumList = team.getAllProperty(coach, coach.qualificationString);
+        team.addTeamCoach(teamOwner,coach);
+        List<Enum> enumList = team.getAllProperty(coach , coach.qualificationString);
         assertNull(enumList);
     }
 
@@ -648,21 +656,21 @@ public class TeamTest {
     public void getAllProperty4ITest() {
         Team team = new Team();
         TeamManager teamManager = new TeamManager(new SystemUser("teamTest3", "gal"));
-        TeamOwner teamOwner = new TeamOwnerStub(new SystemUser("teamTest2", "gal"));
+        TeamOwner teamOwner = new TeamOwnerStub( new SystemUser("teamTest2", "gal"));
         team.addTeamOwner(teamOwner);
-        team.addTeamManager(teamOwner, teamManager);
-        List<Enum> enumList = team.getAllProperty(teamManager, "Test");
+        team.addTeamManager(teamOwner , teamManager);
+        List<Enum> enumList = team.getAllProperty(teamManager , "Test");
         assertNull(enumList);
-        enumList = team.getAllProperty(teamManager, teamManager.permissionsString);
-        assertEquals(0, enumList.size());
-        assertTrue(teamManager.addProperty(teamManager.permissionsString, TeamManagerPermissions.ADD_COACH, team));
-        assertFalse(teamManager.addProperty(teamManager.permissionsString, TeamManagerPermissions.ADD_COACH, team));
-        enumList = team.getAllProperty(teamManager, teamManager.permissionsString);
-        assertEquals(1, enumList.size());
-        assertTrue(teamManager.removeProperty(teamManager.permissionsString, TeamManagerPermissions.ADD_COACH, team));
-        assertFalse(teamManager.removeProperty(teamManager.permissionsString, TeamManagerPermissions.ADD_COACH, team));
-        enumList = team.getAllProperty(teamManager, teamManager.permissionsString);
-        assertEquals(0, enumList.size());
+        enumList = team.getAllProperty(teamManager , teamManager.permissionsString);
+        assertEquals(0 , enumList.size());
+        assertTrue(teamManager.addProperty(teamManager.permissionsString , TeamManagerPermissions.ADD_COACH , team));
+        assertFalse(teamManager.addProperty(teamManager.permissionsString , TeamManagerPermissions.ADD_COACH , team));
+        enumList = team.getAllProperty(teamManager , teamManager.permissionsString);
+        assertEquals(1 , enumList.size());
+        assertTrue(teamManager.removeProperty(teamManager.permissionsString , TeamManagerPermissions.ADD_COACH , team));
+        assertFalse(teamManager.removeProperty(teamManager.permissionsString , TeamManagerPermissions.ADD_COACH , team));
+        enumList = team.getAllProperty(teamManager , teamManager.permissionsString);
+        assertEquals(0 , enumList.size());
     }
 
     /*TeamOwner*/
@@ -670,23 +678,23 @@ public class TeamTest {
     public void getAllProperty5ITest() {
         Team team = new Team();
         TeamManager teamManager = new TeamManager(new SystemUser("teamTest1", "gal"));
-        TeamOwner teamOwner = new TeamOwner(new SystemUser("teamTest2", "gal"));
+        TeamOwner teamOwner = new TeamOwner( new SystemUser("teamTest2", "gal"));
         team.addTeamOwner(teamOwner);
-        team.addTeamManager(teamOwner, teamManager);
-        List<Enum> enumList = team.getAllProperty(teamManager, "Test");
+        team.addTeamManager(teamOwner , teamManager);
+        List<Enum> enumList = team.getAllProperty(teamManager , "Test");
         assertNull(enumList);
-        enumList = team.getAllProperty(teamManager, teamManager.permissionsString);
-        assertEquals(0, enumList.size());
-        assertTrue(teamManager.addProperty(teamManager.permissionsString, TeamManagerPermissions.ADD_COACH, team));
-        assertFalse(teamManager.addProperty(teamManager.permissionsString, TeamManagerPermissions.ADD_COACH, team));
-        enumList = team.getAllProperty(teamManager, teamManager.permissionsString);
-        assertEquals(1, enumList.size());
-        assertTrue(teamManager.removeProperty(teamManager.permissionsString, TeamManagerPermissions.ADD_COACH, team));
-        assertFalse(teamManager.removeProperty(teamManager.permissionsString, TeamManagerPermissions.ADD_COACH, team));
-        enumList = team.getAllProperty(teamManager, teamManager.permissionsString);
-        assertEquals(0, enumList.size());
+        enumList = team.getAllProperty(teamManager , teamManager.permissionsString);
+        assertEquals(0 , enumList.size());
+        assertTrue(teamManager.addProperty(teamManager.permissionsString , TeamManagerPermissions.ADD_COACH , team));
+        assertFalse(teamManager.addProperty(teamManager.permissionsString , TeamManagerPermissions.ADD_COACH , team));
+        enumList = team.getAllProperty(teamManager , teamManager.permissionsString);
+        assertEquals(1 , enumList.size());
+        assertTrue(teamManager.removeProperty(teamManager.permissionsString , TeamManagerPermissions.ADD_COACH , team));
+        assertFalse(teamManager.removeProperty(teamManager.permissionsString , TeamManagerPermissions.ADD_COACH , team));
+        enumList = team.getAllProperty(teamManager , teamManager.permissionsString);
+        assertEquals(0 , enumList.size());
         Coach coach = new Coach(new SystemUser("teamTest3", "gal"));
-        enumList = team.getAllProperty(coach, coach.qualificationString);
+        enumList = team.getAllProperty(coach , coach.qualificationString);
         assertNull(enumList);
 
     }

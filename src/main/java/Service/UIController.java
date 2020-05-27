@@ -28,6 +28,7 @@ public class UIController {
     public static final String SEND_TYPE_FOR_GUI_STRING = "string";
     public static final String SEND_TYPE_FOR_GUI_INT = "int";
     public static final String SEND_TYPE_FOR_GUI_DATE = "date";
+    public static final String SEND_TYPE_FOR_GUI_LOGIN = "login";
     public static final String SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS = "multiple";
     public static final String SEND_TYPE_FOR_GUI_MULTIPLE_INPUTS = "multiple_inputs";
     public static final String CANCEL_TASK_VALUE = "canceled";
@@ -103,11 +104,6 @@ public class UIController {
                 return "rosengal";
             } else if (selector == 2) {
                 return "newTOUsername";
-            } else if (selector == 3) {
-                selector = 4;
-                return "admin";
-            } else if (selector == 4) {
-                return "12345678";
             } else if (selector == 5) {
                 return "newLeagueName";
             } else if (selector == 6) {
@@ -151,8 +147,8 @@ public class UIController {
                 selector = 9311;
                 return "NOTaUSERNAME";
             } //else if (selector == 9313) { //training
-             //  return "VAR";
-           // }
+            //  return "VAR";
+            // }
             else if (selector == 91011 || selector == 91021 || selector == 91031 || selector == 9103
                     || selector == 91041 || selector == 91051 || selector == 91052 || selector == 91053 || selector == 912321 || selector == 911321) { //team name
                 if (selector == 91031)
@@ -317,7 +313,7 @@ public class UIController {
             printMessageAndValuesForTest(messageToDisplay, valuesToDisplay);
             if (selector == 0 || selector == 1 || selector == 2 || selector == 6117
                     || selector == 6118 || selector == 921 || selector == 922 || selector == 924
-                    || selector == 9321 || selector == 10411) {
+                    || selector == 9321 || selector == 10411 || selector == 9713 || selector == 9724) {
                 return 0;
             } else if (selector == 61111) {
                 setSelector(61112);
@@ -423,8 +419,8 @@ public class UIController {
                 return 0;
             }
             else if (selector == 9313) { //training
-              return 2; // VAR
-             }
+                return 2; // VAR
+            }
             else if (selector == 9514) {
                 setSelector(9511);
                 return 1;
@@ -526,6 +522,18 @@ public class UIController {
             else if(selector == 103714){
                 return  89;
             }
+            else if (selector == 9711){ //0,"10/12/2019",0
+                selector = 9712;
+                return 0;
+            }
+            else if (selector == 9721){ //0,true, "10/12/2019",0
+                selector = 9722;
+                return 0;
+            }
+            else if (selector == 9731){ //0, false
+                selector = 9732;
+                return 0;
+            }
             else {
                 //random number to crash test that were not checked
                 return 123812;
@@ -534,24 +542,48 @@ public class UIController {
     }
 
     public static boolean receiveChoice(String message) {
-        String choice = "";
         if (!isTest) {
-            do {
-                choice = UIController.receiveString(message);
-            } while (!(choice.equals("y") || choice.equals("n")));
+            StringBuilder choice = new StringBuilder();
+            UI lastUI = UI.getCurrent();
+            Thread t = Thread.currentThread();
+            VaadinSession se = VaadinSession.getCurrent();
 
-            if (choice.equals("y")) {
+            Future<Void> returnValue = se.access(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                FootballMain.showYesNoDialog(lastUI, message, choice, t);
+            });
+
+
+            while (choice.length() == 0) {
+                try {
+                    //waiting for the user to close the dialog
+                    sleep(100);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (choice.toString().equals(CANCEL_TASK_VALUE)) {
+                throw new CancellationException();
+            }
+
+
+            if (choice.toString().equals("y")) {
                 return true;
             }
             return false;
         }
-
+        printMessageAndValuesForTest(message);
         if (selector == 6611 || selector == 6621 || selector == 6623 || selector == 4 ||
                 selector == 66151 || selector == 66251) {
             return true;
         }
         else if(selector == 103713){ //true, 90
             selector = 103714;
+            return true;
+        }
+        else if (selector == 9722){ //true, "10/12/2019",0
+            selector = 9723;
             return true;
         }
         else {
@@ -627,6 +659,14 @@ public class UIController {
             } else if (selector == 6132) {
                 return "11/11/2011";
             }
+            else if (selector == 9712){ //"10/12/2019",0
+                selector = 9713;
+                return "10/12/2019";
+            }
+            else if (selector == 9723){ //"10/12/2019",0
+                selector = 9724;
+                return "10/12/2019";
+            }
             else if(selector == 0)
             {
                 return "01/01/2020";
@@ -642,6 +682,38 @@ public class UIController {
         return date.toString();
     }
 
+    public static boolean getConfirmation(String msg) {
+        if(!isTest)
+        {
+            System.out.println("UI_CONTROLLER: Asking user for Confirmation");
+            UI lastUI = UI.getCurrent();
+            VaadinSession se = VaadinSession.getCurrent();
+            StringBuilder result = new StringBuilder();
+            se.access(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                System.out.println("UI_CONTROLLER: access to GUI");
+                FootballMain.showConfirmBox(lastUI, msg, result, Thread.currentThread());
+            });
+
+            while(!result.equals(CANCEL_TASK_VALUE))
+            {
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    return true;
+                }
+            }
+
+        }
+        else
+        {
+            return false;
+        }
+        return false;
+    }
+
     /**
      * Get a path to a folder, from the user.
      * @return String that represents the path to a folder.
@@ -654,5 +726,53 @@ public class UIController {
                 return "."; //current folder path
         }
         return null;
+    }
+
+    public static String receiveUserLoginInfo(String message) {
+        if(!isTest) {
+            StringBuilder line = new StringBuilder();
+            UI lastUI = UI.getCurrent();
+            Thread t = Thread.currentThread();
+            VaadinSession se = VaadinSession.getCurrent();
+
+            Future<Void> returnValue = se.access(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                FootballMain.showLoginDialog(lastUI, message, line, t);
+            });
+
+
+            while (line.length() == 0) {
+                try {
+                    //waiting for the user to close the dialog
+                    sleep(100);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (line.toString().equals(CANCEL_TASK_VALUE)) {
+                throw new CancellationException();
+            }
+            return line.toString();
+        }
+        else
+        {
+            if (selector == 3) {
+                selector = 4;
+                return "admin;12345678";
+            }
+            else{
+                return "";
+            }
+        }
+    }
+
+    public static void showModal(Collection<String>... valuesToDisplay) {
+
+            //FootballMain.showModal(s,valuesToDisplay);
+        UI lastUI = UI.getCurrent();
+
+        VaadinSession se = VaadinSession.getCurrent();
+        se.access(() -> FootballMain.showModal(valuesToDisplay));
     }
 }

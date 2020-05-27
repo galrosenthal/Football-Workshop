@@ -1,12 +1,14 @@
-package Domain.Logger;
+package Domain.GameLogger;
 
 import DB.DBManager;
 import DB.DBManagerForTest;
 import Domain.Game.TeamStub;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.PlayerStub;
 import Domain.Users.SystemUserStub;
 import org.junit.*;
 import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class EventsLoggerTest {
@@ -15,7 +17,10 @@ public class EventsLoggerTest {
     @BeforeClass
     public static void beforeClass() throws Exception {
         DBManager.startTest();
-        DBManagerForTest.startConnection();    }
+        DBManagerForTest.startConnection();
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -49,7 +54,6 @@ public class EventsLoggerTest {
         }
         assertTrue(found);
     }
-
     @Test
     public void logCardEvent2ITest() {
         eventsLogger.logCardEvent("Yellow Card", new PlayerStub(new SystemUserStub("userName", "name", 0)), 1);
@@ -67,7 +71,7 @@ public class EventsLoggerTest {
 
     @Test
     public void logOffsideEventITest() {
-        eventsLogger.logOffsideEvent(new TeamStub(0), 1);
+        eventsLogger.logOffsideEvent(new TeamStub(0),1);
         List<Event> eventList = eventsLogger.getGameEvents();
 
         boolean found = false;
@@ -82,7 +86,7 @@ public class EventsLoggerTest {
 
     @Test
     public void logPenaltyEventITest() {
-        eventsLogger.logPenaltyEvent(new TeamStub(0), 1);
+        eventsLogger.logPenaltyEvent(new TeamStub(0),1);
         List<Event> eventList = eventsLogger.getGameEvents();
 
         boolean found = false;
@@ -97,7 +101,7 @@ public class EventsLoggerTest {
 
     @Test
     public void logSwitchPlayersEventITest() {
-        eventsLogger.logSwitchPlayersEvent(new TeamStub(0), new PlayerStub(new SystemUserStub("userName1", "name1", 0)), new PlayerStub(new SystemUserStub("userName2", "name2", 0)), 1);
+        eventsLogger.logSwitchPlayersEvent(new TeamStub(0), new PlayerStub(new SystemUserStub("userName1", "name1", 0)), new PlayerStub(new SystemUserStub("userName2", "name2", 0)),1);
         List<Event> eventList = eventsLogger.getGameEvents();
 
         boolean found = false;
@@ -113,7 +117,7 @@ public class EventsLoggerTest {
 
     @Test
     public void logInjuryEventITest() {
-        eventsLogger.logInjuryEvent(new PlayerStub(new SystemUserStub("userName", "name", 0)), 1);
+        eventsLogger.logInjuryEvent( new PlayerStub(new SystemUserStub("userName", "name", 0)),1);
         List<Event> eventList = eventsLogger.getGameEvents();
 
         boolean found = false;

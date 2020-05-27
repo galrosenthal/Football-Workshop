@@ -1,6 +1,4 @@
-package Domain.Logger;
-
-import Domain.Users.Player;
+package Domain.GameLogger;
 
 import java.util.Date;
 

@@ -3,6 +3,7 @@ package Domain;
 import DB.DBManager;
 import Domain.Exceptions.*;
 import Domain.Game.*;
+import Domain.SystemLogger.*;
 import Domain.Users.Role;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
@@ -15,7 +16,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EntityManager {
+public class EntityManager{
     private static EntityManager entityManagerInstance = null;
 
     private static final Pattern VALID_EMAIL_ADDRESS_REGEX =
@@ -29,6 +30,8 @@ public class EntityManager {
     private List<PointsPolicy> pointsPolicies;
     private List<SchedulingPolicy> schedulingPolicies;
     private HashMap<SystemUser, Boolean> loggedInMap;
+
+    private boolean isSystemBooted = false;
 
     public boolean isLoggedIn() {
         return loggedIn;
@@ -60,10 +63,11 @@ public class EntityManager {
         if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
 
-            SystemUser admin = new SystemUser("Administrator", org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"), "admin", "test@gmail.com", false);
-            SystemUser arnav = new SystemUser("arnav", org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"), "arnav", "test@gmail.com", false);
+            SystemUser admin = new SystemUser("Administrator",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"admin" , "test@gmail.com" , false);
+            SystemUser arnav = new SystemUser("arnav",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"arnav" , "test@gmail.com" , false);
             admin.addNewRole(new SystemAdmin(admin));
             admin.addNewRole(new AssociationRepresentative(admin));
+            admin.addNewRole(new Referee(admin,RefereeQualification.VAR_REFEREE));
         }
 
         return entityManagerInstance;
@@ -130,6 +134,7 @@ public class EntityManager {
      */
 
 
+
     public List<League> getLeagues() {
         List<String> allLeaguesList = DBManager.getInstance().getLeagues();
         List<League> leagues = new ArrayList<>();
@@ -151,7 +156,6 @@ public class EntityManager {
 
     /**
      * Returns a SystemUser by his username
-     *
      * @param username
      * @return The SystemUser with the username, if exists in the system.
      */
@@ -321,7 +325,6 @@ public class EntityManager {
 
     /**
      * Returns a Team by its team name
-     *
      * @param teamName
      * @return The team with the given team name, if exists in the system.
      */
@@ -336,12 +339,11 @@ public class EntityManager {
 
     /**
      * Returns a Stadium by its stadium name
-     *
      * @param stadiumName
      * @return The Stadium with the given stadium name, if exists in the system.
      */
     public Stadium getStadium(String stadiumName) {
-        for (Stadium std : allStadiums) {
+        for (Stadium std: allStadiums) {
             if (std.getName().equals(stadiumName)) {
                 return std;
             }
@@ -357,7 +359,6 @@ public class EntityManager {
 
     /**
      * Returns all system admins
-     *
      * @return List<SystemAdmin> SystemAdmin
      */
     public List<SystemAdmin> getSystemAdmins() {
@@ -375,11 +376,10 @@ public class EntityManager {
 
     /**
      * Checks if a team with a name that matches the given name already exists.
-     *
      * @param name - String - name
      * @return - boolean - True if a team with a name that matches the given name already exists, else false
      */
-    public boolean doesTeamExists(String name) {
+    public boolean doesTeamExists(String name){
         for (Team team : allTeams) {
             if (team.getTeamName().toLowerCase().equals(name.toLowerCase())) {
                 return true;
@@ -390,11 +390,10 @@ public class EntityManager {
 
     /**
      * Checks if a league with a name that matches the given name already exists.
-     *
      * @param name - String - name
      * @return - boolean - True if a league with a name that matches the given name already exists, else false
      */
-    public boolean doesLeagueExists(String name) {
+    public boolean doesLeagueExists(String name){
         for (League league : allLeagues) {
             if (league.getName().equals(name)) {
                 return true;
@@ -407,7 +406,6 @@ public class EntityManager {
 
     /**
      * Adds a given SystemUser to the user's list of the system.
-     *
      * @param systemUser User to add
      * @return true if successfully added the SystemUser to the system.
      */
@@ -425,7 +423,6 @@ public class EntityManager {
 
     /**
      * Removes a SystemUser by a given reference to the SystemUser to remove.
-     *
      * @param systemUser - SystemUser - the SystemUser to remove.
      * @return - boolean - true if the SystemUser removed successfully, else false
      */
@@ -435,7 +432,6 @@ public class EntityManager {
 
     /**
      * Removes a SystemUser by a given username
-     *
      * @param username - String - a name of the user to be removed
      * @return - boolean - true if the SystemUser removed successfully, else false
      */
@@ -451,7 +447,6 @@ public class EntityManager {
 
     /**
      * Adds a given Team to the team's list of the system.
-     *
      * @param team Team to add
      * @return true if successfully added the Team to the system.
      */
@@ -467,7 +462,6 @@ public class EntityManager {
 
     /**
      * Adds a given League to the league's list of the system.
-     *
      * @param league league to add
      * @return true if successfully added the League to the system.
      */
@@ -483,7 +477,6 @@ public class EntityManager {
 
     /**
      * Adds a given Stadium to the stadium's list of the system.
-     *
      * @param stadium Stadium to add
      * @return true if successfully added the Stadium to the system.
      */
@@ -497,17 +490,15 @@ public class EntityManager {
 
     /**
      * Checks if a given Stadium exists in the system.
-     *
      * @param stadium
      * @return true if the given Stadium exists in the system.
      */
-    public boolean isStadiumExists(Stadium stadium) {
+    public boolean isStadiumExists(Stadium stadium){
         return allStadiums.contains(stadium);
     }
 
     /**
      * Removes a Team by a given reference to the Team to remove.
-     *
      * @param team - Team - the Team to remove.
      * @return - boolean - true if the Team removed successfully, else false
      */
@@ -517,7 +508,6 @@ public class EntityManager {
 
     /**
      * Removes a league by a given name
-     *
      * @param leagueName - String - a name of the league to be removed
      * @return - boolean - true if the league removed successfully, else false
      */
@@ -559,7 +549,6 @@ public class EntityManager {
 
     /**
      * Removes a Stadium by a given reference to the Stadium to remove.
-     *
      * @param st - Stadium - the Stadium to remove.
      * @return - boolean - true if the Stadium removed successfully, else false
      */
@@ -569,7 +558,6 @@ public class EntityManager {
 
     /**
      * Returns a list of all the system users that are referees.
-     *
      * @return - List<SystemUser> - A list of all the system users that are referees
      */
     public List<SystemUser> getReferees() {
@@ -585,34 +573,42 @@ public class EntityManager {
     /**
      * Receives user name and password from the unregistered user who wants to log in to the system,
      * performs validation and returns the relevant user.
-     *
      * @param usrNm User name
      * @param pswrd Password
      * @return The user in the system with those credentials.
      * @throws UsernameOrPasswordIncorrectException If user name or password are incorrect.
      */
-    public SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException, AlreadyLoggedInUser {
+    public SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException,AlreadyLoggedInUser {
         SystemUser userWithUsrNm = getUser(usrNm);
-        if (loggedInMap.containsKey(userWithUsrNm) && loggedInMap.get(userWithUsrNm)) {
-            throw new AlreadyLoggedInUser("Error: The user " + usrNm + " is already logged in");
+        if(loggedInMap.containsKey(userWithUsrNm) && loggedInMap.get(userWithUsrNm))
+        {
+            String msg = "Error: The user " + usrNm + " is already logged in";
+            SystemLoggerManager.logError(EntityManager.class, msg);
+            throw new AlreadyLoggedInUser(msg);
         }
-        if (userWithUsrNm == null) //User name does not exists.
-            throw new UsernameOrPasswordIncorrectException("Username or Password was incorrect!");
+        if(userWithUsrNm == null) { //User name does not exists.
+            String msg = "Username or Password was incorrect!";
+            SystemLoggerManager.logError(EntityManager.class, msg);
+            throw new UsernameOrPasswordIncorrectException(msg);
+        }
 
         //User name exists, checking password.
-        if (authenticate(userWithUsrNm, pswrd)) {
-            loggedInMap.put(userWithUsrNm, true);
+        if(authenticate(userWithUsrNm, pswrd)){
+            loggedInMap.put(userWithUsrNm,true);
+            //Log the action
+            SystemLoggerManager.logInfo(this.getClass(), new LoginLogMsg(userWithUsrNm.getUsername()));
             return userWithUsrNm;
         }
 
+        String msg = "Username or Password was incorrect!";
+        SystemLoggerManager.logError(EntityManager.class, msg);
         throw new UsernameOrPasswordIncorrectException("Username or Password was incorrect!");
     }
 
     /**
      * This Function is used to authenticate the username with its password
-     *
      * @param userWithUsrNm the SystemUser of the username from the entity manager
-     * @param pswrd         the password recieved from the UI
+     * @param pswrd the password recieved from the UI
      * @return true if the password is correct and the user is able to login
      */
     private boolean authenticate(SystemUser userWithUsrNm, String pswrd) {
@@ -634,20 +630,21 @@ public class EntityManager {
      * At least 1 lower case letter.
      * Must not contain any spaces.
      * Adds new user with the role fan to the system, and returns the relevant user.
-     *
-     * @param name       Name.
-     * @param usrNm      User name.
-     * @param pswrd      Password.
-     * @param email      email address
+     * @param name Name.
+     * @param usrNm User name.
+     * @param pswrd Password.
+     * @param email  email address
      * @param emailAlert - boolean  - if send via email - true, otherwise false
      * @return New user with those credentials.
      * @throws Exception If user name is already belongs to a user in the system, or
-     *                   the password does not meet the security requirements.
+     * the password does not meet the security requirements.
      */
-    public SystemUser signUp(String name, String usrNm, String pswrd, String email, boolean emailAlert) throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException, Invalid {
+    public SystemUser signUp(String name, String usrNm, String pswrd,String email, boolean emailAlert) throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException {
         //Checking if user name is already exists
-        if (getUser(usrNm) != null) {
-            throw new UsernameAlreadyExistsException("Username already exists");
+        if(getUser(usrNm) != null){
+            String msg = "Username already exists";
+            SystemLoggerManager.logError(EntityManager.class, msg);
+            throw new UsernameAlreadyExistsException(msg);
         }
 
         //Checking if the password meets the security requirements
@@ -657,16 +654,25 @@ public class EntityManager {
         // at least 1 lower case letter
         // must not contain any spaces
         String pswrdRegEx = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$";
-        if (!pswrd.matches(pswrdRegEx)) {
-            throw new WeakPasswordException("Password does not meet the requirements");
+        if(!pswrd.matches(pswrdRegEx)){
+            String msg = "Password does not meet the requirements";
+            SystemLoggerManager.logError(EntityManager.class, msg);
+            throw new WeakPasswordException(msg);
         }
-        if (!validate(email)) {
-            throw new InvalidEmailException("Invalid Email");
+        if(!validate(email))
+        {
+            String msg = "Invalid Email";
+            SystemLoggerManager.logError(EntityManager.class, msg);
+            throw new InvalidEmailException(msg);
         }
 
         //hash the password
         String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pswrd);
+        SystemUser newUser = new SystemUser(usrNm, hashedPassword, name, email,emailAlert);
+        addUser(newUser);
 
+        //Log the action
+        SystemLoggerManager.logInfo(this.getClass(), new SignUpLogMsg(newUser.getUsername()));
 
         /*add user to db*/
         if (DBManager.getInstance().addUser(usrNm, name, hashedPassword, email, emailAlert)) {
@@ -687,7 +693,6 @@ public class EntityManager {
 
     /**
      * Get a list of all Teams by thier name
-     *
      * @return List<String of all the teams names
      */
     public List<Team> getAllTeams() {
@@ -697,7 +702,7 @@ public class EntityManager {
     public League getLeagueByName(String leagueName) {
         for (League lg :
                 allLeagues) {
-            if (lg.getName().equals(leagueName)) {
+            if(lg.getName().equals(leagueName)){
                 return lg;
             }
         }
@@ -706,7 +711,8 @@ public class EntityManager {
     }
 
     public void logout(SystemUser logoutUser) {
-        loggedInMap.put(logoutUser, false);
+        loggedInMap.put(logoutUser,false);
+
     }
 
 /*
@@ -779,7 +785,6 @@ public class EntityManager {
         return this.pointsPolicies;
     }
 
-
     /**
      * Checks if a scheduling policy already exists with the same values
      *
@@ -844,10 +849,9 @@ public class EntityManager {
 
     /**
      * validate String to Email REGEX
-     *
      * @param emailStr
      * @return true - valid Email
-     * false - otherwise
+     *         false - otherwise
      */
     private static boolean validate(String emailStr) {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
@@ -919,5 +923,13 @@ public class EntityManager {
     //    return DBManager.getInstance().addTeamMangerToTeam(team.)
         return  false;
 
+    }
+
+    public boolean isSystemBooted() {
+        return isSystemBooted;
+    }
+
+    public void setIsBooted(boolean isSystemBoot) {
+        isSystemBooted = isSystemBoot;
     }
 }

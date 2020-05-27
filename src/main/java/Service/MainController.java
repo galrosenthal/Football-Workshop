@@ -5,6 +5,7 @@ import Domain.Exceptions.*;
 import Domain.Game.League;
 import Domain.Game.Season;
 import Domain.Game.Team;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
@@ -545,8 +546,20 @@ public class MainController {
         }
     }
 
-    public static void logout(String username) {
+    public static boolean logout(String username) {
+        System.out.println("MAIN_CONTROLLER: Searching for username");
         SystemUser logoutUser = EntityManager.getInstance().getUser(username);
+        System.out.println("MAIN_CONTROLLER: Got the username");
+        if(UIController.getConfirmation("Are you sure you want to logout?"))
+        {
+            System.out.println("MAIN_CONTROLLER: Got Confirmation from user");
+            performLogout(username, logoutUser);
+            return true;
+        }
+        return false;
+    }
+
+    public static void performLogout(String username, SystemUser logoutUser) {
         EntityManager.getInstance().logout(logoutUser);
         AllSubscribers.getInstance().logout(username);
     }
@@ -611,6 +624,52 @@ public class MainController {
         try
         {
             ARController.activateSchedulingPolicy(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static boolean isSystemBooted() {
+        return EntityManager.getInstance().isSystemBooted();
+    }
+
+    public static boolean systemBoot() {
+        if(Controller.systemBoot())
+        {
+            EntityManager.getInstance().setIsBooted(true);
+            return true;
+        }
+        return false;
+    }
+    public static void DisplayScheduledGame(String username) {
+        SystemUser refereeUser = EntityManager.getInstance().getUser(username);
+        if(refereeUser == null)
+        {
+            return;
+        }
+        try
+        {
+            RefereeController.displayScheduledGames(refereeUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static void updateGameEvents(String username) {
+        SystemUser refeeeUser = EntityManager.getInstance().getUser(username);
+        if(refeeeUser == null)
+        {
+            return;
+        }
+        try
+        {
+            RefereeController.updateGameEvents(refeeeUser);
         }
         catch (Exception e )
         {

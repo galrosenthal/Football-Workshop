@@ -6,7 +6,6 @@ import Domain.EntityManager;
 import Domain.Game.Team;
 import org.junit.Test;
 import org.junit.*;
-
 public class TeamOwnerTest {
 
     @BeforeClass
@@ -24,8 +23,8 @@ public class TeamOwnerTest {
 
         SystemUser sysUserTO = new SystemUserStub("OranSh", "Oran", 62);
         TeamOwner newTeamOwner = new TeamOwner(sysUserTO);
-        Assert.assertTrue(newTeamOwner.addTeamToOwn(hapoelBash));
-        Assert.assertFalse(newTeamOwner.addTeamToOwn(hapoelBash));
+        Assert.assertTrue(newTeamOwner.addTeamToOwn(hapoelBash,sysUserTO));
+        Assert.assertFalse(newTeamOwner.addTeamToOwn(hapoelBash,sysUserTO));
     }
 
     /**
@@ -39,7 +38,7 @@ public class TeamOwnerTest {
         SystemUser sysUserTO = new SystemUserStub("OranSh", "Oran", 62);
         TeamOwner newTeamOwner = new TeamOwner(sysUserTO);
         Assert.assertFalse(newTeamOwner.removeTeamOwned(hapoelBash));
-        newTeamOwner.addTeamToOwn(hapoelBash);
+        newTeamOwner.addTeamToOwn(hapoelBash,sysUserTO);
         Assert.assertTrue(newTeamOwner.removeTeamOwned(hapoelBash));
     }
 
@@ -53,9 +52,9 @@ public class TeamOwnerTest {
 
         SystemUser sysUserTO = new SystemUserStub("OranSh", "Oran", 62);
         TeamOwner newTeamOwner = new TeamOwner(sysUserTO);
-        Assert.assertFalse(newTeamOwner.setAppointedOwner(null));
-        newTeamOwner.setAppointedOwner(newTeamOwner.getSystemUser());
-        Assert.assertEquals(newTeamOwner.getSystemUser(), newTeamOwner.getAppointedOwner());
+        Assert.assertFalse(newTeamOwner.setAppointedOwner(hapoelBash,null));
+        newTeamOwner.setAppointedOwner(hapoelBash,newTeamOwner.getSystemUser());
+        Assert.assertEquals(newTeamOwner.getSystemUser(),newTeamOwner.getAppointedOwner(hapoelBash));
 
     }
 

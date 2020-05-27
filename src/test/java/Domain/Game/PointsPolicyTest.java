@@ -1,5 +1,6 @@
 package Domain.Game;
 
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.PlayerStub;
 import Domain.Users.SystemUserStub;
 import DB.DBManager;
@@ -22,6 +23,8 @@ public class PointsPolicyTest {
     public static void beforeClass() throws Exception {
         DBManager.startTest();
         DBManagerForTest.startConnection();
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+
     }
 
     @Before
@@ -49,15 +52,15 @@ public class PointsPolicyTest {
         } catch (Exception e) {
         }
         Points points = pointsPolicy.getPoints(game);
-        assertEquals(points.getHomeTeamPoints(), 3);
-        assertEquals(points.getAwayTeamPoints(), 0);
+        assertEquals(points.getHomeTeamPoints(),3);
+        assertEquals(points.getAwayTeamPoints(),0);
     }
 
     @Test
     public void getPoints2ITest() {
         Game game = new Game(new StadiumStub("staName", "staLoca"), new TeamStub(9511), new TeamStub(9512), new Date(2020, 01, 01), null);
         try {
-            game.addGoal(game.getAwayTeam(), game.getHomeTeam(),
+            game.addGoal(game.getAwayTeam(),game.getHomeTeam(),
                     new PlayerStub(new SystemUserStub("a", "a",555)),1);
         } catch (Exception e) {
         }
@@ -70,8 +73,8 @@ public class PointsPolicyTest {
     public void getPoints3ITest() {
         Game game = new Game(new StadiumStub("staName", "staLoca"), new TeamStub(9511), new TeamStub(9512), new Date(2020, 01, 01), null);
         Points points = pointsPolicy.getPoints(game);
-        assertEquals(points.getHomeTeamPoints(), 1);
-        assertEquals(points.getAwayTeamPoints(), 1);
+        assertEquals(points.getHomeTeamPoints(),1);
+        assertEquals(points.getAwayTeamPoints(),1);
     }
 
     @AfterClass
