@@ -8,6 +8,7 @@ import Domain.Exceptions.UsernameAlreadyExistsException;
 import Domain.Exceptions.UsernameOrPasswordIncorrectException;
 import Domain.Exceptions.WeakPasswordException;
 import Domain.Game.*;
+import Domain.SystemLogger.*;
 import Domain.Users.Role;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
@@ -398,17 +399,26 @@ public class EntityManager{
         SystemUser userWithUsrNm = getUser(usrNm);
         if(loggedInMap.containsKey(userWithUsrNm) && loggedInMap.get(userWithUsrNm))
         {
-            throw new AlreadyLoggedInUser("Error: The user " + usrNm + " is already logged in");
+            String msg = "Error: The user " + usrNm + " is already logged in";
+            SystemLoggerManager.logError(EntityManager.class, msg);
+            throw new AlreadyLoggedInUser(msg);
         }
-        if(userWithUsrNm == null) //User name does not exists.
-            throw new UsernameOrPasswordIncorrectException("Username or Password was incorrect!");
+        if(userWithUsrNm == null) { //User name does not exists.
+            String msg = "Username or Password was incorrect!";
+            SystemLoggerManager.logError(EntityManager.class, msg);
+            throw new UsernameOrPasswordIncorrectException(msg);
+        }
 
         //User name exists, checking password.
         if(authenticate(userWithUsrNm, pswrd)){
             loggedInMap.put(userWithUsrNm,true);
+            //Log the action
+            SystemLoggerManager.logInfo(this.getClass(), new LoginLogMsg(userWithUsrNm.getUsername()));
             return userWithUsrNm;
         }
 
+        String msg = "Username or Password was incorrect!";
+        SystemLoggerManager.logError(EntityManager.class, msg);
         throw new UsernameOrPasswordIncorrectException("Username or Password was incorrect!");
     }
 
@@ -449,7 +459,9 @@ public class EntityManager{
     public SystemUser signUp(String name, String usrNm, String pswrd,String email, boolean emailAlert) throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException {
         //Checking if user name is already exists
         if(getUser(usrNm) != null){
-            throw new UsernameAlreadyExistsException("Username already exists");
+            String msg = "Username already exists";
+            SystemLoggerManager.logError(EntityManager.class, msg);
+            throw new UsernameAlreadyExistsException(msg);
         }
 
         //Checking if the password meets the security requirements
@@ -460,11 +472,15 @@ public class EntityManager{
         // must not contain any spaces
         String pswrdRegEx = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$";
         if(!pswrd.matches(pswrdRegEx)){
-            throw new WeakPasswordException("Password does not meet the requirements");
+            String msg = "Password does not meet the requirements";
+            SystemLoggerManager.logError(EntityManager.class, msg);
+            throw new WeakPasswordException(msg);
         }
         if(!validate(email))
         {
-            throw new InvalidEmailException("Invalid Email");
+            String msg = "Invalid Email";
+            SystemLoggerManager.logError(EntityManager.class, msg);
+            throw new InvalidEmailException(msg);
         }
 
         //hash the password
@@ -472,7 +488,8 @@ public class EntityManager{
         SystemUser newUser = new SystemUser(usrNm, hashedPassword, name, email,emailAlert);
         addUser(newUser);
 
-
+        //Log the action
+        SystemLoggerManager.logInfo(this.getClass(), new SignUpLogMsg(newUser.getUsername()));
         return newUser;
 
     }

@@ -5,11 +5,9 @@ import Domain.Game.Game;
 import Domain.Game.League;
 import Domain.Game.StadiumStub;
 import Domain.Game.TeamStub;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,6 +22,11 @@ public class GameReportTest {
     private GameReport gameReport;
     private TeamStub firstTeam;
     private TeamStub secondTeam;
+
+    @BeforeClass
+    public static void setUpBeforeAll() { //Will be called only once
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+    }
 
     @Before
     public void setUp() throws Exception {

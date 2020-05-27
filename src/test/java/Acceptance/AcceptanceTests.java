@@ -5,8 +5,9 @@ import Domain.Exceptions.AssetsNotExistsException;
 import Domain.Exceptions.TeamAlreadyExistsException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.*;
-import Domain.Logger.Event;
-import Domain.Logger.Injury;
+import Domain.GameLogger.Event;
+import Domain.GameLogger.Injury;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
 import Domain.Users.AssociationRepresentative;
 import Domain.Users.SystemAdmin;
@@ -20,6 +21,7 @@ import java.io.File;
 import java.util.*;
 import java.util.Date;
 
+import static Domain.Game.SchedulingPolicy.getDefaultSchedulingPolicy;
 import static org.junit.Assert.*;
 
 @Category(RegressionTests.class)
@@ -39,6 +41,7 @@ public class AcceptanceTests {
         yosiManagerSu = new SystemUser("yosilevi", hashedPasswordForAviYosi, "Yosi Levi","test@gmail.com", false);
         yosiManagerSu.addNewRole(new TeamManager(yosiManagerSu));
         UIController.setIsTest(true);
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
     }
 
 
@@ -933,6 +936,148 @@ public class AcceptanceTests {
         /*
         Expected: This scheduling policy already exists
          */
+    }
+
+    /**
+     * 9.7.a
+     * Main success scenario - activating scheduling policy.
+     * Season has no prior schedule.
+     */
+    @Test
+    public void activateSchedulingPolicyATest(){
+        SystemUser arSystemUser = new SystemUser("username", "name");
+        SystemUser to1SystemUser = new SystemUser("teamowner1", "Team Owner");
+        SystemUser to2SystemUser = new SystemUser("teamowner2", "Team Owner");
+        new AssociationRepresentative(arSystemUser);
+        new TeamOwner(arSystemUser);
+        new TeamOwner(to1SystemUser);
+        new TeamOwner(to2SystemUser);
+        AssociationRepresentative aR = (AssociationRepresentative)arSystemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        TeamOwner to1 = (TeamOwner)arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner to2 = (TeamOwner)to1SystemUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner to3 = (TeamOwner)to2SystemUser.getRole(RoleTypes.TEAM_OWNER);
+
+        EntityManager.getInstance().addLeague(new League("Premier League"));
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2019/20");
+        Season season = league.getLatestSeason();
+        Team team1 = createFullTeam("team1", to1);
+        Team team2 = createFullTeam("team2", to2);
+        Team team3 = createFullTeam("team3", to3);
+        season.addTeam(team1);
+        season.addTeam(team2);
+        season.addTeam(team3);
+        team1.addSeason(season);
+        team2.addSeason(season);
+        team3.addSeason(season);
+
+        assertFalse(season.scheduled());
+        assertEquals(0, season.getGames().size());
+        UIController.setSelector(9711); //0,"10/12/2019",0
+        assertTrue(ARController.activateSchedulingPolicy(arSystemUser));
+        assertTrue(season.scheduled());
+        assertTrue(season.getGames().size() > 0);
+
+    }
+
+    /**
+     * 9.7.b
+     * Alternative scenario 1 - activating scheduling policy.
+     * Season has prior schedule, the AR agrees to override it.
+     */
+    @Test
+    public void activateSchedulingPolicy2ATest() throws Exception {
+        SystemUser arSystemUser = new SystemUser("username", "name");
+        SystemUser to1SystemUser = new SystemUser("teamowner1", "Team Owner");
+        SystemUser to2SystemUser = new SystemUser("teamowner2", "Team Owner");
+        new AssociationRepresentative(arSystemUser);
+        new TeamOwner(arSystemUser);
+        new TeamOwner(to1SystemUser);
+        new TeamOwner(to2SystemUser);
+        AssociationRepresentative aR = (AssociationRepresentative)arSystemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        TeamOwner to1 = (TeamOwner)arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner to2 = (TeamOwner)to1SystemUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner to3 = (TeamOwner)to2SystemUser.getRole(RoleTypes.TEAM_OWNER);
+
+        EntityManager.getInstance().addLeague(new League("Premier League"));
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2019/20");
+        Season season = league.getLatestSeason();
+        Team team1 = createFullTeam("team1", to1);
+        Team team2 = createFullTeam("team2", to2);
+        Team team3 = createFullTeam("team3", to3);
+        season.addTeam(team1);
+        season.addTeam(team2);
+        season.addTeam(team3);
+        team1.addSeason(season);
+        team2.addSeason(season);
+        team3.addSeason(season);
+        //Scheduling the season
+        season.scheduleGames(getDefaultSchedulingPolicy(), new Date());
+        assertTrue(season.scheduled());
+        assertTrue(season.getGames().size() > 0);
+
+        //AR overrides scheduling
+        UIController.setSelector(9721); //0,true,"10/12/2019",0
+        assertTrue(ARController.activateSchedulingPolicy(arSystemUser));
+        assertTrue(season.scheduled());
+        assertTrue(season.getGames().size() > 0);
+    }
+
+    /**
+     * 9.7.c
+     * Alternative scenario 2 - activating scheduling policy.
+     * Season has prior schedule, the AR decided to cancel the operation.
+     */
+    @Test
+    public void activateSchedulingPolicy3ATest() throws Exception {
+        SystemUser arSystemUser = new SystemUser("username", "name");
+        SystemUser to1SystemUser = new SystemUser("teamowner1", "Team Owner");
+        SystemUser to2SystemUser = new SystemUser("teamowner2", "Team Owner");
+        new AssociationRepresentative(arSystemUser);
+        new TeamOwner(arSystemUser);
+        new TeamOwner(to1SystemUser);
+        new TeamOwner(to2SystemUser);
+        AssociationRepresentative aR = (AssociationRepresentative)arSystemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        TeamOwner to1 = (TeamOwner)arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner to2 = (TeamOwner)to1SystemUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner to3 = (TeamOwner)to2SystemUser.getRole(RoleTypes.TEAM_OWNER);
+
+        EntityManager.getInstance().addLeague(new League("Premier League"));
+        League league = EntityManager.getInstance().getLeagues().get(0);
+        league.addSeason("2019/20");
+        Season season = league.getLatestSeason();
+        Team team1 = createFullTeam("team1", to1);
+        Team team2 = createFullTeam("team2", to2);
+        Team team3 = createFullTeam("team3", to3);
+        season.addTeam(team1);
+        season.addTeam(team2);
+        season.addTeam(team3);
+        team1.addSeason(season);
+        team2.addSeason(season);
+        team3.addSeason(season);
+        //Scheduling the season
+        season.scheduleGames(getDefaultSchedulingPolicy(), new Date());
+        assertTrue(season.scheduled());
+        assertTrue(season.getGames().size() > 0);
+
+        //AR canceled re-scheduling
+        UIController.setSelector(9731); //0,false
+        assertFalse(ARController.activateSchedulingPolicy(arSystemUser));
+        assertTrue(season.scheduled());
+        assertTrue(season.getGames().size() > 0);
+    }
+
+    private Team createFullTeam(String teamName, TeamOwner teamOwner) {
+        Team team = new Team(teamName, teamOwner);
+        team.addStadium(new Stadium("stadium1"," location1"));
+        for(int i = 1; i<= 11; i++){ //add 11 players
+            SystemUser pSystemUser = new SystemUser("player"+teamName+""+i, "name"+i);
+            new Player(pSystemUser, new Date());
+            Player player = (Player)pSystemUser.getRole(RoleTypes.PLAYER);
+            team.addTeamPlayer(teamOwner, player);
+        }
+        return team;
     }
 
     /**

@@ -3,14 +3,12 @@ package Service;
 import Domain.EntityManager;
 import Domain.Exceptions.NoTeamExistsException;
 import Domain.Game.Stadium;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.SystemUserStub;
 import Domain.Users.TeamOwnerStub;
 import Domain.Game.Team;
 import Domain.Users.*;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -22,6 +20,12 @@ public class ControllerTest {
     @Mock
     SystemUser systemUser; //For testing login and signUp. Moved From UnregisteredTest
     String hashedPassword;
+
+    @BeforeClass
+    public static void setUpBeforeAll() { //Will be called only once
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+    }
+
     @Before
     public void setUp() throws Exception {
         UIController.setIsTest(true);
