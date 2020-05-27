@@ -551,11 +551,15 @@ public class MainController {
         if(UIController.getConfirmation("Are you sure you want to logout?"))
         {
             System.out.println("MAIN_CONTROLLER: Got Confirmation from user");
-            EntityManager.getInstance().logout(logoutUser);
-            AllSubscribers.getInstance().logout(username);
+            performLogout(username, logoutUser);
             return true;
         }
         return false;
+    }
+
+    public static void performLogout(String username, SystemUser logoutUser) {
+        EntityManager.getInstance().logout(logoutUser);
+        AllSubscribers.getInstance().logout(username);
     }
 
     public static void addPointPolicy(String username) {
