@@ -16,6 +16,6 @@ public class Offside extends Event {
 
     @Override
     public String toString() {
-        return "Offside teamWhoCommitted=" + teamWhoCommitted.getTeamName() +" "+super.toString();
+        return super.toString()+" Offside teamWhoCommitted=" + teamWhoCommitted.getTeamName()+".";
     }
 }

@@ -16,6 +16,7 @@ import org.junit.*;
 import org.junit.experimental.categories.Category;
 
 
+import java.io.File;
 import java.util.*;
 import java.util.Date;
 
@@ -970,6 +971,51 @@ public class AcceptanceTests {
          */
     }
 
+    /**
+     * 10.4.a
+     * Main success scenario - A Game  Report is produced
+     */
+    @Test
+    public void produceGameReportATest() {
+        SystemUser systemUser = new SystemUser("username", "name");
+        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.VAR_REFEREE));
+        Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
+
+        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
+        new AssociationRepresentative(arSystemUser);
+        new TeamOwner(arSystemUser);
+        TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        Team firstTeam = new Team("Hapoel Beit Shan", toRole);
+        Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
+
+        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen"),new Date(2001, 01, 01));
+        firstTeam.addTeamPlayer(toRole,player1);
+
+        game.addReferee(referee);
+        referee.addGame(game);
+
+        try {
+            game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
+                   player1,2);
+        } catch (Exception e) {
+        }
+        game.addEndGame(new Date(),90); // end the game
+
+        UIController.setSelector(10411);//0,"."
+        boolean succeeded = RefereeController.produceGameReport(systemUser);
+        assertTrue(succeeded);
+        if(succeeded){
+            //delete the created report
+            File dir = new File(".");
+            File[] directoryListing = dir.listFiles();
+            for (File file : directoryListing) {
+                if(file.getName().startsWith("GameReport_Hapoel")){
+                    assertTrue(file.delete());
+                }
+            }
+        }
+    }
 
     @After
     public void tearDown() throws Exception {

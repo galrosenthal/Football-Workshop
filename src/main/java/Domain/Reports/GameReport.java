@@ -2,13 +2,19 @@ package Domain.Reports;
 
 import Domain.Alert;
 import Domain.EntityManager;
-import Domain.Game.Game;
-import Domain.Game.Score;
+import Domain.Game.*;
 import Domain.Subject;
 import Domain.Users.Referee;
 import Domain.Users.SystemUser;
+import com.itextpdf.layout.element.Text;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfWriter;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -99,5 +105,60 @@ public class GameReport extends Report implements Subject, Observer {
             this.setScore((String) arg);
         }
 
+    }
+
+
+
+    /**
+     * Produces a game report and saves it as pdf in the given path
+     * @param folderPath The path to the folder to save the report at.
+     * @return File - the file created.
+     * @throws Exception
+     */
+    public File produceReport(String folderPath) throws Exception {
+        if(!game.hasFinished()){
+            throw new Exception("error, the game is not finished yet");
+        }
+        Team homeTeam = game.getHomeTeam();
+        Team awayTeam = game.getAwayTeam();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String startingDateInString = simpleDateFormat.format( game.getGameDate());
+        String homeTeamName = homeTeam.getTeamName();
+        String awayTeamName = awayTeam.getTeamName();
+        String docPath = folderPath+"/GameReport_"+homeTeamName+"_vs_"+awayTeamName+"_"+startingDateInString+".pdf";
+        //Checking if the file already exists
+        File file = new File(docPath);
+        if(file.exists()){
+           throw new Exception("error, this game report is already exists in the selected directory");
+        }
+        //creating the content
+        StringBuilder docContent = new StringBuilder();
+        docContent.append("Game Report");
+        docContent.append("\n\n"+homeTeamName+" vs. "+awayTeamName);
+        docContent.append("\nStadium: "+game.getStadium().getName());
+        docContent.append("\nStarting Date: "+game.getGameDate());
+        docContent.append("\nEnding Date: "+game.getEndDate());
+        docContent.append("\nReferees for the match: ");
+        for(Referee referee: game.getReferees()){
+            docContent.append(referee.getSystemUser().getName()+", ");
+        }
+        docContent.append("\n\nEvents:");
+        for(String event : game.getGameEventsStringList()){
+            docContent.append("\n"+event);
+        }
+        Score gameScore = game.getScore();
+        docContent.append("\n\nFinal Score: "+gameScore.toString());
+
+        //Creating the pdf
+        Document document = new Document();
+        PdfWriter.getInstance(document, new FileOutputStream(docPath));
+
+        document.open();
+        Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
+        Paragraph paragraph = new Paragraph(docContent.toString());
+        paragraph.setFont(font);
+        document.add(paragraph);
+        document.close();
+        return file;
     }
 }

@@ -16,6 +16,6 @@ public class Penalty extends Event {
 
     @Override
     public String toString() {
-        return "Penalty teamWhoCommitted=" + teamWhoCommitted.getTeamName() +" "+super.toString();
+        return super.toString()+" Penalty teamWhoCommitted=" + teamWhoCommitted.getTeamName()+".";
     }
 }

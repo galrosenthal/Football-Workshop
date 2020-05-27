@@ -25,7 +25,7 @@ public class Alert implements Subject, Observer {
     /**
      * Returns an instance of Alert. part of the Singleton design
      *
-     * @return - Alert - an instance of dbManager
+     * @return - Alert - an instance of Alert
      */
     public static Alert getInstance() {
         if (alertInstance == null) {
