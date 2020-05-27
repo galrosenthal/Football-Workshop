@@ -62,9 +62,14 @@ public class DBManager {
 
     }
 
+    /**
+     *
+     * @param name
+     * @return
+     */
     public List<Pair<String, String>> getTeams(String name) {
-        List<String> teamsName = new ArrayList<>();
-        List<TeamStatus> statues = new ArrayList<>();
+        List<String> teamsName;
+        List<TeamStatus> statues;
         List<Pair<String, String>> teams = new ArrayList<>();
         DSLContext create = DBHandler.getContext();
         Result<?> result = create.select()
@@ -546,6 +551,47 @@ public class DBManager {
             return false;
         }
         return true;
+    }
+
+    public boolean addStadiumToTeam(String name, String location, String teamName) {
+        int stadiumId = getStadiumId(name, location);
+        try {
+            DSLContext create = DBHandler.getContext();
+            create.insertInto(STADIUM_HOME_TEAMS,STADIUM_HOME_TEAMS.STADIUM_ID, STADIUM_HOME_TEAMS.TEAM_NAME).values(stadiumId , teamName);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+
+    }
+
+    private int getStadiumId(String name, String location) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(STADIUM).where(STADIUM.LOCATION.eq(location)).and(STADIUM.NAME.eq(name)).fetch();
+        return records.getValues(STADIUM.STADIUM_ID).get(0);
+    }
+
+    public boolean addTeamConnection(String teamName, String type, String username) {
+        try{
+            DSLContext create = DBHandler.getContext();
+            if(type.equals("PLAYER"))
+            {
+                create.insertInto(PLAYER_IN_TEAM, PLAYER_IN_TEAM.TEAM_NAME,PLAYER_IN_TEAM.USERNAME).values(teamName,username);
+                return true;
+            }
+            else if(type.equals("COACH"))
+            {
+                create.insertInto(COACH_IN_TEAM, COACH_IN_TEAM.TEAM_NAME,COACH_IN_TEAM.USERNAME).values(teamName,username);
+                return true;
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
     }
 }
 

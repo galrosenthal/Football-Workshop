@@ -835,10 +835,24 @@ public class EntityManager{
         return schedulingPolicies;
     }
 
+    /**
+     * check is season exist
+     * @param leagueName - String
+     * @param seasonYears - String
+     * @return true - season exist
+     *         false - otherwise
+     */
     public boolean doesSeasonExist(String leagueName, String seasonYears) {
         return DBManager.getInstance().doesSeasonExists(leagueName, seasonYears);
     }
 
+    /**
+     * add season to league - in db
+     * @param leagueName - String
+     * @param season - Season
+     * @return true - add season successfully
+     *         false - otherwise
+     */
     public boolean addSeason(String leagueName, Season season) {
         PointsPolicy pointsPolicy = season.getPointsPolicy();
         int pointsPolicyID = DBManager.getInstance().getPointsPolicyID(pointsPolicy.getVictoryPoints(), pointsPolicy.getLossPoints(), pointsPolicy.getTiePoints());
@@ -857,6 +871,11 @@ public class EntityManager{
         return matcher.find();
     }
 
+    /**
+     * All teams owned by teamOwner
+     * @param teamOwner - TeamOwner
+     * @return - List<Team> - owned by teamOwner
+     */
     public List<Team> getOwnedTeams(TeamOwner teamOwner) {
         List<Pair<String, String>> ownedTeams = DBManager.getInstance().getTeams(teamOwner.getSystemUser().getName());
         List<Team> teams = new ArrayList<>();
@@ -868,6 +887,11 @@ public class EntityManager{
         return teams;
     }
 
+    /**
+     * check which status the team
+     * @param value - String team status - return from DBmanger
+     * @return - TeamStatus - Enum
+     */
     private TeamStatus getTeamStatus(String value) {
         /*'OPEN','CLOSED','PERMENENTLY_CLOSED'*/
         switch (value) {
@@ -882,6 +906,10 @@ public class EntityManager{
 
     }
 
+    /**
+     * addRole to role in DBManger
+     * @param role
+     */
     public void addRole(Role role) {
         RoleTypes type = role.getType();
         switch (type) {
@@ -917,7 +945,14 @@ public class EntityManager{
     }
 
 
-
+    /**
+     * add team manger to team - with tha appointee
+     * @param team
+     * @param teamManager
+     * @param teamOwner
+     * @return true - added successfully
+     *         false - otherwise
+     */
     public boolean addTeamManger(Team team, TeamManager teamManager, TeamOwner teamOwner) {
         return DBManager.getInstance().addTeamMangerToTeam(team.getTeamName(),teamManager.getSystemUser().getUsername(),teamOwner.getSystemUser().getUsername());
     }
@@ -930,7 +965,37 @@ public class EntityManager{
         isSystemBooted = isSystemBoot;
     }
 
+    /**
+     * Check if teamOwner is  Team Owner in team
+     * @param teamOwner - TeamOwner
+     * @param team - Team
+     * @return true -teamOwner is Team owner of  team
+     *         false - otherwise
+     */
     public boolean isTeamOwner(TeamOwner teamOwner, Team team) {
         return DBManager.getInstance().isTeamOwner(teamOwner.getSystemUser().getName(),team.getTeamName());
+    }
+
+    /**
+     * add stadium to db
+     * @param stadium - Stadium
+     * @param team - Team
+     * @return - true - added  Stadium to team successfully
+     *           false - otherwise
+     */
+    public boolean addStadium(Stadium stadium, Team team) {
+        return DBManager.getInstance().addStadiumToTeam(stadium.getName(),stadium.getLocation(),team.getTeamName());
+    }
+
+
+    /**
+     * add connection between team to partOfTeam
+     * @param teamBelongsTo - PartOfTeam
+     * @param partOfTeam - teamBelongsTo
+     * @return true - add connection successfully
+     *         false - otherwise
+     */
+    public boolean addConnection(Team teamBelongsTo, PartOfTeam partOfTeam) {
+        return DBManager.getInstance().addTeamConnection(teamBelongsTo.getTeamName(),partOfTeam.getType().toString(),partOfTeam.getSystemUser().getUsername());
     }
 }

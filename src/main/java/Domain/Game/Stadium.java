@@ -45,6 +45,7 @@ public class Stadium implements Asset{
         if(property.equalsIgnoreCase(namePropertyString))
         {
             this.stadName=toChange;
+            /*TODO: update stadium name*/
             return true;
         }
         return false;

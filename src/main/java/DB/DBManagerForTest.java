@@ -437,4 +437,71 @@ public class DBManagerForTest extends DBManager {
         }
         return true;
     }
+
+    @Override
+    public boolean isTeamOwner(String name, String teamName) {
+        DSLContext create = DBHandler.getContext();
+        List<String> stadium;
+        Result<?> result = create.select()
+                .from(OWNED_TEAMS.where(OWNED_TEAMS.USERNAME.eq(name).and(OWNED_TEAMS.TEAM_NAME.eq(teamName)))).fetch();
+        if (result.size() == 0) {
+            return false;
+        }
+        return true;
+    }
+    @Override
+    public boolean addTeamMangerToTeam(String teamName, String username, String usernameAppointed) {
+        try{
+            DSLContext create = DBHandler.getContext();
+            create.insertInto(MANAGER_IN_TEAMS, MANAGER_IN_TEAMS.TEAM_NAME, MANAGER_IN_TEAMS.USERNAME, MANAGER_IN_TEAMS.APPOINTER).values(teamName,username,usernameAppointed).execute();
+
+
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    @Override
+    public boolean addStadiumToTeam(String name, String location, String teamName) {
+        int stadiumId = getStadiumId(name, location);
+        try {
+            DSLContext create = DBHandler.getContext();
+            create.insertInto(STADIUM_HOME_TEAMS,STADIUM_HOME_TEAMS.STADIUM_ID, STADIUM_HOME_TEAMS.TEAM_NAME).values(stadiumId , teamName);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+
+    }
+
+    private int getStadiumId(String name, String location) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(STADIUM).where(STADIUM.LOCATION.eq(location)).and(STADIUM.NAME.eq(name)).fetch();
+        return records.getValues(STADIUM.STADIUM_ID).get(0);
+    }
+    @Override
+    public boolean addTeamConnection(String teamName, String type, String username) {
+        try{
+            DSLContext create = DBHandler.getContext();
+            if(type.equals("PLAYER"))
+            {
+                create.insertInto(PLAYER_IN_TEAM, PLAYER_IN_TEAM.TEAM_NAME,PLAYER_IN_TEAM.USERNAME).values(teamName,username);
+                return true;
+            }
+            else if(type.equals("COACH"))
+            {
+                create.insertInto(COACH_IN_TEAM, COACH_IN_TEAM.TEAM_NAME,COACH_IN_TEAM.USERNAME).values(teamName,username);
+                return true;
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
 }
