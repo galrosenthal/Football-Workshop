@@ -6,21 +6,24 @@ import Domain.Game.Team;
 import Domain.Subject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class TeamOwner extends Role implements Subject {
 
-    private List<Team> ownedTeams;
-    private SystemUser appointedOwner; /** The team owner who appointed -this- team owner */
-
+//    private List<Team> ownedTeams;
+//    private SystemUser appointedOwner; /** The team owner who appointed -this- team owner */
+    private HashMap<Team,SystemUser> teamsAndAppointers;
     public TeamOwner(SystemUser systemUser) {
         super(RoleTypes.TEAM_OWNER,systemUser);
-        ownedTeams = new ArrayList<>();
+        teamsAndAppointers = new HashMap<>();
     }
 
 
-    public List<Team> getOwnedTeams() {
-        return ownedTeams;
+    public List<Team> getOwnedTeams()
+    {
+        List<Team> allTeams = new ArrayList<Team>(teamsAndAppointers.keySet());
+        return allTeams;
     }
 
 //    public boolean addPplToTeam(Role regUser)
@@ -43,18 +46,22 @@ public class TeamOwner extends Role implements Subject {
 //        return false;
 //    }
 
-    public boolean addTeamToOwn(Team teamToOwn)
+    public boolean addTeamToOwn(Team teamToOwn,SystemUser appointer)
     {
-        if(!ownedTeams.contains(teamToOwn))
+        if(teamToOwn == null || appointer == null)
         {
-            ownedTeams.add(teamToOwn);
+            return false;
+        }
+        if(!getOwnedTeams().contains(teamToOwn))
+        {
+            teamsAndAppointers.put(teamToOwn,appointer);
             return true;
         }
         return false;
     }
 
     public boolean removeTeamOwned(Team team){
-        return this.ownedTeams.remove(team);
+        return this.teamsAndAppointers.remove(team) != null;
     }
 
 //    /**
@@ -79,8 +86,8 @@ public class TeamOwner extends Role implements Subject {
      * Get the SystemUser who appointed this team owner.
      * @return the SystemUser who appointed this team owner.
      */
-    public SystemUser getAppointedOwner() {
-        return appointedOwner;
+    public SystemUser getAppointedOwner(Team ownedTeam) {
+        return teamsAndAppointers.get(ownedTeam);
     }
 
     /**
@@ -88,10 +95,10 @@ public class TeamOwner extends Role implements Subject {
      * @param appointedOwner SystemUser to set as the appointing team owner.
      * @return true if successfully seted.
      */
-    public boolean setAppointedOwner(SystemUser appointedOwner) {
+    public boolean setAppointedOwner(Team teamToChangeAppointer, SystemUser appointedOwner) {
 
-        if(appointedOwner != null){
-            this.appointedOwner = appointedOwner;
+        if(appointedOwner != null && teamToChangeAppointer != null){
+            teamsAndAppointers.put(teamToChangeAppointer,appointedOwner);
             return true;
         }
 
