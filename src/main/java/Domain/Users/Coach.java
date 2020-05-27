@@ -23,6 +23,9 @@ public class Coach extends PartOfTeam {
         this.qualification = qualification;
     }
 
+    public CoachQualification getQualification() {
+        return qualification;
+    }
 
     @Override
     public List<String> getProperties() {

@@ -17,7 +17,9 @@ public class Player extends PartOfTeam{
         bday = birthDate;
     }
 
-
+    public Date getBday() {
+        return bday;
+    }
 
     @Override
     public List<String> getProperties() {

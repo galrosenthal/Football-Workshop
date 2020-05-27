@@ -3,12 +3,19 @@ package DB;
 import static DB.Tables.Tables.*;
 
 import DB.Tables.enums.TeamStatus;
+import DB.Tables.enums.CoachQualification;
+import DB.Tables.enums.RefereeTraining;
+import DB.Tables.enums.UserRolesRoleType;
+
 import Domain.Exceptions.UserNotFoundException;
 import javafx.util.Pair;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Result;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -47,6 +54,7 @@ public class DBManager {
 
     /**
      * clear all records from DB
+     *
      * @throws Exception
      */
     public static void deleteData(String dbName) throws Exception {
@@ -54,10 +62,10 @@ public class DBManager {
 
     }
 
-    public  List<Pair<String,String>> getTeams(String name) {
+    public List<Pair<String, String>> getTeams(String name) {
         List<String> teamsName = new ArrayList<>();
         List<TeamStatus> statues = new ArrayList<>();
-        List<Pair<String,String>> teams = new ArrayList<>();
+        List<Pair<String, String>> teams = new ArrayList<>();
         DSLContext create = DBHandler.getContext();
         Result<?> result = create.select()
                 .from(OWNED_TEAMS.where(OWNED_TEAMS.USERNAME.eq(name)).join(TEAM)
@@ -66,7 +74,7 @@ public class DBManager {
         teamsName = result.getValues(OWNED_TEAMS.TEAM_NAME);
         statues = result.getValues(TEAM.STATUS);
         for (int i = 0; i < teamsName.size(); i++) {
-            Pair<String,String> pair = new Pair(teamsName.get(i),statues.get(i));
+            Pair<String, String> pair = new Pair(teamsName.get(i), statues.get(i));
             teams.add(pair);
         }
         return teams;
@@ -77,8 +85,7 @@ public class DBManager {
         List<String> stadium;
         Result<?> result = create.select()
                 .from(STADIUM.where(STADIUM.NAME.eq(stadiumName))).fetch();
-        if (result.size() == 0)
-        {
+        if (result.size() == 0) {
             return null;
         }
         stadium = result.getValues(STADIUM.NAME);
@@ -89,6 +96,7 @@ public class DBManager {
 
     /**
      * start connection to DB
+     *
      * @param url - to DB
      */
     public void startConnection(String url) {
@@ -98,7 +106,6 @@ public class DBManager {
 
     /**
      * close connection to DB
-     *
      */
     public void closeConnection() {
         DBHandler.closeConnection();
@@ -140,10 +147,11 @@ public class DBManager {
     }
 
     /**
-     *Add league record
+     * Add league record
+     *
      * @param name - league name to add
      * @return true - added successfully
-     *         false - otherwise
+     * false - otherwise
      */
 
     public boolean addLeagueRecord(String name) {
@@ -157,7 +165,8 @@ public class DBManager {
     }
 
     /**
-     *  Get all leagues name from DB
+     * Get all leagues name from DB
+     *
      * @return - List<String> - Leagues name
      */
     public List<String> getLeagues() {
@@ -172,10 +181,11 @@ public class DBManager {
 
     /**
      * Check if season Exists in DB
+     *
      * @param leagueName
      * @param seasonYears
      * @return true - if  season Exists
-     *         false - otherwise
+     * false - otherwise
      */
     public boolean doesSeasonExists(String leagueName, String seasonYears) {
         DSLContext dslContext = DBHandler.getContext();
@@ -190,7 +200,8 @@ public class DBManager {
 
 
     /**
-     *get Points Policy ID fom DB
+     * get Points Policy ID fom DB
+     *
      * @param victoryPoints
      * @param lossPoints
      * @param tiePoints
@@ -209,12 +220,13 @@ public class DBManager {
 
     /**
      * add Season To League
+     *
      * @param leagueName
      * @param years
      * @param isUnderway
      * @param pointsPolicyID
      * @return true - added successfully
-     *         false - otherwise
+     * false - otherwise
      */
     public boolean addSeasonToLeague(String leagueName, String years, boolean isUnderway, int pointsPolicyID) {
         DSLContext dslContext = DBHandler.getContext();
@@ -278,11 +290,14 @@ public class DBManager {
 
     public boolean addUser(String username, String name, String password, String email, boolean alertEmail) {
         DSLContext dslContext = DBHandler.getContext();
-        int succeed = dslContext.insertInto(SYSTEMUSER,
-                SYSTEMUSER.USERNAME, SYSTEMUSER.NAME, SYSTEMUSER.PASSWORD,
-                SYSTEMUSER.EMAIL, SYSTEMUSER.NOTIFY_BY_EMAIL)
-                .values(username, name, password, email, alertEmail).execute();
-        if (succeed == 0) {
+        try {
+             dslContext.insertInto(SYSTEMUSER,
+                    SYSTEMUSER.USERNAME, SYSTEMUSER.NAME, SYSTEMUSER.PASSWORD,
+                    SYSTEMUSER.EMAIL, SYSTEMUSER.NOTIFY_BY_EMAIL)
+                    .values(username, name, password, email, alertEmail).execute();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
             return false;
         }
         return true;
@@ -290,7 +305,10 @@ public class DBManager {
 
     public HashMap<String, List<Pair<String, String>>> getUserRoles(String username) {
         List<String> userRolesTypes = getUserRolesTypes(username);
-
+        if(userRolesTypes  == null)
+        {
+            return new HashMap<>();
+        }
         HashMap<String, List<Pair<String, String>>> userRoles = new HashMap<>();
         for (String roleType : userRolesTypes) {
             List<Pair<String, String>> roleDetails = null;
@@ -401,8 +419,7 @@ public class DBManager {
         return getDetails(result);
     }
 
-    private List<Pair<String, String>> getDetails(Result<?> user)
-    {
+    private List<Pair<String, String>> getDetails(Result<?> user) {
         List<Pair<String, String>> details = new ArrayList<>();
         for (int i = 0; i < user.fields().length; i++) {
             String fieldName = user.fields()[i].getName();
@@ -430,4 +447,68 @@ public class DBManager {
         }
         return rolesTypes;
     }
+
+
+    public void addPlayer(String username, Date bday) {
+        DSLContext create = DBHandler.getContext();
+        //todo: check!!!!
+        create.insertInto(USER_ROLES, USER_ROLES.USERNAME , USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.PLAYER).execute();
+
+        create.insertInto(PLAYER, PLAYER.USERNAME , PLAYER.BIRTHDAY).values(username, LocalDate.ofEpochDay(bday.getTime())).execute();
+
+    }
+
+    public void addCoach(String username, String qualification) {
+        DSLContext create = DBHandler.getContext();
+        create.insertInto(USER_ROLES, USER_ROLES.USERNAME , USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.COACH).execute();
+
+        create.insertInto(COACH, COACH.USERNAME , COACH.QUALIFICATION).values(username, CoachQualification.valueOf(qualification)).execute();
+
+    }
+
+    public void addTeamManager(String username) {
+        DSLContext create = DBHandler.getContext();
+        create.insertInto(USER_ROLES, USER_ROLES.USERNAME , USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.TEAM_MANAGER).execute();
+
+        create.insertInto(TEAM_MANAGER, TEAM_MANAGER.USERNAME).values(username).execute();
+
+
+    }
+
+    public void addTeamOwner(String username) {
+        DSLContext create = DBHandler.getContext();
+        create.insertInto(USER_ROLES, USER_ROLES.USERNAME , USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.TEAM_OWNER).execute();
+
+        create.insertInto(TEAM_OWNER, TEAM_OWNER.USERNAME).values(username).execute();
+
+
+    }
+
+    public void addSystemAdmin(String username) {
+        DSLContext create = DBHandler.getContext();
+        create.insertInto(USER_ROLES, USER_ROLES.USERNAME , USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.SYSTEM_ADMIN).execute();
+
+        create.insertInto(SYSTEM_ADMIN, SYSTEM_ADMIN.USERNAME).values(username).execute();
+
+
+    }
+
+    public void addReferee(String username, String training) {
+        DSLContext create = DBHandler.getContext();
+        create.insertInto(USER_ROLES, USER_ROLES.USERNAME , USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.REFEREE).execute();
+
+        create.insertInto(REFEREE, REFEREE.USERNAME , REFEREE.TRAINING).values(username, RefereeTraining.valueOf(training)).execute();
+
+
+    }
+
+    public void addAssociationRepresentative(String username) {
+        DSLContext create = DBHandler.getContext();
+        create.insertInto(USER_ROLES, USER_ROLES.USERNAME , USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.ASSOCIATION_REPRESENTATIVE).execute();
+
+        create.insertInto(ASSOCIATION_REPRESENTATIVE, ASSOCIATION_REPRESENTATIVE.USERNAME).values(username).execute();
+
+
+    }
 }
+

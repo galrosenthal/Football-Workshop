@@ -85,6 +85,7 @@ public class SystemUser extends User implements Fan {
         if(role != null && !roles.contains(role))
         {
             roles.add(role);
+            EntityManager.getInstance().addRole(role);
             return true;
         }
         return false;

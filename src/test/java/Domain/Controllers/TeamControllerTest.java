@@ -95,6 +95,7 @@ public class TeamControllerTest {
         }
         catch (Exception e){
             e.printStackTrace();
+            fail();
         }
     }
 

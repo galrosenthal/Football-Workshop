@@ -1,5 +1,8 @@
 package DB;
 
+import DB.Tables_Test.enums.UserRolesRoleType;
+import DB.Tables_Test.enums.CoachQualification;
+import DB.Tables_Test.enums.RefereeTraining;
 import DB.Tables_Test.enums.TeamStatus;
 import Domain.Exceptions.UserNotFoundException;
 import javafx.util.Pair;
@@ -7,9 +10,12 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Result;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import static DB.Tables_Test.Tables.*;
 
 
@@ -155,6 +161,7 @@ public class DBManagerForTest extends DBManager {
     @Override
     public boolean addUser(String username, String name, String password, String email, boolean alertEmail) {
         DSLContext dslContext = DBHandler.getContext();
+        /*todo: check duplicate key*/
         int succeed = dslContext.insertInto(SYSTEMUSER,
                 SYSTEMUSER.USERNAME, SYSTEMUSER.NAME, SYSTEMUSER.PASSWORD,
                 SYSTEMUSER.EMAIL, SYSTEMUSER.NOTIFY_BY_EMAIL)
@@ -168,7 +175,10 @@ public class DBManagerForTest extends DBManager {
     @Override
     public HashMap<String, List<Pair<String, String>>> getUserRoles(String username) {
         List<String> userRolesTypes = getUserRolesTypes(username);
-
+        if(userRolesTypes  == null)
+        {
+            return new HashMap<>();
+        }
         HashMap<String, List<Pair<String, String>>> userRoles = new HashMap<>();
         for (String roleType : userRolesTypes) {
             List<Pair<String, String>> roleDetails = null;
@@ -340,5 +350,74 @@ public class DBManagerForTest extends DBManager {
         stadium = result.getValues(STADIUM.NAME);
         stadium.addAll(result.getValues(STADIUM.LOCATION));
         return stadium;
+    }
+    @Override
+    public void addPlayer(String username, Date bday) {
+        DSLContext create = DBHandler.getContext();
+        create.insertInto(USER_ROLES, USER_ROLES.USERNAME , USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.PLAYER).execute();
+
+        create.insertInto(PLAYER, PLAYER.USERNAME , PLAYER.BIRTHDAY).values(username, LocalDate.ofEpochDay(bday.getTime())).execute();
+
+
+    }
+    @Override
+    public void addCoach(String username, String qualification) {
+        DSLContext create = DBHandler.getContext();
+        create.insertInto(USER_ROLES, USER_ROLES.USERNAME , USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.COACH).execute();
+
+        create.insertInto(COACH, COACH.USERNAME , COACH.QUALIFICATION).values(username, CoachQualification.valueOf(qualification)).execute();
+
+
+    }
+    @Override
+    public void addTeamManager(String username) {
+        DSLContext create = DBHandler.getContext();
+        create.insertInto(USER_ROLES, USER_ROLES.USERNAME , USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.TEAM_MANAGER).execute();
+
+        create.insertInto(TEAM_MANAGER, TEAM_MANAGER.USERNAME).values(username).execute();
+
+
+    }
+    @Override
+    public void addTeamOwner(String username) {
+        DSLContext create = DBHandler.getContext();
+        //todo: check!!!!
+        create.insertInto(USER_ROLES, USER_ROLES.USERNAME , USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.TEAM_OWNER).execute();
+
+        create.insertInto(TEAM_OWNER, TEAM_OWNER.USERNAME).values(username).execute();
+
+
+    }
+    @Override
+    public void addSystemAdmin(String username) {
+        DSLContext create = DBHandler.getContext();
+        //todo: check!!!!
+        create.insertInto(USER_ROLES, USER_ROLES.USERNAME , USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.SYSTEM_ADMIN).execute();
+
+        create.insertInto(SYSTEM_ADMIN, SYSTEM_ADMIN.USERNAME).values(username).execute();
+
+
+
+
+    }
+    @Override
+    public void addReferee(String username, String training) {
+        DSLContext create = DBHandler.getContext();
+        //todo: check!!!!
+        create.insertInto(USER_ROLES, USER_ROLES.USERNAME , USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.REFEREE).execute();
+
+        create.insertInto(REFEREE, REFEREE.USERNAME , REFEREE.TRAINING).values(username, RefereeTraining.valueOf(training)).execute();
+
+
+    }
+    @Override
+    public void addAssociationRepresentative(String username) {
+        DSLContext create = DBHandler.getContext();
+        //todo: check!!!!
+        create.insertInto(USER_ROLES, USER_ROLES.USERNAME , USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.ASSOCIATION_REPRESENTATIVE).execute();
+
+        create.insertInto(ASSOCIATION_REPRESENTATIVE, ASSOCIATION_REPRESENTATIVE.USERNAME).values(username).execute();
+
+
     }
 }

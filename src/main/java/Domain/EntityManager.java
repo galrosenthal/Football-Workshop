@@ -60,8 +60,8 @@ public class EntityManager {
         if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
 
-            SystemUser admin = new SystemUser("Administrator", org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"admin" , "test@gmail.com" , false);
-            SystemUser arnav = new SystemUser("arnav",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"arnav" , "test@gmail.com" , false);
+            SystemUser admin = new SystemUser("Administrator", org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"), "admin", "test@gmail.com", false);
+            SystemUser arnav = new SystemUser("arnav", org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"), "arnav", "test@gmail.com", false);
             admin.addNewRole(new SystemAdmin(admin));
             admin.addNewRole(new AssociationRepresentative(admin));
         }
@@ -130,7 +130,6 @@ public class EntityManager {
      */
 
 
-
     public List<League> getLeagues() {
         List<String> allLeaguesList = DBManager.getInstance().getLeagues();
         List<League> leagues = new ArrayList<>();
@@ -170,7 +169,7 @@ public class EntityManager {
         }
         HashMap<String/*RoleType*/, List<Pair<String, String>>> rolesDetails = DBManager.getInstance().getUserRoles(username);
         SystemUser systemUser = createSystemUser(userDetails);
-        createSystemUserRole(systemUser , rolesDetails);
+        createSystemUserRole(systemUser, rolesDetails);
         for (SystemUser su : allUsers) {
             if (su.getUsername().equals(username)) {
                 return su;
@@ -184,58 +183,55 @@ public class EntityManager {
         for (String roleType : rolesDetails.keySet()) {
             switch (roleType) {
                 case "PLAYER":
-                    addPlayerRole(systemUser , rolesDetails.get(roleType));
+                    addPlayerRole(systemUser, rolesDetails.get(roleType));
                     break;
                 case "COACH":
-                    addCoachRole(systemUser , rolesDetails.get(roleType));
+                    addCoachRole(systemUser, rolesDetails.get(roleType));
                     break;
                 case "TEAM_MANAGER":
-                    addTeamMangerRole(systemUser , rolesDetails.get(roleType));
+                    addTeamMangerRole(systemUser, rolesDetails.get(roleType));
                     break;
                 case "TEAM_OWNER":
-                    addTeamOwnerRole(systemUser , rolesDetails.get(roleType));
+                    addTeamOwnerRole(systemUser, rolesDetails.get(roleType));
                     break;
                 case "SYSTEM_ADMIN":
-                    addSystemAdminRole(systemUser , rolesDetails.get(roleType));
+                    addSystemAdminRole(systemUser, rolesDetails.get(roleType));
                     break;
                 case "REFEREE":
-                    addRefereeRole(systemUser , rolesDetails.get(roleType));
+                    addRefereeRole(systemUser, rolesDetails.get(roleType));
                     break;
                 case "ASSOCIATION_REPRESENTATIVE":
-                    addARRole(systemUser , rolesDetails.get(roleType));
+                    addARRole(systemUser, rolesDetails.get(roleType));
                     break;
             }
         }
     }
 
-    private void addARRole(SystemUser systemUser , List<Pair<String , String>> rolesDetail) {
+    private void addARRole(SystemUser systemUser, List<Pair<String, String>> rolesDetail) {
 
         AssociationRepresentative associationRepresentative = new AssociationRepresentative(systemUser);
     }
 
-    private void addRefereeRole(SystemUser systemUser , List<Pair<String , String>> rolesDetail) {
+    private void addRefereeRole(SystemUser systemUser, List<Pair<String, String>> rolesDetail) {
 
         String username = "";
         RefereeQualification training = null;
         for (int i = 0; i < rolesDetail.size(); i++) {
-            if(rolesDetail.get(i).getKey().equals("username"))
-            {
+            if (rolesDetail.get(i).getKey().equals("username")) {
                 username = rolesDetail.get(i).getValue();
-            }
-            else if(rolesDetail.get(i).getKey().equals("training"))
-            {
-                training  = getRefereeQualification(rolesDetail.get(i).getValue());
+            } else if (rolesDetail.get(i).getKey().equals("training")) {
+                training = getRefereeQualification(rolesDetail.get(i).getValue());
             }
         }
 
-        Referee referee = new Referee(systemUser,training);
+        Referee referee = new Referee(systemUser, training);
     }
 
     private RefereeQualification getRefereeQualification(String value) {
         /*MAIN_REFEREE,SIDE_REFEREE,VAR_REFEREE*/
         switch (value) {
             case "MAIN_REFEREE":
-                return  RefereeQualification.MAIN_REFEREE;
+                return RefereeQualification.MAIN_REFEREE;
             case "SIDE_REFEREE":
                 return RefereeQualification.SIDE_REFEREE;
             case "VAR_REFEREE":
@@ -244,39 +240,36 @@ public class EntityManager {
         return null;
     }
 
-    private void addSystemAdminRole(SystemUser systemUser , List<Pair<String , String>> rolesDetail) {
+    private void addSystemAdminRole(SystemUser systemUser, List<Pair<String, String>> rolesDetail) {
         SystemAdmin systemAdmin = new SystemAdmin(systemUser);
     }
 
-    private void addTeamOwnerRole(SystemUser systemUser , List<Pair<String , String>> rolesDetail) {
+    private void addTeamOwnerRole(SystemUser systemUser, List<Pair<String, String>> rolesDetail) {
         TeamOwner teamOwner = new TeamOwner(systemUser);
     }
 
-    private void addTeamMangerRole(SystemUser systemUser , List<Pair<String , String>> rolesDetail) {
+    private void addTeamMangerRole(SystemUser systemUser, List<Pair<String, String>> rolesDetail) {
         TeamManager teamManager = new TeamManager(systemUser);
     }
 
-    private void addCoachRole(SystemUser systemUser , List<Pair<String , String>> rolesDetail) {
+    private void addCoachRole(SystemUser systemUser, List<Pair<String, String>> rolesDetail) {
         String username = "";
         CoachQualification qualification = null;
         for (int i = 0; i < rolesDetail.size(); i++) {
-            if(rolesDetail.get(i).getKey().equals("username"))
-            {
+            if (rolesDetail.get(i).getKey().equals("username")) {
                 username = rolesDetail.get(i).getValue();
-            }
-            else if(rolesDetail.get(i).getKey().equals("qualification"))
-            {
-                qualification  = getCoachQualification(rolesDetail.get(i).getValue());
+            } else if (rolesDetail.get(i).getKey().equals("qualification")) {
+                qualification = getCoachQualification(rolesDetail.get(i).getValue());
             }
         }
-        Coach coach = new Coach(systemUser,qualification);
+        Coach coach = new Coach(systemUser, qualification);
     }
 
     private CoachQualification getCoachQualification(String value) {
         /*'MAIN_COACH','SECOND_COACH','JUNIOR_COACH'*/
         switch (value) {
             case "MAIN_COACH":
-                return  CoachQualification.MAIN_COACH;
+                return CoachQualification.MAIN_COACH;
             case "SECOND_COACH":
                 return CoachQualification.SECOND_COACH;
             case "JUNIOR_COACH":
@@ -285,20 +278,17 @@ public class EntityManager {
         return null;
     }
 
-    private void addPlayerRole(SystemUser systemUser , List<Pair<String , String>> rolesDetail) {
+    private void addPlayerRole(SystemUser systemUser, List<Pair<String, String>> rolesDetail) {
         String username = "";
         Date bday = null;
         for (int i = 0; i < rolesDetail.size(); i++) {
-            if(rolesDetail.get(i).getKey().equals("username"))
-            {
+            if (rolesDetail.get(i).getKey().equals("username")) {
                 username = rolesDetail.get(i).getValue();
-            }
-            else if(rolesDetail.get(i).getKey().equals("birthday"))
-            {
+            } else if (rolesDetail.get(i).getKey().equals("birthday")) {
                 bday = new Date(rolesDetail.get(i).getValue());
             }
         }
-        Player player = new Player(systemUser,bday);
+        Player player = new Player(systemUser, bday);
     }
 
 
@@ -309,33 +299,23 @@ public class EntityManager {
         String email = "";
         boolean notifyByEmail = false;
         for (int i = 0; i < userDetails.size(); i++) {
-            if(userDetails.get(i).getKey().equals("username"))
-            {
+            if (userDetails.get(i).getKey().equals("username")) {
                 username = userDetails.get(i).getValue();
-            }
-            else if(userDetails.get(i).getKey().equals("name"))
-            {
+            } else if (userDetails.get(i).getKey().equals("name")) {
                 name = userDetails.get(i).getValue();
-            }
-            else if(userDetails.get(i).getKey().equals("password"))
-            {
+            } else if (userDetails.get(i).getKey().equals("password")) {
                 password = userDetails.get(i).getValue();
-            }
-            else if(userDetails.get(i).getKey().equals("email"))
-            {
+            } else if (userDetails.get(i).getKey().equals("email")) {
                 email = userDetails.get(i).getValue();
-            }
-            else if(userDetails.get(i).getKey().equals("notify_by_email"))
-            {
+            } else if (userDetails.get(i).getKey().equals("notify_by_email")) {
                 String check = userDetails.get(i).getValue();
-                if(check.equals("true"))
-                {
+                if (check.equals("true")) {
                     notifyByEmail = true;
                 }
 
             }
         }
-        SystemUser systemUser = new SystemUser(username , password , name , email , notifyByEmail);
+        SystemUser systemUser = new SystemUser(username, password, name, email, notifyByEmail);
         return systemUser;
     }
 
@@ -367,11 +347,10 @@ public class EntityManager {
             }
         }
         List<String> stadiumList = DBManager.getInstance().getStadium(stadiumName);
-        if(stadiumList == null)
-        {
+        if (stadiumList == null) {
             return null;
         }
-        Stadium stadium = new Stadium(stadiumList.get(0) , stadiumList.get(1));
+        Stadium stadium = new Stadium(stadiumList.get(0), stadiumList.get(1));
         return stadium;
     }
 
@@ -610,10 +589,9 @@ public class EntityManager {
      * @return The user in the system with those credentials.
      * @throws UsernameOrPasswordIncorrectException If user name or password are incorrect.
      */
-    public SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException,AlreadyLoggedInUser {
+    public SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException, AlreadyLoggedInUser {
         SystemUser userWithUsrNm = getUser(usrNm);
-        if(loggedInMap.containsKey(userWithUsrNm) && loggedInMap.get(userWithUsrNm))
-        {
+        if (loggedInMap.containsKey(userWithUsrNm) && loggedInMap.get(userWithUsrNm)) {
             throw new AlreadyLoggedInUser("Error: The user " + usrNm + " is already logged in");
         }
         if (userWithUsrNm == null) //User name does not exists.
@@ -621,7 +599,7 @@ public class EntityManager {
 
         //User name exists, checking password.
         if (authenticate(userWithUsrNm, pswrd)) {
-            loggedInMap.put(userWithUsrNm,true);
+            loggedInMap.put(userWithUsrNm, true);
             return userWithUsrNm;
         }
 
@@ -655,10 +633,10 @@ public class EntityManager {
      * Must not contain any spaces.
      * Adds new user with the role fan to the system, and returns the relevant user.
      *
-     * @param name  Name.
-     * @param usrNm User name.
-     * @param pswrd Password.
-     * @param email  email address
+     * @param name       Name.
+     * @param usrNm      User name.
+     * @param pswrd      Password.
+     * @param email      email address
      * @param emailAlert - boolean  - if send via email - true, otherwise false
      * @return New user with those credentials.
      * @throws Exception If user name is already belongs to a user in the system, or
@@ -689,13 +667,12 @@ public class EntityManager {
 
 
         /*add user to db*/
-         if(DBManager.getInstance().addUser(usrNm, name, hashedPassword, email , emailAlert))
-         {
-             SystemUser newUser = new SystemUser(usrNm, hashedPassword, name, email, emailAlert);
-             addUser(newUser);
-             return newUser;
+        if (DBManager.getInstance().addUser(usrNm, name, hashedPassword, email, emailAlert)) {
+            SystemUser newUser = new SystemUser(usrNm, hashedPassword, name, email, emailAlert);
+            addUser(newUser);
+            return newUser;
 
-         }
+        }
 
         throw new Invalid("something went wrong");
 
@@ -727,7 +704,7 @@ public class EntityManager {
     }
 
     public void logout(SystemUser logoutUser) {
-        loggedInMap.put(logoutUser,false);
+        loggedInMap.put(logoutUser, false);
     }
 
 /*
@@ -799,7 +776,7 @@ public class EntityManager {
     public List<PointsPolicy> getPointsPolicies() {
         return this.pointsPolicies;
     }
-    
+
 
     /**
      * Checks if a scheduling policy already exists with the same values
@@ -862,11 +839,13 @@ public class EntityManager {
 
         return DBManager.getInstance().addSeasonToLeague(leagueName, season.getYears(), season.getIsUnderway(), pointsPolicyID);
     }
+
     /**
      * validate String to Email REGEX
+     *
      * @param emailStr
      * @return true - valid Email
-     *         false - otherwise
+     * false - otherwise
      */
     private static boolean validate(String emailStr) {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
@@ -874,10 +853,10 @@ public class EntityManager {
     }
 
     public List<Team> getOwnedTeams(TeamOwner teamOwner) {
-        List<Pair<String,String>> ownedTeams = DBManager.getInstance().getTeams(teamOwner.getSystemUser().getName());
+        List<Pair<String, String>> ownedTeams = DBManager.getInstance().getTeams(teamOwner.getSystemUser().getName());
         List<Team> teams = new ArrayList<>();
         for (int i = 0; i < ownedTeams.size(); i++) {
-            Team team = new Team(ownedTeams.get(i).getKey(),teamOwner);
+            Team team = new Team(ownedTeams.get(i).getKey(), teamOwner);
             team.setStatus(getTeamStatus(ownedTeams.get(i).getValue()));
             teams.add(team);
         }
@@ -888,7 +867,7 @@ public class EntityManager {
         /*'OPEN','CLOSED','PERMENENTLY_CLOSED'*/
         switch (value) {
             case "OPEN":
-                return  TeamStatus.OPEN;
+                return TeamStatus.OPEN;
             case "CLOSED":
                 return TeamStatus.CLOSED;
             case "PERMENENTLY_CLOSED":
@@ -897,4 +876,40 @@ public class EntityManager {
         return null;
 
     }
+
+    public void addRole(Role role) {
+        RoleTypes type = role.getType();
+        switch (type) {
+            case PLAYER:
+                Player player = (Player) role;
+                DBManager.getInstance().addPlayer(player.getSystemUser().getUsername(),player.getBday());
+                break;
+            case COACH:
+                Coach coach = (Coach) role;
+                DBManager.getInstance().addCoach(coach.getSystemUser().getUsername(),coach.getQualification().name());
+                break;
+            case TEAM_MANAGER:
+                TeamManager teamManager = (TeamManager) role;
+                DBManager.getInstance().addTeamManager(teamManager.getSystemUser().getUsername());
+                break;
+            case TEAM_OWNER:
+                TeamOwner teamOwner = (TeamOwner) role;
+                DBManager.getInstance().addTeamOwner(teamOwner.getSystemUser().getUsername());
+                break;
+            case SYSTEM_ADMIN:
+                SystemAdmin systemAdmin = (SystemAdmin) role;
+                DBManager.getInstance().addSystemAdmin(systemAdmin.getSystemUser().getUsername());
+                break;
+            case REFEREE:
+                Referee referee = (Referee) role;
+                DBManager.getInstance().addReferee(referee.getSystemUser().getUsername(),referee.getTraining().name());
+                break;
+            case ASSOCIATION_REPRESENTATIVE:
+                AssociationRepresentative associationRepresentative = (AssociationRepresentative) role;
+                DBManager.getInstance().addAssociationRepresentative(associationRepresentative.getSystemUser().getUsername());
+                break;
+        }
+    }
+
+
 }
