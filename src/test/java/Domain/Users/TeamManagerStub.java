@@ -18,7 +18,7 @@ public class TeamManagerStub extends TeamManager {
 
     @Override
     public boolean addTeam(Team teamToMange, TeamOwner teamOwner) {
-        if(selector == 0)
+        if(selector == 0 || selector == 661722)
         {
             return super.addTeam(teamToMange,teamOwner);
         }

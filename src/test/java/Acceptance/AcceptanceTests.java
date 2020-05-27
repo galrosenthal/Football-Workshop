@@ -190,15 +190,15 @@ public class AcceptanceTests {
         //setups
         TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner);
-        teamOwner.addTeamToOwn(team);
+        teamOwner.addTeamToOwn(team,existingUser);
         //add team owner
         TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
         team.addTeamOwner(aviTo);
-        aviTo.addTeamToOwn(team);
+        aviTo.addTeamToOwn(team,aviCohenSu);
         //add team manager
         TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
-        tmanager.addTeam(team);
+        tmanager.addTeam(team,teamOwner);
         //add to Entity manager
         EntityManager.getInstance().addUser(existingUser);
         EntityManager.getInstance().addUser(aviCohenSu);
@@ -229,15 +229,15 @@ public class AcceptanceTests {
         //setups
         TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner);
-        teamOwner.addTeamToOwn(team);
+        teamOwner.addTeamToOwn(team,existingUser);
         //add team owner
         TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
         team.addTeamOwner(aviTo);
-        aviTo.addTeamToOwn(team);
+        aviTo.addTeamToOwn(team,aviCohenSu);
         //add team manager
         TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
-        tmanager.addTeam(team);
+        tmanager.addTeam(team,teamOwner);
         //add to Entity manager
         EntityManager.getInstance().addUser(existingUser);
         EntityManager.getInstance().addUser(aviCohenSu);
@@ -267,11 +267,11 @@ public class AcceptanceTests {
         //setups
         TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner);
-        teamOwner.addTeamToOwn(team);
+        teamOwner.addTeamToOwn(team,existingUser);
         //add team owner
         TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
         team.addTeamOwner(aviTo);
-        aviTo.addTeamToOwn(team);
+        aviTo.addTeamToOwn(team,aviCohenSu);
         //add team manager, BUT NOT the team TO the manager
         TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
@@ -305,11 +305,11 @@ public class AcceptanceTests {
         //setups
         TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner);
-        teamOwner.addTeamToOwn(team);
+        teamOwner.addTeamToOwn(team,existingUser);
         //add team owner
         TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
         team.addTeamOwner(aviTo);
-        aviTo.addTeamToOwn(team);
+        aviTo.addTeamToOwn(team,aviCohenSu);
         //add team manager, BUT NOT the team TO the manager
         TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
@@ -343,7 +343,7 @@ public class AcceptanceTests {
         //setups
         TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner);
-        teamOwner.addTeamToOwn(team);
+        teamOwner.addTeamToOwn(team,existingUser);
         //add team manager, BUT NOT the team TO the manager
         TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
@@ -418,7 +418,7 @@ public class AcceptanceTests {
         beitShean.setTeamName("Beit Shean");
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate);
-        abcOwner.addTeamToOwn(beitShean);
+        abcOwner.addTeamToOwn(beitShean,abcCreate);
         beitShean.getTeamOwners().add(abcOwner);
         SystemUser elisha = new SystemUser("elevy","Elisha Levy");
 
@@ -445,7 +445,7 @@ public class AcceptanceTests {
 
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate);
-        abcOwner.addTeamToOwn(beitShean);
+        abcOwner.addTeamToOwn(beitShean,abcCreate);
         beitShean.getTeamOwners().add(abcOwner);
 
         SystemUser abc = Controller.login("abc1","aBc12345");
@@ -484,7 +484,7 @@ public class AcceptanceTests {
         beitShean.setTeamName("Beit Shean");
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate);
-        abcOwner.addTeamToOwn(beitShean);
+        abcOwner.addTeamToOwn(beitShean,abcCreate);
         beitShean.getTeamOwners().add(abcOwner);
 
         SystemUser abc = Controller.login("abc1", "aBc12345");
@@ -516,7 +516,7 @@ public class AcceptanceTests {
         beitShean.setTeamName("Beit Shean");
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate);
-        abcOwner.addTeamToOwn(beitShean);
+        abcOwner.addTeamToOwn(beitShean,abcCreate);
         beitShean.getTeamOwners().add(abcOwner);
 
         SystemUser abc = Controller.login("abc1", "aBc12345");

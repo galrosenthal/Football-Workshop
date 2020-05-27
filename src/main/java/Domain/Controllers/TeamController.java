@@ -73,10 +73,12 @@ public class TeamController {
         }
 
 
-        teamOwner.addTeamToOwn(teamToOwn);
+        teamOwner.addTeamToOwn(teamToOwn, owner.getSystemUser());
 
+
+        //TODO: maybe this if is not needed?
         if(teamToOwn.addTeamOwner(teamOwner)){
-            teamOwner.setAppointedOwner(owner.getSystemUser());
+            teamOwner.setAppointedOwner(teamToOwn,owner.getSystemUser());
         }
 
         //Log the action
@@ -403,18 +405,18 @@ public class TeamController {
                 i--;
             }
         }
-
-        for(int i =0 ; i < teamToReOpen.getTeamManagers().size(); i++){
+        int numOfManagers = teamToReOpen.getTeamManagers().size();
+        for(int i =0 ; i < numOfManagers; i++){
             TeamManager tmRole = teamToReOpen.getTeamManagers().get(i);
             if(roleStillExists(tmRole) &&
                     tmRole.getSystemUser().getRole(RoleTypes.TEAM_MANAGER) instanceof TeamManager)//Check in the db that the tm still exists
             {
-                tmRole.addTeam(teamToReOpen);
+                tmRole.addTeam(teamToReOpen,teamOwner);
             }
             else {
                 //Removes Team Manager from the team because he is no longer exists.
                 teamToReOpen.removeTeamManager(tmRole);
-                i--;
+                //i--;
                 if(tmRole == null || tmRole.getSystemUser() == null
                         || EntityManager.getInstance().getUser(tmRole.getSystemUser().getUsername()) == null) {
                     //the user deleted entirely from the system
@@ -477,7 +479,7 @@ public class TeamController {
             throw new NotATeamOwner(msg);
         }
 
-        List<TeamOwner> teamOwnersToRemove= allTeamOwnersToRemove(teamOwner,teamOwners);
+        List<TeamOwner> teamOwnersToRemove= allTeamOwnersToRemove(teamOwner,teamOwners, team);
 
         //Remove the teamOwner and all the team owners his appointed
         for (TeamOwner toRemove:
@@ -496,7 +498,7 @@ public class TeamController {
      * @param teamOwner - the appointed owner
      * @return list of all the owners the teamOwner appointed
      */
-    private static List<TeamOwner> allTeamOwnersToRemove(TeamOwner teamOwner,List<TeamOwner> teamOwners) {
+    private static List<TeamOwner> allTeamOwnersToRemove(TeamOwner teamOwner,List<TeamOwner> teamOwners, Team realtedTeam) {
         List<TeamOwner> teamOwnersToCheck = new ArrayList<>();
         List<TeamOwner> teamOwnersToRemove = new ArrayList<>();
 
@@ -512,7 +514,7 @@ public class TeamController {
             for (TeamOwner ownerOfTeam: teamOwners){
 
                 // Change the if to representative once it will complete
-                if(ownerOfTeam.getAppointedOwner()!= null && ownerOfTeam.getAppointedOwner().equals(teamOwnerToCheck.getSystemUser())){
+                if(ownerOfTeam.getAppointedOwner(realtedTeam)!= null && ownerOfTeam.getAppointedOwner(realtedTeam).equals(teamOwnerToCheck.getSystemUser())){
                     teamOwnersToCheck.add(ownerOfTeam);
                     teamOwnersToRemove.add(ownerOfTeam);
                 }
