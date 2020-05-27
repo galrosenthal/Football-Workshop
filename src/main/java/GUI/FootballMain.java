@@ -129,6 +129,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
         // Create logout button but don't add it yet; admin view might be added
         // in between (see #onAttach())
         logoutButton = createMenuButton("Logout", VaadinIcon.SIGN_OUT.create());
+        logoutButton.setEnabled(false);
         logoutButton.addClickListener(e -> logout());
         logoutButton.getElement().setAttribute("title", "Logout (Ctrl+L)");
     }
@@ -370,7 +371,9 @@ public class FootballMain extends AppLayout implements RouterLayout{
         {
             loginBtn.setVisible(false);
             signupBtn.setVisible(false);
+            logoutButton.setEnabled(true);
         }
+
 
         // Navigation items
         createNavItems();
