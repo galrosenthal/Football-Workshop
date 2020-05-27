@@ -440,7 +440,9 @@ public class Team {
         {
             return true;
         }
-        return false;
+        /*check in db*/
+        return EntityManager.getInstance().isTeamOwner(teamOwner,this);
+     //   return false;
     }
 
     /**

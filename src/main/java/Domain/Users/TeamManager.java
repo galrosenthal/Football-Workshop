@@ -33,6 +33,8 @@ public class TeamManager extends Role implements Asset {
             {
                 List<TeamManagerPermissions> permissions = new ArrayList<>();
                 this.permissionsPerTeam.put(teamToMange , permissions);
+                /*update db*/
+                EntityManager.getInstance().addTeamManger(teamToMange,this,teamOwner);
 
                 return true;
             }
@@ -181,6 +183,7 @@ public class TeamManager extends Role implements Asset {
 
         }
         return  false;
+
     }
 
     @Override
@@ -210,15 +213,15 @@ public class TeamManager extends Role implements Asset {
     }
 
     /*maybe need to delete*/
-    public boolean addTeam(Team team){
-        if(!this.managedTeams.contains(team)) {
-            this.managedTeams.add(team);
-            this.permissionsPerTeam.put(team,new ArrayList<>());
-            /*todo: Write to db*/
-            return EntityManager.getInstance().addTeamManger(team , this);
-        }
-        return false;
-    }
+//    public boolean addTeam(Team team){
+//        if(!this.managedTeams.contains(team)) {
+//            this.managedTeams.add(team);
+//            this.permissionsPerTeam.put(team,new ArrayList<>());
+//            /*todo: Write to db*/
+//            return EntityManager.getInstance().addTeamManger(team , this);
+//        }
+//        return false;
+//    }
 
     public boolean removeTeam(Team team){
          if(this.managedTeamsAndAppointed.remove(team) != null)

@@ -639,7 +639,7 @@ public class EntityManager{
      * @throws Exception If user name is already belongs to a user in the system, or
      * the password does not meet the security requirements.
      */
-    public SystemUser signUp(String name, String usrNm, String pswrd,String email, boolean emailAlert) throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException {
+    public SystemUser signUp(String name, String usrNm, String pswrd,String email, boolean emailAlert) throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException, Invalid {
         //Checking if user name is already exists
         if(getUser(usrNm) != null){
             String msg = "Username already exists";
@@ -668,16 +668,15 @@ public class EntityManager{
 
         //hash the password
         String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pswrd);
-        SystemUser newUser = new SystemUser(usrNm, hashedPassword, name, email,emailAlert);
-        addUser(newUser);
 
-        //Log the action
-        SystemLoggerManager.logInfo(this.getClass(), new SignUpLogMsg(newUser.getUsername()));
 
         /*add user to db*/
         if (DBManager.getInstance().addUser(usrNm, name, hashedPassword, email, emailAlert)) {
             SystemUser newUser = new SystemUser(usrNm, hashedPassword, name, email, emailAlert);
             addUser(newUser);
+            //Log the action
+            SystemLoggerManager.logInfo(this.getClass(), new SignUpLogMsg(newUser.getUsername()));
+
             return newUser;
 
         }
@@ -919,10 +918,8 @@ public class EntityManager{
 
 
 
-    public boolean addTeamManger(Team team, TeamManager teamManager) {
-    //    return DBManager.getInstance().addTeamMangerToTeam(team.)
-        return  false;
-
+    public boolean addTeamManger(Team team, TeamManager teamManager, TeamOwner teamOwner) {
+        return DBManager.getInstance().addTeamMangerToTeam(team.getTeamName(),teamManager.getSystemUser().getUsername(),teamOwner.getSystemUser().getUsername());
     }
 
     public boolean isSystemBooted() {
@@ -931,5 +928,9 @@ public class EntityManager{
 
     public void setIsBooted(boolean isSystemBoot) {
         isSystemBooted = isSystemBoot;
+    }
+
+    public boolean isTeamOwner(TeamOwner teamOwner, Team team) {
+        return DBManager.getInstance().isTeamOwner(teamOwner.getSystemUser().getName(),team.getTeamName());
     }
 }

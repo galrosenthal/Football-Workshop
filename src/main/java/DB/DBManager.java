@@ -522,5 +522,30 @@ public class DBManager {
         }
         return true;
     }
+
+    public boolean isTeamOwner(String name, String teamName) {
+        DSLContext create = DBHandler.getContext();
+        List<String> stadium;
+        Result<?> result = create.select()
+                .from(OWNED_TEAMS.where(OWNED_TEAMS.USERNAME.eq(name).and(OWNED_TEAMS.TEAM_NAME.eq(teamName)))).fetch();
+        if (result.size() == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean addTeamMangerToTeam(String teamName, String username, String usernameAppointed) {
+        try{
+            DSLContext create = DBHandler.getContext();
+            create.insertInto(MANAGER_IN_TEAMS, MANAGER_IN_TEAMS.TEAM_NAME, MANAGER_IN_TEAMS.USERNAME, MANAGER_IN_TEAMS.APPOINTER).values(teamName,username,usernameAppointed).execute();
+
+
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 }
 
