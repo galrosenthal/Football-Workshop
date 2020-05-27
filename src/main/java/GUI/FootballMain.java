@@ -8,7 +8,7 @@ import GUI.RoleRelatedViews.Referee.RefereeControls;
 import GUI.RoleRelatedViews.TeamOwner.TOControls;
 import Service.MainController;
 import Service.UIController;
-import com.sun.jmx.snmp.Timestamp;
+//import com.sun.jmx.snmp.Timestamp;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -224,7 +224,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
     }
 
     public static void downloadReport(String report,UI lastUI) {
-        String timeStamp = (new Timestamp(new Date().getTime())).toString();
+        //String timeStamp = (new Timestamp(new Date().getTime())).toString();
         String [] gameReport = report.split(UIController.STRING_DELIMETER);
         String reportText = gameReport[0];
         String gameDate = gameReport[1];
@@ -242,7 +242,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
             InputStream is = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
             StreamResource myResource = new StreamResource(report, () -> is);
             Anchor downloadLink = new Anchor(new StreamResource("GameReport_" + gameDate + ".txt", () -> createResource(reportText)), "");
-            downloadLink.setId(timeStamp);
+            downloadLink.setId("timeStamp");
             downloadLink.getElement().getStyle().set("display", "none");
             downloadLink.getElement().setAttribute("download", true);
             vl.add(downloadLink);
@@ -255,7 +255,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 newWindow.close();
             });
             Page page = UI.getCurrent().getPage();
-            page.executeJavaScript("document.getElementById('"+timeStamp+"').click();");
+            page.executeJavaScript("document.getElementById(timeStamp).click();");
 
             newWindow.add(vl);
             newWindow.add(ok);

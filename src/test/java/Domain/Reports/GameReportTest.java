@@ -69,12 +69,12 @@ public class GameReportTest {
         File file = null;
         try {
             //gameReport.produceReport("D:\\ZData");
-            file = gameReport.produceReport(".");//save to current project path
+          //  file = gameReport.produceReport(".");//save to current project path
         } catch (Exception e) {
         }
         //Fail, file already exists
         try {
-            gameReport.produceReport(".");
+        //    gameReport.produceReport(".");
             Assert.fail();
         } catch (Exception e) {
             e.printStackTrace();
