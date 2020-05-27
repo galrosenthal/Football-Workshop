@@ -722,7 +722,7 @@ public class ARController {
             return false;
         }
 
-        UIController.showNotification("The chosen points policy was set successfully");
+        UIController.showNotification("The chosen schedule policy was activated successfully");
         //Log the action
         SystemLoggerManager.logInfo(ARController.class,
                 new ActivateSchedulingPolicyLogMsg(systemUser.getUsername(),chosenSeason.getYears(),
