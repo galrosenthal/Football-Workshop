@@ -16,6 +16,7 @@ target/**/*.properties
 /target/classes/Tables/testTable.csv
 **/*.lst
 **/*.csv
+/src/main/resources/logs/*
 
 .settings
 .classpath
