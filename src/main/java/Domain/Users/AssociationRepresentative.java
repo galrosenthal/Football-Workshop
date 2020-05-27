@@ -159,19 +159,20 @@ public class AssociationRepresentative extends Role {
 
     /**
      * Adds a new points policy using the given parameters.
-     * Adds only if the arguments are correct and if an identical policy doesn't exist yet.
+     * Because the nature of receiveStringFromMultipleInputs we know that the inputs are legal
      *
      * @param victoryPoints - int - the amount of points earned for a victory - positive integer
      * @param lossPoints    - int - the amount of points lost for a loss - negative integer or zero
      * @param tiePoints     - int - the amount of points earned/lost for a tie - integer
-     * @throws Exception - IllegalArgumentException - if the wrong arguments were passed, ExistsAlreadyException - if the policy already exists
+     * @throws Exception ExistsAlreadyException - if the policy already exists
      */
     public void addPointsPolicy(int victoryPoints, int lossPoints, int tiePoints) throws Exception {
-        if (victoryPoints <= 0) {
+
+        /*if (victoryPoints <= 0) {
             throw new IllegalArgumentException("The victory points most be positive");
         } else if (lossPoints > 0) {
             throw new IllegalArgumentException("The loss points most be negative or zero");
-        }
+        }*/
         if (EntityManager.getInstance().doesPointsPolicyExists(victoryPoints, lossPoints, tiePoints)) {
             throw new ExistsAlreadyException("This points policy already exists");
         }

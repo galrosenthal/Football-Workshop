@@ -236,7 +236,7 @@ public class AssociationRepresentativeTest {
     }
 
 
-    @Test
+   /* @Test
     public void addPointsPolicyITest() {
         SystemUser aRUser = new SystemUser("arUsername", "arName");
         aR = new AssociationRepresentative(aRUser);
@@ -247,9 +247,9 @@ public class AssociationRepresentativeTest {
             assertEquals("The victory points most be positive", e.getMessage());
             assertTrue(e instanceof IllegalArgumentException);
         }
-    }
+    }*/
 
-    @Test
+   /* @Test
     public void addPointsPolicy2ITest() {
         SystemUser aRUser = new SystemUser("arUsername", "arName");
         aR = new AssociationRepresentative(aRUser);
@@ -260,7 +260,7 @@ public class AssociationRepresentativeTest {
             assertEquals("The loss points most be negative or zero", e.getMessage());
             assertTrue(e instanceof IllegalArgumentException);
         }
-    }
+    }*/
 
     @Test
     public void addPointsPolicy3ITest() {
