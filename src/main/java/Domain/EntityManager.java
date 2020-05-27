@@ -456,6 +456,8 @@ public class EntityManager {
      * @return true if successfully added the Team to the system.
      */
     public boolean addTeam(Team team) {
+        /*TODO - ADD TEAM TO DB*/
+        boolean teamAdded = DBManager.getInstance().addTeam(team.getTeamName(),team.getStatus().toString());
         if (!(this.allTeams.contains(team))) {
             this.allTeams.add(team);
             return true;
@@ -912,4 +914,9 @@ public class EntityManager {
     }
 
 
+    public boolean addTeamManger(Team team, TeamManager teamManager) {
+    //    return DBManager.getInstance().addTeamMangerToTeam(team.)
+        return  false;
+
+    }
 }

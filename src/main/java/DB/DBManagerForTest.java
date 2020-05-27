@@ -41,7 +41,7 @@ public class DBManagerForTest extends DBManager {
 
 
     public static void startConnection() {
-        DBHandler.startConnection("jdbc:mysql://localhost:3306/fwdb_test");
+        DBHandler.startConnection("jdbc:mysql://132.72.65.105:3306/fwdb_test");
     }
 
     @Override
@@ -162,13 +162,17 @@ public class DBManagerForTest extends DBManager {
     public boolean addUser(String username, String name, String password, String email, boolean alertEmail) {
         DSLContext dslContext = DBHandler.getContext();
         /*todo: check duplicate key*/
-        int succeed = dslContext.insertInto(SYSTEMUSER,
-                SYSTEMUSER.USERNAME, SYSTEMUSER.NAME, SYSTEMUSER.PASSWORD,
-                SYSTEMUSER.EMAIL, SYSTEMUSER.NOTIFY_BY_EMAIL)
-                .values(username, name, password, email, alertEmail).execute();
-        if (succeed == 0) {
+        try {
+            dslContext.insertInto(SYSTEMUSER,
+                    SYSTEMUSER.USERNAME, SYSTEMUSER.NAME, SYSTEMUSER.PASSWORD,
+                    SYSTEMUSER.EMAIL, SYSTEMUSER.NOTIFY_BY_EMAIL)
+                    .values(username, name, password, email, alertEmail).execute();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
             return false;
         }
+
         return true;
     }
 
@@ -419,5 +423,18 @@ public class DBManagerForTest extends DBManager {
         create.insertInto(ASSOCIATION_REPRESENTATIVE, ASSOCIATION_REPRESENTATIVE.USERNAME).values(username).execute();
 
 
+    }
+
+    @Override
+    public boolean addTeam(String teamName, String teamStatus) {
+        try{
+            DSLContext create = DBHandler.getContext();
+            create.insertInto(TEAM, TEAM.NAME,TEAM.STATUS).values(teamName, TeamStatus.valueOf(teamStatus));
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

@@ -510,5 +510,17 @@ public class DBManager {
 
 
     }
+
+    public boolean addTeam(String teamName, String teamStatus) {
+        try{
+            DSLContext create = DBHandler.getContext();
+            create.insertInto(TEAM, TEAM.NAME,TEAM.STATUS).values(teamName,TeamStatus.valueOf(teamStatus));
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 }
 

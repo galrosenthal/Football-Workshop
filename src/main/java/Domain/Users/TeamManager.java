@@ -1,5 +1,6 @@
 package Domain.Users;
 
+import Domain.EntityManager;
 import Domain.Game.Asset;
 import Domain.Game.Team;
 
@@ -212,7 +213,8 @@ public class TeamManager extends Role implements Asset {
         if(!this.managedTeams.contains(team)) {
             this.managedTeams.add(team);
             this.permissionsPerTeam.put(team,new ArrayList<>());
-            return true;
+            /*todo: Write to db*/
+            return EntityManager.getInstance().addTeamManger(team , this);
         }
         return false;
     }

@@ -30,6 +30,8 @@ public class Team {
         stadiums = new ArrayList<>();
         status = TeamStatus.OPEN;
         permissionsPerTeamManager = new HashMap<>();
+        EntityManager.getInstance().addTeam(this);
+
     }
 
     public Team(String teamName, TeamOwner to) {
@@ -42,6 +44,8 @@ public class Team {
         seasons = new ArrayList<>();
         this.teamName = teamName;
         permissionsPerTeamManager = new HashMap<>();
+        EntityManager.getInstance().addTeam(this);
+
     }
 
     public Team(Team anotherTeam) {
