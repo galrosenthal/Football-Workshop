@@ -33,6 +33,7 @@ public class TeamControllerTest {
     SystemUser teamOwnerUser3 = new SystemUser("nirdz", "Nir12345", "Nir" , "test@gmail.com" , false);
     SystemUser teamOwnerUser4 = new SystemUser("merav", "Merav12345", "Mer" , "test@gmail.com" , false);
 
+    
     @BeforeClass
     public static void beforeClass(){
         DBManager.startTest();
