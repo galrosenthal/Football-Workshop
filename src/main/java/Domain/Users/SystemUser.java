@@ -41,7 +41,7 @@ public class SystemUser extends User implements Fan {
         this.name = name;
         this.password = password;
         this.email = email;
-        this.alertEmail = alertEmail;
+        this.alertEmail = notifyByEmail;
         gamesAlert = new ArrayList<>();
     }
 
