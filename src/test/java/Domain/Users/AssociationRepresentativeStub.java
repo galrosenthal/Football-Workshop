@@ -8,7 +8,7 @@ public class AssociationRepresentativeStub extends AssociationRepresentative{
     private static int selector;
 
     public AssociationRepresentativeStub(SystemUser systemUser) {
-        super(systemUser);
+        super(systemUser, true);
     }
 
     public static void setSelector(int selector) {

@@ -12,9 +12,15 @@ public class Referee extends Role {
     private List<Game> games;
     private List<Season> seasons;
 
-
-    public Referee(SystemUser systemUser, RefereeQualification training) {
-        super(RoleTypes.REFEREE, systemUser);
+    /**
+     * Constructor
+     *
+     * @param systemUser - SystemUser - The system user to add the new role to
+     * @param addToDB    - boolean - Whether to add the new role to the database
+     * @param training   - RefereeQualification - The training of the referee
+     */
+    public Referee(SystemUser systemUser, RefereeQualification training, boolean addToDB) {
+        super(RoleTypes.REFEREE, systemUser, addToDB);
         this.training = training;
         this.games = new ArrayList<>();
         this.seasons = new ArrayList<>();
@@ -88,7 +94,7 @@ public class Referee extends Role {
         this.games.add(game);
     }
 
-    public void removeGame(Game game){
+    public void removeGame(Game game) {
         this.games.remove(game);
     }
 }

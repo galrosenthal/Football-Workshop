@@ -20,7 +20,7 @@ public class TeamManagerTest {
 
     @Test
     public void getPropertiesUTest() {
-        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131));
+        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131), true);
         List<String> allProperties = teamManager.getProperties();
         Assert.assertTrue(allProperties.size() == 1);
         Assert.assertTrue(allProperties.contains(teamManager.permissionsString));
@@ -28,33 +28,33 @@ public class TeamManagerTest {
 
     @Test
     public void changePropertyUTest() {
-        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131));
+        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131), true);
         Assert.assertFalse(teamManager.changeProperty(null, "test", teamManager.permissionsString));
 
     }
 
     @Test
     public void isListPropertyUTest() {
-        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131));
+        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131), true);
         Assert.assertTrue(teamManager.isListProperty(teamManager.permissionsString));
         Assert.assertFalse(teamManager.isListProperty("Test"));
     }
 
     @Test
     public void isStringPropertyUTest() {
-        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131));
+        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131), true);
         Assert.assertFalse(teamManager.isStringProperty(teamManager.permissionsString));
     }
 
     @Test
     public void isEnumPropertyUTest() {
-        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131));
+        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131), true);
         Assert.assertFalse(teamManager.isEnumProperty(teamManager.permissionsString));
     }
 
     @Test
     public void getAllValuesUTest() {
-        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131));
+        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131), true);
         List<Enum> enumList = teamManager.getAllValues(teamManager.permissionsString);
         Assert.assertTrue(enumList.size() == TeamManagerPermissions.values().length);
         Assert.assertTrue(enumList.contains(TeamManagerPermissions.ADD_COACH));
@@ -69,7 +69,7 @@ public class TeamManagerTest {
 
     @Test
     public void getAllPropertyListUTest() {
-        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131));
+        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131), true);
         List<Enum> enumList = teamManager.getAllPropertyList(new TeamStub(6131), "Test");
         assertNull(enumList);
         Team team = new TeamStub(6131);
@@ -81,7 +81,7 @@ public class TeamManagerTest {
 
     @Test
     public void addPropertyUTest() {
-        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131));
+        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131), true);
         Team team = new TeamStub(6131);
         TeamOwner teamOwner = new TeamOwnerStub(new SystemUserStub("teamManagerTestUS", "gal", 6131));
         teamManager.addTeam(team, teamOwner);
@@ -94,7 +94,7 @@ public class TeamManagerTest {
 
     @Test
     public void removePropertyUTest() {
-        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131));
+        TeamManager teamManager = new TeamManager(new SystemUserStub("teamManagerTest", "gal", 6131), true);
         Team team = new TeamStub(6131);
         TeamOwner teamOwner = new TeamOwnerStub(new SystemUserStub("teamManagerTestUS", "gal", 6131));
         teamManager.addTeam(team, teamOwner);
@@ -107,7 +107,7 @@ public class TeamManagerTest {
 
     @Test
     public void getPropertiesITest() {
-        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"), true);
         List<String> allProperties = teamManager.getProperties();
         Assert.assertTrue(allProperties.size() == 1);
         Assert.assertTrue(allProperties.contains(teamManager.permissionsString));
@@ -115,33 +115,33 @@ public class TeamManagerTest {
 
     @Test
     public void changePropertyITest() {
-        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"), true);
         Assert.assertFalse(teamManager.changeProperty(null, "test", teamManager.permissionsString));
 
     }
 
     @Test
     public void isListPropertyITest() {
-        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"), true);
         Assert.assertTrue(teamManager.isListProperty(teamManager.permissionsString));
         Assert.assertFalse(teamManager.isListProperty("Test"));
     }
 
     @Test
     public void isStringPropertyITest() {
-        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"), true);
         Assert.assertFalse(teamManager.isStringProperty(teamManager.permissionsString));
     }
 
     @Test
     public void isEnumPropertyITest() {
-        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"), true);
         Assert.assertFalse(teamManager.isEnumProperty(teamManager.permissionsString));
     }
 
     @Test
     public void getAllValuesITest() {
-        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"), true);
         List<Enum> enumList = teamManager.getAllValues(teamManager.permissionsString);
         Assert.assertTrue(enumList.size() == TeamManagerPermissions.values().length);
         Assert.assertTrue(enumList.contains(TeamManagerPermissions.ADD_COACH));
@@ -156,7 +156,7 @@ public class TeamManagerTest {
 
     @Test
     public void getAllPropertyListITest() {
-        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"), true);
         List<Enum> enumList = teamManager.getAllPropertyList(new TeamStub(6131), "Test");
         assertNull(enumList);
         Team team = new TeamStub(6131);
@@ -168,7 +168,7 @@ public class TeamManagerTest {
 
     @Test
     public void addPropertyITest() {
-        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"), true);
         Team team = new TeamStub(6131);
         TeamOwner teamOwner = new TeamOwnerStub(new SystemUserStub("teamManagerTestUS", "gal", 6131));
         teamManager.addTeam(team, teamOwner);
@@ -181,7 +181,7 @@ public class TeamManagerTest {
 
     @Test
     public void removePropertyITest() {
-        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"), true);
         Team team = new TeamStub(6131);
         TeamOwner teamOwner = new TeamOwnerStub(new SystemUserStub("teamManagerTestUS", "gal", 6131));
         teamManager.addTeam(team, teamOwner);

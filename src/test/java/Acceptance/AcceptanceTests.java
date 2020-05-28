@@ -34,12 +34,12 @@ public class AcceptanceTests {
     public static void setUp() { //Will be called only once
         String hashedPasswordForEu = org.apache.commons.codec.digest.DigestUtils.sha256Hex("aBc12345");
         String hashedPasswordForAviYosi = org.apache.commons.codec.digest.DigestUtils.sha256Hex("123Ab456");
-        existingUser = new SystemUser("abc", hashedPasswordForEu, "abc", "test@gmail.com", false);
-        existingUser.addNewRole(new TeamOwner(existingUser));
-        aviCohenSu = new SystemUser("avicohen", hashedPasswordForAviYosi, "Avi Cohen","test@gmail.com", false);
-        aviCohenSu.addNewRole(new TeamOwner(aviCohenSu));
-        yosiManagerSu = new SystemUser("yosilevi", hashedPasswordForAviYosi, "Yosi Levi","test@gmail.com", false);
-        yosiManagerSu.addNewRole(new TeamManager(yosiManagerSu));
+        existingUser = new SystemUser("abc", hashedPasswordForEu, "abc", "test@gmail.com", false, true);
+        existingUser.addNewRole(new TeamOwner(existingUser, true));
+        aviCohenSu = new SystemUser("avicohen", hashedPasswordForAviYosi, "Avi Cohen","test@gmail.com", false, true);
+        aviCohenSu.addNewRole(new TeamOwner(aviCohenSu, true));
+        yosiManagerSu = new SystemUser("yosilevi", hashedPasswordForAviYosi, "Yosi Levi","test@gmail.com", false, true);
+        yosiManagerSu.addNewRole(new TeamManager(yosiManagerSu, true));
         UIController.setIsTest(true);
         SystemLoggerManager.disableLoggers(); // disable loggers in tests
     }
@@ -55,8 +55,8 @@ public class AcceptanceTests {
 
     private void initEntities() {
         String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex("12345678");
-        SystemUser adminUser = new SystemUser("admin", hashedPassword, "administrator","test@gmail.com", false);
-        adminUser.addNewRole(new SystemAdmin(adminUser));
+        SystemUser adminUser = new SystemUser("admin", hashedPassword, "administrator","test@gmail.com", false, true);
+        adminUser.addNewRole(new SystemAdmin(adminUser, true));
         EntityManager.getInstance().addUser(adminUser);
     }
 
@@ -150,7 +150,7 @@ public class AcceptanceTests {
     @Test
     public void addLeagueATest() {
         SystemUser systemUser = new SystemUser("username", "name");
-        systemUser.addNewRole(new AssociationRepresentative(systemUser));
+        systemUser.addNewRole(new AssociationRepresentative(systemUser, true));
         EntityManager.getInstance().addUser(systemUser);
         UIController.setIsTest(true);
         UIController.setSelector(6);
@@ -168,7 +168,7 @@ public class AcceptanceTests {
     @Test
     public void addLeague2ATest() {
         SystemUser systemUser = new SystemUser("username", "name");
-        systemUser.addNewRole(new AssociationRepresentative(systemUser));
+        systemUser.addNewRole(new AssociationRepresentative(systemUser, true));
         EntityManager.getInstance().addUser(systemUser);
         EntityManager.getInstance().addLeague(new League("Premier League"));
         UIController.setIsTest(true);
@@ -375,7 +375,7 @@ public class AcceptanceTests {
     @Test
     public void addSeasonToLeagueATest(){
         SystemUser systemUser = new SystemUser("username", "name");
-        systemUser.addNewRole(new AssociationRepresentative(systemUser));
+        systemUser.addNewRole(new AssociationRepresentative(systemUser, true));
         EntityManager.getInstance().addUser(systemUser);
         EntityManager.getInstance().addLeague(new League("Premier League"));
         UIController.setIsTest(true);
@@ -392,7 +392,7 @@ public class AcceptanceTests {
     @Test
     public void addSeasonToLeague2ATest(){
         SystemUser systemUser = new SystemUser("username", "name");
-        systemUser.addNewRole(new AssociationRepresentative(systemUser));
+        systemUser.addNewRole(new AssociationRepresentative(systemUser, true));
         EntityManager.getInstance().addUser(systemUser);
         EntityManager.getInstance().addLeague(new League("Premier League"));
         UIController.setIsTest(true);
@@ -417,7 +417,7 @@ public class AcceptanceTests {
 
         beitShean.setTeamName("Beit Shean");
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
-        TeamOwner abcOwner = new TeamOwner(abcCreate);
+        TeamOwner abcOwner = new TeamOwner(abcCreate, true);
         abcOwner.addTeamToOwn(beitShean,abcCreate);
         beitShean.getTeamOwners().add(abcOwner);
         SystemUser elisha = new SystemUser("elevy","Elisha Levy");
@@ -444,7 +444,7 @@ public class AcceptanceTests {
         beitShean.setTeamName("Beit Shean");
 
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
-        TeamOwner abcOwner = new TeamOwner(abcCreate);
+        TeamOwner abcOwner = new TeamOwner(abcCreate, true);
         abcOwner.addTeamToOwn(beitShean,abcCreate);
         beitShean.getTeamOwners().add(abcOwner);
 
@@ -483,14 +483,14 @@ public class AcceptanceTests {
         Team beitShean = new Team("beitShean");
         beitShean.setTeamName("Beit Shean");
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
-        TeamOwner abcOwner = new TeamOwner(abcCreate);
+        TeamOwner abcOwner = new TeamOwner(abcCreate, true);
         abcOwner.addTeamToOwn(beitShean,abcCreate);
         beitShean.getTeamOwners().add(abcOwner);
 
         SystemUser abc = Controller.login("abc1", "aBc12345");
         assertEquals(abc, abcCreate);
 
-        SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy","test@gmail.com", false);
+        SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy","test@gmail.com", false, true);
         Player playerElisha = new Player(elivyCreate, new Date());
         beitShean.addTeamPlayer(abcOwner, playerElisha);
         UIController.setIsTest(true);
@@ -515,14 +515,14 @@ public class AcceptanceTests {
         Team beitShean = new Team("beitShean");
         beitShean.setTeamName("Beit Shean");
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
-        TeamOwner abcOwner = new TeamOwner(abcCreate);
+        TeamOwner abcOwner = new TeamOwner(abcCreate, true);
         abcOwner.addTeamToOwn(beitShean,abcCreate);
         beitShean.getTeamOwners().add(abcOwner);
 
         SystemUser abc = Controller.login("abc1", "aBc12345");
         assertEquals(abc, abcCreate);
 
-        SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy","test@gmail.com", false);
+        SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy","test@gmail.com", false, true);
         Player playerElisha = new Player(elivyCreate, new Date());
 
         UIController.setIsTest(true);
@@ -555,7 +555,7 @@ public class AcceptanceTests {
 
     private void addRefereeSuccessTest() {
         SystemUser systemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(systemUser);
+        new AssociationRepresentative(systemUser, true);
         SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
 
         assertTrue(ARController.addReferee(systemUser));
@@ -573,9 +573,9 @@ public class AcceptanceTests {
     @Test
     public void addReferee3ATest() {
         SystemUser systemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(systemUser);
+        new AssociationRepresentative(systemUser, true);
         SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
-        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE, true);
 
         UIController.setSelector(9311);
         //The user is already a referee
@@ -589,10 +589,10 @@ public class AcceptanceTests {
     @Test
     public void removeRefereeATest() {
         SystemUser systemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(systemUser);
+        new AssociationRepresentative(systemUser, true);
 
         SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
-        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE, true);
         UIController.setSelector(9321);
         //There are no referees
         assertTrue(ARController.removeReferee(systemUser));
@@ -606,7 +606,7 @@ public class AcceptanceTests {
     @Test
     public void removeReferee2ATest() {
         SystemUser systemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(systemUser);
+        new AssociationRepresentative(systemUser, true);
 
         SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
 
@@ -622,13 +622,13 @@ public class AcceptanceTests {
     @Test
     public void assignRefereeATest() {
         SystemUser systemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(systemUser);
+        new AssociationRepresentative(systemUser, true);
         UIController.setSelector(0);
         EntityManager.getInstance().addLeague(new League("Premier League"));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
         SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
-        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE, true);
         /*
         Expected: The referee has been assigned to the season successfully
          */
@@ -642,13 +642,13 @@ public class AcceptanceTests {
     @Test
     public void assignReferee2ATest() {
         SystemUser systemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(systemUser);
+        new AssociationRepresentative(systemUser, true);
         UIController.setSelector(0);
         EntityManager.getInstance().addLeague(new League("Premier League"));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
         SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
-        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE, true);
         /*
         Expected: The referee has been assigned to the season successfully
          */
@@ -669,7 +669,7 @@ public class AcceptanceTests {
         SystemUser arSystemUser = new SystemUser("oran", "oran");
         SystemUser toSystemUser = new SystemUser("gal", "gal");
         SystemUser to2SystemUser = new SystemUser("merav", "merav");
-        new AssociationRepresentative(arSystemUser);
+        new AssociationRepresentative(arSystemUser, true);
         UIController.setSelector(631);
         ARController.registerNewTeam(arSystemUser);
         UIController.setSelector(633);
@@ -690,7 +690,7 @@ public class AcceptanceTests {
         SystemUser toSystemUser = new SystemUser("gal", "gal");
         SystemUser to2SystemUser = new SystemUser("merav", "merav");
         SystemUser to3SystemUser = new SystemUser("nir", "nir");
-        new AssociationRepresentative(arSystemUser);
+        new AssociationRepresentative(arSystemUser, true);
         UIController.setSelector(631);
         ARController.registerNewTeam(arSystemUser);
         UIController.setSelector(633);
@@ -713,7 +713,7 @@ public class AcceptanceTests {
             SystemUser arSystemUser = new SystemUser("oran", "oran");
             SystemUser toSystemUser = new SystemUser("gal", "gal");
             SystemUser to2SystemUser = new SystemUser("merav", "merav");
-            new AssociationRepresentative(arSystemUser);
+            new AssociationRepresentative(arSystemUser, true);
             UIController.setSelector(631);
             ARController.registerNewTeam(arSystemUser);
             UIController.setSelector(635);
@@ -731,7 +731,7 @@ public class AcceptanceTests {
     @Test
     public void registerNewTeamATest() throws TeamAlreadyExistsException, UserNotFoundException {
         SystemUser arSystemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(arSystemUser);
+        new AssociationRepresentative(arSystemUser, true);
         SystemUser userToBeOwner = new SystemUser("AviCohen", "name");
         UIController.setSelector(91011); // Hapoel Beit Shan
 
@@ -749,11 +749,11 @@ public class AcceptanceTests {
     @Test
     public void registerNewTeam2ATest() throws TeamAlreadyExistsException, UserNotFoundException {
         SystemUser arSystemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(arSystemUser);
+        new AssociationRepresentative(arSystemUser, true);
         SystemUser userToBeOwner = new SystemUser("AviCohen", "name");
 
         SystemUser teamOwnerUser = new SystemUser("to", "name");
-        new TeamOwner(teamOwnerUser);
+        new TeamOwner(teamOwnerUser, true);
         TeamOwner toRole = (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
         Team existingTeam = new Team("Hapoel Beit Shan", toRole);
         EntityManager.getInstance().addTeam(existingTeam);
@@ -776,7 +776,7 @@ public class AcceptanceTests {
     @Test
     public void registerNewTeam3ATest() throws TeamAlreadyExistsException, UserNotFoundException {
         SystemUser arSystemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(arSystemUser);
+        new AssociationRepresentative(arSystemUser, true);
         UIController.setSelector(91031); // Hapoel Beit Shan, then NOTaUSERNAME
         try {
             ARController.registerNewTeam(arSystemUser);
@@ -794,7 +794,7 @@ public class AcceptanceTests {
     @Test
     public void addPointsPolicyATest() {
         SystemUser systemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(systemUser);
+        new AssociationRepresentative(systemUser, true);
         UIController.setSelector(9511);//1,-1,0
         assertTrue(ARController.addPointsPolicy(systemUser));
         assertTrue(EntityManager.getInstance().doesPointsPolicyExists(1,-1,0));
@@ -810,7 +810,7 @@ public class AcceptanceTests {
     @Test
     public void addPointsPolicy2ATest() {
         SystemUser systemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(systemUser);
+        new AssociationRepresentative(systemUser, true);
         UIController.setSelector(9511); //1,-1,0
         assertTrue(ARController.addPointsPolicy(systemUser));
         assertFalse(ARController.addPointsPolicy(systemUser));
@@ -826,7 +826,7 @@ public class AcceptanceTests {
     @Test
     public void setPointsPolicyATest() {
         SystemUser systemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(systemUser);
+        new AssociationRepresentative(systemUser, true);
         EntityManager.getInstance().addLeague(new League("Premier League"));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
@@ -853,8 +853,8 @@ public class AcceptanceTests {
     @Test
     public void addTeamsToSeasonATest(){
         SystemUser arSystemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(arSystemUser);
-        new TeamOwner(arSystemUser);
+        new AssociationRepresentative(arSystemUser, true);
+        new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
         Team team1 = new Team("Hapoel Beit Shan", toRole);
         Team team2 = new Team("Hapoel Beer Sheva", toRole);
@@ -879,8 +879,8 @@ public class AcceptanceTests {
     @Test
     public void removeTeamsFromSeasonATest() {
         SystemUser arSystemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(arSystemUser);
-        new TeamOwner(arSystemUser);
+        new AssociationRepresentative(arSystemUser, true);
+        new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
         Team team1 = new Team("Hapoel Beit Shan", toRole);
         Team team2 = new Team("Hapoel Beer Sheva", toRole);
@@ -913,7 +913,7 @@ public class AcceptanceTests {
     @Test
     public void addSchedulingPolicyATest() {
         SystemUser systemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(systemUser);
+        new AssociationRepresentative(systemUser, true);
         UIController.setSelector(962);//1,1,1,..
         assertTrue(ARController.addSchedulingPolicy(systemUser));
         assertTrue(EntityManager.getInstance().doesSchedulingPolicyExists(1, 1, 1));
@@ -929,7 +929,7 @@ public class AcceptanceTests {
     @Test
     public void addSchedulingPolicy2ATest() {
         SystemUser systemUser = new SystemUser("username", "name");
-        new AssociationRepresentative(systemUser);
+        new AssociationRepresentative(systemUser, true);
         UIController.setSelector(962); //1,1,1,...
         assertTrue(ARController.addSchedulingPolicy(systemUser));
         assertFalse(ARController.addSchedulingPolicy(systemUser));
@@ -948,10 +948,10 @@ public class AcceptanceTests {
         SystemUser arSystemUser = new SystemUser("username", "name");
         SystemUser to1SystemUser = new SystemUser("teamowner1", "Team Owner");
         SystemUser to2SystemUser = new SystemUser("teamowner2", "Team Owner");
-        new AssociationRepresentative(arSystemUser);
-        new TeamOwner(arSystemUser);
-        new TeamOwner(to1SystemUser);
-        new TeamOwner(to2SystemUser);
+        new AssociationRepresentative(arSystemUser, true);
+        new TeamOwner(arSystemUser, true);
+        new TeamOwner(to1SystemUser, true);
+        new TeamOwner(to2SystemUser, true);
         AssociationRepresentative aR = (AssociationRepresentative)arSystemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
         TeamOwner to1 = (TeamOwner)arSystemUser.getRole(RoleTypes.TEAM_OWNER);
         TeamOwner to2 = (TeamOwner)to1SystemUser.getRole(RoleTypes.TEAM_OWNER);
@@ -990,10 +990,10 @@ public class AcceptanceTests {
         SystemUser arSystemUser = new SystemUser("username", "name");
         SystemUser to1SystemUser = new SystemUser("teamowner1", "Team Owner");
         SystemUser to2SystemUser = new SystemUser("teamowner2", "Team Owner");
-        new AssociationRepresentative(arSystemUser);
-        new TeamOwner(arSystemUser);
-        new TeamOwner(to1SystemUser);
-        new TeamOwner(to2SystemUser);
+        new AssociationRepresentative(arSystemUser, true);
+        new TeamOwner(arSystemUser, true);
+        new TeamOwner(to1SystemUser, true);
+        new TeamOwner(to2SystemUser, true);
         AssociationRepresentative aR = (AssociationRepresentative)arSystemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
         TeamOwner to1 = (TeamOwner)arSystemUser.getRole(RoleTypes.TEAM_OWNER);
         TeamOwner to2 = (TeamOwner)to1SystemUser.getRole(RoleTypes.TEAM_OWNER);
@@ -1034,10 +1034,10 @@ public class AcceptanceTests {
         SystemUser arSystemUser = new SystemUser("username", "name");
         SystemUser to1SystemUser = new SystemUser("teamowner1", "Team Owner");
         SystemUser to2SystemUser = new SystemUser("teamowner2", "Team Owner");
-        new AssociationRepresentative(arSystemUser);
-        new TeamOwner(arSystemUser);
-        new TeamOwner(to1SystemUser);
-        new TeamOwner(to2SystemUser);
+        new AssociationRepresentative(arSystemUser, true);
+        new TeamOwner(arSystemUser, true);
+        new TeamOwner(to1SystemUser, true);
+        new TeamOwner(to2SystemUser, true);
         AssociationRepresentative aR = (AssociationRepresentative)arSystemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
         TeamOwner to1 = (TeamOwner)arSystemUser.getRole(RoleTypes.TEAM_OWNER);
         TeamOwner to2 = (TeamOwner)to1SystemUser.getRole(RoleTypes.TEAM_OWNER);
@@ -1087,12 +1087,12 @@ public class AcceptanceTests {
     @Test
     public void updateGameEventsATest() {
         SystemUser systemUser = new SystemUser("username", "name");
-        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.VAR_REFEREE));
+        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.VAR_REFEREE, true));
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
         SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
-        new AssociationRepresentative(arSystemUser);
-        new TeamOwner(arSystemUser);
+        new AssociationRepresentative(arSystemUser, true);
+        new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
         Team firstTeam = new Team("Hapoel Beit Shan", toRole);
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
@@ -1123,12 +1123,12 @@ public class AcceptanceTests {
     @Test
     public void produceGameReportATest() {
         SystemUser systemUser = new SystemUser("username", "name");
-        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.VAR_REFEREE));
+        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.VAR_REFEREE, true));
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
         SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
-        new AssociationRepresentative(arSystemUser);
-        new TeamOwner(arSystemUser);
+        new AssociationRepresentative(arSystemUser, true);
+        new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
         Team firstTeam = new Team("Hapoel Beit Shan", toRole);
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole);

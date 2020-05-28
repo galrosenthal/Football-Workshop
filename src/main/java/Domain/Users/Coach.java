@@ -14,11 +14,11 @@ public class Coach extends PartOfTeam {
     public final String qualificationString = "Qualification";
 
     public Coach(SystemUser systemUser) {
-        super(RoleTypes.COACH, systemUser);
+        super(RoleTypes.COACH, systemUser, true);
         coachedTeams = new ArrayList<>();
     }
     public Coach(SystemUser systemUser, CoachQualification qualification) {
-        super(RoleTypes.COACH, systemUser);
+        super(RoleTypes.COACH, systemUser, true);
         coachedTeams = new ArrayList<>();
         this.qualification = qualification;
     }

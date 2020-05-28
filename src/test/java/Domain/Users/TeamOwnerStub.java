@@ -13,7 +13,7 @@ public class TeamOwnerStub extends TeamOwner {
      * Selector latest number: 1
      */
     public TeamOwnerStub(SystemUser systemUser) {
-        super(systemUser);
+        super(systemUser, true);
     }
 
 

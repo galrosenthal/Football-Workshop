@@ -123,13 +123,13 @@ public class RefereeControllerTest {
 
     private SystemUser getSystemUserVarReferee() {
         SystemUser systemUser = new SystemUser("username", "name");
-        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.VAR_REFEREE));
+        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.VAR_REFEREE, true));
         return systemUser;
     }
 
     private SystemUser getSystemUserMainReferee() {
         SystemUser systemUser = new SystemUser("username2", "name2");
-        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.MAIN_REFEREE));
+        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.MAIN_REFEREE, true));
         return systemUser;
     }
 
@@ -384,8 +384,8 @@ public class RefereeControllerTest {
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
         SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
-        new AssociationRepresentative(arSystemUser);
-        new TeamOwner(arSystemUser);
+        new AssociationRepresentative(arSystemUser, true);
+        new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
         Team firstTeam = new Team("Hapoel Beit Shan", toRole);
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole);

@@ -9,18 +9,13 @@ import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
 import Service.UIController;
 import org.junit.*;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 public class TeamTest {
 
@@ -587,7 +582,7 @@ public class TeamTest {
         Coach secondCoach = new Coach(new SystemUser("teamTest4", "gal"));
         team.addTeamCoach(teamOwner, secondCoach);
         assertTrue(team.getAllAssets().size() == 4);
-        TeamManager teamManager = new TeamManager(new SystemUser("teamTest5", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamTest5", "gal"), true);
         team.addTeamManager(teamOwner, teamManager);
         assertTrue(team.getAllAssets().size() == 5);
     }
@@ -601,7 +596,7 @@ public class TeamTest {
         team.addStadium(stadium);
         assertTrue(team.getAllAssets().size() == 1);
         Player player = new Player(new SystemUser("teamTest1", "gal"), new Date());
-        TeamOwner teamOwner = new TeamOwner( new SystemUser("teamTest2", "gal"));
+        TeamOwner teamOwner = new TeamOwner( new SystemUser("teamTest2", "gal"), true);
         team.addTeamOwner(teamOwner);
         team.addTeamPlayer(teamOwner, player);
         assertTrue(team.getAllAssets().size() == 2);
@@ -611,7 +606,7 @@ public class TeamTest {
         Coach secondCoach = new Coach(new SystemUser("teamTest4", "gal"));
         team.addTeamCoach(teamOwner, secondCoach);
         assertTrue(team.getAllAssets().size() == 4);
-        TeamManager teamManager = new TeamManager(new SystemUser("teamTest5", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamTest5", "gal"), true);
         team.addTeamManager(teamOwner, teamManager);
         assertTrue(team.getAllAssets().size() == 5);
     }
@@ -655,7 +650,7 @@ public class TeamTest {
     @Test
     public void getAllProperty4ITest() {
         Team team = new Team("Test");
-        TeamManager teamManager = new TeamManager(new SystemUser("teamTest3", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamTest3", "gal"), true);
         TeamOwner teamOwner = new TeamOwnerStub( new SystemUser("teamTest2", "gal"));
         team.addTeamOwner(teamOwner);
         team.addTeamManager(teamOwner , teamManager);
@@ -677,8 +672,8 @@ public class TeamTest {
     @Test
     public void getAllProperty5ITest() {
         Team team = new Team("Test");
-        TeamManager teamManager = new TeamManager(new SystemUser("teamTest1", "gal"));
-        TeamOwner teamOwner = new TeamOwner( new SystemUser("teamTest2", "gal"));
+        TeamManager teamManager = new TeamManager(new SystemUser("teamTest1", "gal"), true);
+        TeamOwner teamOwner = new TeamOwner( new SystemUser("teamTest2", "gal"), true);
         team.addTeamOwner(teamOwner);
         team.addTeamManager(teamOwner , teamManager);
         List<Enum> enumList = team.getAllProperty(teamManager , "Test");

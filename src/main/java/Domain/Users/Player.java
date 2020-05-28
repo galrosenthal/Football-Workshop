@@ -13,7 +13,7 @@ public class Player extends PartOfTeam{
     public final String fieldJobString = "Filed Job";
 
     public Player(SystemUser systemUser,Date birthDate) {
-        super(RoleTypes.PLAYER, systemUser);
+        super(RoleTypes.PLAYER, systemUser, true);
         bday = birthDate;
     }
 

@@ -9,10 +9,8 @@ import Domain.Game.TeamStatus;
 import Domain.Game.TeamAsset;
 import Domain.SystemLogger.*;
 import Domain.Users.*;
-import Service.TOController;
 import Service.UIController;
 import Domain.Exceptions.*;
-import com.vaadin.flow.component.UI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +49,7 @@ public class TeamController {
         Role newTeamOwnerRole = newTeamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
         TeamOwner teamOwner;
         if (newTeamOwnerRole == null) {
-            teamOwner = new TeamOwner(newTeamOwnerUser);
+            teamOwner = new TeamOwner(newTeamOwnerUser, true);
             newTeamOwnerUser.addNewRole(teamOwner);
         }
         else

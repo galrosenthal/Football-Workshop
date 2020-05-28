@@ -63,11 +63,11 @@ public class EntityManager{
         if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
 
-            SystemUser admin = new SystemUser("Administrator",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"admin" , "test@gmail.com" , false);
-            SystemUser arnav = new SystemUser("arnav",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"arnav" , "test@gmail.com" , false);
-            admin.addNewRole(new SystemAdmin(admin));
-            admin.addNewRole(new AssociationRepresentative(admin));
-            admin.addNewRole(new Referee(admin,RefereeQualification.VAR_REFEREE));
+            SystemUser admin = new SystemUser("Administrator",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"admin" , "test@gmail.com" , false, true);
+            SystemUser arnav = new SystemUser("arnav",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"arnav" , "test@gmail.com" , false, true);
+            admin.addNewRole(new SystemAdmin(admin, true));
+            admin.addNewRole(new AssociationRepresentative(admin, true));
+            admin.addNewRole(new Referee(admin,RefereeQualification.VAR_REFEREE, true));
         }
 
         return entityManagerInstance;
@@ -213,7 +213,7 @@ public class EntityManager{
 
     private void addARRole(SystemUser systemUser, List<Pair<String, String>> rolesDetail) {
 
-        AssociationRepresentative associationRepresentative = new AssociationRepresentative(systemUser);
+        AssociationRepresentative associationRepresentative = new AssociationRepresentative(systemUser, true);
     }
 
     private void addRefereeRole(SystemUser systemUser, List<Pair<String, String>> rolesDetail) {
@@ -228,7 +228,7 @@ public class EntityManager{
             }
         }
 
-        Referee referee = new Referee(systemUser, training);
+        Referee referee = new Referee(systemUser, training, true);
     }
 
     private RefereeQualification getRefereeQualification(String value) {
@@ -245,15 +245,15 @@ public class EntityManager{
     }
 
     private void addSystemAdminRole(SystemUser systemUser, List<Pair<String, String>> rolesDetail) {
-        SystemAdmin systemAdmin = new SystemAdmin(systemUser);
+        SystemAdmin systemAdmin = new SystemAdmin(systemUser, true);
     }
 
     private void addTeamOwnerRole(SystemUser systemUser, List<Pair<String, String>> rolesDetail) {
-        TeamOwner teamOwner = new TeamOwner(systemUser);
+        TeamOwner teamOwner = new TeamOwner(systemUser, true);
     }
 
     private void addTeamMangerRole(SystemUser systemUser, List<Pair<String, String>> rolesDetail) {
-        TeamManager teamManager = new TeamManager(systemUser);
+        TeamManager teamManager = new TeamManager(systemUser, true);
     }
 
     private void addCoachRole(SystemUser systemUser, List<Pair<String, String>> rolesDetail) {
@@ -672,7 +672,7 @@ public class EntityManager{
 
         /*add user to db*/
         if (DBManager.getInstance().addUser(usrNm, name, hashedPassword, email, emailAlert)) {
-            SystemUser newUser = new SystemUser(usrNm, hashedPassword, name, email, emailAlert);
+            SystemUser newUser = new SystemUser(usrNm, hashedPassword, name, email, emailAlert, true);
             addUser(newUser);
             //Log the action
             SystemLoggerManager.logInfo(this.getClass(), new SignUpLogMsg(newUser.getUsername()));

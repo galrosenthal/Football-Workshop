@@ -497,7 +497,7 @@ public class Team {
         } else if (assetType.equals(TeamAsset.TEAM_MANAGER)) {
             teamAsset = (TeamManager) assetUser.getRole(RoleTypes.TEAM_MANAGER);
             if (teamAsset == null) {
-                teamAsset = new TeamManager(assetUser);
+                teamAsset = new TeamManager(assetUser, true);
             }
         } else {
             /**
