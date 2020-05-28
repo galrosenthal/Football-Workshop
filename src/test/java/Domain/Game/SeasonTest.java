@@ -1,9 +1,11 @@
 package Domain.Game;
 
 import Domain.EntityManager;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.time.Year;
@@ -13,6 +15,11 @@ import static org.junit.Assert.*;
 public class SeasonTest {
 
     private Season season;
+
+    @BeforeClass
+    public static void setUpBeforeAll() { //Will be called only once
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+    }
 
     @Before
     public void setUp() throws Exception {

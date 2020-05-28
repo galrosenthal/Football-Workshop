@@ -1,13 +1,20 @@
 package Domain.Game;
 
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.CoachQualification;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
 
 public class StadiumTest {
+
+    @BeforeClass
+    public static void setUpBeforeAll() { //Will be called only once
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+    }
 
 
     @Test

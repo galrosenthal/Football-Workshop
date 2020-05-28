@@ -1,4 +1,4 @@
-package Domain.Logger;
+package Domain.GameLogger;
 
 import java.util.ArrayList;
 import java.util.List;

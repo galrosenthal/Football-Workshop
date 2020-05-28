@@ -10,7 +10,7 @@ import java.util.List;
 
 
 public class TeamManager extends Role implements Asset {
-    private List<Team> managedTeams;
+    private HashMap<Team,SystemUser> managedTeamsAndAppointed;
     private HashMap<Team , List<TeamManagerPermissions>> permissionsPerTeam;
 
     public final String permissionsString = "Permissions";
@@ -18,7 +18,7 @@ public class TeamManager extends Role implements Asset {
     public TeamManager(SystemUser systemUser)
     {
         super(RoleTypes.TEAM_MANAGER, systemUser);
-        managedTeams = new ArrayList<>();
+        managedTeamsAndAppointed = new HashMap<>();
         permissionsPerTeam = new HashMap<>();
     }
 
@@ -27,7 +27,7 @@ public class TeamManager extends Role implements Asset {
     {
         if(teamToMange != null && teamToMange.isTeamOwner(teamOwner))
         {
-            managedTeams.add(teamToMange);
+            managedTeamsAndAppointed.put(teamToMange,teamOwner.getSystemUser());
             if(teamToMange.addTeamManager(teamOwner,this))
             {
                 List<TeamManagerPermissions> permissions = new ArrayList<>();
@@ -208,17 +208,17 @@ public class TeamManager extends Role implements Asset {
                 this.getSystemUser().getUsername().equals(teamManager.getSystemUser().getUsername());
     }
 
-    public boolean addTeam(Team team){
-        if(!this.managedTeams.contains(team)) {
-            this.managedTeams.add(team);
-            this.permissionsPerTeam.put(team,new ArrayList<>());
-            return true;
-        }
-        return false;
-    }
+//    public boolean addTeam(Team team){
+//        if(!this.managedTeamsAndAppointed.keySet().contains(team)) {
+//            this.managedTeamsAndAppointed.put(team,);
+//            this.permissionsPerTeam.put(team,new ArrayList<>());
+//            return true;
+//        }
+//        return false;
+//    }
 
     public boolean removeTeam(Team team){
-         if(this.managedTeams.remove(team))
+         if(this.managedTeamsAndAppointed.remove(team) != null)
          {
              this.permissionsPerTeam.remove(team);
              return true;
@@ -227,7 +227,8 @@ public class TeamManager extends Role implements Asset {
     }
 
     public List<Team> getTeamsManaged() {
-        return managedTeams;
+        List<Team> allTeams = new ArrayList<>(managedTeamsAndAppointed.keySet());
+        return allTeams;
     }
 
 }

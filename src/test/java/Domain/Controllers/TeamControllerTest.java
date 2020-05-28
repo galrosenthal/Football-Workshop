@@ -6,6 +6,7 @@ import Domain.Exceptions.AssetsNotExistsException;
 import Domain.Exceptions.NoTeamExistsException;
 import Domain.Exceptions.NotATeamOwner;
 import Domain.Game.*;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
 import Service.UIController;
 import org.junit.*;
@@ -29,6 +30,11 @@ public class TeamControllerTest {
     SystemUser teamOwnerUser2 = new SystemUser("rosengal", "Gal12345", "Gal" , "test@gmail.com" , false);
     SystemUser teamOwnerUser3 = new SystemUser("nirdz", "Nir12345", "Nir" , "test@gmail.com" , false);
     SystemUser teamOwnerUser4 = new SystemUser("merav", "Merav12345", "Mer" , "test@gmail.com" , false);
+
+    @BeforeClass
+    public static void setUp() { //Will be called only once
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+    }
 
     @Before
     public void runBeforeTests(){
@@ -568,7 +574,7 @@ public class TeamControllerTest {
 
         SystemUserStub su2 = new SystemUserStub("nirdz", "nir",661722);
         TeamManagerStub tm1 = (TeamManagerStub)su2.getRole(RoleTypes.TEAM_MANAGER);
-        tm1.addTeam(teamStub);
+        tm1.addTeam(teamStub,teamOwnerStub);
         teamStub.addTeamManager(tm1);
 
         SystemUserStub su3 = new SystemUserStub("coach", "coach",661723);
@@ -578,7 +584,7 @@ public class TeamControllerTest {
 
         SystemUserStub su4 = new SystemUserStub("iamowner", "owner",661724);
         TeamOwnerStub to = (TeamOwnerStub)su4.getRole(RoleTypes.TEAM_OWNER);
-        to.addTeamToOwn(teamStub);
+        to.addTeamToOwn(teamStub,su4);
         teamStub.addTeamOwner(to);
 
 
@@ -632,7 +638,7 @@ public class TeamControllerTest {
 
         SystemUserStub su4 = new SystemUserStub("iamowner", "owner",662724);
         TeamOwnerStub to = (TeamOwnerStub)su4.getRole(RoleTypes.TEAM_OWNER);
-        to.addTeamToOwn(teamStub);
+        to.addTeamToOwn(teamStub,su4);
         teamStub.addTeamOwner(to);
 
         StadiumStub st1 = new StadiumStub("stadiumStub", "stub street 22");
@@ -690,7 +696,7 @@ public class TeamControllerTest {
 
         SystemUserStub su4 = new SystemUserStub("iamowner", "owner",662724);
         TeamOwnerStub to = (TeamOwnerStub)su4.getRole(RoleTypes.TEAM_OWNER);
-        to.addTeamToOwn(teamStub);
+        to.addTeamToOwn(teamStub,su4);
         teamStub.addTeamOwner(to);
 
         StadiumStub st1 = new StadiumStub("stadiumStub", "stub street 22");

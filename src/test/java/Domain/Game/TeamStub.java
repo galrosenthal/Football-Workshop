@@ -169,6 +169,8 @@ public class TeamStub extends Team {
             return true;
         } else if (selector == 6131) {
             return true;
+        } else if(selector == 66172 || selector == 66271) {
+            return true;
         } else {
             return false;
         }

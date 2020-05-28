@@ -1,6 +1,8 @@
 package GUI;
 
 
+import Domain.SystemLogger.LogoutLogMsg;
+import Domain.SystemLogger.SystemLoggerManager;
 import GUI.About.AboutView;
 import GUI.Registration.ConfirmPassValidator;
 import GUI.RoleRelatedViews.AssociationRepresentative.ARControls;
@@ -331,6 +333,8 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 });
 
                 System.out.println("Logged out Successfully");
+                //Log the action
+                SystemLoggerManager.logInfo(this.getClass(), new LogoutLogMsg(username));
 
             }
             else
