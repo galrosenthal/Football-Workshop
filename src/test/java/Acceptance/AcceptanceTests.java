@@ -170,7 +170,7 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser, true));
         EntityManager.getInstance().addUser(systemUser);
-        EntityManager.getInstance().addLeague(new League("Premier League"));
+        EntityManager.getInstance().addLeague(new League("Premier League", true));
         UIController.setIsTest(true);
         UIController.setSelector(6);
         //Duplicated league creation
@@ -377,7 +377,7 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser, true));
         EntityManager.getInstance().addUser(systemUser);
-        EntityManager.getInstance().addLeague(new League("Premier League"));
+        EntityManager.getInstance().addLeague(new League("Premier League", true));
         UIController.setIsTest(true);
         UIController.setSelector(921); //0 , "2020/21", "2020/21", "2021/22"
 
@@ -394,7 +394,7 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         systemUser.addNewRole(new AssociationRepresentative(systemUser, true));
         EntityManager.getInstance().addUser(systemUser);
-        EntityManager.getInstance().addLeague(new League("Premier League"));
+        EntityManager.getInstance().addLeague(new League("Premier League", true));
         UIController.setIsTest(true);
         UIController.setSelector(921); //0 , "2020/21", "2020/21", "2021/22"
 
@@ -491,7 +491,7 @@ public class AcceptanceTests {
         assertEquals(abc, abcCreate);
 
         SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy","test@gmail.com", false, true);
-        Player playerElisha = new Player(elivyCreate, new Date());
+        Player playerElisha = new Player(elivyCreate, new Date(), true);
         beitShean.addTeamPlayer(abcOwner, playerElisha);
         UIController.setIsTest(true);
         UIController.setSelector(6139);
@@ -523,7 +523,7 @@ public class AcceptanceTests {
         assertEquals(abc, abcCreate);
 
         SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy","test@gmail.com", false, true);
-        Player playerElisha = new Player(elivyCreate, new Date());
+        Player playerElisha = new Player(elivyCreate, new Date(), true);
 
         UIController.setIsTest(true);
         UIController.setSelector(6139);
@@ -624,7 +624,7 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         new AssociationRepresentative(systemUser, true);
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague(new League("Premier League"));
+        EntityManager.getInstance().addLeague(new League("Premier League", true));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
         SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
@@ -644,7 +644,7 @@ public class AcceptanceTests {
         SystemUser systemUser = new SystemUser("username", "name");
         new AssociationRepresentative(systemUser, true);
         UIController.setSelector(0);
-        EntityManager.getInstance().addLeague(new League("Premier League"));
+        EntityManager.getInstance().addLeague(new League("Premier League", true));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
         SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
@@ -827,7 +827,7 @@ public class AcceptanceTests {
     public void setPointsPolicyATest() {
         SystemUser systemUser = new SystemUser("username", "name");
         new AssociationRepresentative(systemUser, true);
-        EntityManager.getInstance().addLeague(new League("Premier League"));
+        EntityManager.getInstance().addLeague(new League("Premier League", true));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
 
@@ -858,7 +858,7 @@ public class AcceptanceTests {
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
         Team team1 = new Team("Hapoel Beit Shan", toRole);
         Team team2 = new Team("Hapoel Beer Sheva", toRole);
-        League league = new League("Ligat ul");
+        League league = new League("Ligat ul", true);
         league.addSeason("2020/21");
         Season season = league.getLatestSeason();
         assertNotNull(season);
@@ -884,7 +884,7 @@ public class AcceptanceTests {
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
         Team team1 = new Team("Hapoel Beit Shan", toRole);
         Team team2 = new Team("Hapoel Beer Sheva", toRole);
-        League league = new League("Ligat ul");
+        League league = new League("Ligat ul", true);
         league.addSeason("2020/21");
         Season season = league.getLatestSeason();
         assertNotNull(season);
@@ -957,7 +957,7 @@ public class AcceptanceTests {
         TeamOwner to2 = (TeamOwner)to1SystemUser.getRole(RoleTypes.TEAM_OWNER);
         TeamOwner to3 = (TeamOwner)to2SystemUser.getRole(RoleTypes.TEAM_OWNER);
 
-        EntityManager.getInstance().addLeague(new League("Premier League"));
+        EntityManager.getInstance().addLeague(new League("Premier League", true));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
         Season season = league.getLatestSeason();
@@ -999,7 +999,7 @@ public class AcceptanceTests {
         TeamOwner to2 = (TeamOwner)to1SystemUser.getRole(RoleTypes.TEAM_OWNER);
         TeamOwner to3 = (TeamOwner)to2SystemUser.getRole(RoleTypes.TEAM_OWNER);
 
-        EntityManager.getInstance().addLeague(new League("Premier League"));
+        EntityManager.getInstance().addLeague(new League("Premier League", true));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
         Season season = league.getLatestSeason();
@@ -1043,7 +1043,7 @@ public class AcceptanceTests {
         TeamOwner to2 = (TeamOwner)to1SystemUser.getRole(RoleTypes.TEAM_OWNER);
         TeamOwner to3 = (TeamOwner)to2SystemUser.getRole(RoleTypes.TEAM_OWNER);
 
-        EntityManager.getInstance().addLeague(new League("Premier League"));
+        EntityManager.getInstance().addLeague(new League("Premier League", true));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
         Season season = league.getLatestSeason();
@@ -1073,7 +1073,7 @@ public class AcceptanceTests {
         team.addStadium(new Stadium("stadium1"," location1"));
         for(int i = 1; i<= 11; i++){ //add 11 players
             SystemUser pSystemUser = new SystemUser("player"+teamName+""+i, "name"+i);
-            new Player(pSystemUser, new Date());
+            new Player(pSystemUser, new Date(), true);
             Player player = (Player)pSystemUser.getRole(RoleTypes.PLAYER);
             team.addTeamPlayer(teamOwner, player);
         }
@@ -1098,7 +1098,7 @@ public class AcceptanceTests {
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
 
         Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen"),new Date(2001, 01, 01));
+        Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen"),new Date(2001, 01, 01), true);
         firstTeam.addTeamPlayer(toRole,player1);
 
         game.addReferee(referee);
@@ -1134,7 +1134,7 @@ public class AcceptanceTests {
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
 
         Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen"),new Date(2001, 01, 01));
+        Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen"),new Date(2001, 01, 01), true);
         firstTeam.addTeamPlayer(toRole,player1);
 
         game.addReferee(referee);

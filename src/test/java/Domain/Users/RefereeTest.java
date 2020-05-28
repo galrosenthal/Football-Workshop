@@ -42,8 +42,8 @@ public class RefereeTest {
     }
 
     private List<Season> assign2SeasonsStubs() {
-        Season season1 = new SeasonStub(new League("noName1"), "2020/21");
-        Season season2 = new SeasonStub(new League("noName2"), "2020/21");
+        Season season1 = new SeasonStub(new League("noName1", true), "2020/21");
+        Season season2 = new SeasonStub(new League("noName2", true), "2020/21");
         referee.assignToSeason(season1);
         referee.assignToSeason(season2);
         ArrayList<Season> seasonArrayList = new ArrayList<>();
@@ -73,8 +73,8 @@ public class RefereeTest {
     }
 
     private List<Season> assign2Seasons() {
-        Season season1 = new Season(new League("noName1"), "2020/21");
-        Season season2 = new Season(new League("noName2"), "2020/21");
+        Season season1 = new Season(new League("noName1", true), "2020/21");
+        Season season2 = new Season(new League("noName2", true), "2020/21");
         referee.assignToSeason(season1);
         referee.assignToSeason(season2);
         season1.assignReferee(referee);

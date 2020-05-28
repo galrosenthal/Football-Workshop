@@ -13,10 +13,14 @@ public class League {
      * Constructor
      *
      * @param leagueName - String - League name
+     * @param addToDB    - boolean - Whether to add the new role to the database
      */
-    public League(String leagueName) {
+    public League(String leagueName, boolean addToDB) {
         this.name = leagueName;
         this.seasons = new ArrayList<>();
+        if (addToDB) {
+            EntityManager.getInstance().addLeague(this);
+        }
     }
 
     /**
@@ -59,7 +63,7 @@ public class League {
                 return true;
             }
         }
-        return EntityManager.getInstance().doesSeasonExist(this.name,seasonYears);
+        return EntityManager.getInstance().doesSeasonExist(this.name, seasonYears);
     }
 
     /**
@@ -71,20 +75,32 @@ public class League {
     public boolean addSeason(String seasonYears) {
         Season season = new Season(this, seasonYears);
         this.seasons.add(season);
-        EntityManager.getInstance().addSeason(this.name , season);
+        EntityManager.getInstance().addSeason(this.name, season);
+        return true;
+    }
+    /**
+     * Adds a season to this league with the given season years
+     *
+     * @param seasonYears - String - unique season years for this league
+     * @return - boolean - true if the addition completed successfully, else false
+     */
+    public boolean addSeason(String seasonYears,PointsPolicy pointsPolicy, boolean isUnderway) {
+        Season season = new Season(this, seasonYears, pointsPolicy,isUnderway);
+        this.seasons.add(season);
         return true;
     }
 
     /**
      * Get the latest season of the league.
+     *
      * @return the latest season of the league.
      */
-    public Season getLatestSeason(){
-        if(seasons == null || seasons.isEmpty())
+    public Season getLatestSeason() {
+        if (seasons == null || seasons.isEmpty())
             return null;
         Season latestSeason = seasons.get(0);
-        for(Season s : seasons){
-            if(s.getYear().isAfter(latestSeason.getYear()))
+        for (Season s : seasons) {
+            if (s.getYear().isAfter(latestSeason.getYear()))
                 latestSeason = s;
         }
         return latestSeason;

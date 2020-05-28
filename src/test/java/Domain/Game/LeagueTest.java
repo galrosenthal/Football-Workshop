@@ -21,7 +21,7 @@ public class LeagueTest {
 
     @Before
     public void setUp() throws Exception {
-        this.league = new League("test league name");
+        this.league = new League("test league name", true);
     }
 
     @Test

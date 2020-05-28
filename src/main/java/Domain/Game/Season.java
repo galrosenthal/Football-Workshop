@@ -32,6 +32,24 @@ public class Season {
     }
 
     /**
+     * Constructor
+     *
+     * @param league       - League - the league that the season belongs to
+     * @param years        - String - the season's years in the format of "yyyy/yy"
+     * @param pointsPolicy - PointsPolicy - the season's points policy
+     * @param isUnderway   - boolean - is the season underway
+     */
+    public Season(League league, String years, PointsPolicy pointsPolicy, boolean isUnderway) {
+        this.league = league;
+        this.teams = new ArrayList<>();
+        this.years = years;
+        this.referees = new ArrayList<>();
+        this.games = new ArrayList<>();
+        this.pointsPolicy = pointsPolicy;
+        this.isUnderway = isUnderway;
+    }
+
+    /**
      * Getter for the main year of the season - the later year.
      *
      * @return - Year - the later year of the season
@@ -269,10 +287,11 @@ public class Season {
 
     /**
      * Checks if this season have scheduled games.
+     *
      * @return - boolean - true if this season have scheduled games, else false
      */
     public boolean scheduled() {
-        if(games.isEmpty()){
+        if (games.isEmpty()) {
             return false;
         }
         return true;
@@ -280,6 +299,7 @@ public class Season {
 
     /**
      * Generates a new schedule and create new games based on it
+     *
      * @param schedulingPolicy
      * @param startDate
      * @throws Exception
@@ -287,8 +307,8 @@ public class Season {
     public void scheduleGames(SchedulingPolicy schedulingPolicy, Date startDate) throws Exception {
         List<ScheduleMatch> scheduleMatches = schedulingPolicy.generateSchedule(startDate, this.teams, this.referees);
         //Remove previous games from referees
-        for(Referee ref : referees){
-            for(Game game : games){
+        for (Referee ref : referees) {
+            for (Game game : games) {
                 ref.removeGame(game);
             }
         }
@@ -298,9 +318,9 @@ public class Season {
         //Create games based on schedule
         for (int i = 0; i < scheduleMatches.size(); i++) {
             ScheduleMatch scheduleMatch = scheduleMatches.get(i);
-            Game game = new Game(scheduleMatch.getStadium(),scheduleMatch.getHomeTeam(),scheduleMatch.getAwayTeam(),scheduleMatch.getMatchDate(),scheduleMatch.getReferees());
+            Game game = new Game(scheduleMatch.getStadium(), scheduleMatch.getHomeTeam(), scheduleMatch.getAwayTeam(), scheduleMatch.getMatchDate(), scheduleMatch.getReferees());
             this.games.add(game);
-            for(Referee ref : scheduleMatch.getReferees()){
+            for (Referee ref : scheduleMatch.getReferees()) {
                 ref.addGame(game);
             }
         }

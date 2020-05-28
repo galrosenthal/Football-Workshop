@@ -167,7 +167,7 @@ public class MainController {
                 try
                 {
                     Date dateFromString = new SimpleDateFormat("dd-MM-yyyy").parse(allRelevantDetails[1]);
-                    new Player(user,dateFromString);
+                    new Player(user,dateFromString, true);
                     break;
                 }
                 catch (Exception e)
@@ -176,7 +176,7 @@ public class MainController {
                     return false;
                 }
             case "coach":
-                new Coach(user);
+                new Coach(user, true);
                 break;
             case "team_manager":
                 new TeamManager(user, true);

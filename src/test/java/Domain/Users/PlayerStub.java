@@ -1,10 +1,7 @@
 package Domain.Users;
 
 import Domain.Game.Team;
-import Domain.Game.TeamStub;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,7 +15,7 @@ public class PlayerStub extends Player{
     }
 
     public PlayerStub(SystemUser user, Date bdate) {
-        super(user,bdate);
+        super(user,bdate, true);
         teamsOfTest = new ArrayList<>();
     }
 

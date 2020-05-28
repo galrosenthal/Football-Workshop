@@ -40,8 +40,7 @@ public class AssociationRepresentative extends Role {
             throw new Exception("League with the same name already exists");
         }
         //Adding a new league
-        League league = new League(leagueName);
-        EntityManager.getInstance().addLeague(league);
+        League league = new League(leagueName, true);
         return true;
     }
 

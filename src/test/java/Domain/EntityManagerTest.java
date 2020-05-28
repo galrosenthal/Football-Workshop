@@ -32,15 +32,15 @@ public class EntityManagerTest {
     @Test
     public void addLeagueUTestUTest() {
         assertFalse(EntityManager.getInstance().doesLeagueExists("League Name"));
-        EntityManager.getInstance().addLeague(new League("League Name"));
+        EntityManager.getInstance().addLeague(new League("League Name", true));
         assertTrue(EntityManager.getInstance().doesLeagueExists("League Name"));
         EntityManager.getInstance().removeLeagueByName("League Name");
     }
 
     @Test
     public void removeLeagueByNameUTest() {
-        EntityManager.getInstance().addLeague(new League("League Name1"));
-        EntityManager.getInstance().addLeague(new League("League Name2"));
+        EntityManager.getInstance().addLeague(new League("League Name1", true));
+        EntityManager.getInstance().addLeague(new League("League Name2", true));
         assertTrue(EntityManager.getInstance().removeLeagueByName("League Name2"));
         assertFalse(EntityManager.getInstance().doesLeagueExists("League Name2"));
         assertFalse(EntityManager.getInstance().removeLeagueByName("League Name2"));
