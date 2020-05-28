@@ -67,12 +67,13 @@ public class GameReportTest {
 
         //Success
         File file = null;
+        String report;
         try {
-            //gameReport.produceReport("D:\\ZData");
-          //  file = gameReport.produceReport(".");//save to current project path
+            gameReport.produceReport();
+            report = gameReport.produceReport();//save to current project path
         } catch (Exception e) {
         }
-        //Fail, file already exists
+
         try {
         //    gameReport.produceReport(".");
             Assert.fail();

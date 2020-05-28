@@ -92,10 +92,12 @@ public class FootballMain extends AppLayout implements RouterLayout{
         final Image image = new Image(resolvedImage, "");
         final Label title = new Label("Football Workshop");
         loginBtn = new Button("Login");
+        loginBtn.setId("login");
         loginBtn.addClickListener(e -> {
             getUI().get().navigate("Login");
         });
         signupBtn = new Button("Sign Up");
+        signupBtn.setId("signup");
         signupBtn.addClickListener(e -> {
             getUI().get().navigate("Registration");
         });
@@ -129,6 +131,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
         // Create logout button but don't add it yet; admin view might be added
         // in between (see #onAttach())
         logoutButton = createMenuButton("Logout", VaadinIcon.SIGN_OUT.create());
+        logoutButton.setId("logoutBtn");
         logoutButton.setEnabled(false);
         logoutButton.addClickListener(e -> logout());
         logoutButton.getElement().setAttribute("title", "Logout (Ctrl+L)");
@@ -160,22 +163,26 @@ public class FootballMain extends AppLayout implements RouterLayout{
             loginDialog.setCloseOnOutsideClick(false);
 
             VerticalLayout usernameAndPassword = new VerticalLayout();
-
+            usernameAndPassword.setId("loginPassword");
             usernameAndPassword.add(new Label(message.split(UIController.STRING_DELIMETER)[0]));
             TextField username = new TextField();
+            username.setId("1");
             usernameAndPassword.add(username);
             usernameAndPassword.add(new Label(message.split(UIController.STRING_DELIMETER)[1]));
             PasswordField password = new PasswordField();
+            password.setId("2");
             usernameAndPassword.add(password);
 
             HorizontalLayout buttons = new HorizontalLayout();
             Button submit = new Button("Submit");
+            submit.setId("submit");
             submit.addClickListener(e -> {
                returnedValue.append(username.getValue()).append(UIController.STRING_DELIMETER).append(password.getValue());
                loginDialog.close();
                callingThread.interrupt();
             });
             Button close = new Button("Close");
+            close.setId("close");
             close.addClickListener(e -> {
                 loginDialog.close();
                 returnedValue.append(UIController.CANCEL_TASK_VALUE);
@@ -203,12 +210,14 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
             HorizontalLayout buttons = new HorizontalLayout();
             Button yes = new Button("Yes");
+            yes.setId("yes");
             yes.addClickListener(e -> {
                 choiceSelected.append("y");
                 choiceDialog.close();
                 callingThread.interrupt();
             });
             Button no = new Button("No");
+            no.setId("no");
             no.addClickListener(e -> {
                 choiceDialog.close();
                 choiceSelected.append("No");
@@ -348,7 +357,9 @@ public class FootballMain extends AppLayout implements RouterLayout{
         final RouterLink routerLink = new RouterLink(null, viewClass);
         routerLink.setClassName("menu-link");
         routerLink.add(icon);
-        routerLink.add(new Span(caption));
+        Span span = new Span(caption);
+        span.setId(caption.toLowerCase());
+        routerLink.add(span);
         icon.setSize("24px");
         return routerLink;
     }
@@ -396,6 +407,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
         if(msg != null)
         {
             Notification notification = new Notification(msg,2500, Notification.Position.TOP_CENTER);
+            notification.setId("notification");
             if(msg.toLowerCase().contains("success"))
             {
                 notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);

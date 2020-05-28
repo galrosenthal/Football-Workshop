@@ -32,13 +32,16 @@ public class Welcome extends FlexLayout
         setSizeFull();
         setClassName("welcome-page");
         content = new VerticalLayout();
+        content.setId("welcome");
         content.setJustifyContentMode(JustifyContentMode.CENTER);
         content.setAlignItems(Alignment.CENTER);
         add(content);
         String spanText = "Welcome to the Football System.\n " +
                 "if you wish to go to the about page press the" +
                 " button below";
-        content.add(new Span(spanText));
+        Span welcomeSpan = new Span(spanText);
+        welcomeSpan.setId("welcomeSpan");
+        content.add(welcomeSpan);
         next = new Button("See About");
         next.setWidth("50%");
         next.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
