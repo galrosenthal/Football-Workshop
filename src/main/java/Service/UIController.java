@@ -599,11 +599,14 @@ public class UIController {
 
     }
 
-    public static void showAlert(UI sessionUI, String alert) {
+    public static void showAlert(VaadinSession sessionUI, String alert) {
         if(!isTest) {
-            sessionUI.getSession().access(()->{
-                FootballMain.showAlert(alert,sessionUI);
-                sessionUI.push();
+            sessionUI.access(()->{
+                Collection<UI> uis = sessionUI.getUIs();
+                UI currUI = (UI)uis.toArray()[uis.toArray().length-1];
+                currUI.access(() -> {
+                    FootballMain.showAlert(alert,currUI);
+                });
             });
         }
         else

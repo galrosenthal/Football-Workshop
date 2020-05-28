@@ -183,7 +183,7 @@ public class ModifyUsers extends FlexLayout {
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
-                    MainController.testAlert(lastUI);
+                    MainController.testAlert(se);
                 }
                 else if(btnText.toLowerCase().contains("confirm"))
                 {

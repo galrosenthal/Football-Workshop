@@ -116,7 +116,7 @@ public class LoginScreen extends FlexLayout {
                 UI currSessionUI = getUI().get();
                 currSessionUI.navigate("");
 
-                AllSubscribers.getInstance().login(event.getUsername(),currSessionUI);
+                AllSubscribers.getInstance().login(event.getUsername(),session);
             }
 
         } else {
