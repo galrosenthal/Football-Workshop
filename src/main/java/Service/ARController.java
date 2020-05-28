@@ -9,11 +9,11 @@ import Domain.Game.PointsPolicy;
 import Domain.Game.SchedulingPolicy;
 import Domain.Game.Season;
 import Domain.Game.Team;
-import Domain.Users.AssociationRepresentative;
-import Domain.Users.Referee;
-import Domain.Users.RoleTypes;
-import Domain.Users.SystemUser;
+import Domain.SystemLogger.*;
+import Domain.Users.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +47,9 @@ public class ARController {
             return false;
         }
         UIController.showNotification("The league was created successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(ARController.class,
+                new CreateNewLeagueLogMsg(systemUser.getUsername(), leagueName));
         return true;
     }
 
@@ -89,6 +92,9 @@ public class ARController {
 
         chosenLeague.addSeason(seasonYears);
         UIController.showNotification("The season was created successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(ARController.class,
+                new CreateNewSeasonLogMsg(systemUser.getUsername(), seasonYears, chosenLeague.getName()));
         return true;
 //        }
 //        UIController.printMessage("The season creation failed");
@@ -98,7 +104,9 @@ public class ARController {
     private static League getLeagueByChoice() throws Exception {
         List<League> leagues = EntityManager.getInstance().getLeagues();
         if (leagues == null || leagues.isEmpty()) {
-            throw new Exception("There are no leagues");
+            String msg = "There are no leagues";
+            SystemLoggerManager.logError(ARController.class, msg);
+            throw new Exception(msg);
         }
         List<String> leaguesList = new ArrayList<>();
         for (int i = 0; i < leagues.size(); i++) {
@@ -122,7 +130,9 @@ public class ARController {
     private static Season getSeasonByChoice(League league) throws Exception {
         List<Season> seasons = league.getSeasons();
         if (seasons == null || seasons.isEmpty()) {
-            throw new Exception("There are no seasons in the league");
+            String msg = "There are no seasons in the league";
+            SystemLoggerManager.logError(ARController.class, msg);
+            throw new Exception(msg);
         }
         List<String> seasonsList = new ArrayList<>();
         for (int i = 0; i < seasons.size(); i++) {
@@ -160,11 +170,11 @@ public class ARController {
         } while (refereeUser == null);
         //A user has been identified.
 
-        String training = UIController.receiveString("Enter the new referee's training:");
+        String training = getRefereeTrainingByChoice();
 
         boolean succeeded = false;
         try {
-            succeeded = ARRole.addReferee(refereeUser, training);
+            succeeded = ARRole.addReferee(refereeUser, RefereeQualification.valueOf(training));
         } catch (RoleExistsAlreadyException e) {
             UIController.showNotification("The user chosen is already a referee");
             return false;
@@ -173,8 +183,25 @@ public class ARController {
         if (succeeded) {
             //TODO: Send notification to newRefereeUser
             UIController.showNotification("The referee has been added successfully");
+            //Log the action
+            SystemLoggerManager.logInfo(ARController.class,
+                    new AddRefereeLogMsg(systemUser.getUsername(), refereeUser.getUsername()));
         }
         return true;
+    }
+
+    private static String getRefereeTrainingByChoice() {
+        List<String> trainingChoices = new ArrayList<>();
+        for (RefereeQualification training : RefereeQualification.values()) {
+            trainingChoices.add(training.name());
+        }
+        String messeage = "Choose the new referee's training:";
+        int Index;
+        do {
+            Index = UIController.receiveInt(messeage, trainingChoices);
+        } while (!(Index >= 0 && Index < trainingChoices.size()));
+
+        return trainingChoices.get(Index);
     }
 
     /**
@@ -199,6 +226,9 @@ public class ARController {
 
         if (ARRole.removeReferee(chosenUser)) {
             UIController.showNotification("The referee has been removed successfully");
+            //Log the action
+            SystemLoggerManager.logInfo(ARController.class,
+                    new RemoveRefereeLogMsg(systemUser.getUsername(), chosenUser.getUsername()));
             return true;
         }
         return false;
@@ -213,7 +243,9 @@ public class ARController {
     private static SystemUser getRefereeByChoice() throws Exception {
         List<SystemUser> referees = EntityManager.getInstance().getReferees();
         if (referees.isEmpty()) {
-            throw new Exception("There are no referees");
+            String msg = "There are no referees";
+            SystemLoggerManager.logError(ARController.class, msg);
+            throw new Exception(msg);
         }
 
         List<String> refereesList = new ArrayList<>();
@@ -274,6 +306,10 @@ public class ARController {
         }
 
         UIController.showNotification("The referee has been assigned to the season successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(ARController.class,
+                new AssignRefereeLogMsg(systemUser.getUsername(), chosenRefereeUser.getUsername(),
+                        chosenSeason.getYears(), chosenLeague.getName()));
         return true;
     }
 
@@ -296,19 +332,26 @@ public class ARController {
 
         boolean teamExists = EntityManager.getInstance().doesTeamExists(teamName);
         if (teamExists) {
-            throw new TeamAlreadyExistsException("The team \"" + teamName + "\" already exists in the system");
+            String msg = "The team \"" + teamName + "\" already exists in the system";
+            SystemLoggerManager.logError(ARController.class, msg);
+            throw new TeamAlreadyExistsException(msg);
         }
 
         String newTeamOwnerUsername = UIController.getUsernameFromUser("Team Owner");
         SystemUser newTeamOwnerUser = EntityManager.getInstance().getUser(newTeamOwnerUsername);
         if (newTeamOwnerUser == null) {
-            throw new UserNotFoundException("Could not find a user by the given username");
+            String msg = "Could not find a user by the given username";
+            SystemLoggerManager.logError(ARController.class, msg);
+            throw new UserNotFoundException(msg);
         }
 
         //delegate the operation responsibility to AssociationRepresentative
         boolean succeeded = ARRole.addTeam(teamName, newTeamOwnerUser);
         if (succeeded) {
             UIController.showNotification("The team " + teamName + " has been created successfully");
+            //Log the action
+            SystemLoggerManager.logInfo(ARController.class,
+                    new RegisterNewTeamLogMsg(systemUser.getUsername(), teamName));
         }
         return succeeded;
     }
@@ -367,10 +410,20 @@ public class ARController {
         else  // "remove"
             succeeded = ARRole.removeTeamsFromSeason(chosenTeams, currLeagueSeason);
         if (succeeded) {
-            if (action.equals("add"))
+            if (action.equals("add")) {
                 UIController.showNotification("The teams have been successfully assigned to the league's latest season");
-            else  // "remove"
+                //Log the action
+                SystemLoggerManager.logInfo(ARController.class,
+                        new AddTeamsToSeason(systemUser.getUsername(),
+                        ""+chosenTeams.size(),currLeagueSeason.getYears(), chosenLeague.getName() ));
+            }
+            else {  // "remove"
                 UIController.showNotification("The teams have been successfully removed from the league's latest season");
+                //Log the action
+                SystemLoggerManager.logInfo(ARController.class,
+                        new RemoveTeamsFromSeason(systemUser.getUsername(),
+                        ""+chosenTeams.size(),currLeagueSeason.getYears(), chosenLeague.getName() ));
+            }
         }
         return succeeded;
     }
@@ -395,7 +448,9 @@ public class ARController {
     private static List<Team> getTeamsBySeasonByChoice(Season season, String action) throws Exception {
         List<Team> teams = EntityManager.getInstance().getTeams();
         if (teams == null || teams.isEmpty()) {
-            throw new Exception("There are no teams");
+            String msg = "There are no teams";
+            SystemLoggerManager.logError(ARController.class, msg);
+            throw new Exception(msg);
         }
         List<Team> teamsInSeason = season.getTeams();
 
@@ -412,10 +467,16 @@ public class ARController {
             }
         }
         if (teamChoices.isEmpty()) {
-            if (action.equals("not in season"))
-                throw new Exception("There are no teams that do not belong already to the chosen league's latest season");
-            else //"in season"
-                throw new Exception("There are no teams that belong to the chosen league's latest season");
+            if (action.equals("not in season")) {
+                String msg = "There are no teams that do not belong already to the chosen league's latest season";
+                SystemLoggerManager.logError(ARController.class, msg);
+                throw new Exception(msg);
+            }
+            else{ //"in season"
+                String msg = "There are no teams that belong to the chosen league's latest season";
+                SystemLoggerManager.logError(ARController.class, msg);
+                throw new Exception(msg);
+            }
         }
         String messageToShow = "";
         if (action.equals("not in season")) {
@@ -448,7 +509,9 @@ public class ARController {
     private static League getLeagueThatHasntStartedByChoice() throws Exception {
         List<League> leagues = EntityManager.getInstance().getLeagues();
         if (leagues == null || leagues.isEmpty()) {
-            throw new Exception("There are no leagues");
+            String msg = "There are no leagues";
+            SystemLoggerManager.logError(ARController.class, msg);
+            throw new Exception(msg);
         }
         List<String> leaguesChoices = new ArrayList<>();
         for (int i = 0; i < leagues.size(); i++) {
@@ -456,7 +519,9 @@ public class ARController {
                 leaguesChoices.add(leagues.get(i).getName());
         }
         if (leaguesChoices.isEmpty()) {
-            throw new Exception("There are no leagues that their latest season hasn't started");
+            String msg = "There are no leagues that their latest season hasn't started";
+            SystemLoggerManager.logError(ARController.class, msg);
+            throw new Exception(msg);
         }
 
         String messeage = ("Choose a League from the list of " +
@@ -482,21 +547,23 @@ public class ARController {
             return false;
         }
         AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
-        String msg = "Enter points for VICTORY (positive integer);Enter points for LOSS (negative integer or zero);" +
-                "Enter points for TIE (integer)";
-        String selectedPoints = UIController.receiveStringFromMultipleInputs(msg);
+        String msg = "Select points for VICTORY;Select points for LOSS;" +
+                "Select points for TIE";
+        String selectedPoints = UIController.receiveStringFromMultipleInputs(msg
+        ,getListOfNumbersBetweenRange(1,20),getListOfNumbersBetweenRange(-20,20), getListOfNumbersBetweenRange(-20,20));
         String[] selectedPointsArray = selectedPoints.split(";");
         String victoryPointsString = selectedPointsArray[0];
         String lossPointsString = selectedPointsArray[1];
         String tiePointsString = selectedPointsArray[2];
 
+        /*
         if (!validateStringIsInteger(victoryPointsString)
                 || !validateStringIsInteger(lossPointsString)
                 || !validateStringIsInteger(tiePointsString)) {
             UIController.showNotification("error, invalid input. Please enter valid inputs.");
             return false;
-        }
-        //Now we know that the inputs are legal
+        }*/
+        //Because the nature of receiveStringFromMultipleInputs we know that the inputs are legal
         int victoryPoints = Integer.parseInt(victoryPointsString);
         int lossPoints = Integer.parseInt(lossPointsString);
         int tiePoints = Integer.parseInt(tiePointsString);
@@ -508,6 +575,10 @@ public class ARController {
         }
 
         UIController.showNotification("The new points policy has been added successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(ARController.class,
+                new AddPointsPolicyLogMsg(systemUser.getUsername()));
+
         return true;
     }
 
@@ -548,6 +619,9 @@ public class ARController {
         ARRole.setPointsPolicy(chosenSeason, pointsPolicy);
 
         UIController.showNotification("The chosen points policy was set successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(ARController.class,
+                new SetPointsPolicyLogMsg(systemUser.getUsername(),chosenSeason.getYears(), chosenLeague.getName()));
         return true;
     }
 
@@ -563,22 +637,23 @@ public class ARController {
             return false;
         }
         AssociationRepresentative ARRole = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
-        String msg = "Enter Number of games each team will face other team;" +
-                "Enter maximum number of games on the same day;" +
-                "Enter minimum rest days between games";
-        String selectedParams = UIController.receiveStringFromMultipleInputs(msg);
+        String msg = "Select Number of games each team will face other team;" +
+                "Select maximum number of games on the same day;" +
+                "Select minimum rest days between games";
+        String selectedParams = UIController.receiveStringFromMultipleInputs(msg
+        , getListOfNumbersBetweenRange(1,6), getListOfNumbersBetweenRange(1,40), getListOfNumbersBetweenRange(0, 30));
         String[] selectedParamsArray = selectedParams.split(";");
         String gamesPerSeasonString = selectedParamsArray[0];
         String gamesPerDayString = selectedParamsArray[1];
         String minRestString = selectedParamsArray[2];
 
-        if (!validateStringIsInteger(gamesPerSeasonString)
+      /*  if (!validateStringIsInteger(gamesPerSeasonString)
                 || !validateStringIsInteger(gamesPerDayString)
                 || !validateStringIsInteger(minRestString)) {
             UIController.showNotification("error, invalid input. Please enter valid inputs.");
             return false;
-        }
-        //Now we know that the inputs are legal
+        }*/
+        //Because the nature of receiveStringFromMultipleInputs we know that the inputs are legal
         int gamesPerSeason = Integer.parseInt(gamesPerSeasonString);
         int gamesPerDay = Integer.parseInt(gamesPerDayString);
         int minRest = Integer.parseInt(minRestString);
@@ -591,6 +666,9 @@ public class ARController {
         }
 
         UIController.showNotification("The new scheduling policy has been added successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(ARController.class,
+                new AddSchedulingPolicyLogMsg(systemUser.getUsername()));
         return true;
     }
 
@@ -625,18 +703,30 @@ public class ARController {
             return false;
         }
         //Date selection
-        Date startDate = UIController.receiveDate("Please chose a date for the first game:");
+        String selectedDate = UIController.receiveDate("Please choose a date for the first game:");
+
         //Scheduling policy selection
         SchedulingPolicy schedulingPolicy = getSchedulingPolicyByChoice();
 
         try {
+            Date startDate = new SimpleDateFormat("dd/MM/yyyy").parse(selectedDate);
+
             ARRole.activateSchedulingPolicy(chosenSeason, schedulingPolicy, startDate);
-        } catch (Exception e) {
+        } catch (ParseException pe)
+        {
+            pe.printStackTrace();
+            UIController.showNotification("Wrong Date, please try again");
+            return false;
+        }catch (Exception e) {
             UIController.showNotification(e.getMessage());
             return false;
         }
 
-        UIController.showNotification("The chosen points policy was set successfully");
+        UIController.showNotification("The chosen schedule policy was activated successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(ARController.class,
+                new ActivateSchedulingPolicyLogMsg(systemUser.getUsername(),chosenSeason.getYears(),
+                        chosenLeague.getName(), ""+chosenSeason.getGames().size()));
         return true;
     }
 
@@ -656,5 +746,12 @@ public class ARController {
         return schedulingPolicies.get(index);
     }
 
+    private static List<String> getListOfNumbersBetweenRange(int startingNumber, int endingNumber){
+        List<String> list = new ArrayList<>();
+        for(int i = startingNumber; i <= endingNumber; i++){
+            list.add(""+i);
+        }
+        return list;
+    }
 
 }

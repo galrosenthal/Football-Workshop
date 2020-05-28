@@ -4,7 +4,6 @@ import Domain.EntityManager;
 import Domain.Exceptions.*;
 import Domain.Users.*;
 import Service.UIController;
-import sun.net.ftp.FtpDirEntry;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -24,18 +23,31 @@ public class Team {
     private HashMap<TeamManager, List<TeamManagerPermissions>> permissionsPerTeamManager;
 
 
-    public List<TeamOwner> getTeamOwners() {
-        return teamOwners;
+    public Team(String teamName) {
+        this.teamName = teamName;
+        teamOwners = new ArrayList<>();
+        playersAndCoaches = new HashSet<>();
+        teamManagers = new ArrayList<>();
+        seasons = new ArrayList<>();
+        stadiums = new ArrayList<>();
+        status = TeamStatus.OPEN;
+        permissionsPerTeamManager = new HashMap<>();
+        EntityManager.getInstance().addTeam(this);
+
     }
 
-    public List<String> getTeamOwnersString() {
-        List<String> teamOwnersString = new ArrayList<>();
+    public Team(String teamName, TeamOwner to) {
+        teamOwners = new ArrayList<>();
+        teamOwners.add(to);
+        playersAndCoaches = new HashSet<>();
+        teamManagers = new ArrayList<>();
+        stadiums = new ArrayList<>();
+        status = TeamStatus.OPEN;
+        seasons = new ArrayList<>();
+        this.teamName = teamName;
+        permissionsPerTeamManager = new HashMap<>();
+        EntityManager.getInstance().addTeam(this);
 
-        for (TeamOwner to : teamOwners) {
-            teamOwnersString.add(to.toString());
-        }
-
-        return teamOwnersString;
     }
 
     public Team(Team anotherTeam) {
@@ -50,26 +62,19 @@ public class Team {
 
     }
 
-    public Team() {
-        teamOwners = new ArrayList<>();
-        playersAndCoaches = new HashSet<>();
-        teamManagers = new ArrayList<>();
-        seasons = new ArrayList<>();
-        stadiums = new ArrayList<>();
-        status = TeamStatus.OPEN;
-        permissionsPerTeamManager = new HashMap<>();
+    public List<TeamOwner> getTeamOwners() {
+        /*TODO db*/
+        return teamOwners;
     }
 
-    public Team(String teamName, TeamOwner to) {
-        teamOwners = new ArrayList<>();
-        teamOwners.add(to);
-        playersAndCoaches = new HashSet<>();
-        teamManagers = new ArrayList<>();
-        stadiums = new ArrayList<>();
-        status = TeamStatus.OPEN;
-        seasons = new ArrayList<>();
-        this.teamName = teamName;
-        permissionsPerTeamManager = new HashMap<>();
+    public List<String> getTeamOwnersString() {
+        List<String> teamOwnersString = new ArrayList<>();
+
+        for (TeamOwner to : teamOwners) {
+            teamOwnersString.add(to.toString());
+        }
+
+        return teamOwnersString;
     }
 
 
@@ -81,7 +86,7 @@ public class Team {
      * @return true if the player added successfully to the Team.
      */
     public boolean addTeamPlayer(TeamOwner townr, Role teamPlayer) {
-        if (!teamOwners.contains(townr) || status != TeamStatus.OPEN) {
+        if (!teamOwners.contains(townr) || status != TeamStatus.OPEN || !(EntityManager.getInstance().isTeamOwner(townr,this))) {
             return false;
         }
         if (teamPlayer.getType() == RoleTypes.PLAYER) {
@@ -134,7 +139,9 @@ public class Team {
         if (teamOwner == null || status != TeamStatus.OPEN) {
             return false;
         }
-        if (teamOwner.getType() == RoleTypes.TEAM_OWNER && !teamOwners.contains(teamOwner)) {
+        if (teamOwner.getType() == RoleTypes.TEAM_OWNER && !teamOwners.contains(teamOwner) &&!(EntityManager.getInstance().isTeamOwner((TeamOwner)teamOwner,this))) {
+            /*UPDATE DB*/
+            EntityManager.getInstance().addTeamOwnerToTeam((TeamOwner)teamOwner, this);
             return teamOwners.add((TeamOwner) teamOwner);
         }
 
@@ -142,6 +149,7 @@ public class Team {
     }
 
     public boolean removeTeamOwner(TeamOwner teamOwner) {
+        /*update db*/
         if (!teamOwners.contains(teamOwner) || status != TeamStatus.OPEN) {
             return false;
         }
@@ -363,8 +371,14 @@ public class Team {
         return this.teamName;
     }
 
-    public void setTeamName(String testName) {
-        this.teamName = testName;
+    public boolean setTeamName(String testName) {
+        /*update db*/
+         if(EntityManager.getInstance().updateTeamName(this.teamName,testName))
+         {
+             this.teamName = testName;
+             return true;
+         }
+         return false;
     }
 
     public TeamStatus getStatus() {
@@ -390,9 +404,15 @@ public class Team {
      */
     public boolean addStadium(Stadium stadium) {
         if (!this.stadiums.contains(stadium)) {
-            this.stadiums.add(stadium);
+
+            if (EntityManager.getInstance().addStadium(stadium, this)) {
+                this.stadiums.add(stadium);
+
+            }
+
+
         }
-        return true;
+        return false;
     }
 
     /**
@@ -432,7 +452,9 @@ public class Team {
         if (teamOwner != null && teamOwners.contains(teamOwner)) {
             return true;
         }
-        return false;
+        /*check in db*/
+        return EntityManager.getInstance().isTeamOwner(teamOwner, this);
+        //   return false;
     }
 
     /**
@@ -490,6 +512,8 @@ public class Team {
         if (!teamAsset.addTeam(this, teamOwner)) {
             return false;
         }
+        /*TODO*/
+
         return teamAsset.addAllProperties(this);
 
     }
@@ -503,7 +527,7 @@ public class Team {
     private Date getPlayerBirthDate() {
         String bDate;
         do {
-            bDate = UIController.receiveString("Please insert Player Birth Date in format dd/MM/yyyy");
+            bDate = UIController.receiveDate("Please insert Player Birth Date in format dd/MM/yyyy");
         } while (!bDate.matches("^(3[01]|[12][0-9]|0[1-9])/(1[0-2]|0[1-9])/[0-9]{4}$"));
 
         try {
@@ -599,6 +623,7 @@ public class Team {
 
     public boolean removeTeamManager(TeamManager teamManager) {
         if (teamManagers.remove(teamManager)) {
+            this.permissionsPerTeamManager.remove(teamManager);
             return true;
         }
         return false;
@@ -619,6 +644,7 @@ public class Team {
 
     /**
      * add or remove permission to team manager
+     *
      * @param teamManager
      * @param permissions
      */

@@ -1,5 +1,6 @@
 package Domain.Users;
 
+import Domain.EntityManager;
 import Domain.Game.Asset;
 import Domain.Game.Team;
 
@@ -37,7 +38,9 @@ public abstract class PartOfTeam extends Role implements Asset {
 
     public boolean addTeamConnection(BelongToTeam teamConnection){
         if(!allTeamsConnections.contains(teamConnection)){
-            return allTeamsConnections.add(teamConnection);
+            if(EntityManager.getInstance().addConnection(teamConnection.getTeamBelongsTo(),this)){
+                return allTeamsConnections.add(teamConnection);
+            }
         }
         return false;
     }

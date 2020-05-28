@@ -3,10 +3,8 @@ package Domain.Game;
 import DB.DBManager;
 import DB.DBManagerForTest;
 import Domain.EntityManager;
-import Domain.Users.Referee;
-import Domain.Users.RefereeStub;
-import Domain.Users.SystemUser;
-import Domain.Users.SystemUserStub;
+import Domain.SystemLogger.SystemLoggerManager;
+import Domain.Users.*;
 import org.junit.*;
 
 import java.time.Year;
@@ -21,11 +19,13 @@ public class SeasonTest {
     public static void beforeClass() throws Exception {
         DBManager.startTest();
         DBManagerForTest.startConnection();
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+
     }
 
     @Before
     public void setUp() throws Exception {
-        season = new Season(new League("noName"), "2020/21");
+        season = new Season(new League("noName"),"2020/21");
     }
 
     @Test
@@ -48,14 +48,14 @@ public class SeasonTest {
 
     @Test
     public void assignAndUnAssignRefereeUTest() {
-        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121), "training");
-        assertTrue(season.refereesSize() == 0);
+        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121), RefereeQualification.VAR_REFEREE);
+        assertTrue(season.refereesSize()==0);
         season.assignReferee(referee);
-        assertTrue(season.refereesSize() == 1);
+        assertTrue(season.refereesSize()==1);
         assertTrue(season.getReferees().contains(referee));
 
         season.unAssignReferee(referee);
-        assertTrue(season.refereesSize() == 0);
+        assertTrue(season.refereesSize()==0);
         assertFalse(season.getReferees().contains(referee));
     }
     //null test
@@ -63,12 +63,11 @@ public class SeasonTest {
     @Test
     public void unAssignRefereeUTest() {
         season.unAssignReferee(null);
-        assertTrue(season.refereesSize() == 0);
+        assertTrue(season.refereesSize()==0);
     }
-
     @Test
     public void doesContainsRefereeUTest() {
-        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121), "training");
+        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121),RefereeQualification.VAR_REFEREE);
         assertFalse(season.doesContainsReferee(referee));
         season.assignReferee(referee);
         assertTrue(season.doesContainsReferee(referee));
@@ -76,15 +75,15 @@ public class SeasonTest {
 
     @Test
     public void assignAndUnAssignRefereeITest() {
-        Referee referee = new Referee(new SystemUser("username", "name"), "training");
-        assertTrue(season.refereesSize() == 0);
+        Referee referee = new Referee(new SystemUser("username", "name"),RefereeQualification.VAR_REFEREE);
+        assertTrue(season.refereesSize()==0);
         season.assignReferee(referee);
-        assertTrue(season.refereesSize() == 1);
+        assertTrue(season.refereesSize()==1);
 
         assertTrue(season.doesContainsReferee(referee));
 
         season.unAssignReferee(referee);
-        assertTrue(season.refereesSize() == 0);
+        assertTrue(season.refereesSize()==0);
         assertFalse(season.doesContainsReferee(referee));
     }
 

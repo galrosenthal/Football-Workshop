@@ -8,9 +8,11 @@ import DB.Tables_Test.tables.Alert;
 import DB.Tables_Test.tables.AssociationRepresentative;
 import DB.Tables_Test.tables.Coach;
 import DB.Tables_Test.tables.CoachInTeam;
+import DB.Tables_Test.tables.ErrorLog;
 import DB.Tables_Test.tables.EventCard;
 import DB.Tables_Test.tables.EventGoal;
 import DB.Tables_Test.tables.EventInjury;
+import DB.Tables_Test.tables.EventLog;
 import DB.Tables_Test.tables.EventOffside;
 import DB.Tables_Test.tables.EventPenalty;
 import DB.Tables_Test.tables.EventSwitchPlayers;
@@ -66,6 +68,11 @@ public class Tables {
     public static final CoachInTeam COACH_IN_TEAM = CoachInTeam.COACH_IN_TEAM;
 
     /**
+     * The table <code>fwdb_test.error_log</code>.
+     */
+    public static final ErrorLog ERROR_LOG = ErrorLog.ERROR_LOG;
+
+    /**
      * The table <code>fwdb_test.event_card</code>.
      */
     public static final EventCard EVENT_CARD = EventCard.EVENT_CARD;
@@ -79,6 +86,11 @@ public class Tables {
      * The table <code>fwdb_test.event_injury</code>.
      */
     public static final EventInjury EVENT_INJURY = EventInjury.EVENT_INJURY;
+
+    /**
+     * The table <code>fwdb_test.event_log</code>.
+     */
+    public static final EventLog EVENT_LOG = EventLog.EVENT_LOG;
 
     /**
      * The table <code>fwdb_test.event_offside</code>.

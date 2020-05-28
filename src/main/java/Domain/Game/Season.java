@@ -286,6 +286,12 @@ public class Season {
      */
     public void scheduleGames(SchedulingPolicy schedulingPolicy, Date startDate) throws Exception {
         List<ScheduleMatch> scheduleMatches = schedulingPolicy.generateSchedule(startDate, this.teams, this.referees);
+        //Remove previous games from referees
+        for(Referee ref : referees){
+            for(Game game : games){
+                ref.removeGame(game);
+            }
+        }
         //Delete previous games
         this.games = new ArrayList<>();
         //TODO:Maybe delete games from DB?
@@ -294,6 +300,13 @@ public class Season {
             ScheduleMatch scheduleMatch = scheduleMatches.get(i);
             Game game = new Game(scheduleMatch.getStadium(),scheduleMatch.getHomeTeam(),scheduleMatch.getAwayTeam(),scheduleMatch.getMatchDate(),scheduleMatch.getReferees());
             this.games.add(game);
+            for(Referee ref : scheduleMatch.getReferees()){
+                ref.addGame(game);
+            }
         }
+    }
+
+    public List<Game> getGames() {
+        return games;
     }
 }

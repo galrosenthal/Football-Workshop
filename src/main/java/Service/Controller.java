@@ -7,10 +7,14 @@ import Domain.Exceptions.*;
 import Domain.Game.Team;
 import Domain.Game.TeamAsset;
 import Domain.Game.TeamStatus;
+import Domain.SystemLogger.*;
 import Domain.Users.*;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
+
 import static Service.UIController.getUsernameFromUser;
 
 public class Controller {
@@ -20,30 +24,48 @@ public class Controller {
         //access DB
         DBManager.getInstance().startConnection();
         //extract system admins
-
-        String username = UIController.receiveString("Please enter a system administrator username: ");
-        String password = UIController.receiveString("Please enter your password: ");
-
-        //Retrieve system user
-        SystemUser admin = null;
         try {
+            String usernameAndPassword = UIController.receiveUserLoginInfo("Please enter a system administrator username:;Please enter the password");
+            String username = usernameAndPassword.split(UIController.STRING_DELIMETER)[0];
+            String password = usernameAndPassword.split(UIController.STRING_DELIMETER)[1];
+
+            //Retrieve system user
+            SystemUser admin = null;
+
             admin = Controller.login(username, password);
-        } catch (Exception e) {
-            UIController.showNotification("Username or Password was incorrect!!!!!");
-            e.printStackTrace();
-        }
-        UIController.showNotification("Successful login. Welcome back, " + admin.getName());
-        //system boot choice
-        boolean choice = UIController.receiveChoice("Would you like to boot the system? y/n");
-        if (!choice) {
+            if(!MainController.getUserRoles(username).contains(RoleTypes.SYSTEM_ADMIN.name()))
+            {
+                UIController.showNotification("You are not a System Admin please try different user");
+                MainController.performLogout(username,admin);
+                return false;
+            }
+
+            UIController.showNotification("Successful login. Welcome back, " + admin.getName());
+            //system boot choice
+            boolean choice = UIController.receiveChoice("Would you like to boot the system? y/n");
+            if (!choice) {
+                MainController.performLogout(username,admin);
+                return false;
+            }
+
+            //Establishing connections to external financial system
+
+            //Establishing connections to external tax system
+            UIController.showNotification("The system was booted successfully");
+            MainController.performLogout(username,admin);
+            //Log the action
+            SystemLoggerManager.logInfo(Controller.class, new SystemBootLogMsg(admin.getUsername()));
+            return true;
+        } catch (CancellationException ce)
+        {
+            ce.printStackTrace();
             return false;
         }
-
-        //Establishing connections to external financial system
-
-        //Establishing connections to external tax system
-        UIController.showNotification("The system was booted successfully");
-        return true;
+        catch (Exception e) {
+            UIController.showNotification("Username or Password was incorrect!!!!!");
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -74,6 +96,7 @@ public class Controller {
             e.printStackTrace();
             return false;
         }
+
         return true;
 
     }
@@ -149,7 +172,7 @@ public class Controller {
         List<String> teamsToShow = new ArrayList<>();
         for (int i = 0; i < myTeams.size() ; i++) {
             if(myTeams.get(i).getStatus() == TeamStatus.CLOSED)
-                 teamsToShow.add(myTeams.get(i).getTeamName()+" (closed)");
+                teamsToShow.add(myTeams.get(i).getTeamName()+" (closed)");
             else if(myTeams.get(i).getStatus() == TeamStatus.PERMENENTLY_CLOSED)
                 teamsToShow.add(myTeams.get(i).getTeamName()+" (closed forever)");
             else //open
@@ -182,7 +205,9 @@ public class Controller {
 
         if(chosenTeam == null)
         {
-            throw new NoTeamExistsException("There was no Team found");
+            String msg = "There was no Team found";
+            SystemLoggerManager.logError(Controller.class, msg);
+            throw new NoTeamExistsException(msg);
         }
 
         TeamAsset ass = getAssetTypeFromUser();
@@ -206,7 +231,7 @@ public class Controller {
         int assetIndex;
 
         do{
-            assetIndex = UIController.receiveInt("Choose Asset Type: ");
+            assetIndex = UIController.receiveInt("Choose Asset Type: ", assetTypes);
         }while (!(assetIndex >= 0 && assetIndex < TeamAsset.values().length));
 
         return TeamAsset.values()[assetIndex];
@@ -226,7 +251,9 @@ public class Controller {
         Team chosenTeam = getTeamByChoice(myTeamOwner);
 
         if (chosenTeam == null) {
-            throw new NoTeamExistsException("There was no Team found");
+            String msg = "There was no Team found";
+            SystemLoggerManager.logError(Controller.class, msg);
+            throw new NoTeamExistsException(msg);
         }
 
         boolean isSuccess = TeamController.editAssets(chosenTeam);
@@ -246,7 +273,7 @@ public class Controller {
      * @return The user in the system with those credentials.
      * @throws UsernameOrPasswordIncorrectException If user name or password are incorrect.
      */
-    public static SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException {
+    public static SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException, AlreadyLoggedInUser {
         SystemUser SystemUser =  EntityManager.getInstance().login(usrNm, pswrd);
         return SystemUser;
     }
@@ -258,12 +285,14 @@ public class Controller {
      * @param name Name.
      * @param usrNm User name.
      * @param pswrd Password.
+     * @param email  email address
+     * @param emailAlert - boolean  - if send via email - true, otherwise false
      * @return New user with those credentials.
      * @throws Exception If user name is already belongs to a user in the system, or
      * the password does not meet the security requirements.
      */
     public static SystemUser signUp(String name, String usrNm, String pswrd, String email, boolean emailAlert)
-            throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException {
+            throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException, Invalid {
 
         return EntityManager.getInstance().signUp(name, usrNm, pswrd, email, emailAlert);
 

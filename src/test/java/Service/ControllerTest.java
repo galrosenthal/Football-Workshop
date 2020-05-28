@@ -5,11 +5,14 @@ import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.Exceptions.NoTeamExistsException;
 import Domain.Game.Stadium;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.SystemUserStub;
 import Domain.Users.TeamOwnerStub;
 import Domain.Game.Team;
 import Domain.Users.*;
 import org.junit.*;
+import org.junit.*;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -24,7 +27,11 @@ public class ControllerTest {
     @BeforeClass
     public static void beforeClass() throws Exception {
         DBManager.startTest();
-        DBManagerForTest.startConnection();    }
+        DBManagerForTest.startConnection();
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+
+    }
+
 
     @Before
     public void setUp() throws Exception {
@@ -44,12 +51,13 @@ public class ControllerTest {
     @Test
     public void loginUTest() throws Exception {
         //userName not exists
-        try {
+        try{
             Controller.login("usrNmNotExists", "pswrd");
             Assert.fail();
-        } catch (Exception e) {
+        }
+        catch(Exception e) {
             e.printStackTrace();
-            Assert.assertEquals("Username or Password was incorrect!", e.getMessage());
+            Assert.assertEquals("Username or Password was incorrect!",e.getMessage());
         }
 
         //working good
@@ -60,14 +68,15 @@ public class ControllerTest {
         Assert.assertEquals("nir", result2.getUsername());
         Assert.assertEquals("Nir", result2.getName());
         Assert.assertEquals(hashedPassword, result2.getPassword());
-
+        EntityManager.getInstance().logout(result2);
         //password incorrect
-        try {
+        try{
             Controller.login("nir", "pswrdNotCorrect");
             Assert.fail();
-        } catch (Exception e) {
+        }
+        catch(Exception e) {
             e.printStackTrace();
-            Assert.assertEquals("Username or Password was incorrect!", e.getMessage());
+            Assert.assertEquals("Username or Password was incorrect!",e.getMessage());
         }
         EntityManager.getInstance().removeUserByReference(systemUser);
     }
@@ -75,7 +84,7 @@ public class ControllerTest {
     @Test
     public void signUpUTest() throws Exception {
         //success
-        SystemUser newUser = Controller.signUp("Avi", "avi", "1234cB57", "test@gmail.com", false);
+        SystemUser newUser = Controller.signUp("Avi", "avi", "1234cB57","test@gmail.com", false);
         Assert.assertNotNull(newUser);
         Assert.assertEquals("avi", newUser.getUsername());
         Assert.assertEquals("Avi", newUser.getName());
@@ -85,30 +94,33 @@ public class ControllerTest {
 
         //userName already exists
         EntityManager.getInstance().addUser(systemUser);
-        try {
-            Controller.signUp("Avi", "nir", "1234cB57", "test@gmail.com", false);
+        try{
+            Controller.signUp("Avi", "nir", "1234cB57","test@gmail.com", false);
             Assert.fail();
-        } catch (Exception e) {
+        }
+        catch(Exception e) {
             e.printStackTrace();
-            Assert.assertEquals("Username already exists", e.getMessage());
+            Assert.assertEquals("Username already exists",e.getMessage());
         }
 
         try {
             //password does not meet security req
-            Controller.signUp("Yosi", "yos", "12a34567", "test@gmail.com", false);
+            Controller.signUp("Yosi", "yos", "12a34567","test@gmail.com", false);
             Assert.fail();
-        } catch (Exception e) {
+        }
+        catch(Exception e) {
             e.printStackTrace();
-            Assert.assertEquals("Password does not meet the requirements", e.getMessage());
+            Assert.assertEquals("Password does not meet the requirements",e.getMessage());
         }
 
         try {
             //password does not meet security req
-            Controller.signUp("Yossi", "yos1", "55bB", "test@gmail.com", false);
+            Controller.signUp("Yossi", "yos1", "55bB","test@gmail.com", false);
             Assert.fail();
-        } catch (Exception e) {
+        }
+        catch(Exception e) {
             e.printStackTrace();
-            Assert.assertEquals("Password does not meet the requirements", e.getMessage());
+            Assert.assertEquals("Password does not meet the requirements",e.getMessage());
         }
 
         EntityManager.getInstance().removeUserByReference(systemUser);
@@ -154,8 +166,9 @@ public class ControllerTest {
     }
 
     @Test
-    public void addAssetUTest() throws Exception {
-        SystemUserStub test = new SystemUserStub("test", "test User", 0);
+    public void addAssetUTest() throws Exception
+    {
+        SystemUserStub test = new SystemUserStub("test","test User",0);
         assertFalse(Controller.addAsset(test));
         CoachStub c = new CoachStub(test);
         test.getRoles().add(c);
@@ -165,18 +178,19 @@ public class ControllerTest {
 
 
     }
-
-    @Test(expected = NoTeamExistsException.class)
-    public void addAssetNoSuchTeamUTest() throws Exception {
-        SystemUser test = new SystemUserStub("test", "test User", 6111);
+    @Test (expected = NoTeamExistsException.class)
+    public void addAssetNoSuchTeamUTest() throws Exception
+    {
+        SystemUser test = new SystemUserStub("test","test User",6111);
         TeamOwnerStub to = new TeamOwnerStub(test);
         to.setSelector(6111);
         assertFalse(Controller.addAsset(test));
     }
 
     @Test
-    public void addAssetFalseUTest() throws Exception {
-        SystemUser test = new SystemUserStub("test", "test User", 6111);
+    public void addAssetFalseUTest() throws Exception
+    {
+        SystemUser test = new SystemUserStub("test","test User",6111);
         TeamOwnerStub to = new TeamOwnerStub(test);
         to.setSelector(6113);
         UIController.setSelector(0);
@@ -184,8 +198,9 @@ public class ControllerTest {
     }
 
     @Test
-    public void addAssetTestAssetTypeUTest() throws Exception {
-        SystemUser test = new SystemUserStub("test", "test User", 6111);
+    public void addAssetTestAssetTypeUTest() throws Exception
+    {
+        SystemUser test = new SystemUserStub("test","test User",6111);
         TeamOwnerStub to = new TeamOwnerStub(test);
         to.setSelector(6112);
         UIController.setSelector(61111);
@@ -194,25 +209,27 @@ public class ControllerTest {
 
 
     @Test
-    public void addAssetSystemUserStubITest() throws Exception {
-        SystemUser test = new SystemUserStub("test", "test User", 6111);
-        SystemUser anotherUser = new SystemUserStub("anotherUser", "another test User", 6112);
+    public void addAssetSystemUserStubITest() throws Exception
+    {
+        SystemUser test = new SystemUserStub("test","test User",6111);
+        SystemUser anotherUser = new SystemUserStub("anotherUser","another test User",6112);
         TeamOwner to = new TeamOwner(test);
-        Team team = new Team();
+        Team team = new Team("Test");
         team.getTeamOwners().add(to);
-        assertTrue(to.addTeamToOwn(team));
+        assertTrue(to.addTeamToOwn(team,test));
         UIController.setSelector(61114);
         assertTrue(Controller.addAsset(test));
     }
 
     @Test
-    public void addAssetSystemUserNoStubITest() throws Exception {
-        SystemUser test = new SystemUser("test", "test User");
-        new SystemUser("anotherUser", "another test User");
+    public void addAssetSystemUserNoStubITest() throws Exception
+    {
+        SystemUser test = new SystemUser("test","test User");
+        SystemUser anotherUser =new SystemUser("anotherUser","another test User");
         TeamOwner to = new TeamOwner(test);
-        Team team = new Team();
+        Team team = new Team("Test");
         team.getTeamOwners().add(to);
-        assertTrue(to.addTeamToOwn(team));
+        assertTrue(to.addTeamToOwn(team,test));
         UIController.setSelector(61115);
         assertTrue(Controller.addAsset(test));
     }
@@ -247,9 +264,9 @@ public class ControllerTest {
     public void modifyTeamAssetDetails3ITest() throws Exception {
         SystemUser systemUser = new SystemUser("rosengal", "gal");
         TeamOwner teamOwner = new TeamOwner(systemUser);
-        Team team = new Team();
-        teamOwner.addTeamToOwn(team);
-        Stadium stadium = new Stadium("AESEAL", "New York");
+        Team team = new Team("Test");
+        teamOwner.addTeamToOwn(team,systemUser);
+        Stadium stadium = new Stadium("AESEAL" , "New York");
         team.addStadium(stadium);
         UIController.setSelector(6139);
         assertTrue(Controller.modifyTeamAssetDetails(systemUser));
@@ -260,7 +277,7 @@ public class ControllerTest {
      * Failure test, check that the user name owned a team
      */
     @Test
-    public void removeTeamOwner1UTest() {
+    public void removeTeamOwner1UTest(){
         UIController.setIsTest(true);
         UIController.setSelector(0);
         //false because username not owned a team
@@ -271,7 +288,7 @@ public class ControllerTest {
      * Failure test, check that the team owner owned a team
      */
     @Test
-    public void removeTeamOwner2UTest() {
+    public void removeTeamOwner2UTest(){
         UIController.setIsTest(true);
         UIController.setSelector(1);
         SystemUser user = new SystemUser("rosengal", "gal");
@@ -287,7 +304,7 @@ public class ControllerTest {
      * Failure test, check that user name input is a not a real user name
      */
     @Test
-    public void removeTeamOwner1ITest() {
+    public void removeTeamOwner1ITest(){
         UIController.setIsTest(true);
         UIController.setSelector(0);
         //false because of wrong username from user
@@ -309,7 +326,7 @@ public class ControllerTest {
      * check only the owner of this team can remove owner
      */
     @Test
-    public void removeTeamOwner3ITest() {
+    public void removeTeamOwner3ITest(){
         UIController.setIsTest(true);
         UIController.setSelector(1);
 
@@ -317,7 +334,7 @@ public class ControllerTest {
         owner.addNewRole(new TeamOwner(owner));
         assertFalse(Controller.removeTeamOwner(owner));
 
-        // owner.getRole(RoleTypes.TEAM_OWNER).
+       // owner.getRole(RoleTypes.TEAM_OWNER).
     }
 
     @After

@@ -20,6 +20,7 @@ public class BelongToTeam {
         this.assetOfTheTeam = assetOfTheTeam;
     }
 
+
     public Team getTeamBelongsTo() {
         return teamBelongsTo;
     }

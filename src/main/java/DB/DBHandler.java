@@ -1,6 +1,7 @@
 package DB;
 
 import DB.Tables.Fwdb;
+import Domain.SystemLogger.SystemLoggerManager;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.jooq.*;
 import org.jooq.Table;
@@ -25,7 +26,9 @@ public class DBHandler implements CRUD {
 
     private static DBHandler DBHandlerInstance = null;
 
-
+    /**
+     * Constructor
+     */
     private DBHandler() {
     }
 
@@ -39,6 +42,10 @@ public class DBHandler implements CRUD {
         return DBHandlerInstance;
     }
 
+    /**
+     * start connection to DB
+     * @param url - for DB connection
+     */
     public static void startConnection(String url) {
         //connect to DB and save to field in class.
         try {
@@ -46,29 +53,48 @@ public class DBHandler implements CRUD {
             connection = DriverManager.getConnection(url, username, password);
             System.out.println("Successful connection to server db ");
         } catch (SQLException e) {
-            System.out.println("error connecting to server. connection is now null");
+            String msg = "error connecting to server. connection is now null";
+            System.out.println(msg);
+            SystemLoggerManager.logFatal(DBHandler.class , msg);
         } catch (ClassNotFoundException e) {
-            System.out.println("error connecting to driver");
+            String msg = "error connecting to driver";
+            System.out.println(msg);
+            SystemLoggerManager.logFatal(DBHandler.class , msg);
         }
     }
 
+    /**
+     * close connection
+     * @return - true if closing connection successfully
+     *         - false otherwise
+     */
     public static boolean closeConnection()
     {
         try {
             connection.close();
         } catch (SQLException e) {
-            System.out.println("error closing connection of DB");
+            String msg = "error closing connection of DB";
+            System.out.println(msg);
+            SystemLoggerManager.logFatal(DBHandler.class , msg);
             return false;
         }
 
         return true;
     }
 
+    /**
+     * create context to JOOQ
+     * @return DSLContext - create
+     */
     public static DSLContext getContext() {
         DSLContext create = DSL.using(connection, SQLDialect.MARIADB);
         return create;
     }
 
+    /**
+     * delete all records from DB
+     * @throws Exception
+     */
     public void deleteData(String dbName) {
         List<Table<?>> fwdbTables = Fwdb.FWDB.getTables();
         DSLContext create = DBHandler.getContext();
@@ -92,6 +118,11 @@ public class DBHandler implements CRUD {
 
     }
 
+    /**
+     * run sql script
+     * @param url- to script file
+     * @throws Exception - wrong input url FILE
+     */
     private void scriptRunner(File url) throws Exception {
       //Initialize the script runner
         ScriptRunner sr = new ScriptRunner(connection);

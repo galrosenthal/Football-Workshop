@@ -18,7 +18,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <failOnMissingWebXml>false</failOnMissingWebXml>
 
-        <vaadin.version>14.1.27</vaadin.version>
+        <vaadin.version>14.2.0</vaadin.version>
         <drivers.dir>${project.basedir}/drivers</drivers.dir>
         <drivers.downloader.phase>pre-integration-test</drivers.downloader.phase>
     </properties>
@@ -272,6 +272,24 @@
             <version>2.1.2</version>
         </dependency>
 
+        <!-- For creating pdf -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.13.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>layout</artifactId>
+            <version>7.1.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.19</version>
+        </dependency>
+
+
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
@@ -284,6 +302,13 @@
             <version>3.4.5</version>
         </dependency>
 
+
+        <!-- For logging -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -428,7 +453,7 @@
                             <!-- Configure the database connection here -->
                             <jdbc>
                                 <driver>org.mariadb.jdbc.Driver</driver>
-                                <url>jdbc:mariadb://132.72.65.105:3306:3306/fwdb_test</url>
+                                <url>jdbc:mariadb://132.72.65.105:3306:3306/fwdb</url>
                                 <user>root</user>
                                 <password>foot123Ball!</password>
                             </jdbc>
@@ -439,7 +464,7 @@
                                     <!-- The database type. The format here is:                         org.util.[database].[database]Database -->
                                     <name>org.jooq.meta.mariadb.MariaDBDatabase</name>
                                     <!-- The database schema (or in the absence of schema support, in your RDBMS this                         can be the owner, user, database name) to be generated -->
-                                    <inputSchema>fwdb_test</inputSchema>
+                                    <inputSchema>fwdb</inputSchema>
                                     <!-- All elements that are generated from your schema                         (A Java regular expression. Use the pipe to separate several expressions)                         Watch out for case-sensitivity. Depending on your database, this might be important! -->
                                     <includes>.*</includes>
                                     <!-- All elements that are excluded from your schema                         (A Java regular expression. Use the pipe to separate several expressions).                         Excludes match before includes, i.e. excludes have a higher priority -->
@@ -448,7 +473,7 @@
                                 </database>
                                 <target>
                                     <!-- The destination package of your generated classes (within the destination directory) -->
-                                    <packageName>DB.Tables_Test</packageName>
+                                    <packageName>DB.Tables</packageName>
                                     <!-- The destination directory of your generated classes. Using Maven directory layout here -->
                                     <directory>src/main/java/</directory>
                                 </target>

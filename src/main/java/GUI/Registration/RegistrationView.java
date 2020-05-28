@@ -4,18 +4,12 @@ import GUI.FootballMain;
 import GUI.NotRegiseredView;
 import Service.MainController;
 import Service.UIController;
-import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.Page;
+import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -24,16 +18,13 @@ import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.vaadin.flow.component.UI.getCurrent;
 
 
 @Route(value = "Registration", layout = NotRegiseredView.class)
@@ -69,6 +60,18 @@ public class RegistrationView extends VerticalLayout {
         confirmPass.setValueChangeMode(ValueChangeMode.EAGER);
         confirmPass.setPlaceholder("Confirm Password");
 
+        EmailField email = new EmailField();
+        email.setValueChangeMode(ValueChangeMode.LAZY);
+        email.setPlaceholder("Enter Email Address");
+
+        Checkbox wantEmail = new Checkbox();
+        wantEmail.setLabel("Do you want to receive alerts by email?");
+        VerticalLayout emailAndCheckBox = new VerticalLayout();
+        emailAndCheckBox.add(email,wantEmail);
+        emailAndCheckBox.setAlignItems(Alignment.START);
+        emailAndCheckBox.setJustifyContentMode(JustifyContentMode.START);
+        emailAndCheckBox.setPadding(false);
+        emailAndCheckBox.getElement().removeAttribute("theme");
 
         Button save = new Button("Save");
         Button reset = new Button("Reset");
@@ -79,6 +82,7 @@ public class RegistrationView extends VerticalLayout {
         layoutWithBinder.addFormItem(lastName, "Last name");
         layoutWithBinder.addFormItem(pass, "Password");
         layoutWithBinder.addFormItem(confirmPass, "Confirm Password");
+        layoutWithBinder.addFormItem(emailAndCheckBox, "Email Address");
 
 // Button bar
         HorizontalLayout actions = new HorizontalLayout();
@@ -111,6 +115,10 @@ public class RegistrationView extends VerticalLayout {
                 .withValidator(new UsernameValidator())
                 .bind(ValidatorUser::getUsername, ValidatorUser::setUsername);
 
+        binder.forField(email)
+                .withValidator(new EmailValidator("Please enter a valid email address"))
+                .bind(ValidatorUser::getEmail,ValidatorUser::setEmail);
+
         ValidatorUser userToRegister = new ValidatorUser();
 // Click listeners for the buttons
         save.addClickListener(event -> {
@@ -120,6 +128,8 @@ public class RegistrationView extends VerticalLayout {
                 userDetails.add(userToRegister.getFirstName());
                 userDetails.add(userToRegister.getLastName());
                 userDetails.add(userToRegister.getPass());
+                userDetails.add(userToRegister.getEmail());
+                userDetails.add(wantEmail.getValue().toString());
                 if(!MainController.signup(userDetails))
                 {
                     FootballMain.showNotification("Something Went Wrong please try again!");
@@ -142,6 +152,7 @@ public class RegistrationView extends VerticalLayout {
         reset.addClickListener(event -> {
             // clear fields by setting null
             binder.readBean(null);
+            wantEmail.setValue(false);
         });
 
         back.addClickListener(e -> {

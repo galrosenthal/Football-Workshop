@@ -23,15 +23,6 @@ public class SystemUser extends User implements Fan {
 
 
 
-    @Override
-    public boolean removePageFromFollow() {
-        return false;
-    }
-
-    @Override
-    public boolean addPageToFollow() {
-        return false;
-    }
 
     public SystemUser(String username, String password, String name , String email, boolean alertEmail) {
         this.roles = new ArrayList<>();
@@ -42,6 +33,16 @@ public class SystemUser extends User implements Fan {
         this.alertEmail = alertEmail;
         gamesAlert = new ArrayList<>();
         EntityManager.getInstance().addUser(this);
+    }
+
+    public SystemUser(String username, String password, String name, String email, boolean notifyByEmail, boolean b) {
+        this.roles = new ArrayList<>();
+        this.username = username;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.alertEmail = alertEmail;
+        gamesAlert = new ArrayList<>();
     }
 
     public String getEmail() {
@@ -85,6 +86,7 @@ public class SystemUser extends User implements Fan {
         if(role != null && !roles.contains(role))
         {
             roles.add(role);
+            EntityManager.getInstance().addRole(role);
             return true;
         }
         return false;
@@ -130,6 +132,16 @@ public class SystemUser extends User implements Fan {
 
 
 
+
+    @Override
+    public boolean removePageFromFollow() {
+        return false;
+    }
+
+    @Override
+    public boolean addPageToFollow() {
+        return false;
+    }
 
     @Override
     public boolean equals(Object o) {

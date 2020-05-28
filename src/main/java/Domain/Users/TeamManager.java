@@ -1,5 +1,6 @@
 package Domain.Users;
 
+import Domain.EntityManager;
 import Domain.Game.Asset;
 import Domain.Game.Team;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 
 public class TeamManager extends Role implements Asset {
-    private List<Team> managedTeams;
+    private HashMap<Team,SystemUser> managedTeamsAndAppointed;
     private HashMap<Team , List<TeamManagerPermissions>> permissionsPerTeam;
 
     public final String permissionsString = "Permissions";
@@ -18,7 +19,7 @@ public class TeamManager extends Role implements Asset {
     public TeamManager(SystemUser systemUser)
     {
         super(RoleTypes.TEAM_MANAGER, systemUser);
-        managedTeams = new ArrayList<>();
+        managedTeamsAndAppointed = new HashMap<>();
         permissionsPerTeam = new HashMap<>();
     }
 
@@ -27,11 +28,13 @@ public class TeamManager extends Role implements Asset {
     {
         if(teamToMange != null && teamToMange.isTeamOwner(teamOwner))
         {
-            managedTeams.add(teamToMange);
+            managedTeamsAndAppointed.put(teamToMange,teamOwner.getSystemUser());
             if(teamToMange.addTeamManager(teamOwner,this))
             {
                 List<TeamManagerPermissions> permissions = new ArrayList<>();
                 this.permissionsPerTeam.put(teamToMange , permissions);
+                /*update db*/
+                EntityManager.getInstance().addTeamManger(teamToMange,this,teamOwner);
 
                 return true;
             }
@@ -51,11 +54,29 @@ public class TeamManager extends Role implements Asset {
 
     private boolean addPermission(Team team , TeamManagerPermissions permission)
     {
+        if(this.permissionsPerTeam.containsKey(team))
+        {
+            List<TeamManagerPermissions> permissions = this.permissionsPerTeam.get(team);
+            permissions.add(permission);
+            this.permissionsPerTeam.put(team , permissions);
+            return true;
+        }
         return false;
     }
 
     private boolean removePermission(Team team , TeamManagerPermissions permission)
     {
+        if(this.permissionsPerTeam.containsKey(team))
+        {
+            List<TeamManagerPermissions> permissions = this.permissionsPerTeam.get(team);
+            if(permissions.contains(permission))
+            {
+                permissions.remove(permission);
+                this.permissionsPerTeam.put(team , permissions);
+                return true;
+            }
+            return false;
+        }
         return false;
     }
 
@@ -162,6 +183,7 @@ public class TeamManager extends Role implements Asset {
 
         }
         return  false;
+
     }
 
     @Override
@@ -190,20 +212,29 @@ public class TeamManager extends Role implements Asset {
                 this.getSystemUser().getUsername().equals(teamManager.getSystemUser().getUsername());
     }
 
-    public boolean addTeam(Team team){
-        if(!this.managedTeams.contains(team)) {
-            this.managedTeams.add(team);
-            return true;
-        }
-        return false;
-    }
+    /*maybe need to delete*/
+//    public boolean addTeam(Team team){
+//        if(!this.managedTeams.contains(team)) {
+//            this.managedTeams.add(team);
+//            this.permissionsPerTeam.put(team,new ArrayList<>());
+//            /*todo: Write to db*/
+//            return EntityManager.getInstance().addTeamManger(team , this);
+//        }
+//        return false;
+//    }
 
     public boolean removeTeam(Team team){
-        return this.managedTeams.remove(team);
+         if(this.managedTeamsAndAppointed.remove(team) != null)
+         {
+             this.permissionsPerTeam.remove(team);
+             return true;
+         }
+         return false;
     }
 
     public List<Team> getTeamsManaged() {
-        return managedTeams;
+        List<Team> allTeams = new ArrayList<>(managedTeamsAndAppointed.keySet());
+        return allTeams;
     }
 
 }

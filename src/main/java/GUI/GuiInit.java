@@ -18,9 +18,19 @@ public class GuiInit implements VaadinServiceInitListener {
     @Override
     public void serviceInit(ServiceInitEvent serviceInitEvent) {
         serviceInitEvent.getSource().addUIInitListener(uiInitEvent -> {
+
             uiInitEvent.getUI().addBeforeEnterListener(enterEvent -> {
-                if(VaadinSession.getCurrent().getAttribute("username") == null
-                && (!pageAllowedForGuest(enterEvent.getNavigationTarget())))
+
+                if(!MainController.isSystemBooted())
+                {
+                    if(!enterEvent.getNavigationTarget().equals(BootSystem.class))
+                    {
+                        enterEvent.rerouteTo(BootSystem.class);
+                        FootballMain.showNotification("Please Boot the System");
+                    }
+                }
+                else if(VaadinSession.getCurrent().getAttribute("username") == null
+                        && (!pageAllowedForGuest(enterEvent.getNavigationTarget())))
                 {
                     FootballMain.showNotification("Wrong Page, You dont have sufficient permissions");
                     enterEvent.rerouteTo("");
@@ -44,8 +54,8 @@ public class GuiInit implements VaadinServiceInitListener {
                     enterEvent.rerouteTo("");
                 }
             });
-        });
-    }
+    });
+}
 
 
     /**

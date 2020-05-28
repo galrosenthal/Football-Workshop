@@ -20,6 +20,7 @@ import com.vaadin.flow.server.VaadinSession;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 
 @Route(value = "ModifyUsers", layout = FootballMain.class)
 @PageTitle("Modify Users")
@@ -148,27 +149,9 @@ public class ModifyUsers extends FlexLayout {
         seasonOfLeague.setVisible(false);
         verticalLayout.add(seasonOfLeague);
 
-        Button testAlert = new Button("test alerts");
-        testAlert.addClickListener(e -> {
-            VaadinSession se = VaadinSession.getCurrent();
-            UI lastUI = UI.getCurrent();
-            Thread t = new Thread(() -> {
-                UI.setCurrent(lastUI);
-                VaadinSession.setCurrent(se);
-                try
-                {
-                    Thread.sleep(2000);
-                }
-                catch (Exception exception)
-                {
-                    exception.printStackTrace();
-                }
-                MainController.testAlert(se);
-            });
-            t.setName("Alert Testing");
-            t.start();
-        });
-        verticalLayout.add(testAlert);
+
+        verticalLayout.add(anotherButton("Test Alert"));
+        verticalLayout.add(anotherButton("Test ConfirmBox"));
 
         allLeagues.addValueChangeListener(e -> {
             if(e.getValue() != null)
@@ -186,6 +169,39 @@ public class ModifyUsers extends FlexLayout {
 
     }
 
+    private Button anotherButton(String btnText) {
+        Button newBtnToCreate = new Button(btnText);
+        newBtnToCreate.addClickListener(e -> {
+            VaadinSession se = VaadinSession.getCurrent();
+            UI lastUI = UI.getCurrent();
+            Thread t = new Thread(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                if(btnText.toLowerCase().contains("alert")) {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                    MainController.testAlert(lastUI);
+                }
+                else if(btnText.toLowerCase().contains("confirm"))
+                {
+                    try
+                    {
+                        FootballMain.showConfirmBox(lastUI,"Testing ConfirmBox", new StringBuilder(),Thread.currentThread());
+                    }
+                    catch (Exception interruptedException)
+                    {
+                        interruptedException.printStackTrace();
+                    }
+                }
+            });
+            t.setName(btnText.toUpperCase());
+            t.start();
+        });
+        return newBtnToCreate;
+    }
 
 
     private Component buildModifyInfo() {

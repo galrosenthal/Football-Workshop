@@ -5,8 +5,11 @@ import Domain.Exceptions.*;
 import Domain.Game.League;
 import Domain.Game.Season;
 import Domain.Game.Team;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,7 +33,7 @@ public class MainController {
             UIController.showNotification("Login Successfully");
             return true;
         }
-        catch (UsernameOrPasswordIncorrectException e)
+        catch (UsernameOrPasswordIncorrectException | AlreadyLoggedInUser e)
         {
             e.printStackTrace();
             UIController.showNotification(e.getMessage());
@@ -69,6 +72,8 @@ public class MainController {
      *                              [1] = First name
      *                              [2] = Last name
      *                              [3] = Password
+     *                              [4] = email
+     *                              [5] = alert on Email - true , alert on application - false
      * @return true if the user was signed up successfully
      */
     public static boolean signup(List<String> userDetailsToRegister)
@@ -87,7 +92,7 @@ public class MainController {
                     alert = true;
                 }
                 return Controller.signUp(name, userDetailsToRegister.get(0), userDetailsToRegister.get(3), userDetailsToRegister.get(4),alert) != null;
-            } catch (InvalidEmailException e) {
+            } catch (InvalidEmailException | Invalid e) {
                 e.printStackTrace();
                 return false;
             }
@@ -186,7 +191,7 @@ public class MainController {
                 {
                     return false;
                 }
-                new Referee(user,allRelevantDetails[1]);
+                new Referee(user,RefereeQualification.valueOf(allRelevantDetails[1]));
                 break;
             case "system_admin":
                 new SystemAdmin(user);
@@ -430,7 +435,14 @@ public class MainController {
         }
         try
         {
-            Controller.addTeamOwner(associationUser);
+            if(Controller.addTeamOwner(associationUser))
+            {
+                UIController.showNotification("The new Team Owner added Successfully");
+            }
+            else
+            {
+                UIController.showNotification("Failed to add another Team Owner");
+            }
         }
         catch (Exception e )
         {
@@ -451,7 +463,14 @@ public class MainController {
         }
         try
         {
-            Controller.addAsset(associationUser);
+            if(Controller.addAsset(associationUser))
+            {
+                UIController.showNotification("Asset Added Successfully");
+            }
+            else
+            {
+                UIController.showNotification("Could not add the Asset");
+            }
         }
         catch (Exception e )
         {
@@ -465,14 +484,14 @@ public class MainController {
      * @param username the TO username
      */
     public static void modifyTeamAsset(String username) {
-        SystemUser associationUser = EntityManager.getInstance().getUser(username);
-        if(associationUser == null)
+        SystemUser teamOwnerUser = EntityManager.getInstance().getUser(username);
+        if(teamOwnerUser == null)
         {
             return;
         }
         try
         {
-            Controller.modifyTeamAssetDetails(associationUser);
+            Controller.modifyTeamAssetDetails(teamOwnerUser);
         }
         catch (Exception e )
         {
@@ -481,8 +500,181 @@ public class MainController {
         }
     }
 
-    public static void testAlert(VaadinSession se) {
+    public static void testAlert(UI se) {
         UIController.showAlert( se,"Mother of god");
     }
 
+    /**
+     * Starts the Flow of adding teams to a season
+     * @param username the AR user who asked for the addition
+     */
+    public static void addTeamsToSeason(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.addTeamsToSeason(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    /**
+     * Starts the Flow of removing teams from a season
+     * @param username the AR user who asked for the removal
+     */
+    public static void removeTeamsFromSeason(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.removeTeamsFromSeason(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static boolean logout(String username) {
+        System.out.println("MAIN_CONTROLLER: Searching for username");
+        SystemUser logoutUser = EntityManager.getInstance().getUser(username);
+        System.out.println("MAIN_CONTROLLER: Got the username");
+        if(UIController.getConfirmation("Are you sure you want to logout?"))
+        {
+            System.out.println("MAIN_CONTROLLER: Got Confirmation from user");
+            performLogout(username, logoutUser);
+            return true;
+        }
+        return false;
+    }
+
+    public static void performLogout(String username, SystemUser logoutUser) {
+        EntityManager.getInstance().logout(logoutUser);
+        AllSubscribers.getInstance().logout(username);
+    }
+
+    public static void addPointPolicy(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.addPointsPolicy(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static void changePointsPolicy(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.setPointsPolicy(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static void createGamePolicy(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.addSchedulingPolicy(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static void activateSchedulingPolicy(String username) {
+        SystemUser associationUser = EntityManager.getInstance().getUser(username);
+        if(associationUser == null)
+        {
+            return;
+        }
+        try
+        {
+            ARController.activateSchedulingPolicy(associationUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static boolean isSystemBooted() {
+        return EntityManager.getInstance().isSystemBooted();
+    }
+
+    public static boolean systemBoot() {
+        if(Controller.systemBoot())
+        {
+            EntityManager.getInstance().setIsBooted(true);
+            return true;
+        }
+        return false;
+    }
+    public static void DisplayScheduledGame(String username) {
+        SystemUser refereeUser = EntityManager.getInstance().getUser(username);
+        if(refereeUser == null)
+        {
+            return;
+        }
+        try
+        {
+            RefereeController.displayScheduledGames(refereeUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
+
+    public static void updateGameEvents(String username) {
+        SystemUser refeeeUser = EntityManager.getInstance().getUser(username);
+        if(refeeeUser == null)
+        {
+            return;
+        }
+        try
+        {
+            RefereeController.updateGameEvents(refeeeUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+    }
 }
