@@ -11,6 +11,12 @@ import java.util.List;
 public class SystemAdmin extends Role implements Subject {
     private List<UserComplaints> complaintsToReview;
 
+    /**
+     * Constructor
+     *
+     * @param systemUser - SystemUser - The system user to add the new role to
+     * @param addToDB    - boolean - Whether to add the new role to the database
+     */
     public SystemAdmin(SystemUser systemUser, boolean addToDB) {
         super(RoleTypes.SYSTEM_ADMIN, systemUser, addToDB);
     }

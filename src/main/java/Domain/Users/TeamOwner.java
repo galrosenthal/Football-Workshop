@@ -15,6 +15,12 @@ public class TeamOwner extends Role implements Subject {
 //    private SystemUser appointedOwner; /** The team owner who appointed -this- team owner */
     private HashMap<Team, SystemUser> teamsAndAppointers;
 
+    /**
+     * Constructor
+     *
+     * @param systemUser - SystemUser - The system user to add the new role to
+     * @param addToDB    - boolean - Whether to add the new role to the database
+     */
     public TeamOwner(SystemUser systemUser, boolean addToDB) {
         super(RoleTypes.TEAM_OWNER, systemUser, addToDB);
         teamsAndAppointers = new HashMap<>();

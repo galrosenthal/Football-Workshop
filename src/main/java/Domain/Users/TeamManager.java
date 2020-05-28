@@ -16,6 +16,12 @@ public class TeamManager extends Role implements Asset {
 
     public final String permissionsString = "Permissions";
 
+    /**
+     * Constructor
+     *
+     * @param systemUser - SystemUser - The system user to add the new role to
+     * @param addToDB    - boolean - Whether to add the new role to the database
+     */
     public TeamManager(SystemUser systemUser, boolean addToDB) {
         super(RoleTypes.TEAM_MANAGER, systemUser, addToDB);
         managedTeamsAndAppointed = new HashMap<>();

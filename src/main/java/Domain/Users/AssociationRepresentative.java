@@ -16,12 +16,19 @@ import java.util.List;
 public class AssociationRepresentative extends Role {
     List<AssociationFinancialRecordLog> logger;
 
+    /**
+     * Constructor
+     *
+     * @param systemUser - SystemUser - The system user to add the new role to
+     * @param addToDB    - boolean - Whether to add the new role to the database
+     */
     public AssociationRepresentative(SystemUser systemUser, boolean addToDB) {
         super(RoleTypes.ASSOCIATION_REPRESENTATIVE, systemUser, addToDB);
     }
 
     /**
      * Creates a new League.
+     *
      * @param leagueName - String - A unique league name
      * @return - boolean - True if a new league was created successfully, else false
      * @throws Exception - throws if a league already exists with the given leagueName
@@ -58,7 +65,8 @@ public class AssociationRepresentative extends Role {
 
     /**
      * Creates a new team.
-     * @param teamName - String - A unique team name
+     *
+     * @param teamName         - String - A unique team name
      * @param newTeamOwnerUser - SystemUser - The user who is chosen to be the team owner of the new team.
      * @return - boolean - True if a new team was created successfully, else false
      */
@@ -67,8 +75,7 @@ public class AssociationRepresentative extends Role {
         TeamOwner teamOwner;
         if (newTeamOwnerRole == null) {
             teamOwner = new TeamOwner(newTeamOwnerUser, true);
-        }
-        else{
+        } else {
             teamOwner = (TeamOwner) newTeamOwnerRole;
         }
         Team newTeam = createNewTeam(teamName, teamOwner);
@@ -80,9 +87,10 @@ public class AssociationRepresentative extends Role {
 
     /**
      * Creates a new team. Responsible only for creating and adding a new team, doesn't do any farther checks.
+     *
      * @param teamName - String - the team's name.
-     * @param to -TeamOwner - The team's owner.
-     * @return   The new Team that was created.
+     * @param to       -TeamOwner - The team's owner.
+     * @return The new Team that was created.
      */
     private Team createNewTeam(String teamName, TeamOwner to) {
         Team team = new Team(teamName, to);
@@ -92,6 +100,7 @@ public class AssociationRepresentative extends Role {
 
     /**
      * Removes the referee role from a given user.
+     *
      * @param chosenUser - SystemUser - a user with a Referee role to be removed.
      * @return - boolean - true if the Referee role was removed successfully, else false
      */
@@ -125,14 +134,15 @@ public class AssociationRepresentative extends Role {
 
     /**
      * Assign teams to season
+     *
      * @param chosenTeams The teams to assign.
-     * @param season The season to assign the teams to.
+     * @param season      The season to assign the teams to.
      * @return false if no teams were assigned to the season, else true.
      */
-    public boolean assignTeamsToSeason(List<Team> chosenTeams, Season season){
-        if(chosenTeams == null || chosenTeams.isEmpty())
+    public boolean assignTeamsToSeason(List<Team> chosenTeams, Season season) {
+        if (chosenTeams == null || chosenTeams.isEmpty())
             return false;
-        for(Team team : chosenTeams) {
+        for (Team team : chosenTeams) {
             season.addTeam(team);
             team.addSeason(season);
         }
@@ -141,14 +151,15 @@ public class AssociationRepresentative extends Role {
 
     /**
      * Remove teams from season
+     *
      * @param chosenTeams The teams to remove.
-     * @param season The season to remove the teams from.
+     * @param season      The season to remove the teams from.
      * @return false if no teams were removed from the season, else true.
      */
-    public boolean removeTeamsFromSeason(List<Team> chosenTeams, Season season){
-        if(chosenTeams == null || chosenTeams.isEmpty())
+    public boolean removeTeamsFromSeason(List<Team> chosenTeams, Season season) {
+        if (chosenTeams == null || chosenTeams.isEmpty())
             return false;
-        for(Team team : chosenTeams) {
+        for (Team team : chosenTeams) {
             season.removeTeam(team);
             team.removeSeason(season);
         }
@@ -214,9 +225,9 @@ public class AssociationRepresentative extends Role {
     }
 
     public void activateSchedulingPolicy(Season chosenSeason, SchedulingPolicy schedulingPolicy, Date startDate) throws Exception {
-        if(chosenSeason.getIsUnderway()){
+        if (chosenSeason.getIsUnderway()) {
             throw new Exception("Activating a scheduling policy after a season has started is forbidden");
         }
-        chosenSeason.scheduleGames(schedulingPolicy,startDate);
+        chosenSeason.scheduleGames(schedulingPolicy, startDate);
     }
 }

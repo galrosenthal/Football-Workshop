@@ -12,7 +12,13 @@ public class Referee extends Role {
     private List<Game> games;
     private List<Season> seasons;
 
-
+    /**
+     * Constructor
+     *
+     * @param systemUser - SystemUser - The system user to add the new role to
+     * @param addToDB    - boolean - Whether to add the new role to the database
+     * @param training   - RefereeQualification - The training of the referee
+     */
     public Referee(SystemUser systemUser, RefereeQualification training, boolean addToDB) {
         super(RoleTypes.REFEREE, systemUser, addToDB);
         this.training = training;

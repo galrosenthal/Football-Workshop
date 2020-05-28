@@ -7,6 +7,13 @@ public abstract class Role {
 
     protected SystemUser systemUser;
 
+    /**
+     * Constructor
+     *
+     * @param systemUser - SystemUser - The system user to add the new role to
+     * @param addToDB    - boolean - Whether to add the new role to the database
+     * @param type       - RoleTypes - the role type
+     */
     public Role(RoleTypes type, SystemUser systemUser, boolean addToDB) {
         this.type = type;
         this.systemUser = systemUser;

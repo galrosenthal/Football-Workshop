@@ -24,7 +24,16 @@ public class SystemUser extends User implements Fan {
     private String email;
     private boolean alertEmail;
 
-
+    /**
+     * Constructor
+     *
+     * @param username      - String - The new username
+     * @param password      - String - The new user's password //TODO: after hash??
+     * @param name          - String - The new user's full name
+     * @param email         - String - The new user's email address
+     * @param notifyByEmail - boolean - Whether the user would like to receive  alerts by mail. If true then alerts will be send via emails, if false then by alerts within the application
+     * @param addToDB       - boolean - Whether to add the new role to the database
+     */
     public SystemUser(String username, String password, String name, String email, boolean notifyByEmail, boolean addToDB) {
         this.roles = new ArrayList<>();
         this.username = username;
@@ -37,18 +46,7 @@ public class SystemUser extends User implements Fan {
             EntityManager.getInstance().addUser(this);
         }
     }
-
-    /*
-        public SystemUser(String username, String password, String name, String email, boolean notifyByEmail, boolean b) {
-            this.roles = new ArrayList<>();
-            this.username = username;
-            this.name = name;
-            this.password = password;
-            this.email = email;
-            this.alertEmail = notifyByEmail;
-            gamesAlert = new ArrayList<>();
-        }
-    */
+    
     public SystemUser(String username, String name) {
         this.roles = new ArrayList<>();
         this.username = username;
