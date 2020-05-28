@@ -5,7 +5,6 @@ import Domain.Game.Asset;
 import Domain.Game.Team;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -14,10 +13,11 @@ public abstract class PartOfTeam extends Role implements Asset {
     private HashSet<BelongToTeam> allTeamsConnections;
 
 
-    public PartOfTeam(RoleTypes type, SystemUser systemUser) {
-        super(type, systemUser);
+    public PartOfTeam(RoleTypes type, SystemUser systemUser, boolean addToDB) {
+        super(type, systemUser, addToDB);
         allTeamsConnections = new HashSet<>();
     }
+
 
     @Override
     public boolean addTeam(Team team, TeamOwner teamOwner) {

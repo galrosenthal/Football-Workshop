@@ -1,19 +1,19 @@
 package Domain.Users;
 
-import Domain.Game.Season;
-import Domain.Game.Team;
-
-import java.util.List;
+import Domain.EntityManager;
 
 public abstract class Role {
     protected RoleTypes type;
 
     protected SystemUser systemUser;
 
-    public Role(RoleTypes type, SystemUser systemUser) {
+    public Role(RoleTypes type, SystemUser systemUser, boolean addToDB) {
         this.type = type;
         this.systemUser = systemUser;
         systemUser.addNewRole(this);
+        if (addToDB) {
+            EntityManager.getInstance().addRole(this);
+        }
     }
 
     public SystemUser getSystemUser() {

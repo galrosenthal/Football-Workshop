@@ -9,7 +9,6 @@ import Domain.Game.SchedulingPolicy;
 import Domain.Game.League;
 import Domain.Game.Team;
 import Domain.Game.Season;
-import Service.UIController;
 
 import java.util.Date;
 import java.util.List;
@@ -17,8 +16,8 @@ import java.util.List;
 public class AssociationRepresentative extends Role {
     List<AssociationFinancialRecordLog> logger;
 
-    public AssociationRepresentative(SystemUser systemUser) {
-        super(RoleTypes.ASSOCIATION_REPRESENTATIVE, systemUser);
+    public AssociationRepresentative(SystemUser systemUser, boolean addToDB) {
+        super(RoleTypes.ASSOCIATION_REPRESENTATIVE, systemUser, addToDB);
     }
 
     /**
@@ -52,7 +51,7 @@ public class AssociationRepresentative extends Role {
         if (newRefereeUser.getRole(RoleTypes.REFEREE) != null) {
             throw new RoleExistsAlreadyException("Already a referee");
         }
-        Referee refereeRole = new Referee(newRefereeUser, training);
+        Referee refereeRole = new Referee(newRefereeUser, training, true);
 
         return true;
     }
@@ -67,7 +66,7 @@ public class AssociationRepresentative extends Role {
         Role newTeamOwnerRole = newTeamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
         TeamOwner teamOwner;
         if (newTeamOwnerRole == null) {
-            teamOwner = new TeamOwner(newTeamOwnerUser);
+            teamOwner = new TeamOwner(newTeamOwnerUser, true);
         }
         else{
             teamOwner = (TeamOwner) newTeamOwnerRole;

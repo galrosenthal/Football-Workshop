@@ -11,17 +11,17 @@ import java.util.List;
 
 public class TeamOwner extends Role implements Subject {
 
-//    private List<Team> ownedTeams;
+    //    private List<Team> ownedTeams;
 //    private SystemUser appointedOwner; /** The team owner who appointed -this- team owner */
-    private HashMap<Team,SystemUser> teamsAndAppointers;
-    public TeamOwner(SystemUser systemUser) {
-        super(RoleTypes.TEAM_OWNER,systemUser);
+    private HashMap<Team, SystemUser> teamsAndAppointers;
+
+    public TeamOwner(SystemUser systemUser, boolean addToDB) {
+        super(RoleTypes.TEAM_OWNER, systemUser, addToDB);
         teamsAndAppointers = new HashMap<>();
     }
 
 
-    public List<Team> getOwnedTeams()
-    {
+    public List<Team> getOwnedTeams() {
         List<Team> allTeams = new ArrayList<Team>(teamsAndAppointers.keySet());
         return allTeams;
     }
@@ -46,21 +46,18 @@ public class TeamOwner extends Role implements Subject {
 //        return false;
 //    }
 
-    public boolean addTeamToOwn(Team teamToOwn,SystemUser appointer)
-    {
-        if(teamToOwn == null || appointer == null)
-        {
+    public boolean addTeamToOwn(Team teamToOwn, SystemUser appointer) {
+        if (teamToOwn == null || appointer == null) {
             return false;
         }
-        if(!getOwnedTeams().contains(teamToOwn))
-        {
-            teamsAndAppointers.put(teamToOwn,appointer);
+        if (!getOwnedTeams().contains(teamToOwn)) {
+            teamsAndAppointers.put(teamToOwn, appointer);
             return true;
         }
         return false;
     }
 
-    public boolean removeTeamOwned(Team team){
+    public boolean removeTeamOwned(Team team) {
         return this.teamsAndAppointers.remove(team) != null;
     }
 
@@ -84,6 +81,7 @@ public class TeamOwner extends Role implements Subject {
 
     /**
      * Get the SystemUser who appointed this team owner.
+     *
      * @return the SystemUser who appointed this team owner.
      */
     public SystemUser getAppointedOwner(Team ownedTeam) {
@@ -92,15 +90,16 @@ public class TeamOwner extends Role implements Subject {
 
     /**
      * Set the SystemUser who appointed this team owner.
+     *
      * @param appointedOwner SystemUser to set as the appointing team owner.
      * @return true if successfully seted.
      */
     public boolean setAppointedOwner(Team teamToChangeAppointer, SystemUser appointedOwner) {
 
-        if(appointedOwner != null && teamToChangeAppointer != null){
-            teamsAndAppointers.put(teamToChangeAppointer,appointedOwner);
+        if (appointedOwner != null && teamToChangeAppointer != null) {
+            teamsAndAppointers.put(teamToChangeAppointer, appointedOwner);
             /*update db*/
-            EntityManager.getInstance().setTeamOwnerAppointed( this , teamToChangeAppointer, appointedOwner.getUsername());
+            EntityManager.getInstance().setTeamOwnerAppointed(this, teamToChangeAppointer, appointedOwner.getUsername());
             return true;
         }
 
@@ -117,15 +116,12 @@ public class TeamOwner extends Role implements Subject {
 
     @Override
     public String toString() {
-        return "TeamOwner{"+ this.getSystemUser().getName() +" }";
+        return "TeamOwner{" + this.getSystemUser().getName() + " }";
     }
 
 
-
-
     /*notify teamOwners  and TeamMangers and systemAdmins - close team or reopen team*/
-    public void closeReopenTeam(Team team , String closeOrReopen)
-    {
+    public void closeReopenTeam(Team team, String closeOrReopen) {
         List<TeamOwner> teamOwners = new ArrayList<>();
         List<TeamManager> teamManagers = new ArrayList<>();
         EntityManager entityManager = EntityManager.getInstance();
@@ -133,32 +129,31 @@ public class TeamOwner extends Role implements Subject {
         List<SystemUser> systemUsers = new ArrayList<>();
         teamOwners.addAll(team.getTeamOwners());
         teamManagers.addAll(team.getTeamManagers());
-        for (int i = 0; i <teamOwners.size() ; i++) {
+        for (int i = 0; i < teamOwners.size(); i++) {
             systemUsers.add(teamOwners.get(i).getSystemUser());
         }
-        for (int i = 0; i <teamManagers.size() ; i++) {
+        for (int i = 0; i < teamManagers.size(); i++) {
             systemUsers.add(teamManagers.get(i).getSystemUser());
         }
-        for (int i = 0; i <SystemAdmins.size() ; i++) {
+        for (int i = 0; i < SystemAdmins.size(); i++) {
             systemUsers.add(SystemAdmins.get(i).getSystemUser());
         }
-        String alert = team.getTeamName()+" has been "+ closeOrReopen;
+        String alert = team.getTeamName() + " has been " + closeOrReopen;
         notifyObserver(systemUsers, alert);
     }
 
 
     /*notify Team Owner - removal */
-    public void removeTeamOwnerNotify(TeamOwner teamOwner , Team team)
-    {
+    public void removeTeamOwnerNotify(TeamOwner teamOwner, Team team) {
         List<SystemUser> systemUsers = new ArrayList<>();
         systemUsers.add(teamOwner.getSystemUser());
-        String alert = teamOwner.getSystemUser().getUsername()+" has been remove from been owner in"+ team.getTeamName();
-        notifyObserver(systemUsers , alert);
+        String alert = teamOwner.getSystemUser().getUsername() + " has been remove from been owner in" + team.getTeamName();
+        notifyObserver(systemUsers, alert);
     }
 
     @Override
     public void notifyObserver(List<SystemUser> systemUsers, String alert) {
         Alert alertInstance = Alert.getInstance();
-        alertInstance.update(systemUsers , alert);
+        alertInstance.update(systemUsers, alert);
     }
 }

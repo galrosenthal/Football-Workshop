@@ -9,7 +9,6 @@ import Domain.Game.*;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
 import org.junit.*;
-import Domain.Users.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -68,7 +67,7 @@ public class ARControllerTest {
      **/
     private SystemUser getSystemUserAR() {
         SystemUser systemUser = new SystemUser("username", "name");
-        systemUser.addNewRole(new AssociationRepresentative(systemUser));
+        systemUser.addNewRole(new AssociationRepresentative(systemUser, true));
         return systemUser;
     }
 
@@ -235,7 +234,7 @@ public class ARControllerTest {
     public void addReferee5ITest() {
         SystemUser systemUser = getSystemUserAR();
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
-        new Referee(refereeUser,RefereeQualification.SIDE_REFEREE);
+        new Referee(refereeUser,RefereeQualification.SIDE_REFEREE, true);
 
         UIController.setSelector(9311);
         //The user is already a referee
@@ -299,7 +298,7 @@ public class ARControllerTest {
     public void removeReferee3ITest() {
         SystemUser systemUser = getSystemUserAR();
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
-        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE, true);
         UIController.setSelector(9321);
         //There are no referees
         assertTrue(ARController.removeReferee(systemUser));
@@ -393,7 +392,7 @@ public class ARControllerTest {
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
-        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE, true);
         /*
         Expected: The referee has been assigned to the season successfully
          */
@@ -409,7 +408,7 @@ public class ARControllerTest {
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
-        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE, true);
         /*
         Expected: This referee is already assigned to the chosen season
          */
@@ -425,7 +424,7 @@ public class ARControllerTest {
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
-        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE, true);
         /*
         Expected: The referee has been assigned to the season successfully
          */
@@ -441,7 +440,7 @@ public class ARControllerTest {
         League league= EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2020/21");
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
-        new Referee(refereeUser, RefereeQualification.VAR_REFEREE);
+        new Referee(refereeUser, RefereeQualification.VAR_REFEREE, true);
         /*
         Expected: The referee has been assigned to the season successfully
          */
@@ -519,7 +518,7 @@ public class ARControllerTest {
     public void registerNewTeam3ITest() throws TeamAlreadyExistsException, UserNotFoundException {
         SystemUser systemUser = getSystemUserAR();
         SystemUser usrToBeOwner = new SystemUser("AviCohen", "name");
-        usrToBeOwner.addNewRole(new TeamOwner(usrToBeOwner));
+        usrToBeOwner.addNewRole(new TeamOwner(usrToBeOwner, true));
         assertTrue(usrToBeOwner.isType(RoleTypes.TEAM_OWNER));
         TeamOwner toRole = (TeamOwner) usrToBeOwner.getRole(RoleTypes.TEAM_OWNER);
         assertEquals(0, toRole.getOwnedTeams().size());
@@ -561,7 +560,7 @@ public class ARControllerTest {
     @Test
     public void addTeamsToSeasonITest(){
         SystemUser arSystemUser = getSystemUserAR();
-        new TeamOwner(arSystemUser);
+        new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
         Team team1 = new Team("Hapoel Beit Shan", toRole);
         Team team2 = new Team("Hapoel Beer Sheva", toRole);
@@ -633,7 +632,7 @@ public class ARControllerTest {
     @Test
     public void removeTeamsFromSeasonITest(){
         SystemUser arSystemUser = getSystemUserAR();
-        new TeamOwner(arSystemUser);
+        new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
         Team team1 = new Team("Hapoel Beit Shan", toRole);
         Team team2 = new Team("Hapoel Beer Sheva", toRole);

@@ -22,7 +22,7 @@ public class TeamOwnerTest {
         hapoelBash.setTeamName("Hapoel Beer Sheeva");
 
         SystemUser sysUserTO = new SystemUserStub("OranSh", "Oran", 62);
-        TeamOwner newTeamOwner = new TeamOwner(sysUserTO);
+        TeamOwner newTeamOwner = new TeamOwner(sysUserTO, true);
         Assert.assertTrue(newTeamOwner.addTeamToOwn(hapoelBash,sysUserTO));
         Assert.assertFalse(newTeamOwner.addTeamToOwn(hapoelBash,sysUserTO));
     }
@@ -36,7 +36,7 @@ public class TeamOwnerTest {
         hapoelBash.setTeamName("Hapoel Beer Sheeva");
 
         SystemUser sysUserTO = new SystemUserStub("OranSh", "Oran", 62);
-        TeamOwner newTeamOwner = new TeamOwner(sysUserTO);
+        TeamOwner newTeamOwner = new TeamOwner(sysUserTO, true);
         Assert.assertFalse(newTeamOwner.removeTeamOwned(hapoelBash));
         newTeamOwner.addTeamToOwn(hapoelBash,sysUserTO);
         Assert.assertTrue(newTeamOwner.removeTeamOwned(hapoelBash));
@@ -51,7 +51,7 @@ public class TeamOwnerTest {
         hapoelBash.setTeamName("Hapoel Beer Sheeva");
 
         SystemUser sysUserTO = new SystemUserStub("OranSh", "Oran", 62);
-        TeamOwner newTeamOwner = new TeamOwner(sysUserTO);
+        TeamOwner newTeamOwner = new TeamOwner(sysUserTO, true);
         Assert.assertFalse(newTeamOwner.setAppointedOwner(hapoelBash,null));
         newTeamOwner.setAppointedOwner(hapoelBash,newTeamOwner.getSystemUser());
         Assert.assertEquals(newTeamOwner.getSystemUser(),newTeamOwner.getAppointedOwner(hapoelBash));

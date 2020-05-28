@@ -57,7 +57,7 @@ public class EntityManagerTest {
     public void getRefereesITest() {
         assertTrue(EntityManager.getInstance().getReferees().isEmpty());
         SystemUser systemUser = new SystemUser("stubUsername","name");
-        new Referee(systemUser, RefereeQualification.VAR_REFEREE);
+        new Referee(systemUser, RefereeQualification.VAR_REFEREE, true);
         List<SystemUser> referees = EntityManager.getInstance().getReferees();
         assertFalse(referees.isEmpty());
         assertTrue(referees.size()==1);

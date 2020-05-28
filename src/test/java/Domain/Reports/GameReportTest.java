@@ -2,7 +2,6 @@ package Domain.Reports;
 
 import Domain.EntityManager;
 import Domain.Game.Game;
-import Domain.Game.League;
 import Domain.Game.StadiumStub;
 import Domain.Game.TeamStub;
 import Domain.SystemLogger.SystemLoggerManager;
@@ -33,9 +32,9 @@ public class GameReportTest {
         firstTeam = new TeamStub(10411);
         secondTeam =  new TeamStub(10412);
         List<Referee> referees = new ArrayList<>();
-        referees.add(new RefereeStub(new SystemUser("a","a","a","@",false), RefereeQualification.VAR_REFEREE));
-        referees.add(new RefereeStub(new SystemUser("b","b","b","@",false),RefereeQualification.VAR_REFEREE));
-        referees.add(new RefereeStub(new SystemUser("c","c","c","@",false),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("a","a","a","@",false, true), RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("b","b","b","@",false, true),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("c","c","c","@",false, true),RefereeQualification.VAR_REFEREE));
         game = new Game(new StadiumStub("staName", "staLoca"), firstTeam,secondTeam, new Date(2020, 01, 01), referees);
         gameReport = new GameReport(game);
     }

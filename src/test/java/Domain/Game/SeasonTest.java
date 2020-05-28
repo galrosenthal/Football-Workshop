@@ -75,7 +75,7 @@ public class SeasonTest {
 
     @Test
     public void assignAndUnAssignRefereeITest() {
-        Referee referee = new Referee(new SystemUser("username", "name"),RefereeQualification.VAR_REFEREE);
+        Referee referee = new Referee(new SystemUser("username", "name"),RefereeQualification.VAR_REFEREE, true);
         assertTrue(season.refereesSize()==0);
         season.assignReferee(referee);
         assertTrue(season.refereesSize()==1);

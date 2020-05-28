@@ -24,7 +24,7 @@ public class RefereeTest {
 
     @Before
     public void setUp() {
-        this.referee = new Referee(new SystemUser("username", "name"), RefereeQualification.MAIN_REFEREE);
+        this.referee = new Referee(new SystemUser("username", "name"), RefereeQualification.MAIN_REFEREE, true);
     }
 
     @Test

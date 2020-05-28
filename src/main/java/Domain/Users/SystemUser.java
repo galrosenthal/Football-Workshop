@@ -16,45 +16,40 @@ public class SystemUser extends User implements Fan {
     private List<UserComplaints> complaints;
     protected List<Game> gamesAlert;
     protected String username;
-    private String password; /**  password is in hash format */
+    private String password;
+    /**
+     * password is in hash format
+     */
     private String name;
     private String email;
     private boolean alertEmail;
 
 
-
-
-    public SystemUser(String username, String password, String name , String email, boolean alertEmail) {
+    public SystemUser(String username, String password, String name, String email, boolean notifyByEmail, boolean addToDB) {
         this.roles = new ArrayList<>();
         this.username = username;
         this.name = name;
         this.password = password;
         this.email = email;
-        this.alertEmail = alertEmail;
+        this.alertEmail = notifyByEmail;
         gamesAlert = new ArrayList<>();
-        EntityManager.getInstance().addUser(this);
+        if (addToDB) {
+            EntityManager.getInstance().addUser(this);
+        }
     }
 
-    public SystemUser(String username, String password, String name, String email, boolean notifyByEmail, boolean b) {
-        this.roles = new ArrayList<>();
-        this.username = username;
-        this.name = name;
-        this.password = password;
-        this.email = email;
-        this.alertEmail = alertEmail;
-        gamesAlert = new ArrayList<>();
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public boolean isAlertEmail() {
-        return alertEmail;
-    }
-
-    public SystemUser(String username, String name)
-    {
+    /*
+        public SystemUser(String username, String password, String name, String email, boolean notifyByEmail, boolean b) {
+            this.roles = new ArrayList<>();
+            this.username = username;
+            this.name = name;
+            this.password = password;
+            this.email = email;
+            this.alertEmail = notifyByEmail;
+            gamesAlert = new ArrayList<>();
+        }
+    */
+    public SystemUser(String username, String name) {
         this.roles = new ArrayList<>();
         this.username = username;
         this.name = name;
@@ -63,6 +58,14 @@ public class SystemUser extends User implements Fan {
         this.email = "";
         this.alertEmail = false;
         EntityManager.getInstance().addUser(this);
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public boolean isAlertEmail() {
+        return alertEmail;
     }
 
     public List<Game> getGamesAlert() {
@@ -81,12 +84,9 @@ public class SystemUser extends User implements Fan {
         return username;
     }
 
-    public boolean addNewRole(Role role)
-    {
-        if(role != null && !roles.contains(role))
-        {
+    public boolean addNewRole(Role role) {
+        if (role != null && !roles.contains(role)) {
             roles.add(role);
-            EntityManager.getInstance().addRole(role);
             return true;
         }
         return false;
@@ -98,22 +98,17 @@ public class SystemUser extends User implements Fan {
     }
 
     public boolean isType(RoleTypes roleType) {
-        for(Role role : roles)
-        {
-            if(role.type.equals(roleType))
-            {
+        for (Role role : roles) {
+            if (role.type.equals(roleType)) {
                 return true;
             }
         }
         return false;
     }
 
-    public Role getRole(RoleTypes roleType)
-    {
-        for(Role role : roles)
-        {
-            if(role.type.equals(roleType))
-            {
+    public Role getRole(RoleTypes roleType) {
+        for (Role role : roles) {
+            if (role.type.equals(roleType)) {
                 return role;
             }
         }
@@ -121,16 +116,12 @@ public class SystemUser extends User implements Fan {
     }
 
     public boolean removeRole(Role role) {
-        if(role != null)
-        {
+        if (role != null) {
             roles.remove(role);
             return true;
         }
         return false;
     }
-
-
-
 
 
     @Override

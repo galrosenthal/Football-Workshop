@@ -11,8 +11,6 @@ import Domain.Users.TeamOwnerStub;
 import Domain.Game.Team;
 import Domain.Users.*;
 import org.junit.*;
-import org.junit.*;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -213,7 +211,7 @@ public class ControllerTest {
     {
         SystemUser test = new SystemUserStub("test","test User",6111);
         SystemUser anotherUser = new SystemUserStub("anotherUser","another test User",6112);
-        TeamOwner to = new TeamOwner(test);
+        TeamOwner to = new TeamOwner(test, true);
         Team team = new Team("Test");
         team.getTeamOwners().add(to);
         assertTrue(to.addTeamToOwn(team,test));
@@ -226,7 +224,7 @@ public class ControllerTest {
     {
         SystemUser test = new SystemUser("test","test User");
         SystemUser anotherUser =new SystemUser("anotherUser","another test User");
-        TeamOwner to = new TeamOwner(test);
+        TeamOwner to = new TeamOwner(test, true);
         Team team = new Team("Test");
         team.getTeamOwners().add(to);
         assertTrue(to.addTeamToOwn(team,test));
@@ -256,14 +254,14 @@ public class ControllerTest {
     @Test(expected = NoTeamExistsException.class)
     public void modifyTeamAssetDetails2ITest() throws Exception {
         SystemUser systemUser = new SystemUser("rosengal", "gal");
-        TeamOwner teamOwner = new TeamOwner(systemUser);
+        TeamOwner teamOwner = new TeamOwner(systemUser, true);
         Controller.modifyTeamAssetDetails(systemUser);
     }
 
     @Test
     public void modifyTeamAssetDetails3ITest() throws Exception {
         SystemUser systemUser = new SystemUser("rosengal", "gal");
-        TeamOwner teamOwner = new TeamOwner(systemUser);
+        TeamOwner teamOwner = new TeamOwner(systemUser, true);
         Team team = new Team("Test");
         teamOwner.addTeamToOwn(team,systemUser);
         Stadium stadium = new Stadium("AESEAL" , "New York");
@@ -331,7 +329,7 @@ public class ControllerTest {
         UIController.setSelector(1);
 
         SystemUser owner = new SystemUser("rosengal", "gal");
-        owner.addNewRole(new TeamOwner(owner));
+        owner.addNewRole(new TeamOwner(owner, true));
         assertFalse(Controller.removeTeamOwner(owner));
 
        // owner.getRole(RoleTypes.TEAM_OWNER).
