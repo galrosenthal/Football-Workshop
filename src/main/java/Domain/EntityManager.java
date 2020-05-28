@@ -135,31 +135,34 @@ public class EntityManager {
 
 
     public List<League> getLeagues() {
-        List<String> allLeaguesList = DBManager.getInstance().getLeagues();
-        List<League> leagues = new ArrayList<>();
-        for (int i = 0; i < allLeaguesList.size(); i++) {
-            String leagueName = allLeaguesList.get(i);
-            League leagueToAdd = new League(leagueName, false);
-            //TODO: getSeasons
-            List<HashMap<String, String>> leagueSeasons = DBManager.getInstance().getLeagueSeasons(leagueName);
-            for (int j = 0; j < leagueSeasons.size(); j++) {
-                HashMap<String, String> seasonDetails = leagueSeasons.get(j);
-                boolean isUnderway = false;
-                if(seasonDetails.get("is_under_way").equals("true")){
-                    isUnderway = true;
+        if (this.allLeagues.isEmpty()) {
+            List<String> allLeaguesList = DBManager.getInstance().getLeagues();
+            List<League> leagues = new ArrayList<>();
+            for (int i = 0; i < allLeaguesList.size(); i++) {
+                String leagueName = allLeaguesList.get(i);
+                League leagueToAdd = new League(leagueName, false);
+                //TODO: getSeasons
+                List<HashMap<String, String>> leagueSeasons = DBManager.getInstance().getLeagueSeasons(leagueName);
+                for (int j = 0; j < leagueSeasons.size(); j++) {
+                    HashMap<String, String> seasonDetails = leagueSeasons.get(j);
+                    boolean isUnderway = false;
+                    if (seasonDetails.get("is_under_way").equals("true")) {
+                        isUnderway = true;
+                    }
+                    PointsPolicy pointsPolicy = getPointsPolicy(Integer.parseInt(seasonDetails.get("victory_points")), Integer.parseInt(seasonDetails.get("loss_points")), Integer.parseInt(seasonDetails.get("tie_points")));
+                    leagueToAdd.addSeason(seasonDetails.get("years"), pointsPolicy, isUnderway);
                 }
-                PointsPolicy pointsPolicy = getPointsPolicy(Integer.parseInt(seasonDetails.get("victory_points")), Integer.parseInt(seasonDetails.get("loss_points")), Integer.parseInt(seasonDetails.get("tie_points")));
-                leagueToAdd.addSeason(seasonDetails.get("years"), pointsPolicy,isUnderway);
+                leagues.add(leagueToAdd);
             }
-            leagues.add(leagueToAdd);
-        }
-
-        if (leagues.isEmpty()) {
-            return new ArrayList<>(this.allLeagues);
+            //
+            if (leagues.isEmpty()) {
+                return new ArrayList<>(this.allLeagues);
+            } else {
+                return leagues;
+            }
         } else {
-            return leagues;
+            return new ArrayList<>(this.allLeagues);
         }
-        //
     }
 
     public List<Team> getTeams() {
