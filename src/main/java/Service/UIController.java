@@ -601,7 +601,7 @@ public class UIController {
 
     public static void showAlert(UI sessionUI, String alert) {
         if(!isTest) {
-            sessionUI.access(() -> {
+            sessionUI.getSession().access(()->{
                 FootballMain.showAlert(alert,sessionUI);
                 sessionUI.push();
             });

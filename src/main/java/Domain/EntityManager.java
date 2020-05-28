@@ -32,7 +32,7 @@ public class EntityManager{
     private List<Team> allTeams;
     private List<Stadium> allStadiums;
     private HashSet<League> allLeagues;
-    private List<SystemAdmin> systemAdmins;
+//    private List<SystemAdmin> systemAdmins;
 
     private List<PointsPolicy> pointsPolicies;
     private List<SchedulingPolicy> schedulingPolicies;
@@ -50,7 +50,7 @@ public class EntityManager{
         allTeams = new ArrayList<>();
         allStadiums = new ArrayList<>();
         loggedInMap = new HashMap<>();
-        systemAdmins = new ArrayList<>();
+//        systemAdmins = new ArrayList<>();
         pointsPolicies = new ArrayList<>();
         schedulingPolicies = new ArrayList<>();
     }
@@ -66,6 +66,9 @@ public class EntityManager{
 
             SystemUser admin = new SystemUser("Administrator",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"admin" , "test@gmail.com" , false);
             SystemUser arnav = new SystemUser("arnav",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"arnav" , "test@gmail.com" , false);
+
+
+
             admin.addNewRole(new SystemAdmin(admin));
             admin.addNewRole(new AssociationRepresentative(admin));
             admin.addNewRole(new Referee(admin,RefereeQualification.VAR_REFEREE));
@@ -261,13 +264,14 @@ public class EntityManager{
      * @return - boolean - true if the SystemUser removed successfully, else false
      */
     public boolean removeUserByName(String username) {
-        for (SystemUser su : allUsers) {
-            if (su.getUsername().equals(username)) {
-                this.allUsers.remove(su);
-                return true;
-            }
-        }
-        return false;
+        return removeUserByReference(getUser(username));
+//        for (SystemUser su : allUsers) {
+//            if (su.getUsername().equals(username)) {
+//                this.allUsers.remove(su);
+//                return true;
+//            }
+//        }
+//        return false;
     }
 
     /**
@@ -520,7 +524,6 @@ public class EntityManager{
 
     public void logout(SystemUser logoutUser) {
         loggedInMap.put(logoutUser,false);
-
     }
 
 /*
