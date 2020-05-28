@@ -317,7 +317,7 @@ public class DBManagerForTest extends DBManager {
         }
         List<String> rolesTypes = new ArrayList<>();
         for (int i = 0; i < result.fields().length; i++) {
-            rolesTypes.add(result.getValues(i).get(1).toString());
+            rolesTypes.add(result.getValues(i).get(0).toString());
         }
         return rolesTypes;
     }

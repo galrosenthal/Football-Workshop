@@ -319,7 +319,7 @@ public class EntityManager{
 
             }
         }
-        SystemUser systemUser = new SystemUser(username, password, name, email, notifyByEmail);
+        SystemUser systemUser = new SystemUser(username, password, name, email, notifyByEmail , false);
         return systemUser;
     }
 
