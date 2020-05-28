@@ -41,7 +41,7 @@ public class TeamControllerTest {
     public void runBeforeTests() {
         teamOwnerUser = new SystemUser("oranShich", "Oran2802", "Oran", "test@gmail.com", false, true);
         teamOwnerToAdd = new SystemUser("oranSh", "Oran2802", "Shichman", "test@gmail.com", false, true);
-        hapoelBash = new Team("hapoelBash");
+        hapoelBash = new Team("hapoelBash", true);
         stubTeam = new TeamStub(0);
         //TeamOwner originalOwner = new TeamOwner(teamOwnerUser);
         league = new League("Premier League", true);
@@ -67,7 +67,7 @@ public class TeamControllerTest {
     @After
     public void runAfterTests() {
         hapoelBash.removeTeamOwner((TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-        hapoelBash = new Team("hapoelBash");
+        hapoelBash = new Team("hapoelBash", true);
         EntityManager.getInstance().removeUserByReference(teamOwnerUser);
         EntityManager.getInstance().removeUserByReference(teamOwnerToAdd);
         hapoelBash.removeTeamOwner((TeamOwner) teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
@@ -140,7 +140,7 @@ public class TeamControllerTest {
     @Test
     public void AddTeamOwner3UTest() throws Exception {
         this.teamOwnerToAdd.addNewRole(new TeamOwner(teamOwnerToAdd, true));
-        Team hapoelTa = new Team("hapoelTa");
+        Team hapoelTa = new Team("hapoelTa", true);
         hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         hapoelTa.addTeamOwner(teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
         Season season = new Season(league, "2019/20");
@@ -324,7 +324,7 @@ public class TeamControllerTest {
     /*No asset*/
     @Test(expected = AssetsNotExistsException.class)
     public void editAssetsTest1ITest() throws Exception {
-        Team team = new Team("Test");
+        Team team = new Team("Test", true);
         UIController.setIsTest(true);
         UIController.setSelector(6131);
         TeamController.editAssets(team);
@@ -335,7 +335,7 @@ public class TeamControllerTest {
     /*can not modified asset - no property*/
     @Test(expected = AssetCantBeModifiedException.class)
     public void editAssetsTest2ITest() throws Exception {
-        Team team = new Team("Test");
+        Team team = new Team("Test", true);
         UIController.setIsTest(true);
         UIController.setSelector(6132);
         TeamOwnerStub teamOwnerStub = new TeamOwnerStub(new SystemUserStub("teamOwnerStub", "gal", 6132));
@@ -349,7 +349,7 @@ public class TeamControllerTest {
     /*can not modified asset - add property value*/
     @Test(expected = AssetCantBeModifiedException.class)
     public void editAssetsTest3ITest() throws Exception {
-        Team team = new Team("Test");
+        Team team = new Team("Test", true);
         TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest", "gal"), true);
         TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"), true);
         team.addTeamOwner(teamOwner);
@@ -370,7 +370,7 @@ public class TeamControllerTest {
     /*can not modified asset - remove property value*/
     @Test(expected = AssetCantBeModifiedException.class)
     public void editAssetsTest4ITest() throws Exception {
-        Team team = new Team("Test");
+        Team team = new Team("Test", true);
         TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest", "gal"), true);
         TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"), true);
         team.addTeamOwner(teamOwner);
@@ -385,7 +385,7 @@ public class TeamControllerTest {
     @Test
     public void editAssetsTest5ITest() throws Exception {
 
-        Team team = new Team("Test");
+        Team team = new Team("Test", true);
         TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest", "gal"), true);
         TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"), true);
         team.addTeamOwner(teamOwner);
@@ -404,7 +404,7 @@ public class TeamControllerTest {
     /*success add property list*/
     @Test
     public void editAssetsTest8ITest() throws Exception {
-        Team team = new Team("Test");
+        Team team = new Team("Test", true);
         TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest", "gal"), true);
         TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal"), true);
         team.addTeamOwner(teamOwner);
@@ -418,7 +418,7 @@ public class TeamControllerTest {
     /*success change property enum value*/
     @Test
     public void editAssetsTest6ITest() throws Exception {
-        Team team = new Team("Test");
+        Team team = new Team("Test", true);
         TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest1", "gal"), true);
         team.addTeamOwner(teamOwner);
         Player player = new Player(new SystemUser("teamOwnerTest2", "gal"), new Date(), true);
@@ -432,7 +432,7 @@ public class TeamControllerTest {
     /*success change property string value*/
     @Test
     public void editAssetsTest7ITest() throws Exception {
-        Team team = new Team("Test");
+        Team team = new Team("Test", true);
         TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest1", "gal"), true);
         team.addTeamOwner(teamOwner);
         Stadium stadium = new Stadium("testStadium", "bs");

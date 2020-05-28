@@ -19,7 +19,7 @@ public class TeamStub extends Team {
      * Selector latest Number: 2
      */
     public TeamStub(int selector) {
-        super("stubTeam "+selector);
+        super("stubTeam "+selector, true);
         this.selector = selector;
         this.teamOwners = new ArrayList<>();
         this.players = new ArrayList<>();

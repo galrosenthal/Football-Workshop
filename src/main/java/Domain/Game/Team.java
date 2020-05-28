@@ -23,7 +23,7 @@ public class Team {
     private HashMap<TeamManager, List<TeamManagerPermissions>> permissionsPerTeamManager;
 
 
-    public Team(String teamName) {
+    public Team(String teamName, boolean addToDB) {
         this.teamName = teamName;
         teamOwners = new ArrayList<>();
         playersAndCoaches = new HashSet<>();
@@ -32,11 +32,14 @@ public class Team {
         stadiums = new ArrayList<>();
         status = TeamStatus.OPEN;
         permissionsPerTeamManager = new HashMap<>();
-        EntityManager.getInstance().addTeam(this);
+        if(addToDB)
+        {
+            EntityManager.getInstance().addTeam(this);
+        }
 
     }
 
-    public Team(String teamName, TeamOwner to) {
+    public Team(String teamName, TeamOwner to, boolean addToDB) {
         teamOwners = new ArrayList<>();
         teamOwners.add(to);
         playersAndCoaches = new HashSet<>();
@@ -46,7 +49,10 @@ public class Team {
         seasons = new ArrayList<>();
         this.teamName = teamName;
         permissionsPerTeamManager = new HashMap<>();
-        EntityManager.getInstance().addTeam(this);
+        if(addToDB)
+        {
+            EntityManager.getInstance().addTeam(this);
+        }
 
     }
 
@@ -589,8 +595,10 @@ public class Team {
     }
 
     public boolean addSeason(Season season) {
+        /*TODO : DB*/
         if (!seasons.contains(season)) {
             seasons.add(season);
+            EntityManager.getInstance().addSeasonToTeam(season , this);
             return true;
         }
         return false;

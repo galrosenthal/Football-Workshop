@@ -387,8 +387,8 @@ public class RefereeControllerTest {
         new AssociationRepresentative(arSystemUser, true);
         new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
-        Team firstTeam = new Team("Hapoel Beit Shan", toRole);
-        Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
+        Team firstTeam = new Team("Hapoel Beit Shan", toRole, true);
+        Team secondTeam = new Team("Hapoel Beer Sheva", toRole, true);
 
         Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
         Player player1 = new Player(new SystemUser("AviCohen","Name1"),new Date(2001, 01, 01), true);

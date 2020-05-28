@@ -993,7 +993,7 @@ public class EntityManager {
         List<Pair<String, String>> ownedTeams = DBManager.getInstance().getTeams(teamOwner.getSystemUser().getName());
         List<Team> teams = new ArrayList<>();
         for (int i = 0; i < ownedTeams.size(); i++) {
-            Team team = new Team(ownedTeams.get(i).getKey(), teamOwner);
+            Team team = new Team(ownedTeams.get(i).getKey(), teamOwner, true);
             team.setStatus(getTeamStatus(ownedTeams.get(i).getValue()));
             teams.add(team);
         }
@@ -1137,5 +1137,11 @@ public class EntityManager {
     public boolean addTeamOwnerToTeam(TeamOwner teamOwner, Team team) {
         return DBManager.getInstance().addTeamOwnerToTeam(teamOwner.getSystemUser().getUsername(), team.getTeamName());
 
+    }
+
+    public boolean addSeasonToTeam(Season season, Team team) {
+       // int seasonID = DBManager.getInstance().getSeasonId(season.)
+        //return DBManager.getInstance().addSeasonToTeam()
+        return false;
     }
 }
