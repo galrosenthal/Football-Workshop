@@ -73,7 +73,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
     public FootballMain() {
 // Header of the menu (the navbar)
-
+        this.setId("footbalMain");
         // menu toggle
         final DrawerToggle drawerToggle = new DrawerToggle();
         drawerToggle.addClassName("menu-toggle");

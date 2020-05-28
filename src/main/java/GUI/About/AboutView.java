@@ -19,6 +19,7 @@ public class AboutView extends VerticalLayout {
     private final Button back;
 
     public AboutView() {
+        this.setId("about");
         add(VaadinIcon.INFO_CIRCLE.create());
         add(new Span(" This is our Football System Created by Team 17! "
                 + Version.getFullVersion() + "."));
