@@ -188,6 +188,7 @@ public class TeamControllerTest {
         }
 
         Season season = new Season(league, "2019/20");
+        league.addSeason("2019/20");
         season.addTeam(hapoelBash);
         hapoelBash.addSeason(season);
 

@@ -554,7 +554,8 @@ public class Team {
      */
     private Season getCurrentSeason() {
         Season currentSeason;
-
+        /*TODO DB*/
+        seasons = EntityManager.getInstance().getAllSeasonInTeam(this);
         if (seasons.size() == 0) {
             return null;
         }
@@ -576,7 +577,7 @@ public class Team {
     public List<Season> getCurrentSeasons() {
         List<Season> currentSeasons = new ArrayList<>();
         Season currentSeason = getCurrentSeason();
-
+        /*TODO DB*/
         if (seasons.size() == 0) {
             return null;
         }
@@ -596,7 +597,7 @@ public class Team {
 
     public boolean addSeason(Season season) {
         /*TODO : DB*/
-        if (!seasons.contains(season)) {
+        if (!seasons.contains(season) && !(EntityManager.getInstance().seasonInTeam(season , this))) {
             seasons.add(season);
             EntityManager.getInstance().addSeasonToTeam(season , this);
             return true;
@@ -604,11 +605,16 @@ public class Team {
         return false;
     }
 
+
     public boolean removeSeason(Season season) {
-        if (!seasons.contains(season)) {
+        /*TODO : DB*/
+        if (!seasons.contains(season) || !(EntityManager.getInstance().seasonInTeam(season , this))) {
             return false;
         }
-        return seasons.remove(season);
+        if(seasons.contains(season)) {
+            seasons.remove(season);
+        }
+        return EntityManager.getInstance().removeSeasonFromTeam(season , this);
     }
 
     private boolean removePlayerOrCoach(PartOfTeam playerOrCoach) {
