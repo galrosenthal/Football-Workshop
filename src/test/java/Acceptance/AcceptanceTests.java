@@ -413,7 +413,7 @@ public class AcceptanceTests {
      */
     @Test
     public void addAsset1ATest() throws Exception {
-        Team beitShean = new Team();
+        Team beitShean = new Team("beitShean");
 
         beitShean.setTeamName("Beit Shean");
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
@@ -439,7 +439,7 @@ public class AcceptanceTests {
      */
     @Test
     public void addAsset2ATest() throws Exception {
-        Team beitShean = new Team();
+        Team beitShean = new Team("beitShean");
 
         beitShean.setTeamName("Beit Shean");
 
@@ -480,7 +480,7 @@ public class AcceptanceTests {
      */
     @Test
     public void modifyTeamAssetDetails1ATest() throws Exception {
-        Team beitShean = new Team();
+        Team beitShean = new Team("beitShean");
         beitShean.setTeamName("Beit Shean");
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate);
@@ -512,7 +512,7 @@ public class AcceptanceTests {
      */
     @Test (expected = AssetsNotExistsException.class)
     public void modifyTeamAssetDetails2ATest() throws Exception {
-        Team beitShean = new Team();
+        Team beitShean = new Team("beitShean");
         beitShean.setTeamName("Beit Shean");
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate);

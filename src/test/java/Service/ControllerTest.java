@@ -214,7 +214,7 @@ public class ControllerTest {
         SystemUser test = new SystemUserStub("test","test User",6111);
         SystemUser anotherUser = new SystemUserStub("anotherUser","another test User",6112);
         TeamOwner to = new TeamOwner(test);
-        Team team = new Team();
+        Team team = new Team("Test");
         team.getTeamOwners().add(to);
         assertTrue(to.addTeamToOwn(team,test));
         UIController.setSelector(61114);
@@ -227,7 +227,7 @@ public class ControllerTest {
         SystemUser test = new SystemUser("test","test User");
         SystemUser anotherUser =new SystemUser("anotherUser","another test User");
         TeamOwner to = new TeamOwner(test);
-        Team team = new Team();
+        Team team = new Team("Test");
         team.getTeamOwners().add(to);
         assertTrue(to.addTeamToOwn(team,test));
         UIController.setSelector(61115);
@@ -264,7 +264,7 @@ public class ControllerTest {
     public void modifyTeamAssetDetails3ITest() throws Exception {
         SystemUser systemUser = new SystemUser("rosengal", "gal");
         TeamOwner teamOwner = new TeamOwner(systemUser);
-        Team team = new Team();
+        Team team = new Team("Test");
         teamOwner.addTeamToOwn(team,systemUser);
         Stadium stadium = new Stadium("AESEAL" , "New York");
         team.addStadium(stadium);

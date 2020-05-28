@@ -19,7 +19,7 @@ public class TeamStub extends Team {
      * Selector latest Number: 2
      */
     public TeamStub(int selector) {
-        super();
+        super("stubTeam "+selector);
         this.selector = selector;
         this.teamOwners = new ArrayList<>();
         this.players = new ArrayList<>();
@@ -125,8 +125,8 @@ public class TeamStub extends Team {
     }
 
     @Override
-    public void setTeamName(String testName) {
-        super.setTeamName(testName);
+    public boolean setTeamName(String testName) {
+       return super.setTeamName(testName);
     }
 
     @Override

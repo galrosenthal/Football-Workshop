@@ -452,12 +452,12 @@ public class EntityManager{
      */
     public boolean addTeam(Team team) {
         /*TODO - ADD TEAM TO DB*/
-        boolean teamAdded = DBManager.getInstance().addTeam(team.getTeamName(),team.getStatus().toString());
-        if (!(this.allTeams.contains(team))) {
-            this.allTeams.add(team);
-            return true;
-        }
-        return false;
+        return DBManager.getInstance().addTeam(team.getTeamName(),team.getStatus().toString());
+//        if (!(this.allTeams.contains(team))) {
+//            this.allTeams.add(team);
+//            return true;
+//        }
+//        return false;
     }
 
     /**
@@ -919,7 +919,11 @@ public class EntityManager{
                 break;
             case COACH:
                 Coach coach = (Coach) role;
-                DBManager.getInstance().addCoach(coach.getSystemUser().getUsername(),coach.getQualification().name());
+                if(coach.getQualification() != null)
+                {
+                    DBManager.getInstance().addCoach(coach.getSystemUser().getUsername(),coach.getQualification().name());
+                }
+                DBManager.getInstance().addCoach(coach.getSystemUser().getUsername(),null);
                 break;
             case TEAM_MANAGER:
                 TeamManager teamManager = (TeamManager) role;
@@ -935,7 +939,14 @@ public class EntityManager{
                 break;
             case REFEREE:
                 Referee referee = (Referee) role;
-                DBManager.getInstance().addReferee(referee.getSystemUser().getUsername(),referee.getTraining().name());
+                if(referee.getTraining()!= null)
+                {
+                    DBManager.getInstance().addReferee(referee.getSystemUser().getUsername(),referee.getTraining().name());
+                }
+                else
+                {
+                    DBManager.getInstance().addReferee(referee.getSystemUser().getUsername(),null);
+                }
                 break;
             case ASSOCIATION_REPRESENTATIVE:
                 AssociationRepresentative associationRepresentative = (AssociationRepresentative) role;
@@ -973,7 +984,7 @@ public class EntityManager{
      *         false - otherwise
      */
     public boolean isTeamOwner(TeamOwner teamOwner, Team team) {
-        return DBManager.getInstance().isTeamOwner(teamOwner.getSystemUser().getName(),team.getTeamName());
+        return DBManager.getInstance().isTeamOwner(teamOwner.getSystemUser().getUsername(),team.getTeamName());
     }
 
     /**
@@ -997,5 +1008,19 @@ public class EntityManager{
      */
     public boolean addConnection(Team teamBelongsTo, PartOfTeam partOfTeam) {
         return DBManager.getInstance().addTeamConnection(teamBelongsTo.getTeamName(),partOfTeam.getType().toString(),partOfTeam.getSystemUser().getUsername());
+    }
+
+    public boolean updateTeamName(String teamName, String testName) {
+        return DBManager.getInstance().updateTeamName(teamName ,testName );
+    }
+
+    public boolean setTeamOwnerAppointed(TeamOwner teamOwner, Team team, String appointed) {
+        return DBManager.getInstance().setTeamOwnerAppointed(teamOwner.getSystemUser().getUsername() ,team.getTeamName(),appointed );
+
+    }
+
+    public boolean addTeamOwnerToTeam(TeamOwner teamOwner, Team team) {
+        return DBManager.getInstance().addTeamOwnerToTeam(teamOwner.getSystemUser().getUsername() ,team.getTeamName() );
+
     }
 }

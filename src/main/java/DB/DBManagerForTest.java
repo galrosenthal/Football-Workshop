@@ -368,8 +368,15 @@ public class DBManagerForTest extends DBManager {
     public void addCoach(String username, String qualification) {
         DSLContext create = DBHandler.getContext();
         create.insertInto(USER_ROLES, USER_ROLES.USERNAME , USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.COACH).execute();
+        if (qualification != null) {
 
-        create.insertInto(COACH, COACH.USERNAME , COACH.QUALIFICATION).values(username, CoachQualification.valueOf(qualification)).execute();
+            create.insertInto(COACH, COACH.USERNAME , COACH.QUALIFICATION).values(username, CoachQualification.valueOf(qualification)).execute();
+        }
+        else
+        {
+            create.insertInto(COACH, COACH.USERNAME , COACH.QUALIFICATION).values(username, null).execute();
+
+        }
 
 
     }
@@ -409,8 +416,13 @@ public class DBManagerForTest extends DBManager {
         DSLContext create = DBHandler.getContext();
         //todo: check!!!!
         create.insertInto(USER_ROLES, USER_ROLES.USERNAME , USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.REFEREE).execute();
+        if(training != null)
+        {
+            create.insertInto(REFEREE, REFEREE.USERNAME , REFEREE.TRAINING).values(username, RefereeTraining.valueOf(training)).execute();
+        }
+        create.insertInto(REFEREE, REFEREE.USERNAME , REFEREE.TRAINING).values(username, null).execute();
 
-        create.insertInto(REFEREE, REFEREE.USERNAME , REFEREE.TRAINING).values(username, RefereeTraining.valueOf(training)).execute();
+
 
 
     }
@@ -429,13 +441,13 @@ public class DBManagerForTest extends DBManager {
     public boolean addTeam(String teamName, String teamStatus) {
         try{
             DSLContext create = DBHandler.getContext();
-            create.insertInto(TEAM, TEAM.NAME,TEAM.STATUS).values(teamName, TeamStatus.valueOf(teamStatus));
+            create.insertInto(TEAM, TEAM.NAME,TEAM.STATUS).values(teamName, TeamStatus.valueOf(teamStatus)).execute();
+            return true;
         }catch (Exception e)
         {
             e.printStackTrace();
             return false;
         }
-        return true;
     }
 
     @Override
@@ -468,7 +480,7 @@ public class DBManagerForTest extends DBManager {
         int stadiumId = getStadiumId(name, location);
         try {
             DSLContext create = DBHandler.getContext();
-            create.insertInto(STADIUM_HOME_TEAMS,STADIUM_HOME_TEAMS.STADIUM_ID, STADIUM_HOME_TEAMS.TEAM_NAME).values(stadiumId , teamName);
+            create.insertInto(STADIUM_HOME_TEAMS,STADIUM_HOME_TEAMS.STADIUM_ID, STADIUM_HOME_TEAMS.TEAM_NAME).values(stadiumId , teamName).execute();
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -489,12 +501,12 @@ public class DBManagerForTest extends DBManager {
             DSLContext create = DBHandler.getContext();
             if(type.equals("PLAYER"))
             {
-                create.insertInto(PLAYER_IN_TEAM, PLAYER_IN_TEAM.TEAM_NAME,PLAYER_IN_TEAM.USERNAME).values(teamName,username);
+                create.insertInto(PLAYER_IN_TEAM, PLAYER_IN_TEAM.TEAM_NAME,PLAYER_IN_TEAM.USERNAME).values(teamName,username).execute();
                 return true;
             }
             else if(type.equals("COACH"))
             {
-                create.insertInto(COACH_IN_TEAM, COACH_IN_TEAM.TEAM_NAME,COACH_IN_TEAM.USERNAME).values(teamName,username);
+                create.insertInto(COACH_IN_TEAM, COACH_IN_TEAM.TEAM_NAME,COACH_IN_TEAM.USERNAME).values(teamName,username).execute();
                 return true;
             }
         }catch (Exception e)
@@ -503,5 +515,45 @@ public class DBManagerForTest extends DBManager {
             return false;
         }
         return false;
+    }
+    @Override
+    public boolean updateTeamName(String teamName, String testName) {
+        try {
+            DSLContext create = DBHandler.getContext();
+            create.update(TEAM).set(TEAM.NAME, testName).where(TEAM.NAME.eq(teamName)).execute();
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    @Override
+    public boolean setTeamOwnerAppointed(String username, String teamName, String appointed) {
+        try {
+            DSLContext create = DBHandler.getContext();
+            create.update(OWNED_TEAMS).set(OWNED_TEAMS.APPOINTER , appointed).where(OWNED_TEAMS.USERNAME.eq(username).and(OWNED_TEAMS.TEAM_NAME.eq(teamName))).execute();
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean addTeamOwnerToTeam(String username, String teamName) {
+        try {
+            DSLContext create = DBHandler.getContext();
+            create.insertInto(OWNED_TEAMS,OWNED_TEAMS.TEAM_NAME,OWNED_TEAMS.USERNAME,OWNED_TEAMS.APPOINTER).values(teamName,username,null).execute();
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

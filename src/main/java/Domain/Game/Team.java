@@ -23,7 +23,8 @@ public class Team {
     private HashMap<TeamManager, List<TeamManagerPermissions>> permissionsPerTeamManager;
 
 
-    public Team() {
+    public Team(String teamName) {
+        this.teamName = teamName;
         teamOwners = new ArrayList<>();
         playersAndCoaches = new HashSet<>();
         teamManagers = new ArrayList<>();
@@ -62,6 +63,7 @@ public class Team {
     }
 
     public List<TeamOwner> getTeamOwners() {
+        /*TODO db*/
         return teamOwners;
     }
 
@@ -137,7 +139,9 @@ public class Team {
         if (teamOwner == null || status != TeamStatus.OPEN) {
             return false;
         }
-        if (teamOwner.getType() == RoleTypes.TEAM_OWNER && !teamOwners.contains(teamOwner)) {
+        if (teamOwner.getType() == RoleTypes.TEAM_OWNER && !teamOwners.contains(teamOwner) &&!(EntityManager.getInstance().isTeamOwner((TeamOwner)teamOwner,this))) {
+            /*UPDATE DB*/
+            EntityManager.getInstance().addTeamOwnerToTeam((TeamOwner)teamOwner, this);
             return teamOwners.add((TeamOwner) teamOwner);
         }
 
@@ -145,6 +149,7 @@ public class Team {
     }
 
     public boolean removeTeamOwner(TeamOwner teamOwner) {
+        /*update db*/
         if (!teamOwners.contains(teamOwner) || status != TeamStatus.OPEN) {
             return false;
         }
@@ -366,8 +371,14 @@ public class Team {
         return this.teamName;
     }
 
-    public void setTeamName(String testName) {
-        this.teamName = testName;
+    public boolean setTeamName(String testName) {
+        /*update db*/
+         if(EntityManager.getInstance().updateTeamName(this.teamName,testName))
+         {
+             this.teamName = testName;
+             return true;
+         }
+         return false;
     }
 
     public TeamStatus getStatus() {

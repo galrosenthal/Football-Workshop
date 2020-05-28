@@ -103,7 +103,7 @@ public class CoachTest {
     @Test
     public void changePropertyITest() {
         Coach coach = new Coach(new SystemUser("coachTest", "gal"));
-        Team team = new Team();
+        Team team = new Team("Test");
         BelongToTeam bg = new BelongToTeam(team, coach);
         Assert.assertTrue(coach.addTeamConnection(bg));
         Assert.assertTrue(coach.changeProperty(team, coach.teamJobString, "Test"));

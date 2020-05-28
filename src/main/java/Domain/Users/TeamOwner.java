@@ -99,6 +99,8 @@ public class TeamOwner extends Role implements Subject {
 
         if(appointedOwner != null && teamToChangeAppointer != null){
             teamsAndAppointers.put(teamToChangeAppointer,appointedOwner);
+            /*update db*/
+            EntityManager.getInstance().setTeamOwnerAppointed( this , teamToChangeAppointer, appointedOwner.getUsername());
             return true;
         }
 
