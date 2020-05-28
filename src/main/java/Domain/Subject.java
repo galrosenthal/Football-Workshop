@@ -1,7 +1,6 @@
 package Domain;
 
 import Domain.Users.SystemUser;
-import Service.Observer;
 
 import java.util.List;
 

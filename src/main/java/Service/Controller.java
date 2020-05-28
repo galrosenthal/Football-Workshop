@@ -8,7 +8,6 @@ import Domain.Game.TeamAsset;
 import Domain.Game.TeamStatus;
 import Domain.SystemLogger.*;
 import Domain.Users.*;
-import com.vaadin.flow.component.UI;
 
 import java.util.ArrayList;
 import java.util.List;

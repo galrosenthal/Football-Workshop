@@ -6,7 +6,6 @@ import Domain.Game.League;
 import Domain.Game.Season;
 import Domain.Game.Team;
 import Domain.Users.*;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
 
 import java.text.SimpleDateFormat;

@@ -5,9 +5,7 @@ import GUI.Registration.RegistrationView;
 import GUI.RoleRelatedViews.AssociationRepresentative.ARControls;
 import GUI.RoleRelatedViews.TeamOwner.TOControls;
 import Service.MainController;
-import Service.TOController;
 import com.vaadin.flow.server.ServiceInitEvent;
-import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 import com.vaadin.flow.server.VaadinSession;
 

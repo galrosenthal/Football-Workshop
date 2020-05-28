@@ -1,10 +1,8 @@
 package GUI.Login;
 
-import Domain.EntityManager;
 import GUI.FootballMain;
 import Service.AllSubscribers;
 import Service.MainController;
-import Service.UIController;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -18,9 +16,7 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.server.WrappedSession;
 
 /**
  * UI content when the user is not logged in yet.

@@ -6,7 +6,6 @@ import org.jooq.DSLContext;
 import org.jooq.Result;
 
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

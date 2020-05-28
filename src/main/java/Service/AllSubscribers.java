@@ -2,7 +2,6 @@ package Service;
 
 
 import Domain.Users.SystemUser;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
 
 import java.util.ArrayList;

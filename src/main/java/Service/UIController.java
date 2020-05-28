@@ -1,23 +1,16 @@
 package Service;
 
 import GUI.FootballMain;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.server.Command;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.server.WrappedSession;
 
 import java.util.Collection;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import static java.lang.Thread.sleep;
 
-import java.util.Date;
-import java.util.Scanner;
 
 public class UIController {
 

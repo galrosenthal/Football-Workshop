@@ -1,19 +1,10 @@
 package GUI;
 
-import Service.AllSubscribers;
 import Service.MainController;
-import Service.UIController;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.login.AbstractLogin;
-import com.vaadin.flow.component.login.LoginForm;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.FlexLayout;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.router.PageTitle;

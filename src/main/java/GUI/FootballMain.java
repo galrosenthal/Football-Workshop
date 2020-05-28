@@ -7,7 +7,6 @@ import GUI.About.AboutView;
 import GUI.RoleRelatedViews.AssociationRepresentative.ARControls;
 import GUI.RoleRelatedViews.Referee.RefereeControls;
 import GUI.RoleRelatedViews.TeamOwner.TOControls;
-import Service.AllSubscribers;
 import Service.MainController;
 import Service.UIController;
 import com.vaadin.flow.component.*;
