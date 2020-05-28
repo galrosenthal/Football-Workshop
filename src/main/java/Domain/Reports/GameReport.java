@@ -108,11 +108,11 @@ public class GameReport extends Report implements Subject, Observer {
 
     /**
      * Produces a game report and saves it as pdf in the given path
-     * @param folderPath The path to the folder to save the report at.
+     //* @param folderPath The path to the folder to save the report at.
      * @return File - the file created.
      * @throws Exception
      */
-    public File produceReport(String folderPath) throws Exception {
+    public String produceReport() throws Exception {
         if(!game.hasFinished()){
             throw new Exception("error, the game is not finished yet");
         }
@@ -122,12 +122,8 @@ public class GameReport extends Report implements Subject, Observer {
         String startingDateInString = simpleDateFormat.format( game.getGameDate());
         String homeTeamName = homeTeam.getTeamName();
         String awayTeamName = awayTeam.getTeamName();
-        String docPath = folderPath+"/GameReport_"+homeTeamName+"_vs_"+awayTeamName+"_"+startingDateInString+".pdf";
-        //Checking if the file already exists
-        File file = new File(docPath);
-        if(file.exists()){
-           throw new Exception("error, this game report is already exists in the selected directory");
-        }
+        //String docPath = "/GameReport_"+homeTeamName+"_vs_"+awayTeamName+"_"+startingDateInString+".pdf";
+
         //creating the content
         StringBuilder docContent = new StringBuilder();
         docContent.append("Game Report");
@@ -145,17 +141,8 @@ public class GameReport extends Report implements Subject, Observer {
         }
         Score gameScore = game.getScore();
         docContent.append("\n\nFinal Score: "+gameScore.toString());
+        docContent.append(";"+ startingDateInString);
 
-        //Creating the pdf
-        Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream(docPath));
-
-        document.open();
-        Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-        Paragraph paragraph = new Paragraph(docContent.toString());
-        paragraph.setFont(font);
-        document.add(paragraph);
-        document.close();
-        return file;
+        return docContent.toString();
     }
 }
