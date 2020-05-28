@@ -675,4 +675,22 @@ public class MainController {
             UIController.showNotification(e.getMessage());
         }
     }
+
+    public static void produceReport(String username) {
+        SystemUser refeeeUser = EntityManager.getInstance().getUser(username);
+        if(refeeeUser == null)
+        {
+            return;
+        }
+        try
+        {
+            RefereeController.produceGameReport(refeeeUser);
+        }
+        catch (Exception e )
+        {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+        }
+
+    }
 }
