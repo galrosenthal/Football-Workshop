@@ -85,7 +85,7 @@ public class LoginTest extends TestBenchTestCase {
     }
 
     @Test
-    public void loginTest(){
+    public void loginSuccessTest(){
         $(ButtonElement.class).id("login").click();
         Assert.assertEquals("Log in as \"admin\" to have full access. Log in with any other username to have read-only access. For all users, the password is same as the username.", $(SpanElement.class).id("loginInfoText").getText());
         $(TextFieldElement.class).id("vaadinLoginUsername").setValue("Administrator");
@@ -93,6 +93,11 @@ public class LoginTest extends TestBenchTestCase {
         $(ButtonElement.class).first().click();
         Assert.assertEquals("About", $(SpanElement.class).id("about").getText());
         //Assert.assertEquals("Log out", $(SpanElement.class).id("about").getText());
+    }
+
+    @Test
+    public void loginFailureTest(){
+
     }
 
     @After
