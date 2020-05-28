@@ -19,29 +19,38 @@ import static org.junit.Assert.*;
 
 public class TeamControllerTest {
 
-
-    SystemUser teamOwnerUser = new SystemUser("oranShich", "Oran2802", "Oran" , "test@gmail.com" , false, true);
-    SystemUser teamOwnerToAdd = new SystemUser("oranSh", "Oran2802", "Shichman","test@gmail.com" , false, true);
-    Team hapoelBash = new Team("hapoelBash");
-    TeamStub stubTeam = new TeamStub(0);
-    //TeamOwner originalOwner = new TeamOwner(teamOwnerUser);
-    League league = new League("Premier League");
-    TeamOwnerStub to;
-
-    //For removeOwner tests
-    SystemUser teamOwnerUser2 = new SystemUser("rosengal", "Gal12345", "Gal" , "test@gmail.com" , false, true);
-    SystemUser teamOwnerUser3 = new SystemUser("nirdz", "Nir12345", "Nir" , "test@gmail.com" , false, true);
-    SystemUser teamOwnerUser4 = new SystemUser("merav", "Merav12345", "Mer" , "test@gmail.com" , false, true);
-
     @BeforeClass
-    public static void beforeClass(){
+    public static void beforeClass() {
         DBManager.startTest();
         DBManagerForTest.startConnection();
         SystemLoggerManager.disableLoggers(); // disable loggers in tests
     }
 
+    SystemUser teamOwnerUser;
+    SystemUser teamOwnerToAdd;
+    Team hapoelBash;
+    TeamStub stubTeam;
+    League league;
+    TeamOwnerStub to;
+    //For removeOwner tests
+    SystemUser teamOwnerUser2;
+    SystemUser teamOwnerUser3;
+    SystemUser teamOwnerUser4;
+
     @Before
-    public void runBeforeTests(){
+    public void runBeforeTests() {
+        teamOwnerUser = new SystemUser("oranShich", "Oran2802", "Oran", "test@gmail.com", false, true);
+        teamOwnerToAdd = new SystemUser("oranSh", "Oran2802", "Shichman", "test@gmail.com", false, true);
+        hapoelBash = new Team("hapoelBash");
+        stubTeam = new TeamStub(0);
+        //TeamOwner originalOwner = new TeamOwner(teamOwnerUser);
+        league = new League("Premier League", true);
+        //For removeOwner tests
+        teamOwnerUser2 = new SystemUser("rosengal", "Gal12345", "Gal", "test@gmail.com", false, true);
+        teamOwnerUser3 = new SystemUser("nirdz", "Nir12345", "Nir", "test@gmail.com", false, true);
+
+        teamOwnerUser4 = new SystemUser("merav", "Merav12345", "Mer", "test@gmail.com", false, true);
+
         to = new TeamOwnerStub(teamOwnerUser);
         teamOwnerUser.addNewRole(to);
         teamOwnerUser.addNewRole(new TeamOwner(teamOwnerUser, true));
@@ -56,12 +65,12 @@ public class TeamControllerTest {
     }
 
     @After
-    public void runAfterTests(){
-        hapoelBash.removeTeamOwner((TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+    public void runAfterTests() {
+        hapoelBash.removeTeamOwner((TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         hapoelBash = new Team("hapoelBash");
         EntityManager.getInstance().removeUserByReference(teamOwnerUser);
         EntityManager.getInstance().removeUserByReference(teamOwnerToAdd);
-        hapoelBash.removeTeamOwner((TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
+        hapoelBash.removeTeamOwner((TeamOwner) teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
         try {
             DBManager.deleteData("fwdb_test");
         } catch (Exception e) {
@@ -75,26 +84,25 @@ public class TeamControllerTest {
      * @throws Exception
      */
     @Test
-    public void AddTeamOwner1UTest(){
+    public void AddTeamOwner1UTest() {
 
         EntityManager.getInstance().addUser(teamOwnerUser);
         EntityManager.getInstance().addUser(teamOwnerToAdd);
-        try{
-            TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-        }
-        catch (Exception e){
+        try {
+            TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+            Assert.fail();
+        } catch (Exception e) {
             e.printStackTrace();
-            Assert.assertEquals("Only the owner of this team can add a new owner",e.getMessage());
+            Assert.assertEquals("Only the owner of this team can add a new owner", e.getMessage());
         }
 
 
         // Adding the original owner to the team. Expected to succeed
-        try{
+        try {
             hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-            boolean result = TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+            boolean result = TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
             Assert.assertTrue(result);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             fail();
         }
@@ -102,30 +110,31 @@ public class TeamControllerTest {
 
     /**
      * Check that by given a user name the does not exist throw appropriate message
+     *
      * @throws Exception
      */
     @Test
-    public void AddTeamOwner2UTest() throws Exception{
+    public void AddTeamOwner2UTest() throws Exception {
         EntityManager.getInstance().addUser(teamOwnerUser);
         hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-        try{
-            TeamController.addTeamOwner("dfds", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        try {
+            TeamController.addTeamOwner("dfds", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
             fail();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            assertEquals("Could not find a user by the given username",e.getMessage());
+            assertEquals("Could not find a user by the given username", e.getMessage());
         }
 
         //Add the user to the system' expected to succeed
         EntityManager.getInstance().addUser(teamOwnerToAdd);
 
-        boolean result = TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        boolean result = TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         Assert.assertTrue(result);
     }
 
     /**
      * Check that a owner of a team cant be another team owner of a team in a same league
+     *
      * @throws Exception
      */
     @Test
@@ -134,7 +143,7 @@ public class TeamControllerTest {
         Team hapoelTa = new Team("hapoelTa");
         hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         hapoelTa.addTeamOwner(teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
-        Season season = new Season(league,"2019/20");
+        Season season = new Season(league, "2019/20");
 
         season.addTeam(hapoelBash);
         season.addTeam(hapoelTa);
@@ -145,21 +154,21 @@ public class TeamControllerTest {
         EntityManager.getInstance().addUser(teamOwnerUser);
         EntityManager.getInstance().addUser(teamOwnerToAdd);
 
-        try{
-            TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-        }
-        catch (Exception e){
+        try {
+            TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        } catch (Exception e) {
             e.printStackTrace();
-            assertEquals("This User is already a team owner of a different team in same league",e.getMessage());
+            assertEquals("This User is already a team owner of a different team in same league", e.getMessage());
         }
 
 
-        hapoelTa.removeTeamOwner((TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
-        Assert.assertTrue(TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER)));
+        hapoelTa.removeTeamOwner((TeamOwner) teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
+        Assert.assertTrue(TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER)));
     }
 
     /**
-     *Check that a user is not already team owner of this team
+     * Check that a user is not already team owner of this team
+     *
      * @throws Exception
      */
     @Test
@@ -169,74 +178,62 @@ public class TeamControllerTest {
         EntityManager.getInstance().addUser(teamOwnerToAdd);
 
 
-        try{
-            TeamController.addTeamOwner("oranShich", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        try {
+            TeamController.addTeamOwner("oranShich", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
             //thrown.expectMessage("This User is already a team owner of this team");
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            Assert.assertEquals("This User is already a team owner of this team",e.getMessage());
+            Assert.assertEquals("This User is already a team owner of this team", e.getMessage());
         }
 
-        Season season = new Season(league,"2019/20");
+        Season season = new Season(league, "2019/20");
         season.addTeam(hapoelBash);
         hapoelBash.addSeason(season);
 
-        try{
-            TeamController.addTeamOwner("oranShich", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-        }
-        catch (Exception e){
+        try {
+            TeamController.addTeamOwner("oranShich", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        } catch (Exception e) {
             e.printStackTrace();
-            assertEquals("This User is already a team owner of this team",e.getMessage());
+            assertEquals("This User is already a team owner of this team", e.getMessage());
         }
     }
 
 
     @Test
-    public void addAssetUTest() throws Exception
-    {
-        SystemUserStub assetToAdd = new SystemUserStub("asset","asset user", 0);
-        try{
-            TeamController.addAssetToTeam("asset",hapoelBash,to, TeamAsset.PLAYER);
-        }
-        catch (NotATeamOwner e)
-        {
-            assertEquals("Not One of the Team Owners",e.getMessage());
+    public void addAssetUTest() throws Exception {
+        SystemUserStub assetToAdd = new SystemUserStub("asset", "asset user", 0);
+        try {
+            TeamController.addAssetToTeam("asset", hapoelBash, to, TeamAsset.PLAYER);
+        } catch (NotATeamOwner e) {
+            assertEquals("Not One of the Team Owners", e.getMessage());
         }
 
-        try{
-            TeamController.addAssetToTeam("asset",hapoelBash,to, null);
-        }
-        catch (NullPointerException e)
-        {
-            assertEquals("No Asset Type was given",e.getMessage());
+        try {
+            TeamController.addAssetToTeam("asset", hapoelBash, to, null);
+        } catch (NullPointerException e) {
+            assertEquals("No Asset Type was given", e.getMessage());
         }
 
-        try{
-            TeamController.addAssetToTeam("asset",null,to, null);
-        }
-        catch (NoTeamExistsException e)
-        {
+        try {
+            TeamController.addAssetToTeam("asset", null, to, null);
+        } catch (NoTeamExistsException e) {
             assertEquals("No Team was given", e.getMessage());
         }
 
         stubTeam.setSelector(6110);
-        assertTrue(TeamController.addAssetToTeam("asset",stubTeam,to, TeamAsset.PLAYER));
+        assertTrue(TeamController.addAssetToTeam("asset", stubTeam, to, TeamAsset.PLAYER));
         stubTeam.setSelector(6111);
-        assertFalse(TeamController.addAssetToTeam("asset",stubTeam,to,  TeamAsset.PLAYER));
+        assertFalse(TeamController.addAssetToTeam("asset", stubTeam, to, TeamAsset.PLAYER));
     }
-
 
 
     @Test
-    public void addAssetITest() throws Exception
-    {
-        SystemUser anotherUser = new SystemUser("test","testUser");
+    public void addAssetITest() throws Exception {
+        SystemUser anotherUser = new SystemUser("test", "testUser");
         hapoelBash.getTeamOwners().add(to);
-        assertTrue(TeamController.addAssetToTeam("test",hapoelBash,to,TeamAsset.TEAM_MANAGER));
+        assertTrue(TeamController.addAssetToTeam("test", hapoelBash, to, TeamAsset.TEAM_MANAGER));
     }
-
 
 
     /*No asset*/
@@ -424,7 +421,7 @@ public class TeamControllerTest {
         Team team = new Team("Test");
         TeamOwner teamOwner = new TeamOwner(new SystemUser("teamOwnerTest1", "gal"), true);
         team.addTeamOwner(teamOwner);
-        Player player = new Player(new SystemUser("teamOwnerTest2", "gal"), new Date());
+        Player player = new Player(new SystemUser("teamOwnerTest2", "gal"), new Date(), true);
         team.addTeamPlayer(teamOwner, player);
         UIController.setIsTest(true);
         UIController.setSelector(6136);
@@ -448,6 +445,7 @@ public class TeamControllerTest {
 
     /**
      * Check that the team owner has added to the team and the team has added to the team owner
+     *
      * @throws Exception
      */
     @Test
@@ -456,70 +454,72 @@ public class TeamControllerTest {
         EntityManager.getInstance().addUser(teamOwnerUser);
         EntityManager.getInstance().addUser(teamOwnerToAdd);
 
-        TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-        Assert.assertEquals(((TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER)).getOwnedTeams().get(0),hapoelBash);
-        Assert.assertEquals(hapoelBash.getTeamOwners().get(0),((TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER)));
-        Assert.assertEquals(hapoelBash.getTeamOwners().get(1),((TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER)));
+        TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        Assert.assertEquals(((TeamOwner) teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER)).getOwnedTeams().get(0), hapoelBash);
+        Assert.assertEquals(hapoelBash.getTeamOwners().get(0), ((TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER)));
+        Assert.assertEquals(hapoelBash.getTeamOwners().get(1), ((TeamOwner) teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER)));
     }
 
 
     /**
      * Check that if we remove the owner who appointed the others, everyone removed.
+     *
      * @throws Exception
      */
     @Test
-    public void removeTeamOwner1UTest() throws Exception{
+    public void removeTeamOwner1UTest() throws Exception {
 
         hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         EntityManager.getInstance().addUser(teamOwnerUser);
         EntityManager.getInstance().addUser(teamOwnerToAdd);
 
-        TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-        TeamController.addTeamOwner("nirdz", hapoelBash, (TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
-        TeamController.addTeamOwner("rosengal", hapoelBash, (TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
+        TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        TeamController.addTeamOwner("nirdz", hapoelBash, (TeamOwner) teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
+        TeamController.addTeamOwner("rosengal", hapoelBash, (TeamOwner) teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
 
-        Assert.assertEquals(4,hapoelBash.getTeamOwners().size());
+        Assert.assertEquals(4, hapoelBash.getTeamOwners().size());
 
-        TeamController.removeTeamOwner("oranShich",hapoelBash,(TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        TeamController.removeTeamOwner("oranShich", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
 
-        Assert.assertEquals(0,hapoelBash.getTeamOwners().size());
+        Assert.assertEquals(0, hapoelBash.getTeamOwners().size());
     }
 
     /**
      * Check only one removed
      */
     @Test
-    public void removeTeamOwner2UTest() throws Exception{
+    public void removeTeamOwner2UTest() throws Exception {
         hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         EntityManager.getInstance().addUser(teamOwnerUser);
         EntityManager.getInstance().addUser(teamOwnerToAdd);
 
-        TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-        TeamController.addTeamOwner("nirdz", hapoelBash, (TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
-        TeamController.addTeamOwner("merav", hapoelBash, (TeamOwner)teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
+        TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        TeamController.addTeamOwner("nirdz", hapoelBash, (TeamOwner) teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
+        TeamController.addTeamOwner("merav", hapoelBash, (TeamOwner) teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER));
 
-        Assert.assertEquals(4,hapoelBash.getTeamOwners().size());
+        Assert.assertEquals(4, hapoelBash.getTeamOwners().size());
 
-        TeamController.removeTeamOwner("nirdz",hapoelBash,(TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+        TeamController.removeTeamOwner("nirdz", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
 
-        Assert.assertEquals(3,hapoelBash.getTeamOwners().size());
+        Assert.assertEquals(3, hapoelBash.getTeamOwners().size());
     }
 
     /**
      * Check input of wrong username
+     *
      * @throws Exception
      */
     @Test
-    public void removeTeamOwner3UTest(){
+    public void removeTeamOwner3UTest() {
         hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         EntityManager.getInstance().addUser(teamOwnerUser);
 
 
         try {
-            TeamController.removeTeamOwner("orah",hapoelBash,(TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+            TeamController.removeTeamOwner("orah", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.assertEquals("Could not find a user by the given username",e.getMessage());
+            Assert.assertEquals("Could not find a user by the given username", e.getMessage());
         }
     }
 
@@ -527,21 +527,21 @@ public class TeamControllerTest {
      * Check the owner is the owner of the team
      */
     @Test
-    public void removeTeamOwner4UTest(){
+    public void removeTeamOwner4UTest() {
         EntityManager.getInstance().addUser(teamOwnerUser);
         EntityManager.getInstance().addUser(teamOwnerToAdd);
 
         try {
-            TeamController.removeTeamOwner("oranSh",hapoelBash,(TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+            TeamController.removeTeamOwner("oranSh", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.assertEquals("Only the owner of this team can remove owner",e.getMessage());
+            Assert.assertEquals("Only the owner of this team can remove owner", e.getMessage());
         }
 
         try {
             hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-            TeamController.addTeamOwner("oranSh",hapoelBash,(TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-            Assert.assertTrue(TeamController.removeTeamOwner("oranSh",hapoelBash,(TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER)));
+            TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+            Assert.assertTrue(TeamController.removeTeamOwner("oranSh", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -551,21 +551,21 @@ public class TeamControllerTest {
      * Check the input of the owner we want to remove.
      */
     @Test
-    public void removeTeamOwner5UTest(){
+    public void removeTeamOwner5UTest() {
         hapoelBash.addTeamOwner(teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         EntityManager.getInstance().addUser(teamOwnerUser);
         EntityManager.getInstance().addUser(teamOwnerToAdd);
 
         try {
-            TeamController.removeTeamOwner("oranSh",hapoelBash,(TeamOwner)teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
+            TeamController.removeTeamOwner("oranSh", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.assertEquals("The user is not a owner of this team",e.getMessage());
+            Assert.assertEquals("The user is not a owner of this team", e.getMessage());
         }
     }
 
     @Test
-    public void closeTeamITest(){
+    public void closeTeamITest() {
         //Integration with player, coach, stadium, team manager but only calls simple method from them.
         TeamStub teamStub = new TeamStub(66171);
         Assert.assertTrue(TeamController.closeTeam(teamStub));
@@ -573,28 +573,28 @@ public class TeamControllerTest {
     }
 
     @Test
-    public void closeTeamUTest(){
+    public void closeTeamUTest() {
         TeamStub teamStub = new TeamStub(66172);
-        SystemUserStub su1 = new SystemUserStub("rosengal", "gal",661721);
+        SystemUserStub su1 = new SystemUserStub("rosengal", "gal", 661721);
         TeamOwnerStub teamOwnerStub = new TeamOwnerStub(su1);
         teamStub.addTeamOwner(teamOwnerStub);
-        PlayerStub p1 = (PlayerStub)su1.getRole(RoleTypes.PLAYER);
-        p1.addTeam(teamStub,teamOwnerStub);
+        PlayerStub p1 = (PlayerStub) su1.getRole(RoleTypes.PLAYER);
+        p1.addTeam(teamStub, teamOwnerStub);
         teamStub.addPlayer(p1);
 
-        SystemUserStub su2 = new SystemUserStub("nirdz", "nir",661722);
-        TeamManagerStub tm1 = (TeamManagerStub)su2.getRole(RoleTypes.TEAM_MANAGER);
-        tm1.addTeam(teamStub,teamOwnerStub);
+        SystemUserStub su2 = new SystemUserStub("nirdz", "nir", 661722);
+        TeamManagerStub tm1 = (TeamManagerStub) su2.getRole(RoleTypes.TEAM_MANAGER);
+        tm1.addTeam(teamStub, teamOwnerStub);
         teamStub.addTeamManager(tm1);
 
-        SystemUserStub su3 = new SystemUserStub("coach", "coach",661723);
-        CoachStub co1 = (CoachStub)su3.getRole(RoleTypes.COACH);
-        co1.addTeam(teamStub,teamOwnerStub);
+        SystemUserStub su3 = new SystemUserStub("coach", "coach", 661723);
+        CoachStub co1 = (CoachStub) su3.getRole(RoleTypes.COACH);
+        co1.addTeam(teamStub, teamOwnerStub);
         teamStub.addCoach(co1);
 
-        SystemUserStub su4 = new SystemUserStub("iamowner", "owner",661724);
-        TeamOwnerStub to = (TeamOwnerStub)su4.getRole(RoleTypes.TEAM_OWNER);
-        to.addTeamToOwn(teamStub,su4);
+        SystemUserStub su4 = new SystemUserStub("iamowner", "owner", 661724);
+        TeamOwnerStub to = (TeamOwnerStub) su4.getRole(RoleTypes.TEAM_OWNER);
+        to.addTeamToOwn(teamStub, su4);
         teamStub.addTeamOwner(to);
 
 
@@ -632,23 +632,23 @@ public class TeamControllerTest {
     }
 
     @Test
-    public void reopenTeamUTest(){
+    public void reopenTeamUTest() {
         TeamStub teamStub = new TeamStub(66271);
-        SystemUserStub su1 = new SystemUserStub("rosengal", "gal",662721);
-        PlayerStub p1 = (PlayerStub)su1.getRole(RoleTypes.PLAYER);
+        SystemUserStub su1 = new SystemUserStub("rosengal", "gal", 662721);
+        PlayerStub p1 = (PlayerStub) su1.getRole(RoleTypes.PLAYER);
         teamStub.addPlayer(p1);
 
-        SystemUserStub su2 = new SystemUserStub("nirdz", "nir",662722);
-        TeamManagerStub tm1 = (TeamManagerStub)su2.getRole(RoleTypes.TEAM_MANAGER);
+        SystemUserStub su2 = new SystemUserStub("nirdz", "nir", 662722);
+        TeamManagerStub tm1 = (TeamManagerStub) su2.getRole(RoleTypes.TEAM_MANAGER);
         teamStub.addTeamManager(tm1);
 
-        SystemUserStub su3 = new SystemUserStub("coach", "coach",662723);
-        CoachStub co1 = (CoachStub)su3.getRole(RoleTypes.COACH);
+        SystemUserStub su3 = new SystemUserStub("coach", "coach", 662723);
+        CoachStub co1 = (CoachStub) su3.getRole(RoleTypes.COACH);
         teamStub.addCoach(co1);
 
-        SystemUserStub su4 = new SystemUserStub("iamowner", "owner",662724);
-        TeamOwnerStub to = (TeamOwnerStub)su4.getRole(RoleTypes.TEAM_OWNER);
-        to.addTeamToOwn(teamStub,su4);
+        SystemUserStub su4 = new SystemUserStub("iamowner", "owner", 662724);
+        TeamOwnerStub to = (TeamOwnerStub) su4.getRole(RoleTypes.TEAM_OWNER);
+        to.addTeamToOwn(teamStub, su4);
         teamStub.addTeamOwner(to);
 
         StadiumStub st1 = new StadiumStub("stadiumStub", "stub street 22");
@@ -689,24 +689,24 @@ public class TeamControllerTest {
 
 
     @Test
-    public void reopenTeam2UTest(){
+    public void reopenTeam2UTest() {
         UIController.setIsTest(true);
         TeamStub teamStub = new TeamStub(66271);
-        SystemUserStub su1 = new SystemUserStub("rosengal", "gal",662721);
-        PlayerStub p1 = (PlayerStub)su1.getRole(RoleTypes.PLAYER);
+        SystemUserStub su1 = new SystemUserStub("rosengal", "gal", 662721);
+        PlayerStub p1 = (PlayerStub) su1.getRole(RoleTypes.PLAYER);
         teamStub.addPlayer(p1);
 
-        SystemUserStub su2 = new SystemUserStub("nirdz", "nir",662722);
-        TeamManagerStub tm1 = (TeamManagerStub)su2.getRole(RoleTypes.TEAM_MANAGER);
+        SystemUserStub su2 = new SystemUserStub("nirdz", "nir", 662722);
+        TeamManagerStub tm1 = (TeamManagerStub) su2.getRole(RoleTypes.TEAM_MANAGER);
         teamStub.addTeamManager(tm1);
 
-        SystemUserStub su3 = new SystemUserStub("coach", "coach",662723);
-        CoachStub co1 = (CoachStub)su3.getRole(RoleTypes.COACH);
+        SystemUserStub su3 = new SystemUserStub("coach", "coach", 662723);
+        CoachStub co1 = (CoachStub) su3.getRole(RoleTypes.COACH);
         teamStub.addCoach(co1);
 
-        SystemUserStub su4 = new SystemUserStub("iamowner", "owner",662724);
-        TeamOwnerStub to = (TeamOwnerStub)su4.getRole(RoleTypes.TEAM_OWNER);
-        to.addTeamToOwn(teamStub,su4);
+        SystemUserStub su4 = new SystemUserStub("iamowner", "owner", 662724);
+        TeamOwnerStub to = (TeamOwnerStub) su4.getRole(RoleTypes.TEAM_OWNER);
+        to.addTeamToOwn(teamStub, su4);
         teamStub.addTeamOwner(to);
 
         StadiumStub st1 = new StadiumStub("stadiumStub", "stub street 22");

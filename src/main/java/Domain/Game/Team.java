@@ -487,12 +487,12 @@ public class Team {
             teamAsset = (Player) assetUser.getRole(RoleTypes.PLAYER);
             if (teamAsset == null) {
                 Date playerBDate = getPlayerBirthDate();
-                teamAsset = new Player(assetUser, playerBDate);
+                teamAsset = new Player(assetUser, playerBDate, true);
             }
         } else if (assetType.equals(TeamAsset.COACH)) {
             teamAsset = (Coach) assetUser.getRole(RoleTypes.COACH);
             if (teamAsset == null) {
-                teamAsset = new Coach(assetUser);
+                teamAsset = new Coach(assetUser, true);
             }
         } else if (assetType.equals(TeamAsset.TEAM_MANAGER)) {
             teamAsset = (TeamManager) assetUser.getRole(RoleTypes.TEAM_MANAGER);

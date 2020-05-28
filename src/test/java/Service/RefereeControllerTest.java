@@ -391,7 +391,7 @@ public class RefereeControllerTest {
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
 
         Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new Player(new SystemUser("AviCohen","Name1"),new Date(2001, 01, 01));
+        Player player1 = new Player(new SystemUser("AviCohen","Name1"),new Date(2001, 01, 01), true);
         firstTeam.addTeamPlayer(toRole,player1);
 
         game.addReferee(referee);

@@ -12,7 +12,7 @@ public class CoachStub extends Coach {
     private List<Team> teamOfTest;
 
     public CoachStub(SystemUser user) {
-        super(user);
+        super(user, true);
         teamOfTest = new ArrayList<>();
     }
 

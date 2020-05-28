@@ -25,7 +25,7 @@ public class SeasonTest {
 
     @Before
     public void setUp() throws Exception {
-        season = new Season(new League("noName"),"2020/21");
+        season = new Season(new League("noName", true),"2020/21");
     }
 
     @Test
