@@ -616,7 +616,7 @@ public class EntityManager {
     public List<PointsPolicy> getPointsPolicies() {
         return this.pointsPolicies;
     }
-    
+
 
     /**
      * Checks if a scheduling policy already exists with the same values
