@@ -9,7 +9,6 @@ import Domain.Game.SchedulingPolicy;
 import Domain.Game.League;
 import Domain.Game.Team;
 import Domain.Game.Season;
-import Service.UIController;
 
 import java.util.Date;
 import java.util.List;

@@ -3,7 +3,6 @@ package GUI.Registration;
 import GUI.FootballMain;
 import GUI.NotRegiseredView;
 import Service.MainController;
-import Service.UIController;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;

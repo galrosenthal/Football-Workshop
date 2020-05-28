@@ -1,7 +1,6 @@
 package GUI;
 
 import Service.MainController;
-import Service.UIController;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -14,13 +13,11 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CancellationException;
 
 @Route(value = "ModifyUsers", layout = FootballMain.class)
 @PageTitle("Modify Users")
@@ -183,7 +180,7 @@ public class ModifyUsers extends FlexLayout {
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
-                    MainController.testAlert(lastUI);
+                    MainController.testAlert(se);
                 }
                 else if(btnText.toLowerCase().contains("confirm"))
                 {

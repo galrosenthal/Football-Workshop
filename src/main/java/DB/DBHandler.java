@@ -3,8 +3,6 @@ package DB;
 import Domain.SystemLogger.SystemLoggerManager;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.*;
 
@@ -12,9 +10,7 @@ import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 
-import static org.jooq.impl.DSL.name;
 
 public class DBHandler implements CRUD {
     private static String username = "root";

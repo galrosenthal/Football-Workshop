@@ -4,7 +4,6 @@ package GUI;
 import Domain.SystemLogger.LogoutLogMsg;
 import Domain.SystemLogger.SystemLoggerManager;
 import GUI.About.AboutView;
-import GUI.Registration.ConfirmPassValidator;
 import GUI.RoleRelatedViews.AssociationRepresentative.ARControls;
 import GUI.RoleRelatedViews.Referee.RefereeControls;
 import GUI.RoleRelatedViews.TeamOwner.TOControls;
@@ -27,7 +26,6 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
-import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
@@ -43,7 +41,6 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.server.Version;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 
@@ -52,7 +49,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CancellationException;
 
 
 /**
@@ -322,9 +318,13 @@ public class FootballMain extends AppLayout implements RouterLayout{
             UI.setCurrent(lastUI);
             VaadinSession.setCurrent(userSession);
             System.out.println("Trying to logout");
-            if(MainController.logout(username)){
+            if(MainController.logout(username,userSession)){
                 System.out.println("MainController logged out successfully");
-                userSession.access(()-> userSession.setAttribute(USERNAME_ATTRIBUTE_NAME, null));
+                userSession.access(()-> {
+//                    if(AllSubscribers.getInstance().isLastConnection(username)){
+                    userSession.setAttribute(USERNAME_ATTRIBUTE_NAME, null);
+//                    }
+                });
                 lastUI.accessSynchronously(() -> {
 
                     getUI().get().navigate("");

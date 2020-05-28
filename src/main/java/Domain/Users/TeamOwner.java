@@ -132,13 +132,20 @@ public class TeamOwner extends Role implements Subject {
         teamOwners.addAll(team.getTeamOwners());
         teamManagers.addAll(team.getTeamManagers());
         for (int i = 0; i <teamOwners.size() ; i++) {
-            systemUsers.add(teamOwners.get(i).getSystemUser());
+            if(!systemUsers.contains(teamOwners.get(i).getSystemUser()))
+            {
+                systemUsers.add(teamOwners.get(i).getSystemUser());
+            }
         }
         for (int i = 0; i <teamManagers.size() ; i++) {
-            systemUsers.add(teamManagers.get(i).getSystemUser());
+            if(!systemUsers.contains(teamManagers.get(i).getSystemUser())) {
+                systemUsers.add(teamManagers.get(i).getSystemUser());
+            }
         }
         for (int i = 0; i <SystemAdmins.size() ; i++) {
-            systemUsers.add(SystemAdmins.get(i).getSystemUser());
+            if(!systemUsers.contains(SystemAdmins.get(i).getSystemUser())) {
+                systemUsers.add(SystemAdmins.get(i).getSystemUser());
+            }
         }
         String alert = team.getTeamName()+" has been "+ closeOrReopen;
         notifyObserver(systemUsers, alert);

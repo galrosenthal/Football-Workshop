@@ -1,23 +1,16 @@
 package Service;
 
 import GUI.FootballMain;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.server.Command;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.server.WrappedSession;
 
 import java.util.Collection;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import static java.lang.Thread.sleep;
 
-import java.util.Date;
-import java.util.Scanner;
 
 public class UIController {
 
@@ -600,11 +593,14 @@ public class UIController {
 
     }
 
-    public static void showAlert(UI sessionUI, String alert) {
+    public static void showAlert(VaadinSession sessionUI, String alert) {
         if(!isTest) {
-            sessionUI.access(() -> {
-                FootballMain.showAlert(alert,sessionUI);
-                sessionUI.push();
+            sessionUI.access(()->{
+                Collection<UI> uis = sessionUI.getUIs();
+                UI currUI = (UI)uis.toArray()[uis.toArray().length-1];
+                currUI.access(() -> {
+                    FootballMain.showAlert(alert,currUI);
+                });
             });
         }
         else

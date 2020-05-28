@@ -3,7 +3,6 @@ package Service;
 import Domain.EntityManager;
 import Domain.Exceptions.NoRoleForUser;
 import Domain.Game.Game;
-import Domain.Game.Stadium;
 import Domain.Game.Team;
 import Domain.GameLogger.Event;
 import Domain.SystemLogger.*;

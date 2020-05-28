@@ -1,9 +1,5 @@
 package Domain.Users;
 
-import Domain.Game.Season;
-import Domain.Game.Team;
-
-import java.util.List;
 
 public abstract class Role {
     protected RoleTypes type;
