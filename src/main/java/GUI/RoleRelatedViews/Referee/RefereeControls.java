@@ -19,7 +19,7 @@ public class RefereeControls extends VerticalLayout {
     public static final String VIEW_NAME = "Referee Controls";
 
     public RefereeControls() {
-        setSizeFull();
+        setSizeFull(); 
         setJustifyContentMode(JustifyContentMode.START);
         setAlignItems(Alignment.START);
         buildUI();
