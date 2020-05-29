@@ -1,20 +1,28 @@
 package Domain.Users;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
+import Domain.EntityManager;
 import Domain.Game.Team;
 import org.junit.Test;
 import org.junit.*;
 public class TeamOwnerTest {
+
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        DBManager.startTest();
+        DBManagerForTest.startConnection();    }
 
     /**
      * Check if teamOwner is added successfully
      */
     @Test
     public void addTeamToOwnUTest() {
-        Team hapoelBash = new Team();
+        Team hapoelBash = new Team("Test");
         hapoelBash.setTeamName("Hapoel Beer Sheeva");
 
         SystemUser sysUserTO = new SystemUserStub("OranSh", "Oran", 62);
-        TeamOwner newTeamOwner = new TeamOwner(sysUserTO);
+        TeamOwner newTeamOwner = new TeamOwner(sysUserTO, true);
         Assert.assertTrue(newTeamOwner.addTeamToOwn(hapoelBash,sysUserTO));
         Assert.assertFalse(newTeamOwner.addTeamToOwn(hapoelBash,sysUserTO));
     }
@@ -24,11 +32,11 @@ public class TeamOwnerTest {
      */
     @Test
     public void removeTeamToOwnUTest() {
-        Team hapoelBash = new Team();
+        Team hapoelBash = new Team("Test");
         hapoelBash.setTeamName("Hapoel Beer Sheeva");
 
         SystemUser sysUserTO = new SystemUserStub("OranSh", "Oran", 62);
-        TeamOwner newTeamOwner = new TeamOwner(sysUserTO);
+        TeamOwner newTeamOwner = new TeamOwner(sysUserTO, true);
         Assert.assertFalse(newTeamOwner.removeTeamOwned(hapoelBash));
         newTeamOwner.addTeamToOwn(hapoelBash,sysUserTO);
         Assert.assertTrue(newTeamOwner.removeTeamOwned(hapoelBash));
@@ -39,14 +47,24 @@ public class TeamOwnerTest {
      */
     @Test
     public void setAppointedOwnerUTest() {
-        Team hapoelBash = new Team();
+        Team hapoelBash = new Team("Test");
         hapoelBash.setTeamName("Hapoel Beer Sheeva");
 
         SystemUser sysUserTO = new SystemUserStub("OranSh", "Oran", 62);
-        TeamOwner newTeamOwner = new TeamOwner(sysUserTO);
+        TeamOwner newTeamOwner = new TeamOwner(sysUserTO, true);
         Assert.assertFalse(newTeamOwner.setAppointedOwner(hapoelBash,null));
         newTeamOwner.setAppointedOwner(hapoelBash,newTeamOwner.getSystemUser());
         Assert.assertEquals(newTeamOwner.getSystemUser(),newTeamOwner.getAppointedOwner(hapoelBash));
 
+    }
+
+    @After
+    public void tearDown() {
+        EntityManager.getInstance().clearAll();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
     }
 }

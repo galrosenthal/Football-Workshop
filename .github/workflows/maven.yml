@@ -21,10 +21,10 @@ jobs:
           # The port of container
           container port: 3306 # optional, default is 3306
           # --character-set-server - The character set of MySQL server
-          character set server: utf8mb4# optional, default is utf8mb4
+          character set server: 'utf8mb4'# optional, default is utf8mb4
           # MYSQL_ROOT_PASSWORD - root superuser password ??????
           # MYSQL_DATABASE - name for the default database that is created
-          mysql database: Test_table # optional, default is 
+          mysql database: 'fwdb_test' # optional, default is
       - uses: actions/checkout@v2
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1

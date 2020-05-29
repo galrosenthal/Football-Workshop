@@ -1,14 +1,13 @@
 package Domain.Game;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.Referee;
 import Domain.Users.RefereeQualification;
 import Domain.Users.RefereeStub;
 import Domain.Users.SystemUser;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,8 +20,11 @@ public class SchedulingPolicyTest {
     private SchedulingPolicy schedulingPolicy;
 
     @BeforeClass
-    public static void setUpBeforeAll() { //Will be called only once
+    public static void beforeClass() throws Exception {
+        DBManager.startTest();
+        DBManagerForTest.startConnection();
         SystemLoggerManager.disableLoggers(); // disable loggers in tests
+
     }
 
     @Before
@@ -58,11 +60,11 @@ public class SchedulingPolicyTest {
         teams.add(team5);
         teams.add(team6);
         List<Referee> referees = new ArrayList<>();
-        referees.add(new RefereeStub(new SystemUser("a","a","a","test@gmail.com", false),RefereeQualification.VAR_REFEREE));
-        referees.add(new RefereeStub(new SystemUser("b","b","b","test@gmail.com", false),RefereeQualification.VAR_REFEREE));
-        referees.add(new RefereeStub(new SystemUser("c","c","c","test@gmail.com", false),RefereeQualification.VAR_REFEREE));
-        referees.add(new RefereeStub(new SystemUser("d","d","d","test@gmail.com", false),RefereeQualification.VAR_REFEREE));
-        referees.add(new RefereeStub(new SystemUser("e","e","e","test@gmail.com", false),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("a","a","a","test@gmail.com", false, true),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("b","b","b","test@gmail.com", false, true),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("c","c","c","test@gmail.com", false, true),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("d","d","d","test@gmail.com", false, true),RefereeQualification.VAR_REFEREE));
+        referees.add(new RefereeStub(new SystemUser("e","e","e","test@gmail.com", false, true),RefereeQualification.VAR_REFEREE));
 
         List<ScheduleMatch> scheduleMatches = sp.generateSchedule(new Date(),teams,referees );
         assertEquals(30,scheduleMatches.size());
@@ -86,5 +88,10 @@ public class SchedulingPolicyTest {
         catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
     }
 }

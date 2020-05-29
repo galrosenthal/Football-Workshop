@@ -6,6 +6,7 @@ package DB.Tables.tables;
 
 import DB.Tables.Fwdb;
 import DB.Tables.Keys;
+import DB.Tables.enums.RefereeTraining;
 import DB.Tables.tables.records.RefereeRecord;
 
 import java.util.Arrays;
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Referee extends TableImpl<RefereeRecord> {
 
-    private static final long serialVersionUID = -1732632813;
+    private static final long serialVersionUID = 151788307;
 
     /**
      * The reference instance of <code>fwdb.referee</code>
@@ -54,7 +55,7 @@ public class Referee extends TableImpl<RefereeRecord> {
     /**
      * The column <code>fwdb.referee.training</code>.
      */
-    public final TableField<RefereeRecord, String> TRAINING = createField(DSL.name("training"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
+    public final TableField<RefereeRecord, RefereeTraining> TRAINING = createField(DSL.name("training"), org.jooq.impl.SQLDataType.VARCHAR(12).nullable(false).asEnumDataType(DB.Tables.enums.RefereeTraining.class), this, "");
 
     /**
      * Create a <code>fwdb.referee</code> table reference
@@ -144,7 +145,7 @@ public class Referee extends TableImpl<RefereeRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<String, String> fieldsRow() {
+    public Row2<String, RefereeTraining> fieldsRow() {
         return (Row2) super.fieldsRow();
     }
 }

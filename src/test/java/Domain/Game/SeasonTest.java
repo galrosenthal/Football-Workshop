@@ -1,12 +1,11 @@
 package Domain.Game;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.time.Year;
 
@@ -17,13 +16,16 @@ public class SeasonTest {
     private Season season;
 
     @BeforeClass
-    public static void setUpBeforeAll() { //Will be called only once
+    public static void beforeClass() throws Exception {
+        DBManager.startTest();
+        DBManagerForTest.startConnection();
         SystemLoggerManager.disableLoggers(); // disable loggers in tests
+
     }
 
     @Before
     public void setUp() throws Exception {
-        season = new Season(new League("noName"),"2020/21");
+        season = new Season(new League("noName", true),"2020/21");
     }
 
     @Test
@@ -73,7 +75,7 @@ public class SeasonTest {
 
     @Test
     public void assignAndUnAssignRefereeITest() {
-        Referee referee = new Referee(new SystemUser("username", "name"),RefereeQualification.VAR_REFEREE);
+        Referee referee = new Referee(new SystemUser("username", "name"),RefereeQualification.VAR_REFEREE, true);
         assertTrue(season.refereesSize()==0);
         season.assignReferee(referee);
         assertTrue(season.refereesSize()==1);
@@ -89,5 +91,10 @@ public class SeasonTest {
     public void tearDown() throws Exception {
         season = null;
         EntityManager.getInstance().clearAll();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
     }
 }

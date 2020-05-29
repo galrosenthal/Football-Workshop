@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements Record2<String, LocalDate> {
 
-    private static final long serialVersionUID = 1899296425;
+    private static final long serialVersionUID = -2035658545;
 
     /**
      * Setter for <code>fwdb.player.username</code>.
@@ -38,16 +38,16 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
     }
 
     /**
-     * Setter for <code>fwdb.player.birthdate</code>.
+     * Setter for <code>fwdb.player.birthday</code>.
      */
-    public void setBirthdate(LocalDate value) {
+    public void setBirthday(LocalDate value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>fwdb.player.birthdate</code>.
+     * Getter for <code>fwdb.player.birthday</code>.
      */
-    public LocalDate getBirthdate() {
+    public LocalDate getBirthday() {
         return (LocalDate) get(1);
     }
 
@@ -81,7 +81,7 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
 
     @Override
     public Field<LocalDate> field2() {
-        return Player.PLAYER.BIRTHDATE;
+        return Player.PLAYER.BIRTHDAY;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
 
     @Override
     public LocalDate component2() {
-        return getBirthdate();
+        return getBirthday();
     }
 
     @Override
@@ -101,7 +101,7 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
 
     @Override
     public LocalDate value2() {
-        return getBirthdate();
+        return getBirthday();
     }
 
     @Override
@@ -112,7 +112,7 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
 
     @Override
     public PlayerRecord value2(LocalDate value) {
-        setBirthdate(value);
+        setBirthday(value);
         return this;
     }
 
@@ -137,10 +137,10 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
     /**
      * Create a detached, initialised PlayerRecord
      */
-    public PlayerRecord(String username, LocalDate birthdate) {
+    public PlayerRecord(String username, LocalDate birthday) {
         super(Player.PLAYER);
 
         set(0, username);
-        set(1, birthdate);
+        set(1, birthday);
     }
 }

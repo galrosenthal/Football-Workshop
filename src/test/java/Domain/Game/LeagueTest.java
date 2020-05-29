@@ -1,10 +1,10 @@
 package Domain.Game;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
+import org.junit.*;
 import Domain.SystemLogger.SystemLoggerManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
 
 import static org.junit.Assert.*;
 
@@ -13,13 +13,15 @@ public class LeagueTest {
     private League league;
 
     @BeforeClass
-    public static void setUpBeforeAll() { //Will be called only once
+    public static void beforeClass() throws Exception {
+        DBManager.startTest();
+        DBManagerForTest.startConnection();
         SystemLoggerManager.disableLoggers(); // disable loggers in tests
     }
 
     @Before
     public void setUp() throws Exception {
-        this.league = new League("test league name");
+        this.league = new League("test league name", true);
     }
 
     @Test
@@ -52,5 +54,10 @@ public class LeagueTest {
     @After
     public void tearDown() throws Exception {
         this.league = null;
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
     }
 }

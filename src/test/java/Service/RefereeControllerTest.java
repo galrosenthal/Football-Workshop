@@ -1,14 +1,13 @@
 package Service;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.Game.*;
 import Domain.GameLogger.*;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,7 +19,9 @@ import static org.junit.Assert.*;
 public class RefereeControllerTest {
 
     @BeforeClass
-    public static void setUpBeforeAll() { //Will be called only once
+    public static void beforeClass() throws Exception {
+        DBManager.startTest();
+        DBManagerForTest.startConnection();
         SystemLoggerManager.disableLoggers(); // disable loggers in tests
     }
 
@@ -122,13 +123,13 @@ public class RefereeControllerTest {
 
     private SystemUser getSystemUserVarReferee() {
         SystemUser systemUser = new SystemUser("username", "name");
-        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.VAR_REFEREE));
+        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.VAR_REFEREE, true));
         return systemUser;
     }
 
     private SystemUser getSystemUserMainReferee() {
         SystemUser systemUser = new SystemUser("username2", "name2");
-        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.MAIN_REFEREE));
+        systemUser.addNewRole(new Referee(systemUser,RefereeQualification.MAIN_REFEREE, true));
         return systemUser;
     }
 
@@ -383,14 +384,14 @@ public class RefereeControllerTest {
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
         SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
-        new AssociationRepresentative(arSystemUser);
-        new TeamOwner(arSystemUser);
+        new AssociationRepresentative(arSystemUser, true);
+        new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
         Team firstTeam = new Team("Hapoel Beit Shan", toRole);
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
 
         Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new Player(new SystemUser("AviCohen","Name1"),new Date(2001, 01, 01));
+        Player player1 = new Player(new SystemUser("AviCohen","Name1"),new Date(2001, 01, 01), true);
         firstTeam.addTeamPlayer(toRole,player1);
 
         game.addReferee(referee);
@@ -470,5 +471,10 @@ public class RefereeControllerTest {
     @After
     public void tearDown() throws Exception {
         EntityManager.getInstance().clearAll();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
     }
 }

@@ -1,5 +1,6 @@
 package Domain.Users;
 
+import Domain.EntityManager;
 import Domain.Game.Team;
 import Service.UIController;
 
@@ -13,11 +14,23 @@ public class Coach extends PartOfTeam {
     public final String teamJobString = "Team job";
     public final String qualificationString = "Qualification";
 
-    public Coach(SystemUser systemUser) {
+    public Coach(SystemUser systemUser, boolean addToDB) {
         super(RoleTypes.COACH, systemUser);
         coachedTeams = new ArrayList<>();
     }
 
+    public Coach(SystemUser systemUser, CoachQualification qualification, boolean addToDB) {
+        super(RoleTypes.COACH, systemUser);
+        coachedTeams = new ArrayList<>();
+        this.qualification = qualification;
+        if (addToDB) {
+            EntityManager.getInstance().addRole(this);
+        }
+    }
+
+    public CoachQualification getQualification() {
+        return qualification;
+    }
 
     @Override
     public List<String> getProperties() {
@@ -26,22 +39,18 @@ public class Coach extends PartOfTeam {
         properties.add(qualificationString);
         return properties;
     }
+
     @Override
-    public boolean changeProperty(Team teamOfAsset, String property, String toChange)
-    {
-        if(property.equalsIgnoreCase(teamJobString))
-        {
+    public boolean changeProperty(Team teamOfAsset, String property, String toChange) {
+        if (property.equalsIgnoreCase(teamJobString)) {
 //            this.teamJob = toChange+"";
             BelongToTeam assetBelongsTo = getBelongTeamByTeam(teamOfAsset);
-            if(assetBelongsTo == null)
-            {
+            if (assetBelongsTo == null) {
                 return false;
             }
             assetBelongsTo.setTeamJob(toChange);
             return true;
-        }
-        else if(property.equals(qualificationString))
-        {
+        } else if (property.equals(qualificationString)) {
             this.qualification = CoachQualification.valueOf(toChange);
             return true;
         }
@@ -55,12 +64,9 @@ public class Coach extends PartOfTeam {
 
     @Override
     public boolean isStringProperty(String property) {
-        if(property.equalsIgnoreCase(teamJobString))
-        {
+        if (property.equalsIgnoreCase(teamJobString)) {
             return true;
-        }
-        else if(property.equalsIgnoreCase(qualificationString))
-        {
+        } else if (property.equalsIgnoreCase(qualificationString)) {
             return false;
         }
         return false;
@@ -68,12 +74,9 @@ public class Coach extends PartOfTeam {
 
     @Override
     public boolean isEnumProperty(String property) {
-        if(property.equalsIgnoreCase(teamJobString))
-        {
+        if (property.equalsIgnoreCase(teamJobString)) {
             return false;
-        }
-        else if(property.equalsIgnoreCase(qualificationString))
-        {
+        } else if (property.equalsIgnoreCase(qualificationString)) {
             return true;
         }
         return false;
@@ -83,13 +86,11 @@ public class Coach extends PartOfTeam {
 
     @Override
     public boolean addAllProperties(Team assetBelongsTo) {
-        if(!addProperty(assetBelongsTo, teamJobString))
-        {
+        if (!addProperty(assetBelongsTo, teamJobString)) {
             return false;
         }
 
-        if(!addProperty(assetBelongsTo, qualificationString))
-        {
+        if (!addProperty(assetBelongsTo, qualificationString)) {
             removeProperty(assetBelongsTo, teamJobString);
             return false;
         }
@@ -97,22 +98,17 @@ public class Coach extends PartOfTeam {
     }
 
     @Override
-    public boolean addProperty(Team teamBelongsTo, String property)
-    {
+    public boolean addProperty(Team teamBelongsTo, String property) {
         String valueOfProperty = "";
-        if(property.equalsIgnoreCase(teamJobString))
-        {
+        if (property.equalsIgnoreCase(teamJobString)) {
             valueOfProperty = UIController.receiveString("what is the Coach JobTitle?");
-        }
-        else if(property.equalsIgnoreCase(qualificationString))
-        {
+        } else if (property.equalsIgnoreCase(qualificationString)) {
             int qualfIndex = getEnumIndex();
             valueOfProperty = CoachQualification.values()[qualfIndex].toString();
         }
 
 
-        return this.changeProperty(teamBelongsTo, property,valueOfProperty);
-
+        return this.changeProperty(teamBelongsTo, property, valueOfProperty);
 
 
     }
@@ -120,17 +116,15 @@ public class Coach extends PartOfTeam {
     private int getEnumIndex() {
 
         List<String> coachQualificationsList = new ArrayList<>();
-        for (CoachQualification qlf: CoachQualification.values())
-        {
+        for (CoachQualification qlf : CoachQualification.values()) {
             coachQualificationsList.add(qlf.name());
         }
 
         int index;
 
-        do{
-            index = UIController.receiveInt("Please Choose a qualification for the coach:",coachQualificationsList);
-        }while (!(index >= 0 && index < PlayerFieldJobs.values().length));
-
+        do {
+            index = UIController.receiveInt("Please Choose a qualification for the coach:", coachQualificationsList);
+        } while (!(index >= 0 && index < PlayerFieldJobs.values().length));
 
 
         return index;
@@ -145,8 +139,7 @@ public class Coach extends PartOfTeam {
     @Override
     public List<Enum> getAllValues(String property) {
         List<Enum> allEnumValues = new ArrayList<>();
-        if(property.equals(qualificationString))
-        {
+        if (property.equals(qualificationString)) {
             CoachQualification[] coachQualifications = CoachQualification.values();
             for (int i = 0; i < coachQualifications.length; i++) {
                 allEnumValues.add(coachQualifications[i]);
@@ -162,7 +155,7 @@ public class Coach extends PartOfTeam {
     }
 
     @Override
-    public boolean addProperty(String propertyName, Enum anEnum , Team team) {
+    public boolean addProperty(String propertyName, Enum anEnum, Team team) {
         return false;
     }
 
@@ -201,8 +194,6 @@ public class Coach extends PartOfTeam {
 //    public boolean removeTeam(Team team){
 //        return this.coachedTeams.remove(team);
 //    }
-
-
 
 
     @Override

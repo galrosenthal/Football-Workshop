@@ -1,5 +1,7 @@
 package Domain.Game;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.GameLogger.*;
 import Domain.SystemLogger.SystemLoggerManager;
@@ -19,8 +21,11 @@ public class GameTest {
     private TeamStub secondTeam;
 
     @BeforeClass
-    public static void setUpBeforeAll() { //Will be called only once
+    public static void beforeClass() {
+        DBManager.startTest();
+        DBManagerForTest.startConnection();
         SystemLoggerManager.disableLoggers(); // disable loggers in tests
+
     }
 
     @Before
@@ -379,5 +384,10 @@ public class GameTest {
         game.setEndDate(calendar.getTime());
 
         assertEquals(3, game.getHoursPassedSinceGameEnd(currDate));
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
     }
 }

@@ -1,5 +1,6 @@
 package Domain.Users;
 
+import Domain.EntityManager;
 import Domain.Game.Asset;
 import Domain.Game.Team;
 
@@ -11,39 +12,42 @@ public abstract class PartOfTeam extends Role implements Asset {
 
     private HashSet<BelongToTeam> allTeamsConnections;
 
-
+    /**
+     * Constructor
+     *
+     * @param type       - RoleTypes - the role type. PLAYER or COACH
+     * @param systemUser - SystemUser - The system user to add the new role to
+     */
     public PartOfTeam(RoleTypes type, SystemUser systemUser) {
         super(type, systemUser);
         allTeamsConnections = new HashSet<>();
     }
 
+
     @Override
     public boolean addTeam(Team team, TeamOwner teamOwner) {
-        if(team != null)
-        {
-            if(this.getType() == RoleTypes.PLAYER)
-            {
-                return team.addTeamPlayer(teamOwner,this);
-            }
-            else if(this.getType() == RoleTypes.COACH)
-            {
-                return team.addTeamCoach(teamOwner,this);
+        if (team != null) {
+            if (this.getType() == RoleTypes.PLAYER) {
+                return team.addTeamPlayer(teamOwner, this);
+            } else if (this.getType() == RoleTypes.COACH) {
+                return team.addTeamCoach(teamOwner, this);
             }
 
         }
         return false;
     }
 
-    public boolean addTeamConnection(BelongToTeam teamConnection){
-        if(!allTeamsConnections.contains(teamConnection)){
-            return allTeamsConnections.add(teamConnection);
+    public boolean addTeamConnection(BelongToTeam teamConnection) {
+        if (!allTeamsConnections.contains(teamConnection)) {
+            if (EntityManager.getInstance().addConnection(teamConnection.getTeamBelongsTo(), this)) {
+                return allTeamsConnections.add(teamConnection);
+            }
         }
         return false;
     }
 
     @Override
-    public String getAssetName()
-    {
+    public String getAssetName() {
         return this.systemUser.getUsername();
     }
 
@@ -57,20 +61,15 @@ public abstract class PartOfTeam extends Role implements Asset {
         return allTeams;
     }
 
-    public boolean removeTeam(Team teamToRemove)
-    {
+    public boolean removeTeam(Team teamToRemove) {
         for (BelongToTeam bg :
                 allTeamsConnections) {
-            if(bg.getTeamBelongsTo().equals(teamToRemove))
-            {
+            if (bg.getTeamBelongsTo().equals(teamToRemove)) {
                 allTeamsConnections.remove(bg);
-                if(this.getType() == RoleTypes.PLAYER)
-                {
-                    teamToRemove.removeTeamPlayer((Player)this);
-                }
-                else if(this.getType() == RoleTypes.COACH)
-                {
-                    teamToRemove.removeTeamCoach((Coach)this);
+                if (this.getType() == RoleTypes.PLAYER) {
+                    teamToRemove.removeTeamPlayer((Player) this);
+                } else if (this.getType() == RoleTypes.COACH) {
+                    teamToRemove.removeTeamCoach((Coach) this);
                 }
                 return true;
             }
@@ -79,12 +78,10 @@ public abstract class PartOfTeam extends Role implements Asset {
     }
 
 
-    public BelongToTeam getBelongTeamByTeam(Team teamToSearch)
-    {
+    public BelongToTeam getBelongTeamByTeam(Team teamToSearch) {
         for (BelongToTeam bg :
                 allTeamsConnections) {
-            if(bg.getTeamBelongsTo().equals(teamToSearch))
-            {
+            if (bg.getTeamBelongsTo().equals(teamToSearch)) {
                 return bg;
             }
         }
@@ -94,13 +91,13 @@ public abstract class PartOfTeam extends Role implements Asset {
 
     /**
      * Get the value of all the property of this asset in the teamOfAsset
+     *
      * @param teamOfAsset the team of the Asset to get the property value
      * @return the value of the property
      */
     public String getTeamJob(Team teamOfAsset) {
         BelongToTeam assetBelongsTo = getBelongTeamByTeam(teamOfAsset);
-        if(assetBelongsTo == null)
-        {
+        if (assetBelongsTo == null) {
             return null;
         }
         return assetBelongsTo.getTeamJob();

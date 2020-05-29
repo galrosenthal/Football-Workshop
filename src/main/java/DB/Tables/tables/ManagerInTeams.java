@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ManagerInTeams extends TableImpl<ManagerInTeamsRecord> {
 
-    private static final long serialVersionUID = -832202050;
+    private static final long serialVersionUID = -115744800;
 
     /**
      * The reference instance of <code>fwdb.manager_in_teams</code>
@@ -55,6 +55,11 @@ public class ManagerInTeams extends TableImpl<ManagerInTeamsRecord> {
      * The column <code>fwdb.manager_in_teams.team_name</code>.
      */
     public final TableField<ManagerInTeamsRecord, String> TEAM_NAME = createField(DSL.name("team_name"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
+
+    /**
+     * The column <code>fwdb.manager_in_teams.appointer</code>.
+     */
+    public final TableField<ManagerInTeamsRecord, String> APPOINTER = createField(DSL.name("appointer"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.field("'\"\"'", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>fwdb.manager_in_teams.REMOVE_PLAYER</code>.
@@ -136,11 +141,19 @@ public class ManagerInTeams extends TableImpl<ManagerInTeamsRecord> {
 
     @Override
     public List<ForeignKey<ManagerInTeamsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ManagerInTeamsRecord, ?>>asList(Keys.FK_MANAGED_TEAMS_TEAM);
+        return Arrays.<ForeignKey<ManagerInTeamsRecord, ?>>asList(Keys.FK_MANAGED_TEAMS_TEAM_MANAGER, Keys.FK_MANAGED_TEAMS_TEAM, Keys.FK_MANAGER_IN_TEAMS_SYSTEMUSER);
+    }
+
+    public TeamManager teamManager() {
+        return new TeamManager(this, Keys.FK_MANAGED_TEAMS_TEAM_MANAGER);
     }
 
     public Team team() {
         return new Team(this, Keys.FK_MANAGED_TEAMS_TEAM);
+    }
+
+    public Systemuser systemuser() {
+        return new Systemuser(this, Keys.FK_MANAGER_IN_TEAMS_SYSTEMUSER);
     }
 
     @Override
@@ -170,11 +183,11 @@ public class ManagerInTeams extends TableImpl<ManagerInTeamsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<String, String, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<String, String, String, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }

@@ -9,7 +9,7 @@ public class TeamManagerStub extends TeamManager {
     int selector;
 
     public TeamManagerStub(SystemUser systemUser) {
-        super(systemUser);
+        super(systemUser, true);
     }
 
     public void setSelector(int selector) {

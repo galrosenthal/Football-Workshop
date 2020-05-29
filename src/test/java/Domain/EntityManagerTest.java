@@ -1,14 +1,13 @@
 package Domain;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
 import Domain.Game.League;
 import Domain.Game.PointsPolicy;
 import Domain.Game.SchedulingPolicy;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.List;
 
@@ -17,10 +16,12 @@ import static org.junit.Assert.*;
 public class EntityManagerTest {
 
     @BeforeClass
-    public static void setUpBeforeAll() { //Will be called only once
+    public static void beforeClass() throws Exception {
+        DBManager.startTest();
+        DBManagerForTest.startConnection();
         SystemLoggerManager.disableLoggers(); // disable loggers in tests
-    }
 
+    }
 
     @Test
     public void doesLeagueExistsUTest() {
@@ -31,15 +32,15 @@ public class EntityManagerTest {
     @Test
     public void addLeagueUTestUTest() {
         assertFalse(EntityManager.getInstance().doesLeagueExists("League Name"));
-        EntityManager.getInstance().addLeague(new League("League Name"));
+        EntityManager.getInstance().addLeague(new League("League Name", true));
         assertTrue(EntityManager.getInstance().doesLeagueExists("League Name"));
         EntityManager.getInstance().removeLeagueByName("League Name");
     }
 
     @Test
     public void removeLeagueByNameUTest() {
-        EntityManager.getInstance().addLeague(new League("League Name1"));
-        EntityManager.getInstance().addLeague(new League("League Name2"));
+        EntityManager.getInstance().addLeague(new League("League Name1", true));
+        EntityManager.getInstance().addLeague(new League("League Name2", true));
         assertTrue(EntityManager.getInstance().removeLeagueByName("League Name2"));
         assertFalse(EntityManager.getInstance().doesLeagueExists("League Name2"));
         assertFalse(EntityManager.getInstance().removeLeagueByName("League Name2"));
@@ -56,7 +57,7 @@ public class EntityManagerTest {
     public void getRefereesITest() {
         assertTrue(EntityManager.getInstance().getReferees().isEmpty());
         SystemUser systemUser = new SystemUser("stubUsername","name");
-        new Referee(systemUser, RefereeQualification.VAR_REFEREE);
+        new Referee(systemUser, RefereeQualification.VAR_REFEREE, true);
         List<SystemUser> referees = EntityManager.getInstance().getReferees();
         assertFalse(referees.isEmpty());
         assertTrue(referees.size()==1);
@@ -108,5 +109,10 @@ public class EntityManagerTest {
     @After
     public void tearDown() throws Exception {
         EntityManager.getInstance().clearAll();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
     }
 }

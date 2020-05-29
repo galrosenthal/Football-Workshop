@@ -1,12 +1,13 @@
 package Service;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
+import Domain.EntityManager;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.SystemUser;
 import Domain.Users.SystemUserStub;
 import Domain.Users.TeamOwnerStub;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -14,7 +15,9 @@ import static org.junit.Assert.assertTrue;
 public class TOControllerTest {
 
     @BeforeClass
-    public static void setUpBeforeAll() { //Will be called only once
+    public static void beforeClass() throws Exception {
+        DBManager.startTest();
+        DBManagerForTest.startConnection();
         SystemLoggerManager.disableLoggers(); // disable loggers in tests
     }
 
@@ -68,6 +71,15 @@ public class TOControllerTest {
         //success
         assertTrue(TOController.reopenTeam(new SystemUserStub("rosengal", "gal", 66251)));
     }
+
+    @After
+    public void tearDown() {
+        EntityManager.getInstance().clearAll();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
+    }
 }
 
-//Generated with love by TestMe :) Please report issues and submit feature requests at: http://weirddev.com/forum#!/testme

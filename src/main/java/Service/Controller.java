@@ -1,5 +1,6 @@
 package Service;
 
+import DB.DBManager;
 import Domain.Controllers.TeamController;
 import Domain.EntityManager;
 import Domain.Exceptions.*;
@@ -8,6 +9,7 @@ import Domain.Game.TeamAsset;
 import Domain.Game.TeamStatus;
 import Domain.SystemLogger.*;
 import Domain.Users.*;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ public class Controller {
     public static boolean systemBoot() {
         //Establishing connections to external DBMS
         //access DB
+        DBManager.getInstance().startConnection();
         //extract system admins
         try {
             String usernameAndPassword = UIController.receiveUserLoginInfo("Please enter a system administrator username:;Please enter the password");
@@ -289,7 +292,7 @@ public class Controller {
      * the password does not meet the security requirements.
      */
     public static SystemUser signUp(String name, String usrNm, String pswrd, String email, boolean emailAlert)
-            throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException {
+            throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException, Invalid {
 
         return EntityManager.getInstance().signUp(name, usrNm, pswrd, email, emailAlert);
 

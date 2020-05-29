@@ -1,14 +1,12 @@
 package Domain.GameLogger;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
 import Domain.Game.TeamStub;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.PlayerStub;
 import Domain.Users.SystemUserStub;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.*;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -17,8 +15,11 @@ public class EventsLoggerTest {
     private EventsLogger eventsLogger;
 
     @BeforeClass
-    public static void setUpBeforeAll() { //Will be called only once
+    public static void beforeClass() throws Exception {
+        DBManager.startTest();
+        DBManagerForTest.startConnection();
         SystemLoggerManager.disableLoggers(); // disable loggers in tests
+
     }
 
     @Before
@@ -133,4 +134,10 @@ public class EventsLoggerTest {
     public void tearDown() throws Exception {
         eventsLogger = null;
     }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
+    }
+
 }

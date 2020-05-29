@@ -2,8 +2,6 @@ package Domain.Users;
 
 import Domain.EntityManager;
 
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SystemUserStub extends SystemUser{
@@ -23,7 +21,7 @@ public class SystemUserStub extends SystemUser{
 
     public SystemUserStub(String username,String name,String password, int selector)
     {
-        super(username,name,password,"test@gmail.com", false);
+        super(username,name,password,"test@gmail.com", false, true);
         this.selector = selector;
         EntityManager.getInstance().addUser(this);
     }
@@ -75,7 +73,7 @@ public class SystemUserStub extends SystemUser{
             return getRoles().get(0);
         }else if(selector == 6112)
         {
-            return new Player(this,null);
+            return new Player(this,null, true);
         }
         else if(selector == 6116)
         {
@@ -124,7 +122,7 @@ public class SystemUserStub extends SystemUser{
             selector = 93132;
             return null;
         }else if( selector == 93132){
-            Referee referee =  new Referee(this ,RefereeQualification.VAR_REFEREE);
+            Referee referee =  new Referee(this ,RefereeQualification.VAR_REFEREE, true);
             return referee;
         }else if( selector == 9321){
             return new AssociationRepresentativeStub(this);

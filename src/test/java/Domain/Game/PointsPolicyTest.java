@@ -3,6 +3,10 @@ package Domain.Game;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.PlayerStub;
 import Domain.Users.SystemUserStub;
+import DB.DBManager;
+import DB.DBManagerForTest;
+import Domain.EntityManager;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,13 +20,27 @@ public class PointsPolicyTest {
     private PointsPolicy pointsPolicy;
 
     @BeforeClass
-    public static void setUpBeforeAll() { //Will be called only once
+    public static void beforeClass() throws Exception {
+        DBManager.startTest();
+        DBManagerForTest.startConnection();
         SystemLoggerManager.disableLoggers(); // disable loggers in tests
+
     }
 
     @Before
     public void setUp() throws Exception {
         pointsPolicy = PointsPolicy.getDefaultPointsPolicy();
+    }
+
+    @Test
+    public void testForYiftach() {
+        System.out.println(pointsPolicy);
+    }
+
+    @Test
+    public void testForYiftach2() {
+        PointsPolicy newPointsPolicy = new PointsPolicy(1, -15, 0);
+        EntityManager.getInstance().addPointsPolicy(newPointsPolicy);
     }
 
     @Test
@@ -57,5 +75,10 @@ public class PointsPolicyTest {
         Points points = pointsPolicy.getPoints(game);
         assertEquals(points.getHomeTeamPoints(),1);
         assertEquals(points.getAwayTeamPoints(),1);
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
     }
 }

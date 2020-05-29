@@ -1,5 +1,6 @@
 package Domain.Users;
 
+import Domain.EntityManager;
 import Domain.Game.Team;
 import Service.UIController;
 
@@ -12,12 +13,17 @@ public class Player extends PartOfTeam{
 
     public final String fieldJobString = "Filed Job";
 
-    public Player(SystemUser systemUser,Date birthDate) {
+    public Player(SystemUser systemUser, Date birthDate, boolean addToDB) {
         super(RoleTypes.PLAYER, systemUser);
         bday = birthDate;
+        if (addToDB) {
+            EntityManager.getInstance().addRole(this);
+        }
     }
 
-
+    public Date getBday() {
+        return bday;
+    }
 
     @Override
     public List<String> getProperties() {

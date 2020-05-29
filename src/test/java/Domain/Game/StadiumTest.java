@@ -1,8 +1,11 @@
 package Domain.Game;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.CoachQualification;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -12,10 +15,12 @@ import java.util.List;
 public class StadiumTest {
 
     @BeforeClass
-    public static void setUpBeforeAll() { //Will be called only once
+    public static void beforeClass() throws Exception {
+        DBManager.startTest();
+        DBManagerForTest.startConnection();
         SystemLoggerManager.disableLoggers(); // disable loggers in tests
-    }
 
+    }
 
     @Test
     public void getPropertiesUTest() {
@@ -89,10 +94,8 @@ public class StadiumTest {
         Assert.assertFalse(stadium.removeProperty(stadium.namePropertyString ,CoachQualification.MAIN_COACH ,new TeamStub(6131)));
     }
 
-
-
-
-
-
-
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
+    }
 }
