@@ -1,23 +1,16 @@
 package Service;
 
 import GUI.FootballMain;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.server.Command;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.server.WrappedSession;
 
 import java.util.Collection;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import static java.lang.Thread.sleep;
 
-import java.util.Date;
-import java.util.Scanner;
 
 public class UIController {
 
@@ -314,7 +307,7 @@ public class UIController {
             printMessageAndValuesForTest(messageToDisplay, valuesToDisplay);
             if (selector == 0 || selector == 1 || selector == 2 || selector == 6117
                     || selector == 6118 || selector == 921 || selector == 922 || selector == 924
-                    || selector == 9321 || selector == 10411) {
+                    || selector == 9321 || selector == 10411 || selector == 9713 || selector == 9724) {
                 return 0;
             } else if (selector == 61111) {
                 setSelector(61112);
@@ -523,6 +516,18 @@ public class UIController {
             else if(selector == 103714){
                 return  89;
             }
+            else if (selector == 9711){ //0,"10/12/2019",0
+                selector = 9712;
+                return 0;
+            }
+            else if (selector == 9721){ //0,true, "10/12/2019",0
+                selector = 9722;
+                return 0;
+            }
+            else if (selector == 9731){ //0, false
+                selector = 9732;
+                return 0;
+            }
             else {
                 //random number to crash test that were not checked
                 return 123812;
@@ -562,13 +567,17 @@ public class UIController {
             }
             return false;
         }
-
+        printMessageAndValuesForTest(message);
         if (selector == 6611 || selector == 6621 || selector == 6623 || selector == 4 ||
                 selector == 66151 || selector == 66251) {
             return true;
         }
         else if(selector == 103713){ //true, 90
             selector = 103714;
+            return true;
+        }
+        else if (selector == 9722){ //true, "10/12/2019",0
+            selector = 9723;
             return true;
         }
         else {
@@ -584,11 +593,14 @@ public class UIController {
 
     }
 
-    public static void showAlert(UI sessionUI, String alert) {
+    public static void showAlert(VaadinSession sessionUI, String alert) {
         if(!isTest) {
-            sessionUI.access(() -> {
-                FootballMain.showAlert(alert,sessionUI);
-                sessionUI.push();
+            sessionUI.access(()->{
+                Collection<UI> uis = sessionUI.getUIs();
+                UI currUI = (UI)uis.toArray()[uis.toArray().length-1];
+                currUI.access(() -> {
+                    FootballMain.showAlert(alert,currUI);
+                });
             });
         }
         else
@@ -643,6 +655,14 @@ public class UIController {
                 return "01/11/1199";
             } else if (selector == 6132) {
                 return "11/11/2011";
+            }
+            else if (selector == 9712){ //"10/12/2019",0
+                selector = 9713;
+                return "10/12/2019";
+            }
+            else if (selector == 9723){ //"10/12/2019",0
+                selector = 9724;
+                return "10/12/2019";
             }
             else if(selector == 0)
             {

@@ -2,7 +2,6 @@ package Service;
 
 
 import Domain.Users.SystemUser;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
 
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ public class AllSubscribers implements Observer {
 
     private static AllSubscribers allSubscribersInstance = null;
 
-    private Map<String , UI> systemUsers;
+    private Map<String , List<VaadinSession>> systemUsers;
 
 
 
@@ -50,16 +49,20 @@ public class AllSubscribers implements Observer {
 
 
     //add user after login
-    //todo: check if after signUp - user is login????
-    public void login(String systemUser, UI sessionUI)
+    public void login(String systemUser, VaadinSession sessionUI)
     {
-        systemUsers.put(systemUser, sessionUI);
+        if(!systemUsers.containsKey(systemUser))
+        {
+            List<VaadinSession> newLoginUser = new ArrayList<>();
+            systemUsers.put(systemUser, newLoginUser);
+        }
+
+        systemUsers.get(systemUser).add(sessionUI);
     }
     //remove user after logout
-    //fixme! need to add logout function - UC
-    public void logout(String systemUser)
+    public void logout(String systemUser, VaadinSession currUIloggedOut)
     {
-        systemUsers.remove(systemUser);
+        systemUsers.get(systemUser).remove(currUIloggedOut);
     }
 
     @Override
@@ -67,9 +70,24 @@ public class AllSubscribers implements Observer {
     {
         for (int i = 0; i < systemUsers.size(); i++) {
             //todo: alert!
-            UI sessionUI = this.systemUsers.get(systemUsers.get(i).getUsername());
+            List<VaadinSession> allSessionsUI = this.systemUsers.get(systemUsers.get(i).getUsername());
             //session
-            UIController.showAlert(sessionUI , alert);
+            for (VaadinSession userSession :
+                    allSessionsUI) {
+//                userSession.getUIs();
+                UIController.showAlert(userSession , alert);
+            }
         }
     }
+
+//    /**
+//     * Checks whether or not the size of the logged in sessions
+//     * of a specific username
+//     * is 1
+//     * @param username the specific user thats want to logout
+//     * @return true if there is only 1 active session
+//     */
+//    public boolean isLastConnection(String username) {
+//        return systemUsers.get(username).size() == 1;
+//    }
 }

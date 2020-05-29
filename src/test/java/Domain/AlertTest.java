@@ -1,10 +1,17 @@
 package Domain;
 
+import Domain.SystemLogger.SystemLoggerManager;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class AlertTest {
+
+    @BeforeClass
+    public static void setUpBeforeAll() { //Will be called only once
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+    }
 
     @Test
     public void sendEmail()

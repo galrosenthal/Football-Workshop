@@ -3,9 +3,9 @@ package Service;
 import Domain.EntityManager;
 import Domain.Exceptions.NoRoleForUser;
 import Domain.Game.Game;
-import Domain.Game.Stadium;
 import Domain.Game.Team;
-import Domain.Logger.Event;
+import Domain.GameLogger.Event;
+import Domain.SystemLogger.*;
 import Domain.Users.*;
 
 import java.util.ArrayList;
@@ -62,6 +62,9 @@ public class RefereeController {
         }
 
         UIController.showNotification("The new " + eventType + " has been added successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(RefereeController.class,
+                new AddGameEventLogMsg(systemUser.getUsername(), eventType, chosenGame.getGameTitle()));
         return true;
     }
 
@@ -88,6 +91,9 @@ public class RefereeController {
             return false;
         }
         UIController.showNotification("Game report saved successfully");
+        //Log the action
+        SystemLoggerManager.logInfo(RefereeController.class,
+                new ProduceGameReportLogMsg(systemUser.getUsername(), chosenGame.getGameTitle()));
         return true;
     }
 
@@ -180,7 +186,9 @@ public class RefereeController {
     private static Game getRefereeGameByChoice(Referee refereeRole, boolean finished) throws Exception {
         List<Game> gamesOfReferee = refereeRole.getGames();
         if (gamesOfReferee == null || gamesOfReferee.isEmpty()) {
-            throw new Exception("There are no games for this referee");
+            String msg = "There are no games for this referee";
+            SystemLoggerManager.logError(RefereeController.class, msg);
+            throw new Exception(msg);
         }
         List<String> gamesList = new ArrayList<>();
         for (int i = 0; i < gamesOfReferee.size(); i++) {
@@ -205,10 +213,16 @@ public class RefereeController {
 
         }
         if (gamesList.isEmpty()) {
-            if(!finished)
-                throw new Exception("There are no ongoing games for this referee");
-            else
-                throw new Exception("There are no finished games for this referee");
+            if(!finished) {
+                String msg = "There are no ongoing games for this referee";
+                SystemLoggerManager.logError(RefereeController.class, msg);
+                throw new Exception(msg);
+            }
+            else {
+                String msg = "There are no finished games for this referee";
+                SystemLoggerManager.logError(RefereeController.class, msg);
+                throw new Exception(msg);
+            }
         }
         int Index;
         do {
@@ -248,7 +262,7 @@ public class RefereeController {
      *
      * @param game - Game - The game to log the event to
      */
-    private static void addGoalEvent(Game game) throws Exception {
+    private static void addGoalEvent(Game game){
         String msg = "Choose a team who scored;Choose a team who got scored on;Choose the player who scored;" +
                 "Choose the minute of the event";
         String chosenArgs = UIController.receiveStringFromMultipleInputs(msg,

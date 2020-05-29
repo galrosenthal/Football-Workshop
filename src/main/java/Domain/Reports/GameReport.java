@@ -1,12 +1,10 @@
 package Domain.Reports;
 
 import Domain.Alert;
-import Domain.EntityManager;
 import Domain.Game.*;
 import Domain.Subject;
 import Domain.Users.Referee;
 import Domain.Users.SystemUser;
-import com.itextpdf.layout.element.Text;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
 
@@ -14,7 +12,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;

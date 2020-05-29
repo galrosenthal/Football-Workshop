@@ -1,10 +1,12 @@
-package Domain.Logger;
+package Domain.GameLogger;
 
 import Domain.Game.TeamStub;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.PlayerStub;
 import Domain.Users.SystemUserStub;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
@@ -13,6 +15,11 @@ import static org.junit.Assert.*;
 
 public class EventsLoggerTest {
     private EventsLogger eventsLogger;
+
+    @BeforeClass
+    public static void setUpBeforeAll() { //Will be called only once
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+    }
 
     @Before
     public void setUp() throws Exception {

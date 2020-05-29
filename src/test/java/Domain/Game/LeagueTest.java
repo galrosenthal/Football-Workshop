@@ -1,7 +1,9 @@
 package Domain.Game;
 
+import Domain.SystemLogger.SystemLoggerManager;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -9,6 +11,11 @@ import static org.junit.Assert.*;
 public class LeagueTest {
 
     private League league;
+
+    @BeforeClass
+    public static void setUpBeforeAll() { //Will be called only once
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+    }
 
     @Before
     public void setUp() throws Exception {
