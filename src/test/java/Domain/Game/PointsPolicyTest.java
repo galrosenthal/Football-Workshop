@@ -6,6 +6,7 @@ import Domain.Users.SystemUserStub;
 import DB.DBManager;
 import DB.DBManagerForTest;
 import Domain.EntityManager;
+import Generic.GenericTestAbstract;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -15,17 +16,11 @@ import java.util.Date;
 
 import static org.junit.Assert.*;
 
-public class PointsPolicyTest {
+public class PointsPolicyTest extends GenericTestAbstract {
 
     private PointsPolicy pointsPolicy;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
 
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -77,8 +72,4 @@ public class PointsPolicyTest {
         assertEquals(points.getAwayTeamPoints(),1);
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

@@ -6,6 +6,7 @@ import Domain.EntityManager;
 import Domain.Game.League;
 import Domain.Game.Season;
 import Domain.Game.SeasonStub;
+import Generic.GenericTestAbstract;
 import org.junit.*;
 
 import java.util.ArrayList;
@@ -13,14 +14,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class RefereeTest {
+public class RefereeTest extends GenericTestAbstract {
 
     private Referee referee;
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();    }
 
     @Before
     public void setUp() {
@@ -107,8 +103,4 @@ public class RefereeTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

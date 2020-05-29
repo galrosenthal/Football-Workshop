@@ -7,19 +7,14 @@ import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.SystemUser;
 import Domain.Users.SystemUserStub;
 import Domain.Users.TeamOwnerStub;
+import Generic.GenericTestAbstract;
 import org.junit.*;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class TOControllerTest {
+public class TOControllerTest extends GenericTestAbstract {
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-    }
 
     @Test
     public void closeTeamUTest() throws Exception {
@@ -77,9 +72,5 @@ public class TOControllerTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }
 

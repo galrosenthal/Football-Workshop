@@ -7,6 +7,7 @@ import Domain.Game.*;
 import Domain.GameLogger.*;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
+import Generic.GenericTestAbstract;
 import org.junit.*;
 
 import java.io.File;
@@ -16,14 +17,8 @@ import java.util.Date;
 
 import static org.junit.Assert.*;
 
-public class RefereeControllerTest {
+public class RefereeControllerTest extends GenericTestAbstract {
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -473,8 +468,4 @@ public class RefereeControllerTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

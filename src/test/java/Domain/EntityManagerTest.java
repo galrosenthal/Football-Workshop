@@ -7,21 +7,15 @@ import Domain.Game.PointsPolicy;
 import Domain.Game.SchedulingPolicy;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
+import Generic.GenericTestAbstract;
 import org.junit.*;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class EntityManagerTest {
+public class EntityManagerTest extends GenericTestAbstract {
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-
-    }
 
     @Test
     public void doesLeagueExistsUTest() {
@@ -109,10 +103,5 @@ public class EntityManagerTest {
     @After
     public void tearDown() throws Exception {
         EntityManager.getInstance().clearAll();
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
     }
 }

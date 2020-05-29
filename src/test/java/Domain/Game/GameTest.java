@@ -8,6 +8,7 @@ import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.Player;
 import Domain.Users.PlayerStub;
 import Domain.Users.SystemUserStub;
+import Generic.GenericTestAbstract;
 import org.junit.*;
 
 import java.util.Calendar;
@@ -15,18 +16,11 @@ import java.util.Date;
 
 import static org.junit.Assert.*;
 
-public class GameTest {
+public class GameTest extends GenericTestAbstract {
     private Game game;
     private TeamStub firstTeam;
     private TeamStub secondTeam;
 
-    @BeforeClass
-    public static void beforeClass() {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -384,10 +378,5 @@ public class GameTest {
         game.setEndDate(calendar.getTime());
 
         assertEquals(3, game.getHoursPassedSinceGameEnd(currDate));
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
     }
 }

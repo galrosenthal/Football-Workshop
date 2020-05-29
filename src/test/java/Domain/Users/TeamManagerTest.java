@@ -5,18 +5,15 @@ import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.Game.Team;
 import Domain.Game.TeamStub;
+import Generic.GenericTestAbstract;
 import org.junit.*;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class TeamManagerTest {
+public class TeamManagerTest extends GenericTestAbstract {
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();    }
 
     @Test
     public void getPropertiesUTest() {
@@ -196,8 +193,4 @@ public class TeamManagerTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

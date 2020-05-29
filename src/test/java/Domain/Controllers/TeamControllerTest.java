@@ -10,6 +10,7 @@ import Domain.Exceptions.NotATeamOwner;
 import Domain.Game.*;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
+import Generic.GenericTestAbstract;
 import Service.UIController;
 import org.junit.*;
 
@@ -17,14 +18,8 @@ import java.util.Date;
 
 import static org.junit.Assert.*;
 
-public class TeamControllerTest {
+public class TeamControllerTest extends GenericTestAbstract {
 
-    @BeforeClass
-    public static void beforeClass() {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-    }
 
     SystemUser teamOwnerUser;
     SystemUser teamOwnerToAdd;
@@ -750,8 +745,4 @@ public class TeamControllerTest {
 
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

@@ -7,6 +7,7 @@ import Domain.Exceptions.StadiumNotFoundException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
+import Generic.GenericTestAbstract;
 import Service.UIController;
 import org.junit.*;
 
@@ -17,19 +18,12 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.spy;
 
-public class TeamTest {
+public class TeamTest extends GenericTestAbstract {
 
     private Team team;
     private TeamOwnerStub localTeamOwner;
     private SystemUser testUser;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-
-    }
 
     @Before
     public void setUp() {
@@ -704,8 +698,4 @@ public class TeamTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

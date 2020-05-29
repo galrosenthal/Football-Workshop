@@ -7,6 +7,7 @@ import Domain.Users.Referee;
 import Domain.Users.RefereeQualification;
 import Domain.Users.RefereeStub;
 import Domain.Users.SystemUser;
+import Generic.GenericTestAbstract;
 import org.junit.*;
 
 import java.util.ArrayList;
@@ -15,17 +16,10 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class SchedulingPolicyTest {
+public class SchedulingPolicyTest  extends GenericTestAbstract {
 
     private SchedulingPolicy schedulingPolicy;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -90,8 +84,4 @@ public class SchedulingPolicyTest {
         }
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

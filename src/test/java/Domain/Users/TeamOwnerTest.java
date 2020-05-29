@@ -4,14 +4,10 @@ import DB.DBManager;
 import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.Game.Team;
+import Generic.GenericTestAbstract;
 import org.junit.Test;
 import org.junit.*;
-public class TeamOwnerTest {
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();    }
+public class TeamOwnerTest extends GenericTestAbstract {
 
     /**
      * Check if teamOwner is added successfully
@@ -63,8 +59,4 @@ public class TeamOwnerTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

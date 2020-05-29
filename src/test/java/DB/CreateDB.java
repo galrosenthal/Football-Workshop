@@ -1,11 +1,8 @@
 package DB;
-
-import org.junit.Before;
+import Generic.GenericTestAbstract;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
-public class CreateDbBeforeTest {
+public class CreateDB extends GenericTestAbstract {
 
     DBHandler db;
 

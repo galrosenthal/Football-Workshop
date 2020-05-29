@@ -6,21 +6,16 @@ import Domain.Game.TeamStub;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.PlayerStub;
 import Domain.Users.SystemUserStub;
+import Generic.GenericTestAbstract;
 import org.junit.*;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class EventsLoggerTest {
+public class EventsLoggerTest  extends GenericTestAbstract {
     private EventsLogger eventsLogger;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
 
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -133,11 +128,6 @@ public class EventsLoggerTest {
     @After
     public void tearDown() throws Exception {
         eventsLogger = null;
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
     }
 
 }

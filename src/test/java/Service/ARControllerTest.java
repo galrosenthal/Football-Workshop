@@ -8,6 +8,7 @@ import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.*;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
+import Generic.GenericTestAbstract;
 import org.junit.*;
 import org.junit.After;
 import org.junit.Before;
@@ -16,14 +17,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ARControllerTest {
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        EntityManager.getInstance().clearAll();
-        SystemLoggerManager.disableLoggers();
-    }
+public class ARControllerTest extends GenericTestAbstract {
+
 
     @Before
     public void setUp() throws Exception {
@@ -850,8 +845,4 @@ public class ARControllerTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

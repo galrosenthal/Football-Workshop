@@ -5,6 +5,7 @@ import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.Game.Team;
 import Domain.Game.TeamStub;
+import Generic.GenericTestAbstract;
 import Service.UIController;
 import org.junit.*;
 
@@ -14,7 +15,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class PlayerTest {
+public class PlayerTest  extends GenericTestAbstract {
 
     Team teamStub;
     TeamOwner ownerStub;
@@ -22,10 +23,7 @@ public class PlayerTest {
     Player playerToTest;
     SystemUser testUser;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();    }
+
 
     @Before
     public void setUp() throws Exception {
@@ -229,8 +227,4 @@ public class PlayerTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

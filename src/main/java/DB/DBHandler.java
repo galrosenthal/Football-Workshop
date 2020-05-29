@@ -123,14 +123,17 @@ public class DBHandler implements CRUD {
 
     /**
      * run sql script
-     * @param url- to script file
+     * @param urlPath- to script file
      * @throws Exception - wrong input url FILE
      */
-    private void scriptRunner(File url) throws Exception {
+    public void scriptRunner(String urlPath) throws Exception {
       //Initialize the script runner
+        File urlFile  = new File(urlPath);
+        if(!urlFile.exists())
+            return;
         ScriptRunner sr = new ScriptRunner(connection);
         //Creating a reader object
-        Reader reader = new BufferedReader(new FileReader(url));
+        Reader reader = new BufferedReader(new FileReader(urlFile));
         //Running the script
         sr.runScript(reader);
     }

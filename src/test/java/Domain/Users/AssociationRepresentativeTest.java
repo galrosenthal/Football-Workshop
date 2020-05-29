@@ -8,19 +8,16 @@ import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Game.League;
 import Domain.Game.PointsPolicy;
 import Domain.Game.Season;
+import Generic.GenericTestAbstract;
 import org.junit.*;
 
 
 import static org.junit.Assert.*;
 
-public class AssociationRepresentativeTest {
+public class AssociationRepresentativeTest  extends GenericTestAbstract {
 
     private AssociationRepresentative aR;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();    }
 
     @Test
     public void testAddLeagueITest() throws Exception {
@@ -399,10 +396,6 @@ public class AssociationRepresentativeTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }
 
 

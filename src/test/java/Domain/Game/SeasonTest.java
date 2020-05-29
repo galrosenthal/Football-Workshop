@@ -5,24 +5,16 @@ import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
+import Generic.GenericTestAbstract;
 import org.junit.*;
 
 import java.time.Year;
 
 import static org.junit.Assert.*;
 
-public class SeasonTest {
+public class SeasonTest extends GenericTestAbstract {
 
     private Season season;
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-
-    }
-
     @Before
     public void setUp() throws Exception {
         season = new Season(new League("noName", true),"2020/21");
@@ -93,8 +85,4 @@ public class SeasonTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

@@ -10,6 +10,7 @@ import Domain.Users.SystemUserStub;
 import Domain.Users.TeamOwnerStub;
 import Domain.Game.Team;
 import Domain.Users.*;
+import Generic.GenericTestAbstract;
 import org.junit.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -17,18 +18,12 @@ import org.mockito.MockitoAnnotations;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
-public class ControllerTest {
+public class ControllerTest extends GenericTestAbstract {
     @Mock
     SystemUser systemUser; //For testing login and signUp. Moved From UnregisteredTest
     String hashedPassword;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
 
-    }
 
 
     @Before
@@ -340,8 +335,4 @@ public class ControllerTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

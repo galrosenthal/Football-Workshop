@@ -2,22 +2,17 @@ package Domain.Game;
 
 import DB.DBManager;
 import DB.DBManagerForTest;
+import Generic.GenericTestAbstract;
 import org.junit.*;
 import Domain.SystemLogger.SystemLoggerManager;
 
 
 import static org.junit.Assert.*;
 
-public class LeagueTest {
+public class LeagueTest extends GenericTestAbstract {
 
     private League league;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -56,8 +51,4 @@ public class LeagueTest {
         this.league = null;
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

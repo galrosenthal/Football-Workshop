@@ -12,6 +12,7 @@ import Domain.Users.*;
 import Domain.Users.AssociationRepresentative;
 import Domain.Users.SystemAdmin;
 import Domain.Users.SystemUser;
+import Generic.GenericTestAbstract;
 import Service.*;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
@@ -25,7 +26,7 @@ import static Domain.Game.SchedulingPolicy.getDefaultSchedulingPolicy;
 import static org.junit.Assert.*;
 
 @Category(RegressionTests.class)
-public class AcceptanceTests {
+public class AcceptanceTests extends GenericTestAbstract {
     private static SystemUser existingUser;
     private static SystemUser aviCohenSu;
     private static SystemUser yosiManagerSu;
@@ -40,8 +41,6 @@ public class AcceptanceTests {
         aviCohenSu.addNewRole(new TeamOwner(aviCohenSu, true));
         yosiManagerSu = new SystemUser("yosilevi", hashedPasswordForAviYosi, "Yosi Levi","test@gmail.com", false, true);
         yosiManagerSu.addNewRole(new TeamManager(yosiManagerSu, true));
-        UIController.setIsTest(true);
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
     }
 
 
