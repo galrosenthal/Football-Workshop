@@ -16,7 +16,7 @@ target/**/*.properties
 /target/classes/Tables/testTable.csv
 **/*.lst
 **/*.csv
-
+*.js
 .settings
 .classpath
 .project
