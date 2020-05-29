@@ -16,6 +16,7 @@ import org.jooq.Field;
 import org.jooq.Result;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -467,10 +468,10 @@ public class DBManager {
 
     public void addPlayer(String username, Date bday) {
         DSLContext create = DBHandler.getContext();
-        //todo: check!!!!
         if (!(hasRole(username, "PLAYER"))) {
-            create.insertInto(USER_ROLES, USER_ROLES.USERNAME, USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.PLAYER).execute();
-            create.insertInto(PLAYER, PLAYER.USERNAME, PLAYER.BIRTHDAY).values(username, LocalDate.ofEpochDay(bday.getTime())).execute();
+
+            create.insertInto(USER_ROLES, USER_ROLES.USERNAME, USER_ROLES.ROLE_TYPE).values(username,UserRolesRoleType.PLAYER).execute();
+            create.insertInto(PLAYER, PLAYER.USERNAME, PLAYER.BIRTHDAY).values(username,this.convertToLocalDateViaInstant(bday)).execute();
         }
     }
 
@@ -940,6 +941,23 @@ public class DBManager {
             teamsDetails.add(details);
         }
         return  teamsDetails;
+    }
+
+
+    private LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+    }
+
+    public void addStadium(String name, String location) {
+        DSLContext create = DBHandler.getContext();
+        try{
+            create.insertInto(STADIUM , STADIUM.NAME , STADIUM.LOCATION).values(name , location).execute();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }
 

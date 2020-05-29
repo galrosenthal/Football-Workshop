@@ -33,8 +33,8 @@ public class StadiumTest {
     @Test
     public void changeProperty1UTest() {
         Stadium stadium = new Stadium("AESSEAL","New York");
-        Assert.assertTrue(stadium.changeProperty(new TeamStub(0), stadium.namePropertyString , "AESSEAL"));
-        Assert.assertFalse(stadium.changeProperty(new TeamStub(0), "Test" , "Test"));
+        Assert.assertTrue(stadium.changeProperty(new TeamStub(0, true), stadium.namePropertyString , "AESSEAL"));
+        Assert.assertFalse(stadium.changeProperty(new TeamStub(0, true), "Test" , "Test"));
         Assert.assertTrue(stadium.getName().equals("AESSEAL"));
 
     }
@@ -42,8 +42,8 @@ public class StadiumTest {
     @Test
     public void changeProperty2UTest() {
         Stadium stadium = new Stadium("New York" , "AESEAL");
-        Assert.assertTrue(stadium.changeProperty(new TeamStub(0), stadium.namePropertyString , "AESSEAL"));
-        Assert.assertFalse(stadium.changeProperty(new TeamStub(0), "Test" , "Test"));
+        Assert.assertTrue(stadium.changeProperty(new TeamStub(0, true), stadium.namePropertyString , "AESSEAL"));
+        Assert.assertFalse(stadium.changeProperty(new TeamStub(0, true), "Test" , "Test"));
         Assert.assertTrue(stadium.getName().equals("AESSEAL"));
 
     }
@@ -79,19 +79,19 @@ public class StadiumTest {
     @Test
     public void getAllPropertyListUTest() {
         Stadium stadium = new Stadium("AESSEAL","New York");
-        Assert.assertNull(stadium.getAllPropertyList(new TeamStub(6131) , stadium.namePropertyString));
+        Assert.assertNull(stadium.getAllPropertyList(new TeamStub(6131, true) , stadium.namePropertyString));
     }
 
     @Test
     public void addPropertyUTest() {
         Stadium stadium = new Stadium("AESSEAL","New York");
-        Assert.assertFalse(stadium.addProperty(stadium.namePropertyString ,CoachQualification.MAIN_COACH ,new TeamStub(6131)));
+        Assert.assertFalse(stadium.addProperty(stadium.namePropertyString ,CoachQualification.MAIN_COACH ,new TeamStub(6131, true)));
     }
 
     @Test
     public void removePropertyUTest() {
         Stadium stadium = new Stadium("AESSEAL","New York");
-        Assert.assertFalse(stadium.removeProperty(stadium.namePropertyString ,CoachQualification.MAIN_COACH ,new TeamStub(6131)));
+        Assert.assertFalse(stadium.removeProperty(stadium.namePropertyString ,CoachQualification.MAIN_COACH ,new TeamStub(6131, true)));
     }
 
     @AfterClass

@@ -29,8 +29,8 @@ public class PlayerTest {
 
     @Before
     public void setUp() throws Exception {
-        teamStub = new TeamStub(0);
-        testUser = new SystemUserStub("test","testUser",4);
+        teamStub = new TeamStub(0, true);
+        testUser = new SystemUserStub("test","testUser",4, true);
         ownerStub = new TeamOwnerStub(testUser);
     }
 
@@ -58,7 +58,7 @@ public class PlayerTest {
         Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
         Player p1 = new Player(testUser,bday, true);
 
-        TeamStub ts = new TeamStub(61120);
+        TeamStub ts = new TeamStub(61120, true);
         BelongToTeamStub bgStub = new BelongToTeamStub(ts, p1);
         p1.addTeamConnection(bgStub);
 
@@ -74,7 +74,7 @@ public class PlayerTest {
         Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
         Player p1 = new Player(testUser,bday, true);
 
-        TeamStub ts = new TeamStub(61120);
+        TeamStub ts = new TeamStub(61120, true);
         BelongToTeamStub bgStub = new BelongToTeamStub(ts, p1);
         p1.addTeamConnection(bgStub);
 
@@ -85,7 +85,7 @@ public class PlayerTest {
 
     @Test
     public void getPropertiesUTest() {
-        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131) , new Date(), true);
+        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131, true) , new Date(), true);
         List<String> allProperties = player.getProperties();
         assertTrue(allProperties.size() == 1);
         assertTrue(allProperties.contains(player.fieldJobString));
@@ -93,8 +93,8 @@ public class PlayerTest {
 
     @Test
     public void changePropertyUTest() {
-        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131) , new Date(), true);
-        TeamStub ts = new TeamStub(61120);
+        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131, true) , new Date(), true);
+        TeamStub ts = new TeamStub(61120, true);
         BelongToTeamStub bgStub = new BelongToTeamStub(ts,player);
         player.addTeamConnection(bgStub);
         Assert.assertTrue(player.changeProperty(ts,player.fieldJobString , PlayerFieldJobs.DEFENSE.toString()));
@@ -104,27 +104,27 @@ public class PlayerTest {
 
     @Test
     public void isListPropertyUTest() {
-        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131) , new Date(), true);
+        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131, true) , new Date(), true);
         Assert.assertFalse(player.isListProperty(player.fieldJobString));
     }
 
     @Test
     public void isStringPropertyUTest() {
-        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131) , new Date(), true);
+        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131, true) , new Date(), true);
         Assert.assertFalse(player.isStringProperty(player.fieldJobString));
         Assert.assertFalse(player.isStringProperty("Test"));
     }
 
     @Test
     public void isEnumPropertyUTest() {
-        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131) , new Date(), true);
+        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131, true) , new Date(), true);
         Assert.assertTrue(player.isEnumProperty(player.fieldJobString));
         Assert.assertFalse(player.isEnumProperty("Test"));
     }
 
     @Test
     public void getAllValuesUTest() {
-        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131) , new Date(), true);
+        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131, true) , new Date(), true);
         List<Enum> enumList = player.getAllValues(player.fieldJobString);
         Assert.assertTrue(enumList.size() == PlayerFieldJobs.values().length);
         Assert.assertTrue(enumList.contains(PlayerFieldJobs.DEFENSE));
@@ -136,26 +136,26 @@ public class PlayerTest {
 
     @Test
     public void getAllPropertyListUTest() {
-        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131) , new Date(), true);
-        Assert.assertNull(player.getAllPropertyList(new TeamStub(6131) , player.fieldJobString));
+        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131, true) , new Date(), true);
+        Assert.assertNull(player.getAllPropertyList(new TeamStub(6131, true) , player.fieldJobString));
     }
 
     @Test
     public void addPropertyEnumFalseUTest() {
-        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131) , new Date(), true);
-        Assert.assertFalse(player.addProperty(player.fieldJobString ,PlayerFieldJobs.FRONT ,new TeamStub(6131)));
+        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131, true) , new Date(), true);
+        Assert.assertFalse(player.addProperty(player.fieldJobString ,PlayerFieldJobs.FRONT ,new TeamStub(6131, true)));
     }
 
     @Test
     public void removePropertyUTest() {
-        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131) , new Date(), true);
-        Assert.assertFalse(player.removeProperty(player.fieldJobString ,PlayerFieldJobs.FRONT ,new TeamStub(6131)));
+        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131, true) , new Date(), true);
+        Assert.assertFalse(player.removeProperty(player.fieldJobString ,PlayerFieldJobs.FRONT ,new TeamStub(6131, true)));
     }
 
 
     @Test
     public void getPropertiesITest() {
-        Player player = new Player(new SystemUser("playerTest" , "gal" ) , new Date(), true);
+        Player player = new Player(new SystemUser("playerTest" , "gal", true) , new Date(), true);
         List<String> allProperties = player.getProperties();
         Assert.assertTrue(allProperties.size() == 1);
         Assert.assertTrue(allProperties.contains(player.fieldJobString));
@@ -165,8 +165,8 @@ public class PlayerTest {
 
     @Test
     public void changePropertyITest() {
-        Player player = new Player(new SystemUser("playerTest" , "gal" ) , new Date(), true);
-        TeamStub ts = new TeamStub(61120);
+        Player player = new Player(new SystemUser("playerTest" , "gal", true) , new Date(), true);
+        TeamStub ts = new TeamStub(61120, true);
         BelongToTeamStub bgStub = new BelongToTeamStub(ts,player);
         player.addTeamConnection(bgStub);
         Assert.assertTrue(player.changeProperty(ts,player.fieldJobString , PlayerFieldJobs.DEFENSE.toString()));
@@ -176,27 +176,27 @@ public class PlayerTest {
 
     @Test
     public void isListPropertyITest() {
-        Player player = new Player(new SystemUser("playerTest" , "gal" ) , new Date(), true);
+        Player player = new Player(new SystemUser("playerTest" , "gal", true) , new Date(), true);
         Assert.assertFalse(player.isListProperty(player.fieldJobString));
     }
 
     @Test
     public void isStringPropertyITest() {
-        Player player = new Player(new SystemUser("playerTest" , "gal" ) , new Date(), true);
+        Player player = new Player(new SystemUser("playerTest" , "gal", true) , new Date(), true);
         Assert.assertFalse(player.isStringProperty(player.fieldJobString));
         Assert.assertFalse(player.isStringProperty("Test"));
     }
 
     @Test
     public void isEnumPropertyITest() {
-        Player player = new Player(new SystemUser("playerTest" , "gal" ) , new Date(), true);
+        Player player = new Player(new SystemUser("playerTest" , "gal", true) , new Date(), true);
         Assert.assertTrue(player.isEnumProperty(player.fieldJobString));
         Assert.assertFalse(player.isEnumProperty("Test"));
     }
 
     @Test
     public void getAllValuesITest() {
-        Player player = new Player(new SystemUser("playerTest" , "gal" ) , new Date(), true);
+        Player player = new Player(new SystemUser("playerTest" , "gal", true) , new Date(), true);
         List<Enum> enumList = player.getAllValues(player.fieldJobString);
         Assert.assertTrue(enumList.size() == PlayerFieldJobs.values().length);
         Assert.assertTrue(enumList.contains(PlayerFieldJobs.DEFENSE));
@@ -208,20 +208,20 @@ public class PlayerTest {
 
     @Test
     public void getAllPropertyListITest() {
-        Player player = new Player(new SystemUser("playerTest" , "gal" ) , new Date(), true);
-        Assert.assertNull(player.getAllPropertyList(new TeamStub(6131) , player.fieldJobString));
+        Player player = new Player(new SystemUser("playerTest" , "gal", true) , new Date(), true);
+        Assert.assertNull(player.getAllPropertyList(new TeamStub(6131, true) , player.fieldJobString));
     }
 
     @Test
     public void addPropertyITest() {
-        Player player = new Player(new SystemUser("playerTest" , "gal" ) , new Date(), true);
-        Assert.assertFalse(player.addProperty(player.fieldJobString ,PlayerFieldJobs.FRONT ,new TeamStub(6131)));
+        Player player = new Player(new SystemUser("playerTest" , "gal", true) , new Date(), true);
+        Assert.assertFalse(player.addProperty(player.fieldJobString ,PlayerFieldJobs.FRONT ,new TeamStub(6131, true)));
     }
 
     @Test
     public void removePropertyITest() {
-        Player player = new Player(new SystemUser("playerTest" , "gal" ) , new Date(), true);
-        Assert.assertFalse(player.removeProperty(player.fieldJobString ,PlayerFieldJobs.FRONT ,new TeamStub(6131)));
+        Player player = new Player(new SystemUser("playerTest" , "gal", true) , new Date(), true);
+        Assert.assertFalse(player.removeProperty(player.fieldJobString ,PlayerFieldJobs.FRONT ,new TeamStub(6131, true)));
     }
 
     @After

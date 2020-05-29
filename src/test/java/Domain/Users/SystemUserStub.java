@@ -12,16 +12,19 @@ public class SystemUserStub extends SystemUser{
     /**
      * Selector latest number: 9
      */
-    public SystemUserStub(String username,String name,int selector)
+    public SystemUserStub(String username, String name, int selector, boolean addToDB)
     {
-        super(username,name);
+        super(username,name, false);
         this.selector = selector;
-        EntityManager.getInstance().addUser(this);
+        if(addToDB)
+        {
+            EntityManager.getInstance().addUser(this);
+        }
     }
 
     public SystemUserStub(String username,String name,String password, int selector)
     {
-        super(username,name,password,"test@gmail.com", false, true);
+        super(username,name,password,"test@gmail.com", false, false);
         this.selector = selector;
         EntityManager.getInstance().addUser(this);
     }
@@ -137,7 +140,7 @@ public class SystemUserStub extends SystemUser{
 
     @Override
     public boolean equals(Object o) {
-        if(selector == 0 || selector == 1)
+        if(selector == 0 || selector == 1 ||  selector == 6132)
         {
             return false;
         }

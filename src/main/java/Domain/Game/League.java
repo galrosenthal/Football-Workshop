@@ -70,7 +70,7 @@ public class League {
      * Adds a season to this league with the given season years
      *
      * @param seasonYears - String - unique season years for this league
-     * @return - Season - true if the addition completed successfully, else false
+     * @return - Season - no null if the addition completed successfully, else false
      */
     public Season addSeason(String seasonYears) {
         Season season = new Season(this, seasonYears);

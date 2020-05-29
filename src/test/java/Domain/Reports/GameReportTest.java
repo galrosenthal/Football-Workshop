@@ -29,8 +29,8 @@ public class GameReportTest {
 
     @Before
     public void setUp() throws Exception {
-        firstTeam = new TeamStub(10411);
-        secondTeam =  new TeamStub(10412);
+        firstTeam = new TeamStub(10411, true);
+        secondTeam =  new TeamStub(10412, true);
         List<Referee> referees = new ArrayList<>();
         referees.add(new RefereeStub(new SystemUser("a","a","a","@",false, true), RefereeQualification.VAR_REFEREE));
         referees.add(new RefereeStub(new SystemUser("b","b","b","@",false, true),RefereeQualification.VAR_REFEREE));
@@ -56,10 +56,10 @@ public class GameReportTest {
         }
         try {
             game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
-                    new PlayerStub(new SystemUserStub("a", "a",555)),2);
+                    new PlayerStub(new SystemUserStub("a", "a",555, true)),2);
         } catch (Exception e) {
         }
-        Player player = new PlayerStub(new SystemUserStub("UserName","Name",0 ));
+        Player player = new PlayerStub(new SystemUserStub("UserName","Name",0, true));
         firstTeam.addPlayer(player);
         try {
             game.addInjury(player,10);

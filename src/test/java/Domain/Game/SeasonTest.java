@@ -48,7 +48,7 @@ public class SeasonTest {
 
     @Test
     public void assignAndUnAssignRefereeUTest() {
-        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121), RefereeQualification.VAR_REFEREE);
+        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121, true), RefereeQualification.VAR_REFEREE);
         assertTrue(season.refereesSize()==0);
         season.assignReferee(referee);
         assertTrue(season.refereesSize()==1);
@@ -67,7 +67,7 @@ public class SeasonTest {
     }
     @Test
     public void doesContainsRefereeUTest() {
-        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121),RefereeQualification.VAR_REFEREE);
+        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121, true),RefereeQualification.VAR_REFEREE);
         assertFalse(season.doesContainsReferee(referee));
         season.assignReferee(referee);
         assertTrue(season.doesContainsReferee(referee));
@@ -75,7 +75,7 @@ public class SeasonTest {
 
     @Test
     public void assignAndUnAssignRefereeITest() {
-        Referee referee = new Referee(new SystemUser("username", "name"),RefereeQualification.VAR_REFEREE, true);
+        Referee referee = new Referee(new SystemUser("username", "name", true),RefereeQualification.VAR_REFEREE, true);
         assertTrue(season.refereesSize()==0);
         season.assignReferee(referee);
         assertTrue(season.refereesSize()==1);

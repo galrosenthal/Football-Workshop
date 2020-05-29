@@ -11,6 +11,7 @@ import org.jooq.Field;
 import org.jooq.Result;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -106,13 +107,17 @@ public class DBManagerForTest extends DBManager {
     @Override
     public boolean addSeasonToLeague(String leagueName, String years, boolean isUnderway, int pointsPolicyID) {
         DSLContext dslContext = DBHandler.getContext();
-        int succeed = dslContext.insertInto(SEASON, SEASON.LEAGUE_NAME, SEASON.YEARS,
-                SEASON.IS_UNDER_WAY, SEASON.POINTS_POLICY_ID)
-                .values(leagueName, years, isUnderway, pointsPolicyID).execute();
-        if (succeed == 0) {
+        try {
+            dslContext.insertInto(SEASON, SEASON.LEAGUE_NAME, SEASON.YEARS,
+                    SEASON.IS_UNDER_WAY, SEASON.POINTS_POLICY_ID)
+                    .values(leagueName, years, isUnderway, pointsPolicyID).execute();
+            return true;
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
             return false;
         }
-        return true;
     }
 
     @Override
@@ -369,10 +374,10 @@ public class DBManagerForTest extends DBManager {
     @Override
     public void addPlayer(String username, Date bday) {
         DSLContext create = DBHandler.getContext();
-        //todo: check!!!!
         if (!(hasRole(username, "PLAYER"))) {
+
             create.insertInto(USER_ROLES, USER_ROLES.USERNAME, USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.PLAYER).execute();
-            create.insertInto(PLAYER, PLAYER.USERNAME, PLAYER.BIRTHDAY).values(username, LocalDate.ofEpochDay(bday.getTime())).execute();
+            create.insertInto(PLAYER, PLAYER.USERNAME, PLAYER.BIRTHDAY).values(username, this.convertToLocalDateViaInstant(bday)).execute();
         }
     }
 
@@ -402,8 +407,13 @@ public class DBManagerForTest extends DBManager {
     public void addTeamOwner(String username) {
         DSLContext create = DBHandler.getContext();
         if (!(hasRole(username, "TEAM_OWNER"))) {
-            create.insertInto(USER_ROLES, USER_ROLES.USERNAME, USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.TEAM_OWNER).execute();
-            create.insertInto(TEAM_OWNER, TEAM_OWNER.USERNAME).values(username).execute();
+            try {
+                create.insertInto(USER_ROLES, USER_ROLES.USERNAME, USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.TEAM_OWNER).execute();
+                create.insertInto(TEAM_OWNER, TEAM_OWNER.USERNAME).values(username).execute();
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
         }
     }
 
@@ -866,20 +876,37 @@ public class DBManagerForTest extends DBManager {
 
     @Override
     public List<HashMap<String, String>> getTeamsPerSeason(String years, String league) {
-        int seasonID = this.getSeasonId(league,years);
+        int seasonID = this.getSeasonId(league, years);
         List<HashMap<String, String>> teamsDetails = new ArrayList<>();
         DSLContext create = DBHandler.getContext();
         Result<?> records = create.select().from(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.SEASON_ID.eq(seasonID)).fetch();
         List<String> teams = records.getValues(TEAMS_IN_SEASON.TEAM_NAME);
-        for (int i = 0; i < records.size() ; i++) {
+        for (int i = 0; i < records.size(); i++) {
             Result<?> result = create.select().from(TEAM).where(TEAM.NAME.eq(teams.get(i))).fetch();
             List<String> teamName = result.getValues(TEAM.NAME);
             List<TeamStatus> teamStatus = result.getValues(TEAM.STATUS);
-            HashMap<String,String> details = new HashMap<>();
-            details.put("name" , teamName.get(0));
-            details.put("status" , teamStatus.get(0).name());
+            HashMap<String, String> details = new HashMap<>();
+            details.put("name", teamName.get(0));
+            details.put("status", teamStatus.get(0).name());
             teamsDetails.add(details);
         }
-        return  teamsDetails;
+        return teamsDetails;
+    }
+
+
+    private LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+    }
+    @Override
+    public void addStadium(String name, String location) {
+        DSLContext create = DBHandler.getContext();
+        try{
+            create.insertInto(STADIUM , STADIUM.NAME , STADIUM.LOCATION).values(name , location).execute();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }

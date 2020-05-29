@@ -28,7 +28,7 @@ public class TeamOwnerStub extends TeamOwner {
         List<Team> test = new ArrayList<>();
         if (selector == 0 || selector == 66143 || selector == 66144 || selector == 66151 || selector == 66163
                 || selector == 66251) {
-            TeamStub teamStub = new TeamStub(selector);
+            TeamStub teamStub = new TeamStub(selector, true);
             test.add(teamStub);
             teamStub.addTeamOwner(this);
         }
@@ -37,12 +37,12 @@ public class TeamOwnerStub extends TeamOwner {
             return null;
         }else if(selector == 6112)
         {
-            TeamStub teamStub = new TeamStub(6112);
+            TeamStub teamStub = new TeamStub(6112, true);
             test.add(teamStub);
             teamStub.addTeamOwner(this);
         }else if(selector == 6113)
         {
-            TeamStub teamStub = new TeamStub(6113);
+            TeamStub teamStub = new TeamStub(6113, true);
             test.add(teamStub);
             teamStub.addTeamOwner(this);
         }

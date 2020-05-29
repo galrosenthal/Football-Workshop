@@ -32,6 +32,8 @@ public class EntityManager {
 
     private boolean isSystemBooted = false;
 
+
+
     public boolean isLoggedIn() {
         return loggedIn;
     }
@@ -591,6 +593,7 @@ public class EntityManager {
     public boolean addStadium(Stadium stadium) {
         if (!(this.allStadiums.contains(stadium))) {
             this.allStadiums.add(stadium);
+            DBManager.getInstance().addStadium(stadium.getName() , stadium.getLocation());
             return true;
         }
         return false;
@@ -1259,11 +1262,11 @@ public class EntityManager {
 
     }
 
-   /* public boolean removeTeamOwner(TeamOwner teamOwner, Team team) {
+    public boolean removeTeamOwner(TeamOwner teamOwner, Team team) {
         return DBManager.getInstance().removeTeamOwner(teamOwner.getSystemUser().getUsername() , team.getTeamName());
     }
 
-    */
+
 
     public void updateTeamStatus(String teamName, TeamStatus status) {
         DBManager.getInstance().updateTeamStatus(teamName , status.name());
@@ -1278,5 +1281,17 @@ public class EntityManager {
             teams.add(new Team(teamName, teamStatus,false));
         }
         return teams;
+    }
+
+
+    public void cleaAll() {
+        allUsers = new ArrayList<>();
+        allLeagues = new HashSet<>();
+        allTeams = new ArrayList<>();
+        allStadiums = new ArrayList<>();
+        loggedInMap = new HashMap<>();
+        systemAdmins = new ArrayList<>();
+        pointsPolicies = new ArrayList<>();
+        schedulingPolicies = new ArrayList<>();
     }
 }
