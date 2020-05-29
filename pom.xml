@@ -45,12 +45,12 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M4</version>
                 <configuration>
+                    <runOrder>alphabetical</runOrder>
                     <includes>
-<!--                        <include>**/*Test.java</include>-->
-<!--                        <include>**/*Tests.java</include>-->
-                        <include>**/*Testing.java</include>
+                        <include>**/*Test.java</include>
+                        <include>**/*Tests.java</include>
                     </includes>
-                    <skip>false</skip>
+                    <skipTests>false</skipTests>
                 </configuration>
             </plugin>
 
