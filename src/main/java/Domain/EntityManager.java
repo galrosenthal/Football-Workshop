@@ -141,7 +141,7 @@ public class EntityManager {
             for (int i = 0; i < allLeaguesList.size(); i++) {
                 String leagueName = allLeaguesList.get(i);
                 League leagueToAdd = new League(leagueName, false);
-                //TODO: getSeasons
+                //get seasons
                 List<HashMap<String, String>> leagueSeasons = DBManager.getInstance().getLeagueSeasons(leagueName);
                 for (int j = 0; j < leagueSeasons.size(); j++) {
                     HashMap<String, String> seasonDetails = leagueSeasons.get(j);
@@ -154,15 +154,15 @@ public class EntityManager {
                 }
                 leagues.add(leagueToAdd);
             }
-            //
-            if (leagues.isEmpty()) {
-                return new ArrayList<>(this.allLeagues);
-            } else {
-                return leagues;
+            //load leagues
+            for (League leagueFromDB : leagues) {
+                if (!this.allLeagues.contains(leagueFromDB)) {
+                    this.allLeagues.add(leagueFromDB);
+                }
             }
-        } else {
-            return new ArrayList<>(this.allLeagues);
         }
+        //return a copy
+        return new ArrayList<>(this.allLeagues);
     }
 
     public List<Team> getTeams() {
@@ -190,6 +190,7 @@ public class EntityManager {
         HashMap<String/*RoleType*/, List<Pair<String, String>>> rolesDetails = DBManager.getInstance().getUserRoles(username);
         SystemUser systemUser = reCreateSystemUser(userDetails);
         reCreateSystemUserRole(systemUser, rolesDetails);
+
         for (SystemUser su : allUsers) {
             if (su.getUsername().equals(username)) {
                 return su;
@@ -570,12 +571,15 @@ public class EntityManager {
      * @return true if successfully added the League to the system.
      */
     public boolean addLeague(League league) {
-        if (!(this.allLeagues.contains(league))) {
-            this.allLeagues.add(league);
-            return true;
+        if (!(this.allLeagues.contains(league))) { //Verify that the league does not exists in the memory
+            if (!(DBManager.getInstance().doesLeagueExists(league.getName()))) { //Verify that the league does not exists in the DB
+                if (DBManager.getInstance().addLeagueRecord(league.getName())) {
+                    this.allLeagues.add(league);
+                    return true;
+                }
+            }
         }
-        return DBManager.getInstance().addLeagueRecord(league.getName());
-        //return false;
+        return false;
     }
 
 
