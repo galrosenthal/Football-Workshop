@@ -1,5 +1,6 @@
 package Domain.Users;
 
+import Domain.EntityManager;
 import Domain.Game.Team;
 import Service.UIController;
 
@@ -14,14 +15,17 @@ public class Coach extends PartOfTeam {
     public final String qualificationString = "Qualification";
 
     public Coach(SystemUser systemUser, boolean addToDB) {
-        super(RoleTypes.COACH, systemUser, addToDB);
+        super(RoleTypes.COACH, systemUser);
         coachedTeams = new ArrayList<>();
     }
 
     public Coach(SystemUser systemUser, CoachQualification qualification, boolean addToDB) {
-        super(RoleTypes.COACH, systemUser, addToDB);
+        super(RoleTypes.COACH, systemUser);
         coachedTeams = new ArrayList<>();
         this.qualification = qualification;
+        if (addToDB) {
+            EntityManager.getInstance().addRole(this);
+        }
     }
 
     public CoachQualification getQualification() {

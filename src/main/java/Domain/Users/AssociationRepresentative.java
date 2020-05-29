@@ -23,7 +23,10 @@ public class AssociationRepresentative extends Role {
      * @param addToDB    - boolean - Whether to add the new role to the database
      */
     public AssociationRepresentative(SystemUser systemUser, boolean addToDB) {
-        super(RoleTypes.ASSOCIATION_REPRESENTATIVE, systemUser, addToDB);
+        super(RoleTypes.ASSOCIATION_REPRESENTATIVE, systemUser);
+        if (addToDB) {
+            EntityManager.getInstance().addRole(this);
+        }
     }
 
     /**
@@ -54,7 +57,7 @@ public class AssociationRepresentative extends Role {
      * @throws RoleExistsAlreadyException - if the user is already a referee.
      */
     public boolean addReferee(SystemUser newRefereeUser, RefereeQualification training) throws RoleExistsAlreadyException {
-        if (newRefereeUser.getRole(RoleTypes.REFEREE) != null) {
+        if (newRefereeUser.getRole(RoleTypes.REFEREE) != null) { //Check: test this line to see if the re-creation from DB is sufficient
             throw new RoleExistsAlreadyException("Already a referee");
         }
         Referee refereeRole = new Referee(newRefereeUser, training, true);
