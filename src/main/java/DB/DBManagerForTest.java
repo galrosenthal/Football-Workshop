@@ -5,7 +5,7 @@ import DB.Tables_Test.enums.CoachQualification;
 import DB.Tables_Test.enums.RefereeTraining;
 import DB.Tables_Test.enums.TeamStatus;
 import Domain.Exceptions.UserNotFoundException;
-import javafx.util.Pair;
+import Domain.Pair;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Result;

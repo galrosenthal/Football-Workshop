@@ -10,7 +10,7 @@ import DB.Tables.enums.CoachQualification;
 import DB.Tables.enums.RefereeTraining;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Users.TeamManagerPermissions;
-import javafx.util.Pair;
+import Domain.Pair;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Result;
@@ -791,6 +791,48 @@ public class DBManager {
         }
 
 
+    }
+
+    public List<String> getTeamsOwners(String teamName) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(OWNED_TEAMS).where(OWNED_TEAMS.TEAM_NAME.eq(teamName)).fetch();
+        List<String> teamOwners;
+        teamOwners = records.getValues(OWNED_TEAMS.USERNAME);
+        return teamOwners;
+    }
+
+    public boolean removeTeamOwner(String username, String teamName) {
+        DSLContext create = DBHandler.getContext();
+        try {
+            create.deleteFrom(OWNED_TEAMS).where(OWNED_TEAMS.USERNAME.eq(username).and(OWNED_TEAMS.TEAM_NAME.eq(teamName))).execute();
+            if (this.isTeamOwnedOtherTeam(username)) {
+                create.deleteFrom(USER_ROLES).where(USER_ROLES.USERNAME.eq(username).and(USER_ROLES.ROLE_TYPE.eq(UserRolesRoleType.TEAM_OWNER))).execute();
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean isTeamOwnedOtherTeam(String username) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(OWNED_TEAMS).where(OWNED_TEAMS.USERNAME.eq(username)).fetch();
+        if (records.size() != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void updateTeamStatus(String teamName, String status) {
+        try{
+            DSLContext create = DBHandler.getContext();
+            create.update(TEAM).set(TEAM.STATUS, TeamStatus.valueOf(status)).execute();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }
 
