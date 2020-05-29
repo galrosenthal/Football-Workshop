@@ -1181,11 +1181,13 @@ public class EntityManager {
     public boolean isTeamManager(TeamManager teamManager, Team team) {
         return DBManager.getInstance().isTeamManager(teamManager.getSystemUser().getUsername() , team.getTeamName());
     }
-
+/*
     public boolean removeTeamManager(TeamManager teamManager, Team team) {
         return DBManager.getInstance().removeTeamManager(teamManager.getSystemUser().getUsername() , team.getTeamName());
 
     }
+
+ */
 
     public void updateTeamMangerPermission(TeamManager teamManager, List<TeamManagerPermissions> permissions, Team team) {
         List<String> permissionsToUpdate = new ArrayList<>();
@@ -1210,9 +1212,11 @@ public class EntityManager {
 
     }
 
-    public boolean removeTeamOwner(TeamOwner teamOwner, Team team) {
+   /* public boolean removeTeamOwner(TeamOwner teamOwner, Team team) {
         return DBManager.getInstance().removeTeamOwner(teamOwner.getSystemUser().getUsername() , team.getTeamName());
     }
+
+    */
 
     public void updateTeamStatus(String teamName, TeamStatus status) {
         DBManager.getInstance().updateTeamStatus(teamName , status.name());

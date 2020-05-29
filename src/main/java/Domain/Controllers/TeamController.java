@@ -348,7 +348,6 @@ public class TeamController {
         for(Coach coach : teamToClose.getTeamCoaches()){
             coach.removeTeam(teamToClose);
         }
-
         teamToClose.setStatus(TeamStatus.CLOSED);
         return true;
     }

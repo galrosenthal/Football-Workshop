@@ -164,7 +164,8 @@ public class Team {
 
         teamOwners.remove(teamOwner);
         /*update db*/
-        return EntityManager.getInstance().removeTeamOwner(teamOwner,this);
+       // return EntityManager.getInstance().removeTeamOwner(teamOwner,this);
+        return true;
     }
 
     public List<Player> getTeamPlayers() {
@@ -641,13 +642,16 @@ public class Team {
         if (teamManagers.remove(teamManager)) {
             this.permissionsPerTeamManager.remove(teamManager);
             /*DB*/
-            EntityManager.getInstance().removeTeamManager(teamManager , this);
+            //EntityManager.getInstance().removeTeamManager(teamManager , this);
             return true;
         }
+        /*
         else if(EntityManager.getInstance().isTeamManager(teamManager , this))
         {
             return EntityManager.getInstance().removeTeamManager(teamManager , this);
         }
+
+         */
 
         return false;
     }
