@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PlayerInTeam extends TableImpl<PlayerInTeamRecord> {
 
-    private static final long serialVersionUID = 2137858491;
+    private static final long serialVersionUID = 891253327;
 
     /**
      * The reference instance of <code>fwdb.player_in_team</code>
@@ -60,7 +60,7 @@ public class PlayerInTeam extends TableImpl<PlayerInTeamRecord> {
     /**
      * The column <code>fwdb.player_in_team.field_job</code>.
      */
-    public final TableField<PlayerInTeamRecord, PlayerInTeamFieldJob> FIELD_JOB = createField(DSL.name("field_job"), org.jooq.impl.SQLDataType.VARCHAR(11).nullable(false).asEnumDataType(DB.Tables.enums.PlayerInTeamFieldJob.class), this, "");
+    public final TableField<PlayerInTeamRecord, PlayerInTeamFieldJob> FIELD_JOB = createField(DSL.name("field_job"), org.jooq.impl.SQLDataType.VARCHAR(11).defaultValue(org.jooq.impl.DSL.field("NULL", org.jooq.impl.SQLDataType.VARCHAR)).asEnumDataType(DB.Tables.enums.PlayerInTeamFieldJob.class), this, "");
 
     /**
      * Create a <code>fwdb.player_in_team</code> table reference
