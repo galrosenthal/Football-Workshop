@@ -1097,7 +1097,7 @@ public class AcceptanceTests {
         Team firstTeam = new Team("Hapoel Beit Shan", toRole, true);
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole, true);
 
-        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen"),new Date(2001, 01, 01), true);
         firstTeam.addTeamPlayer(toRole,player1);
 
@@ -1133,7 +1133,7 @@ public class AcceptanceTests {
         Team firstTeam = new Team("Hapoel Beit Shan", toRole, true);
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole, true);
 
-        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen"),new Date(2001, 01, 01), true);
         firstTeam.addTeamPlayer(toRole,player1);
 

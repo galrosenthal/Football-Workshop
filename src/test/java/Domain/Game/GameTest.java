@@ -32,7 +32,7 @@ public class GameTest {
     public void setUp() throws Exception {
         firstTeam = new TeamStub(9511);
         secondTeam =  new TeamStub(9512);
-        game = new Game(new StadiumStub("staName", "staLoca"), firstTeam,secondTeam, new Date(2020, 01, 01), null);
+        game = new Game(new StadiumStub("staName", "staLoca"), firstTeam,secondTeam, new Date(2020, 01, 01), null, true);
     }
 
 

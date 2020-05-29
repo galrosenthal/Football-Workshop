@@ -9,6 +9,7 @@ import java.util.*;
 public class Season {
 
     private League league;
+
     private String years; //name
     private List<Team> teams;
     private List<Referee> referees;
@@ -48,6 +49,10 @@ public class Season {
         this.games = new ArrayList<>();
         this.pointsPolicy = pointsPolicy;
         this.isUnderway = isUnderway;
+    }
+
+    public League getLeague() {
+        return league;
     }
 
     /**
@@ -287,6 +292,7 @@ public class Season {
 
     public void setPointsPolicy(PointsPolicy pointsPolicy) {
         this.pointsPolicy = pointsPolicy;
+        EntityManager.getInstance().setPointsPolicy(this, pointsPolicy);
     }
 
     public PointsPolicy getPointsPolicy() {
@@ -326,7 +332,7 @@ public class Season {
         //Create games based on schedule
         for (int i = 0; i < scheduleMatches.size(); i++) {
             ScheduleMatch scheduleMatch = scheduleMatches.get(i);
-            Game game = new Game(scheduleMatch.getStadium(), scheduleMatch.getHomeTeam(), scheduleMatch.getAwayTeam(), scheduleMatch.getMatchDate(), scheduleMatch.getReferees());
+            Game game = new Game(scheduleMatch.getStadium(), scheduleMatch.getHomeTeam(), scheduleMatch.getAwayTeam(), scheduleMatch.getMatchDate(), scheduleMatch.getReferees(), true);
             this.games.add(game);
             for (Referee ref : scheduleMatch.getReferees()) {
                 ref.addGame(game);

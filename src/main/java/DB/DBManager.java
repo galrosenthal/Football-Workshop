@@ -8,9 +8,8 @@ import DB.Tables.enums.UserRolesRoleType;
 
 import DB.Tables.enums.CoachQualification;
 import DB.Tables.enums.RefereeTraining;
+import DB.Tables.tables.RefereeInGame;
 import Domain.Exceptions.UserNotFoundException;
-import Domain.Game.League;
-import Domain.Users.TeamManagerPermissions;
 import Domain.Pair;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -66,7 +65,7 @@ public class DBManager {
     }
 
     /**
-     * @param name
+     * @param teamOwner
      * @return
      */
     public List<Pair<String, String>> getTeams(String teamOwner) {
@@ -198,7 +197,7 @@ public class DBManager {
         DSLContext dslContext = DBHandler.getContext();
         Result<?> result = dslContext.select().
                 from(SEASON)
-                .where(SEASON.LEAGUE_NAME.eq(leagueName)).and(SEASON.YEARS.eq(leagueName)).fetch();
+                .where(SEASON.LEAGUE_NAME.eq(leagueName)).and(SEASON.YEARS.eq(seasonYears)).fetch();
         if (result.isEmpty()) {
             return false;
         }
@@ -643,10 +642,10 @@ public class DBManager {
         Result<?> records = create.select().from(SEASON).where(SEASON.LEAGUE_NAME.eq(leagueName)).fetch();
 
         List<HashMap<String, String>> seasonsDetails = new ArrayList<>();
-        //Add loop
+
         for (int i = 0; i < records.size(); i++) {
+            HashMap<String, String> currentSeasonDetails = new HashMap<>();
             for (int j = 0; j < records.fields().length; j++) {
-                HashMap<String, String> currentSeasonDetails = new HashMap<>();
                 String fieldName = records.get(i).fields()[j].getName();
                 String fieldValue = records.get(i).getValue(fieldName).toString();
                 if (fieldName.equals("points_policy_id")) {
@@ -656,6 +655,7 @@ public class DBManager {
                     currentSeasonDetails.put(fieldName, fieldValue);
                 }
             }
+            seasonsDetails.add(currentSeasonDetails);
         }
         return seasonsDetails;
     }
@@ -670,6 +670,93 @@ public class DBManager {
             pointsPolicyDetails.put(fieldName, fieldValue + "");
         }
         return pointsPolicyDetails;
+    }
+
+    public List<HashMap<String, String>> getRefereeGames(String username) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(REFEREE_IN_GAME.join(GAME).on(GAME.GAME_ID.eq(REFEREE_IN_GAME.GAME_ID))).where(REFEREE_IN_GAME.USERNAME.eq(username)).fetch();
+
+        return getDetailsFromResult(records);
+    }
+
+    public void unAssignRefereeFromAllSeasons(String username) {
+        DSLContext create = DBHandler.getContext();
+        create.delete(REFEREE_IN_SEASON)
+                .where(REFEREE_IN_SEASON.USERNAME.eq(username))
+                .execute();
+    }
+
+    public boolean doesPointsPolicyExists(int victoryPoints, int lossPoints, int tiePoints) {
+        DSLContext dslContext = DBHandler.getContext();
+        Result<?> result = dslContext.select().
+                from(POINTS_POLICY)
+                .where(POINTS_POLICY.VICTORY_POINTS.eq(victoryPoints))
+                .and(POINTS_POLICY.LOSS_POINTS.eq(lossPoints)
+                        .and(POINTS_POLICY.TIE_POINTS.eq(tiePoints))).fetch();
+        if (result.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
+    public List<HashMap<String, String>> getPointsPolicies() {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(POINTS_POLICY).fetch();
+
+        return getDetailsFromResult(records);
+    }
+
+    private List<HashMap<String, String>> getDetailsFromResult(Result<?> records) {
+        List<HashMap<String, String>> pointsPoliciesDetails = new ArrayList<>();
+
+        for (int i = 0; i < records.size(); i++) {
+            HashMap<String, String> currentPointsPoliciesDetails = new HashMap<>();
+            for (int j = 0; j < records.fields().length; j++) {
+                String fieldName = records.get(i).fields()[j].getName();
+                String fieldValue = records.get(i).getValue(fieldName).toString();
+                currentPointsPoliciesDetails.put(fieldName, fieldValue);
+            }
+            pointsPoliciesDetails.add(currentPointsPoliciesDetails);
+        }
+        return pointsPoliciesDetails;
+    }
+
+    public boolean setPointsPolicy(String leagueName, String years, int victoryPoints, int lossPoints, int tiePoints) {
+        DSLContext dslContext = DBHandler.getContext();
+        int pointsPolicyID = getPointsPolicyID(victoryPoints, lossPoints, tiePoints);
+
+        int succeed = dslContext.update(SEASON)
+                .set(SEASON.POINTS_POLICY_ID, pointsPolicyID)
+                .where(SEASON.LEAGUE_NAME.eq(leagueName)).and(SEASON.YEARS.eq(years)).execute();
+        if (succeed == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean doesSchedulingPolicyExists(int gamesPerSeason, int gamesPerDay, int minRest) {
+        DSLContext dslContext = DBHandler.getContext();
+        Result<?> result = dslContext.select().
+                from(SCHEDULING_POLICY)
+                .where(SCHEDULING_POLICY.GAMES_PER_SEASON.eq(gamesPerSeason))
+                .and(SCHEDULING_POLICY.GAMES_PER_DAY.eq(gamesPerDay)
+                        .and(SCHEDULING_POLICY.MINIMUM_REST_DAYS.eq(minRest))).fetch();
+        if (result.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean addSchedulingPolicy(int gamesPerSeason, int gamesPerDay, int minimumRestDays) {
+        DSLContext dslContext = DBHandler.getContext();
+        int succeed = dslContext.insertInto(SCHEDULING_POLICY,
+                SCHEDULING_POLICY.GAMES_PER_SEASON, SCHEDULING_POLICY.GAMES_PER_DAY,
+                SCHEDULING_POLICY.MINIMUM_REST_DAYS)
+                .values(gamesPerSeason, gamesPerDay, minimumRestDays).execute();
+        if (succeed == 0) {
+            return false;
+        }
+        return true;
     }
 
     public int getSeasonId(String name, String years) {
