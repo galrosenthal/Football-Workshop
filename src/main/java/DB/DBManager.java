@@ -8,11 +8,12 @@ import DB.Tables.enums.UserRolesRoleType;
 
 import DB.Tables.enums.CoachQualification;
 import DB.Tables.enums.RefereeTraining;
-import DB.Tables.tables.RefereeInGame;
+import Domain.Exceptions.GameNotFoundException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Pair;
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.Record;
 import org.jooq.Result;
 
 
@@ -676,7 +677,8 @@ public class DBManager {
 
     public List<HashMap<String, String>> getRefereeGames(String username) {
         DSLContext create = DBHandler.getContext();
-        Result<?> records = create.select().from(REFEREE_IN_GAME.join(GAME).on(GAME.GAME_ID.eq(REFEREE_IN_GAME.GAME_ID))).where(REFEREE_IN_GAME.USERNAME.eq(username)).fetch();
+        Result<?> records = create.select().from(REFEREE_IN_GAME.join(GAME).on(GAME.GAME_ID.eq(REFEREE_IN_GAME.GAME_ID))
+                .join(STADIUM).on(STADIUM.STADIUM_ID.eq(GAME.STADIUM_ID))).where(REFEREE_IN_GAME.USERNAME.eq(username)).fetch();
 
         return getDetailsFromResult(records);
     }
@@ -708,10 +710,18 @@ public class DBManager {
         return getDetailsFromResult(records);
     }
 
+    /**
+     * This Function receives records from table
+     * and returns List of Hashmaps of the values.
+     * each hashmap represent a single record (table row)
+     * @param records the records from the table
+     * @return List of hashmaps the represents all the records
+     */
     private List<HashMap<String, String>> getDetailsFromResult(Result<?> records) {
         List<HashMap<String, String>> pointsPoliciesDetails = new ArrayList<>();
 
         for (int i = 0; i < records.size(); i++) {
+            //Each HashMap is equal to a single record or a row in the table
             HashMap<String, String> currentPointsPoliciesDetails = new HashMap<>();
             for (int j = 0; j < records.fields().length; j++) {
                 String fieldName = records.get(i).fields()[j].getName();
@@ -959,6 +969,77 @@ public class DBManager {
         {
             e.printStackTrace();
         }
+    }
+
+    public void addGame(String stadiumName,String stadiumLocation ,String homeTeamName, String awayTeamName, Date gameDate, boolean isFinished) {
+        int stadId = getStadiumId(stadiumName,stadiumLocation);
+        LocalDate gameLocalDate = convertToLocalDateViaInstant(gameDate);
+        DSLContext create = DBHandler.getContext();
+        try{
+            create.insertInto(GAME , GAME.STADIUM_ID , GAME.HOME_TEAM, GAME.AWAY_TEAM, GAME.DATE, GAME.FINISHED)
+                    .values(stadId, homeTeamName, awayTeamName, gameLocalDate, isFinished).execute();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void addGameToReferee(String refereeUsername,String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, Date gameDate, boolean isFinished) {
+        int stadId = getStadiumId(stadiumName,stadiumLocation);
+        LocalDate gameLocalDate = convertToLocalDateViaInstant(gameDate);
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = getGameRecordsByGameParams(homeTeamName, awayTeamName, stadId, gameLocalDate, create);
+
+        if(records.isEmpty())
+        {
+            try{
+                create.insertInto(GAME , GAME.STADIUM_ID , GAME.HOME_TEAM, GAME.AWAY_TEAM, GAME.DATE, GAME.FINISHED)
+                        .values(stadId, homeTeamName, awayTeamName, gameLocalDate, isFinished).execute();
+                records = getGameRecordsByGameParams(homeTeamName, awayTeamName, stadId, gameLocalDate, create);
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        int gameId = records.getValues(GAME.GAME_ID).get(0);
+        try{
+            create.insertInto(REFEREE_IN_GAME , REFEREE_IN_GAME.USERNAME , REFEREE_IN_GAME.GAME_ID)
+                    .values(refereeUsername, gameId).execute();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private Result<Record> getGameRecordsByGameParams(String homeTeamName, String awayTeamName, int stadId, LocalDate gameLocalDate, DSLContext create) {
+        return create.select().from(GAME).where(GAME.DATE.eq(gameLocalDate)
+                .and(GAME.HOME_TEAM.eq(homeTeamName).and(GAME.AWAY_TEAM.eq(awayTeamName)
+                        .and(GAME.STADIUM_ID.eq(stadId))))).fetch();
+    }
+
+    public void removeGameFromReferee(String refereeUsername, String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, Date gameDate, boolean isFinished) throws GameNotFoundException {
+        int stadId = getStadiumId(stadiumName,stadiumLocation);
+        LocalDate gameLocalDate = convertToLocalDateViaInstant(gameDate);
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = getGameRecordsByGameParams(homeTeamName, awayTeamName, stadId, gameLocalDate, create);
+
+        if(records.size() != 1)
+        {
+            throw new GameNotFoundException("Could not find the game by the given params: " + homeTeamName + "," + awayTeamName + "," +  gameLocalDate + "," + stadiumName + "," + stadiumLocation);
+        }
+        int gameId = records.getValues(GAME.GAME_ID).get(0);
+
+        try {
+            create.deleteFrom(REFEREE_IN_GAME).where(REFEREE_IN_GAME.USERNAME.eq(refereeUsername).and(REFEREE_IN_GAME.GAME_ID.eq(gameId)));
+//            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+//            return false;
+        }
+
     }
 }
 

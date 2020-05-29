@@ -10,6 +10,10 @@ import Domain.Users.SystemUser;
 import Domain.Game.Stadium;
 import Domain.Users.*;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1163,14 +1167,37 @@ public class EntityManager {
     public List<Game> getRefereeGames(Referee referee) {
         List<HashMap<String, String>> refereeGamesDetails = DBManager.getInstance().getRefereeGames(referee.getSystemUser().getUsername());
         //TODO: Loop all games and recreate teams using Merav's functions.
-        for (int i = 0; i < refereeGamesDetails.size(); i++) {
-
+        List<Game> allRefereeGames = new ArrayList<>();
+        for (HashMap<String, String> gameRecord :
+                refereeGamesDetails) {
+            Team homeTeam = new Team(gameRecord.get(DB.Tables.tables.Game.GAME.HOME_TEAM.getName()),false);
+            Team awayTeam = new Team(gameRecord.get(DB.Tables.tables.Game.GAME.AWAY_TEAM.getName()),false);
+            Stadium gameStadium = new Stadium(gameRecord.get(DB.Tables.tables.Stadium.STADIUM.NAME.getName()),
+                    gameRecord.get(DB.Tables.tables.Stadium.STADIUM.LOCATION.getName()),false);
+            Date gameDate = getDateFromLocalDate(gameRecord.get(DB.Tables.tables.Game.GAME.DATE));
+            allRefereeGames.add(new Game(gameStadium,homeTeam,awayTeam,gameDate,null,false));
         }
         return null;
     }
 
+    private Date getDateFromLocalDate(String gameDate) {
+        DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+        Date date = null;
+        try {
+            date = format.parse(gameDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
     public void addGame(Game game) {
-//        DBManager.getInstance().addGame(game);
+        Stadium gameStad = game.getStadium();
+        Team homeTeam = game.getHomeTeam();
+        Team awayTeam = game.getAwayTeam();
+        Date gameDate = game.getGameDate();
+        boolean isFinished = game.hasFinished();
+        DBManager.getInstance().addGame(gameStad.getAssetName(),gameStad.getLocation() ,homeTeam.getTeamName(), awayTeam.getTeamName(), gameDate, isFinished);
     }
 
     public HashMap<String, Boolean> getRefereeGamesStatus(Referee referee) {
@@ -1290,5 +1317,24 @@ public class EntityManager {
         allStadiums = new ArrayList<>();
         pointsPolicies = new ArrayList<>();
         schedulingPolicies = new ArrayList<>();
+    }
+
+    public void removeGameFromReferee(String refereeUsername, Game game) throws GameNotFoundException{
+        Stadium gameStad = game.getStadium();
+        Team homeTeam = game.getHomeTeam();
+        Team awayTeam = game.getAwayTeam();
+        Date gameDate = game.getGameDate();
+        boolean isFinished = game.hasFinished();
+        DBManager.getInstance().removeGameFromReferee(refereeUsername,gameStad.getName(),gameStad.getLocation(),homeTeam.getTeamName(),awayTeam.getTeamName(),gameDate,isFinished);
+    }
+
+    public void addGameToReferee(String refereeUsername, Game game) {
+        Stadium gameStad = game.getStadium();
+        Team homeTeam = game.getHomeTeam();
+        Team awayTeam = game.getAwayTeam();
+        Date gameDate = game.getGameDate();
+        boolean isFinished = game.hasFinished();
+        DBManager.getInstance().addGameToReferee(refereeUsername,gameStad.getAssetName(), gameStad.getLocation(), homeTeam.getTeamName(),awayTeam.getTeamName(), gameDate, isFinished);
+
     }
 }

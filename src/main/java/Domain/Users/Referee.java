@@ -1,8 +1,10 @@
 package Domain.Users;
 
 import Domain.EntityManager;
+import Domain.Exceptions.GameNotFoundException;
 import Domain.Game.Game;
 import Domain.Game.Season;
+import Service.UIController;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +14,7 @@ import java.util.Map;
 public class Referee extends Role {
 
     private RefereeQualification training;
-    private List<Game> games;
+//    private List<Game> games;
     private List<Season> seasons;
 
     /**
@@ -25,7 +27,7 @@ public class Referee extends Role {
     public Referee(SystemUser systemUser, RefereeQualification training, boolean addToDB) {
         super(RoleTypes.REFEREE, systemUser);
         this.training = training;
-        this.games = new ArrayList<>();
+//        this.games = new ArrayList<>();
         this.seasons = new ArrayList<>();
         if (addToDB) {
             EntityManager.getInstance().addRole(this);
@@ -74,7 +76,7 @@ public class Referee extends Role {
                 return true;
             }
         }
-        for (Game game : this.games) {
+        for (Game game : getGames()) {
             if (!game.hasFinished()) {
                 return true;
             }
@@ -116,15 +118,22 @@ public class Referee extends Role {
     }
 
     public List<Game> getGames() {
-        return this.games;
+        return EntityManager.getInstance().getRefereeGames(this);
     }
 
     public void addGame(Game game) {
-        this.games.add(game);
-        EntityManager.getInstance().addGame(game);
+//        this.games.add(game);
+        EntityManager.getInstance().addGameToReferee(systemUser.username,game);
     }
 
     public void removeGame(Game game) {
-        this.games.remove(game);
+//        this.games.remove(game);
+        try {
+            EntityManager.getInstance().removeGameFromReferee(systemUser.username,game);
+        } catch (GameNotFoundException e) {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+//            this.games.add(game);
+        }
     }
 }

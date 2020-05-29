@@ -18,11 +18,25 @@ public class Stadium implements Asset{
 
 
 
+    public Stadium(String stadName, String stadLocation, boolean addToDB) {
+        this.stadLocation = stadLocation;
+        this.stadName = stadName;
+        addStadiumToDB(addToDB);
+    }
+
+    private void addStadiumToDB(boolean addToDB)
+    {
+        if(addToDB){
+            EntityManager.getInstance().addStadium(this);
+        }
+    }
+
     public Stadium(String stadName, String stadLocation) {
         this.homeTeams = new ArrayList<>();
         this.stadLocation = stadLocation;
         this.stadName = stadName;
-        EntityManager.getInstance().addStadium(this);
+        addStadiumToDB(true);
+
     }
 
     @Override
