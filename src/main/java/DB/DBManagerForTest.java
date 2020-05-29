@@ -4,10 +4,12 @@ import DB.Tables_Test.enums.UserRolesRoleType;
 import DB.Tables_Test.enums.CoachQualification;
 import DB.Tables_Test.enums.RefereeTraining;
 import DB.Tables_Test.enums.TeamStatus;
+import Domain.Exceptions.GameNotFoundException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Pair;
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.Record;
 import org.jooq.Result;
 
 import java.time.LocalDate;
@@ -603,7 +605,8 @@ public class DBManagerForTest extends DBManager {
     @Override
     public List<HashMap<String, String>> getRefereeGames(String username) {
         DSLContext create = DBHandler.getContext();
-        Result<?> records = create.select().from(REFEREE_IN_GAME.join(GAME).on(GAME.GAME_ID.eq(REFEREE_IN_GAME.GAME_ID))).where(REFEREE_IN_GAME.USERNAME.eq(username)).fetch();
+        Result<?> records = create.select().from(REFEREE_IN_GAME.join(GAME).on(GAME.GAME_ID.eq(REFEREE_IN_GAME.GAME_ID))
+                .join(STADIUM).on(STADIUM.STADIUM_ID.eq(GAME.STADIUM_ID))).where(REFEREE_IN_GAME.USERNAME.eq(username)).fetch();
 
         return getDetailsFromResult(records);
     }
@@ -908,5 +911,80 @@ public class DBManagerForTest extends DBManager {
         {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void addGame(String stadiumName,String stadiumLocation ,String homeTeamName, String awayTeamName, Date gameDate, boolean isFinished) {
+        int stadId = getStadiumId(stadiumName,stadiumLocation);
+        LocalDate gameLocalDate = convertToLocalDateViaInstant(gameDate);
+        DSLContext create = DBHandler.getContext();
+        try{
+            create.insertInto(GAME , GAME.STADIUM_ID , GAME.HOME_TEAM, GAME.AWAY_TEAM, GAME.DATE, GAME.FINISHED)
+                    .values(stadId, homeTeamName, awayTeamName, gameLocalDate, isFinished).execute();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void addGameToReferee(String refereeUsername,String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, Date gameDate, boolean isFinished) {
+        int stadId = getStadiumId(stadiumName,stadiumLocation);
+        LocalDate gameLocalDate = convertToLocalDateViaInstant(gameDate);
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = getGameRecordsByGameParams(homeTeamName, awayTeamName, stadId, gameLocalDate, create);
+
+        if(records.isEmpty())
+        {
+            try{
+                create.insertInto(GAME , GAME.STADIUM_ID , GAME.HOME_TEAM, GAME.AWAY_TEAM, GAME.DATE, GAME.FINISHED)
+                        .values(stadId, homeTeamName, awayTeamName, gameLocalDate, isFinished).execute();
+                records = getGameRecordsByGameParams(homeTeamName, awayTeamName, stadId, gameLocalDate, create);
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        int gameId = records.getValues(GAME.GAME_ID).get(0);
+        try{
+            create.insertInto(REFEREE_IN_GAME , REFEREE_IN_GAME.USERNAME , REFEREE_IN_GAME.GAME_ID)
+                    .values(refereeUsername, gameId).execute();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+    private Result<Record> getGameRecordsByGameParams(String homeTeamName, String awayTeamName, int stadId, LocalDate gameLocalDate, DSLContext create) {
+        return create.select().from(GAME).where(GAME.DATE.eq(gameLocalDate)
+                .and(GAME.HOME_TEAM.eq(homeTeamName).and(GAME.AWAY_TEAM.eq(awayTeamName)
+                        .and(GAME.STADIUM_ID.eq(stadId))))).fetch();
+    }
+
+    @Override
+    public void removeGameFromReferee(String refereeUsername, String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, Date gameDate, boolean isFinished) throws GameNotFoundException {
+        int stadId = getStadiumId(stadiumName,stadiumLocation);
+        LocalDate gameLocalDate = convertToLocalDateViaInstant(gameDate);
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = getGameRecordsByGameParams(homeTeamName, awayTeamName, stadId, gameLocalDate, create);
+
+        if(records.size() != 1)
+        {
+            throw new GameNotFoundException("Could not find the game by the given params: " + homeTeamName + "," + awayTeamName + "," +  gameLocalDate + "," + stadiumName + "," + stadiumLocation);
+        }
+        int gameId = records.getValues(GAME.GAME_ID).get(0);
+
+        try {
+            create.deleteFrom(REFEREE_IN_GAME).where(REFEREE_IN_GAME.USERNAME.eq(refereeUsername).and(REFEREE_IN_GAME.GAME_ID.eq(gameId)));
+//            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+//            return false;
+        }
+
     }
 }
