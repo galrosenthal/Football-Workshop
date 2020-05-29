@@ -8,7 +8,6 @@ import DB.Tables.enums.UserRolesRoleType;
 
 import DB.Tables.enums.CoachQualification;
 import DB.Tables.enums.RefereeTraining;
-import DB.Tables.tables.RefereeInGame;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Pair;
 import org.jooq.DSLContext;
@@ -872,7 +871,7 @@ public class DBManager {
             create.update(MANAGER_IN_TEAMS).set(row(MANAGER_IN_TEAMS.REMOVE_PLAYER, MANAGER_IN_TEAMS.ADD_PLAYER,
                     MANAGER_IN_TEAMS.CHANGE_POSITION_PLAYER, MANAGER_IN_TEAMS.REMOVE_COACH, MANAGER_IN_TEAMS.ADD_COACH,
                     MANAGER_IN_TEAMS.CHANGE_TEAM_JOB_COACH), row(remove_player, add_player, change_position_player,
-                    remove_coach, add_coach ,change_team_job_coach )).where(MANAGER_IN_TEAMS.TEAM_NAME.eq(teamName)
+                    remove_coach, add_coach, change_team_job_coach)).where(MANAGER_IN_TEAMS.TEAM_NAME.eq(teamName)
                     .and(MANAGER_IN_TEAMS.USERNAME.eq(username))).execute();
         } catch (Exception e) {
             e.printStackTrace();
@@ -914,32 +913,31 @@ public class DBManager {
     }
 
     public void updateTeamStatus(String teamName, String status) {
-        try{
+        try {
             DSLContext create = DBHandler.getContext();
             create.update(TEAM).set(TEAM.STATUS, TeamStatus.valueOf(status)).execute();
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
     public List<HashMap<String, String>> getTeamsPerSeason(String years, String league) {
-        int seasonID = this.getSeasonId(league,years);
+        int seasonID = this.getSeasonId(league, years);
         List<HashMap<String, String>> teamsDetails = new ArrayList<>();
         DSLContext create = DBHandler.getContext();
         Result<?> records = create.select().from(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.SEASON_ID.eq(seasonID)).fetch();
         List<String> teams = records.getValues(TEAMS_IN_SEASON.TEAM_NAME);
-        for (int i = 0; i < records.size() ; i++) {
+        for (int i = 0; i < records.size(); i++) {
             Result<?> result = create.select().from(TEAM).where(TEAM.NAME.eq(teams.get(i))).fetch();
             List<String> teamName = result.getValues(TEAM.NAME);
             List<TeamStatus> teamStatus = result.getValues(TEAM.STATUS);
-            HashMap<String,String> details = new HashMap<>();
-            details.put("name" , teamName.get(0));
-            details.put("status" , teamStatus.get(0).name());
+            HashMap<String, String> details = new HashMap<>();
+            details.put("name", teamName.get(0));
+            details.put("status", teamStatus.get(0).name());
             teamsDetails.add(details);
         }
-        return  teamsDetails;
+        return teamsDetails;
     }
 }
 
