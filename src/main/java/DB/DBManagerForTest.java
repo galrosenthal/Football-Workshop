@@ -376,8 +376,14 @@ public class DBManagerForTest extends DBManager {
         DSLContext create = DBHandler.getContext();
         if (!(hasRole(username, "PLAYER"))) {
 
-            create.insertInto(USER_ROLES, USER_ROLES.USERNAME, USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.PLAYER).execute();
-            create.insertInto(PLAYER, PLAYER.USERNAME, PLAYER.BIRTHDAY).values(username, this.convertToLocalDateViaInstant(bday)).execute();
+            try {
+                create.insertInto(USER_ROLES, USER_ROLES.USERNAME, USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.PLAYER).execute();
+                create.insertInto(PLAYER, PLAYER.USERNAME, PLAYER.BIRTHDAY).values(username, this.convertToLocalDateViaInstant(bday)).execute();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -398,8 +404,13 @@ public class DBManagerForTest extends DBManager {
     public void addTeamManager(String username) {
         DSLContext create = DBHandler.getContext();
         if (!(hasRole(username, "TEAM_MANAGER"))) {
-            create.insertInto(USER_ROLES, USER_ROLES.USERNAME, USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.TEAM_MANAGER).execute();
-            create.insertInto(TEAM_MANAGER, TEAM_MANAGER.USERNAME).values(username).execute();
+            try {
+                create.insertInto(USER_ROLES, USER_ROLES.USERNAME, USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.TEAM_MANAGER).execute();
+                create.insertInto(TEAM_MANAGER, TEAM_MANAGER.USERNAME).values(username).execute();
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 

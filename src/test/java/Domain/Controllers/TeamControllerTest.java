@@ -451,8 +451,8 @@ public class TeamControllerTest {
 
         TeamController.addTeamOwner("oranSh", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
         Assert.assertEquals(((TeamOwner) teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER)).getOwnedTeams().get(0), hapoelBash);
-        Assert.assertEquals(hapoelBash.getTeamOwners().get(0), ((TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER)));
-        Assert.assertEquals(hapoelBash.getTeamOwners().get(1), ((TeamOwner) teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER)));
+        Assert.assertTrue(hapoelBash.getTeamOwners().contains((TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER)));
+        Assert.assertTrue(hapoelBash.getTeamOwners().contains ((TeamOwner) teamOwnerToAdd.getRole(RoleTypes.TEAM_OWNER)));
     }
 
 
@@ -475,7 +475,6 @@ public class TeamControllerTest {
         Assert.assertEquals(4, hapoelBash.getTeamOwners().size());
 
         TeamController.removeTeamOwner("oranShich", hapoelBash, (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER));
-
         Assert.assertEquals(0, hapoelBash.getTeamOwners().size());
     }
 

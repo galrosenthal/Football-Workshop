@@ -220,7 +220,8 @@ public class TeamManager extends Role implements Asset {
     }
 
     public List<Team> getTeamsManaged() {
-        List<Team> allTeams = new ArrayList<>(managedTeamsAndAppointed.keySet());
+        //List<Team> allTeams = new ArrayList<>(managedTeamsAndAppointed.keySet());
+        List<Team> allTeams = EntityManager.getInstance().getTeamsManaged(this);
         return allTeams;
     }
 

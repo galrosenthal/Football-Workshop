@@ -11,6 +11,7 @@ import DB.Tables.enums.RefereeTraining;
 import DB.Tables.tables.RefereeInGame;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Pair;
+import Domain.Users.SystemUser;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Result;
@@ -958,6 +959,23 @@ public class DBManager {
         {
             e.printStackTrace();
         }
+    }
+
+    public List<HashMap<String, String>> getTeamManaged(String systemUser) {
+        List<HashMap<String, String>> teamsDetails = new ArrayList<>();
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(MANAGER_IN_TEAMS).where(MANAGER_IN_TEAMS.USERNAME.eq(systemUser)).fetch();
+        List<String> teams = records.getValues(MANAGER_IN_TEAMS.TEAM_NAME);
+        for (int i = 0; i < records.size() ; i++) {
+            Result<?> result = create.select().from(TEAM).where(TEAM.NAME.eq(teams.get(i))).fetch();
+            List<String> teamName = result.getValues(TEAM.NAME);
+            List<TeamStatus> teamStatus = result.getValues(TEAM.STATUS);
+            HashMap<String,String> details = new HashMap<>();
+            details.put("name" , teamName.get(0));
+            details.put("status" , teamStatus.get(0).name());
+            teamsDetails.add(details);
+        }
+        return  teamsDetails;
     }
 }
 

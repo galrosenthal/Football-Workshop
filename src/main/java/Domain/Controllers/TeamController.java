@@ -479,6 +479,9 @@ public class TeamController {
         for (TeamOwner toRemove:
                 teamOwnersToRemove) {
             team.removeTeamOwner(toRemove);
+            toRemove.removeTeamOwned(team);
+            /*update db*/
+            EntityManager.getInstance().removeTeamOwner(toRemove,team);
             //Log the action
             SystemLoggerManager.logInfo(TeamController.class,
                     new RemoveTeamOwnerLogMsg(username,toRemove.getSystemUser().getUsername(), team.getTeamName()));

@@ -2,6 +2,7 @@ package Domain.Users;
 
 import Domain.EntityManager;
 
+import java.util.Date;
 import java.util.List;
 
 public class SystemUserStub extends SystemUser{
@@ -76,11 +77,11 @@ public class SystemUserStub extends SystemUser{
             return getRoles().get(0);
         }else if(selector == 6112)
         {
-            return new Player(this,null, true);
+            return new Player(this,new Date(), true);
         }
         else if(selector == 6116)
         {
-            PlayerStub p = new PlayerStub(this,null);
+            PlayerStub p = new PlayerStub(this,new Date());
             p.setSelector(0);
             return p;
         }

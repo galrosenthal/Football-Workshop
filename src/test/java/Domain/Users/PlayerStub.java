@@ -11,7 +11,7 @@ public class PlayerStub extends Player{
     private List<Team> teamsOfTest;
 
     public PlayerStub(SystemUser systemUser) {
-        this(systemUser, null);
+        this(systemUser, new Date());
     }
 
     public PlayerStub(SystemUser user, Date bdate) {

@@ -11,6 +11,9 @@ import Domain.Game.Stadium;
 import Domain.Users.*;
 import org.omg.CORBA.DynAnyPackage.Invalid;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -248,7 +251,15 @@ public class EntityManager {
             if (rolesDetail.get(i).getKey().equals("username")) {
                 username = rolesDetail.get(i).getValue();
             } else if (rolesDetail.get(i).getKey().equals("birthday")) {
-                bday = new Date(rolesDetail.get(i).getValue());
+                String string = rolesDetail.get(i).getValue();
+                DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                Date date = null;
+                try {
+                    date = format.parse(string);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                bday = date;
             }
         }
         Player player = new Player(systemUser, bday, false);
@@ -1293,5 +1304,17 @@ public class EntityManager {
         systemAdmins = new ArrayList<>();
         pointsPolicies = new ArrayList<>();
         schedulingPolicies = new ArrayList<>();
+    }
+
+    public List<Team> getTeamsManaged(TeamManager teamManager) {
+        List<HashMap<String,String>> teams = DBManager.getInstance().getTeamManaged(teamManager.getSystemUser().getUsername());
+        List<Team> teamsManaged = new ArrayList<>();
+        for (int i = 0; i < teams.size(); i++) {
+            String teamName = teams.get(i).get("name");
+            TeamStatus teamStatus = TeamStatus.valueOf(teams.get(i).get("status"));
+            teamsManaged.add(new Team(teamName, teamStatus,false));
+        }
+        return teamsManaged;
+
     }
 }
