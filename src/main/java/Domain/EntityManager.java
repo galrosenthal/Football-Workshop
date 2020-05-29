@@ -1332,7 +1332,7 @@ public class EntityManager {
     }
 
     public List<Stadium> getStadiumsInTeam(Team team) {
-        List<HashMap<String,String>> stadiumsDetails = DBManager.getStadiumsInTeam(team.getTeamName());
+        List<HashMap<String,String>> stadiumsDetails = DBManager.getInstance().getStadiumsInTeam(team.getTeamName());
         List<Stadium> stadiums = new ArrayList<>();
         for (int i = 0; i < stadiumsDetails.size(); i++) {
             String stadiumName = stadiumsDetails.get(i).get("name");

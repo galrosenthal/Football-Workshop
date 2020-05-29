@@ -989,7 +989,7 @@ public class DBManager {
 
 
 
-    public static List<HashMap<String, String>> getStadiumsInTeam(String teamName) {
+    public List<HashMap<String, String>> getStadiumsInTeam(String teamName) {
 
         List<HashMap<String, String>> stadiums = new ArrayList<>();
         DSLContext create = DBHandler.getContext();

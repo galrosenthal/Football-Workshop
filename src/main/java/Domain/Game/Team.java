@@ -184,7 +184,6 @@ public class Team {
         return true;
     }
 
-    /*TODO: DB*/
     public List<Player> getTeamPlayers() {
         /*List<Player> allPlayersInTeam = new ArrayList<>();
 
@@ -199,7 +198,6 @@ public class Team {
         List<Player> allPlayersInTeam = EntityManager.getInstance().getAllPlayersInTeam(this);
         return allPlayersInTeam;
     }
-    /*TODO: DB*/
     public List<Coach> getTeamCoaches() {
         /*
         List<Coach> allPlayersInTeam = new ArrayList<>();
