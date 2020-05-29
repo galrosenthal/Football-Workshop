@@ -1,6 +1,6 @@
 -- MariaDB dump 10.17  Distrib 10.4.13-MariaDB, for Win64 (AMD64)
 --
--- Host: localhost    Database: fwdb
+-- Host: localhost    Database: fwdb_test
 -- ------------------------------------------------------
 -- Server version	10.4.13-MariaDB
 
@@ -116,6 +116,31 @@ LOCK TABLES `coach_in_team` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `error_log`
+--
+
+DROP TABLE IF EXISTS `error_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `error_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `DATE` datetime NOT NULL,
+  `level` varchar(50) NOT NULL,
+  `message` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `error_log`
+--
+
+LOCK TABLES `error_log` WRITE;
+/*!40000 ALTER TABLE `error_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `error_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `event_card`
 --
 
@@ -207,6 +232,36 @@ CREATE TABLE `event_injury` (
 LOCK TABLES `event_injury` WRITE;
 /*!40000 ALTER TABLE `event_injury` DISABLE KEYS */;
 /*!40000 ALTER TABLE `event_injury` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `event_log`
+--
+
+DROP TABLE IF EXISTS `event_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `event_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` datetime NOT NULL,
+  `class` varchar(50) NOT NULL,
+  `level` varchar(50) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `action` varchar(50) NOT NULL,
+  `message` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_event_log_systemuser` (`username`),
+  CONSTRAINT `FK_event_log_systemuser` FOREIGN KEY (`username`) REFERENCES `systemuser` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `event_log`
+--
+
+LOCK TABLES `event_log` WRITE;
+/*!40000 ALTER TABLE `event_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `event_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -732,7 +787,7 @@ DROP TABLE IF EXISTS `systemuser`;
 CREATE TABLE `systemuser` (
   `username` varchar(50) NOT NULL,
   `name` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL,
+  `password` varchar(100) NOT NULL,
   `email` varchar(50) NOT NULL,
   `notify_by_email` bit(1) NOT NULL,
   PRIMARY KEY (`username`)
@@ -911,5 +966,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-
--- Dump completed on 2020-05-22 17:55:32
+-- Dump completed on 2020-05-29 19:03:19
