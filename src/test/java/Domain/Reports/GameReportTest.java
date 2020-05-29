@@ -35,7 +35,7 @@ public class GameReportTest {
         referees.add(new RefereeStub(new SystemUser("a","a","a","@",false, true), RefereeQualification.VAR_REFEREE));
         referees.add(new RefereeStub(new SystemUser("b","b","b","@",false, true),RefereeQualification.VAR_REFEREE));
         referees.add(new RefereeStub(new SystemUser("c","c","c","@",false, true),RefereeQualification.VAR_REFEREE));
-        game = new Game(new StadiumStub("staName", "staLoca"), firstTeam,secondTeam, new Date(2020, 01, 01), referees);
+        game = new Game(new StadiumStub("staName", "staLoca"), firstTeam,secondTeam, new Date(2020, 01, 01), referees, true);
         gameReport = new GameReport(game);
     }
 

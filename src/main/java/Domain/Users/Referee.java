@@ -5,7 +5,9 @@ import Domain.Game.Game;
 import Domain.Game.Season;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Referee extends Role {
 
@@ -54,7 +56,29 @@ public class Referee extends Role {
      * @return - true if the referee is connected to future games.
      */
     public boolean hasFutureGames() {
-        //TODO:Checks if the referee has future games to judge.
+        /*
+        if (this.games.isEmpty()) {
+
+            //Pull games from DB
+            List<Game> refereeGames = EntityManager.getInstance().getRefereeGames(this);
+            for (Game game : refereeGames) {
+                if (!this.games.contains(game)) {
+                    this.games.add(game);
+                }
+            }
+        }
+        */
+        HashMap<String, Boolean> gamesStatus = EntityManager.getInstance().getRefereeGamesStatus(this);
+        for (Map.Entry<String, Boolean> hasGameFinished : gamesStatus.entrySet()) {
+            if (!hasGameFinished.getValue()) {
+                return true;
+            }
+        }
+        for (Game game : this.games) {
+            if (!game.hasFinished()) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -65,6 +89,7 @@ public class Referee extends Role {
         for (Season season : this.seasons) {
             season.unAssignReferee(this);
         }
+        EntityManager.getInstance().unAssignRefereeFromAllSeasons(this);
         this.seasons = new ArrayList<>();
     }
 

@@ -135,7 +135,7 @@ public class EntityManager {
 
 
     public List<League> getLeagues() {
-        if (this.allLeagues.isEmpty()) {
+        if (this.allLeagues.isEmpty()) {//TODO: Replace with a function that checks if additional records should be pulled from the DB
             List<String> allLeaguesList = DBManager.getInstance().getLeagues();
             List<League> leagues = new ArrayList<>();
             for (int i = 0; i < allLeaguesList.size(); i++) {
@@ -862,7 +862,7 @@ public class EntityManager {
                 return true;
             }
         }
-        return false;
+        return DBManager.getInstance().doesPointsPolicyExists(victoryPoints, lossPoints, tiePoints);
     }
 
     /**
@@ -897,7 +897,20 @@ public class EntityManager {
     }
 
     public List<PointsPolicy> getPointsPolicies() {
-        return this.pointsPolicies;
+        if (this.pointsPolicies.isEmpty()) { //TODO: Replace with a function that checks if additional records should be pulled from the DB
+            List<HashMap<String, String>> pointsPoliciesFromDB = DBManager.getInstance().getPointsPolicies();
+
+            for (HashMap<String, String> pointsPolicyDetails : pointsPoliciesFromDB) {
+                int victoryPoints = Integer.parseInt(pointsPolicyDetails.get("victory_points"));
+                int lossPoints = Integer.parseInt(pointsPolicyDetails.get("loss_points"));
+                int tiePoints = Integer.parseInt(pointsPolicyDetails.get("tie_points"));
+                PointsPolicy currentPointsPolicy = new PointsPolicy(victoryPoints, lossPoints, tiePoints);
+                if (!this.pointsPolicies.contains(currentPointsPolicy)) {
+                    this.pointsPolicies.add(currentPointsPolicy);
+                }
+            }
+        }
+        return new ArrayList<>(this.pointsPolicies);
     }
 
     /**
@@ -1144,5 +1157,39 @@ public class EntityManager {
     public boolean addTeamOwnerToTeam(TeamOwner teamOwner, Team team) {
         return DBManager.getInstance().addTeamOwnerToTeam(teamOwner.getSystemUser().getUsername(), team.getTeamName());
 
+    }
+
+    public List<Game> getRefereeGames(Referee referee) {
+        List<HashMap<String, String>> refereeGamesDetails = DBManager.getInstance().getRefereeGames(referee.getSystemUser().getUsername());
+        //TODO: Loop all games and recreate teams using Merav's functions.
+        for (int i = 0; i < refereeGamesDetails.size(); i++) {
+
+        }
+        return null;
+    }
+
+    public void addGame(Game game) {
+        //TODO:!!!
+    }
+
+    public HashMap<String, Boolean> getRefereeGamesStatus(Referee referee) {
+        List<HashMap<String, String>> refereeGamesDetails = DBManager.getInstance().getRefereeGames(referee.getSystemUser().getUsername());
+        HashMap<String, Boolean> gamesStatus = new HashMap<>();
+        for (int i = 0; i < refereeGamesDetails.size(); i++) {
+            if (refereeGamesDetails.get(i).get("finished").equals("true")) {
+                gamesStatus.put(refereeGamesDetails.get(i).get("game_id"), new Boolean(true));
+            } else {
+                gamesStatus.put(refereeGamesDetails.get(i).get("game_id"), new Boolean(false));
+            }
+        }
+        return gamesStatus;
+    }
+
+    public void unAssignRefereeFromAllSeasons(Referee referee) {
+        DBManager.getInstance().unAssignRefereeFromAllSeasons(referee.getSystemUser().getUsername());
+    }
+
+    public boolean setPointsPolicy(Season season, PointsPolicy pointsPolicy) {
+        return DBManager.getInstance().setPointsPolicy(season.getLeague().getName(), season.getYears(), pointsPolicy.getVictoryPoints(), pointsPolicy.getLossPoints(), pointsPolicy.getTiePoints());
     }
 }

@@ -50,7 +50,7 @@ public class RefereeControllerTest {
 
         Team firstTeam = new TeamStub(9511);
         Team secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         game.setEndDate(new Date()); // end the game, for the test
 
         game.addReferee(referee);
@@ -67,7 +67,7 @@ public class RefereeControllerTest {
 
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
         Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
         firstTeam.addPlayer(player1);
@@ -97,7 +97,7 @@ public class RefereeControllerTest {
 
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
         Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
         firstTeam.addPlayer(player1);
@@ -143,7 +143,7 @@ public class RefereeControllerTest {
 
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         Player player1 = new PlayerStub(new SystemUserStub("AviCohen", "Name1", 10312));
         Player player2 = new PlayerStub(new SystemUserStub("UserName2", "Name2", 0));
         firstTeam.addPlayer(player1);
@@ -198,7 +198,7 @@ public class RefereeControllerTest {
 
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
         Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
         firstTeam.addPlayer(player1);
@@ -229,7 +229,7 @@ public class RefereeControllerTest {
 
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0 ));
         Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
         firstTeam.addPlayer(player1);
@@ -260,7 +260,7 @@ public class RefereeControllerTest {
 
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0 ));
         Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
         firstTeam.addPlayer(player1);
@@ -290,7 +290,7 @@ public class RefereeControllerTest {
 
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0 ));
         Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
         firstTeam.addPlayer(player1);
@@ -320,7 +320,7 @@ public class RefereeControllerTest {
 
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
         Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",10312 ));
         firstTeam.addPlayer(player1);
@@ -356,7 +356,7 @@ public class RefereeControllerTest {
 
         TeamStub firstTeam = new TeamStub(9511);
         TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
         Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
         firstTeam.addPlayer(player1);
@@ -390,7 +390,7 @@ public class RefereeControllerTest {
         Team firstTeam = new Team("Hapoel Beit Shan", toRole);
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
 
-        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         Player player1 = new Player(new SystemUser("AviCohen","Name1"),new Date(2001, 01, 01), true);
         firstTeam.addTeamPlayer(toRole,player1);
 
@@ -430,7 +430,7 @@ public class RefereeControllerTest {
 
         Team firstTeam = new TeamStub(9511);
         Team secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
 
         game.addReferee(referee);
         referee.addGame(game);
@@ -446,7 +446,7 @@ public class RefereeControllerTest {
 
         Team firstTeam = new TeamStub(9511);
         Team secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         game.setEndDate(new Date()); // end the game, for the test
 
         game.addReferee(referee);

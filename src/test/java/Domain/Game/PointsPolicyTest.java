@@ -45,7 +45,7 @@ public class PointsPolicyTest {
 
     @Test
     public void getPointsITest() {
-        Game game = new Game(new StadiumStub("staName", "staLoca"), new TeamStub(9511), new TeamStub(9512), new Date(2020, 01, 01), null);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), new TeamStub(9511), new TeamStub(9512), new Date(2020, 01, 01), null, true);
         try {
             game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
                     new PlayerStub(new SystemUserStub("a", "a",555)),1);
@@ -58,7 +58,7 @@ public class PointsPolicyTest {
 
     @Test
     public void getPoints2ITest() {
-        Game game = new Game(new StadiumStub("staName", "staLoca"), new TeamStub(9511), new TeamStub(9512), new Date(2020, 01, 01), null);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), new TeamStub(9511), new TeamStub(9512), new Date(2020, 01, 01), null, true);
         try {
             game.addGoal(game.getAwayTeam(),game.getHomeTeam(),
                     new PlayerStub(new SystemUserStub("a", "a",555)),1);
@@ -71,7 +71,7 @@ public class PointsPolicyTest {
 
     @Test
     public void getPoints3ITest() {
-        Game game = new Game(new StadiumStub("staName", "staLoca"), new TeamStub(9511), new TeamStub(9512), new Date(2020, 01, 01), null);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), new TeamStub(9511), new TeamStub(9512), new Date(2020, 01, 01), null, true);
         Points points = pointsPolicy.getPoints(game);
         assertEquals(points.getHomeTeamPoints(),1);
         assertEquals(points.getAwayTeamPoints(),1);

@@ -556,13 +556,6 @@ public class ARController {
         String lossPointsString = selectedPointsArray[1];
         String tiePointsString = selectedPointsArray[2];
 
-        /*
-        if (!validateStringIsInteger(victoryPointsString)
-                || !validateStringIsInteger(lossPointsString)
-                || !validateStringIsInteger(tiePointsString)) {
-            UIController.showNotification("error, invalid input. Please enter valid inputs.");
-            return false;
-        }*/
         //Because the nature of receiveStringFromMultipleInputs we know that the inputs are legal
         int victoryPoints = Integer.parseInt(victoryPointsString);
         int lossPoints = Integer.parseInt(lossPointsString);
