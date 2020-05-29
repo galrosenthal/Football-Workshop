@@ -23,6 +23,7 @@ jobs:
           # --character-set-server - The character set of MySQL server
           character set server: 'utf8mb4'# optional, default is utf8mb4
           # MYSQL_ROOT_PASSWORD - root superuser password ??????
+          mysql root password: 'foot123Ball!'
           # MYSQL_DATABASE - name for the default database that is created
           mysql database: 'fwdb_test' # optional, default is
       - uses: actions/checkout@v2
