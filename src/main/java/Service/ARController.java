@@ -415,14 +415,13 @@ public class ARController {
                 //Log the action
                 SystemLoggerManager.logInfo(ARController.class,
                         new AddTeamsToSeason(systemUser.getUsername(),
-                        ""+chosenTeams.size(),currLeagueSeason.getYears(), chosenLeague.getName() ));
-            }
-            else {  // "remove"
+                                "" + chosenTeams.size(), currLeagueSeason.getYears(), chosenLeague.getName()));
+            } else {  // "remove"
                 UIController.showNotification("The teams have been successfully removed from the league's latest season");
                 //Log the action
                 SystemLoggerManager.logInfo(ARController.class,
                         new RemoveTeamsFromSeason(systemUser.getUsername(),
-                        ""+chosenTeams.size(),currLeagueSeason.getYears(), chosenLeague.getName() ));
+                                "" + chosenTeams.size(), currLeagueSeason.getYears(), chosenLeague.getName()));
             }
         }
         return succeeded;
@@ -471,8 +470,7 @@ public class ARController {
                 String msg = "There are no teams that do not belong already to the chosen league's latest season";
                 SystemLoggerManager.logError(ARController.class, msg);
                 throw new Exception(msg);
-            }
-            else{ //"in season"
+            } else { //"in season"
                 String msg = "There are no teams that belong to the chosen league's latest season";
                 SystemLoggerManager.logError(ARController.class, msg);
                 throw new Exception(msg);
@@ -550,7 +548,7 @@ public class ARController {
         String msg = "Select points for VICTORY;Select points for LOSS;" +
                 "Select points for TIE";
         String selectedPoints = UIController.receiveStringFromMultipleInputs(msg
-        ,getListOfNumbersBetweenRange(1,20),getListOfNumbersBetweenRange(-20,20), getListOfNumbersBetweenRange(-20,20));
+                , getListOfNumbersBetweenRange(1, 20), getListOfNumbersBetweenRange(-20, 20), getListOfNumbersBetweenRange(-20, 20));
         String[] selectedPointsArray = selectedPoints.split(";");
         String victoryPointsString = selectedPointsArray[0];
         String lossPointsString = selectedPointsArray[1];
@@ -614,7 +612,7 @@ public class ARController {
         UIController.showNotification("The chosen points policy was set successfully");
         //Log the action
         SystemLoggerManager.logInfo(ARController.class,
-                new SetPointsPolicyLogMsg(systemUser.getUsername(),chosenSeason.getYears(), chosenLeague.getName()));
+                new SetPointsPolicyLogMsg(systemUser.getUsername(), chosenSeason.getYears(), chosenLeague.getName()));
         return true;
     }
 
@@ -634,18 +632,12 @@ public class ARController {
                 "Select maximum number of games on the same day;" +
                 "Select minimum rest days between games";
         String selectedParams = UIController.receiveStringFromMultipleInputs(msg
-        , getListOfNumbersBetweenRange(1,6), getListOfNumbersBetweenRange(1,40), getListOfNumbersBetweenRange(0, 30));
+                , getListOfNumbersBetweenRange(1, 6), getListOfNumbersBetweenRange(1, 40), getListOfNumbersBetweenRange(0, 30));
         String[] selectedParamsArray = selectedParams.split(";");
         String gamesPerSeasonString = selectedParamsArray[0];
         String gamesPerDayString = selectedParamsArray[1];
         String minRestString = selectedParamsArray[2];
 
-      /*  if (!validateStringIsInteger(gamesPerSeasonString)
-                || !validateStringIsInteger(gamesPerDayString)
-                || !validateStringIsInteger(minRestString)) {
-            UIController.showNotification("error, invalid input. Please enter valid inputs.");
-            return false;
-        }*/
         //Because the nature of receiveStringFromMultipleInputs we know that the inputs are legal
         int gamesPerSeason = Integer.parseInt(gamesPerSeasonString);
         int gamesPerDay = Integer.parseInt(gamesPerDayString);
@@ -705,12 +697,11 @@ public class ARController {
             Date startDate = new SimpleDateFormat("dd/MM/yyyy").parse(selectedDate);
 
             ARRole.activateSchedulingPolicy(chosenSeason, schedulingPolicy, startDate);
-        } catch (ParseException pe)
-        {
+        } catch (ParseException pe) {
             pe.printStackTrace();
             UIController.showNotification("Wrong Date, please try again");
             return false;
-        }catch (Exception e) {
+        } catch (Exception e) {
             UIController.showNotification(e.getMessage());
             return false;
         }
@@ -718,8 +709,8 @@ public class ARController {
         UIController.showNotification("The chosen schedule policy was activated successfully");
         //Log the action
         SystemLoggerManager.logInfo(ARController.class,
-                new ActivateSchedulingPolicyLogMsg(systemUser.getUsername(),chosenSeason.getYears(),
-                        chosenLeague.getName(), ""+chosenSeason.getGames().size()));
+                new ActivateSchedulingPolicyLogMsg(systemUser.getUsername(), chosenSeason.getYears(),
+                        chosenLeague.getName(), "" + chosenSeason.getGames().size()));
         return true;
     }
 
@@ -739,10 +730,10 @@ public class ARController {
         return schedulingPolicies.get(index);
     }
 
-    private static List<String> getListOfNumbersBetweenRange(int startingNumber, int endingNumber){
+    private static List<String> getListOfNumbersBetweenRange(int startingNumber, int endingNumber) {
         List<String> list = new ArrayList<>();
-        for(int i = startingNumber; i <= endingNumber; i++){
-            list.add(""+i);
+        for (int i = startingNumber; i <= endingNumber; i++) {
+            list.add("" + i);
         }
         return list;
     }

@@ -927,7 +927,7 @@ public class EntityManager {
                 return true;
             }
         }
-        return false;
+        return DBManager.getInstance().doesSchedulingPolicyExists(gamesPerSeason, gamesPerDay, minRest);
     }
 
     /**
@@ -956,7 +956,7 @@ public class EntityManager {
     public void addSchedulingPolicy(SchedulingPolicy newSchedulingPolicy) {
         if (newSchedulingPolicy != null) {
             this.schedulingPolicies.add(newSchedulingPolicy);
-            //TODO: Update DB?
+            DBManager.getInstance().addSchedulingPolicy(newSchedulingPolicy.getGamesPerSeason(), newSchedulingPolicy.getGamesPerDay(), newSchedulingPolicy.getMinimumRestDays());
         }
     }
 

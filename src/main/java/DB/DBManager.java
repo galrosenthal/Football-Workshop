@@ -734,5 +734,30 @@ public class DBManager {
         }
         return true;
     }
+
+    public boolean doesSchedulingPolicyExists(int gamesPerSeason, int gamesPerDay, int minRest) {
+        DSLContext dslContext = DBHandler.getContext();
+        Result<?> result = dslContext.select().
+                from(SCHEDULING_POLICY)
+                .where(SCHEDULING_POLICY.GAMES_PER_SEASON.eq(gamesPerSeason))
+                .and(SCHEDULING_POLICY.GAMES_PER_DAY.eq(gamesPerDay)
+                        .and(SCHEDULING_POLICY.MINIMUM_REST_DAYS.eq(minRest))).fetch();
+        if (result.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean addSchedulingPolicy(int gamesPerSeason, int gamesPerDay, int minimumRestDays) {
+        DSLContext dslContext = DBHandler.getContext();
+        int succeed = dslContext.insertInto(SCHEDULING_POLICY,
+                SCHEDULING_POLICY.GAMES_PER_SEASON, SCHEDULING_POLICY.GAMES_PER_DAY,
+                SCHEDULING_POLICY.MINIMUM_REST_DAYS)
+                .values(gamesPerSeason, gamesPerDay, minimumRestDays).execute();
+        if (succeed == 0) {
+            return false;
+        }
+        return true;
+    }
 }
 
