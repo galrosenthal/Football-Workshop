@@ -19,7 +19,6 @@ public abstract class GenericTestAbstract {
         dbMngr.startConnection();
         creatingDB();
         SystemLoggerManager.disableLoggers(); // disable loggers in tests
-//        EntityManager.getInstance().clearAll();
         UIController.setIsTest(true);
     }
 
