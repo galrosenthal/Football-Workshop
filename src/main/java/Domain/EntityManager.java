@@ -1,7 +1,5 @@
 package Domain;
 
-import DB.DBManager;
-import DB.Table;
 import Domain.Exceptions.InvalidEmailException;
 import Domain.Exceptions.AlreadyLoggedInUser;
 import Domain.Exceptions.UsernameAlreadyExistsException;
@@ -13,10 +11,6 @@ import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
 import Domain.Game.Stadium;
 import Domain.Users.*;
-import Domain.Game.Stadium;
-import Service.AllSubscribers;
-import Service.Observer;
-import Service.UIController;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -68,9 +62,57 @@ public class EntityManager{
             admin.addNewRole(new SystemAdmin(admin));
             admin.addNewRole(new AssociationRepresentative(admin));
             admin.addNewRole(new Referee(admin,RefereeQualification.VAR_REFEREE));
+            admin.addNewRole(new TeamOwner(admin));
+            createObjectsForGuiTests();
         }
 
         return entityManagerInstance;
+    }
+
+    private static void createObjectsForGuiTests() {
+        //AR Controls tests
+        Stadium stadium1 = new Stadium("stadium1","london");
+        Stadium stadium2 = new Stadium("stadium2","paris");
+        EntityManager.getInstance().addStadium(stadium1);
+        EntityManager.getInstance().addStadium(stadium2);
+
+        SystemUser user1 = new SystemUser("user1","Aa123456","Oran","oran@gmail.com",false);
+        EntityManager.getInstance().addUser(user1);
+        SystemUser user2 = new SystemUser("user2","Aa123456","Oran","oran@gmail.com",false);
+        EntityManager.getInstance().addUser(user2);
+        TeamOwner to1 = new TeamOwner(user1);
+        TeamOwner to2 = new TeamOwner(user2);
+        Team team1 = new Team("team1",to1);
+        Team team2 = new Team("team2",to2);
+
+        for (int i=0; i < 12;i++){
+            SystemUser user = new SystemUser(Integer.toString(i),Integer.toString(i));
+            Player player = new Player(user,new Date());
+            EntityManager.getInstance().addUser(user);
+            team1.addTeamPlayer(to1,player);
+        }
+        for (int i=12; i < 25;i++){
+            SystemUser user = new SystemUser(Integer.toString(i),Integer.toString(i));
+            Player player = new Player(user,new Date());
+            EntityManager.getInstance().addUser(user);
+            team2.addTeamPlayer(to2,player);
+        }
+
+        team1.addStadium(stadium1);
+        team2.addStadium(stadium2);
+
+        EntityManager.getInstance().addTeam(team1);
+        EntityManager.getInstance().addTeam(team2);
+        SystemUser refUser = new SystemUser("referee","referee");
+
+        EntityManager.getInstance().addUser(refUser);
+
+        //To Controls Tests
+        SystemUser user3 = new SystemUser("user3","user3");
+        TeamOwner to3 = new TeamOwner(user3);
+        Team team3 = new Team("team3",(TeamOwner)EntityManager.getInstance().getUser("Administrator").getRole(RoleTypes.TEAM_OWNER));
+        EntityManager.getInstance().addUser(user3);
+        EntityManager.getInstance().addTeam(team3);
     }
 
 

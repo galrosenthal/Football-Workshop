@@ -1,31 +1,23 @@
 package GUI;
 
-import Domain.EntityManager;
-import Service.MainController;
 import com.vaadin.flow.component.applayout.testbench.AppLayoutElement;
 import com.vaadin.flow.component.button.testbench.ButtonElement;
-import com.vaadin.flow.component.dialog.testbench.DialogElement;
+
 import com.vaadin.flow.component.html.testbench.H2Element;
-import com.vaadin.flow.component.html.testbench.LabelElement;
+
 import com.vaadin.flow.component.html.testbench.SpanElement;
-import com.vaadin.flow.component.notification.testbench.NotificationElement;
-import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
+import com.vaadin.flow.component.login.testbench.LoginFormElement;
 import com.vaadin.flow.component.textfield.testbench.PasswordFieldElement;
 import com.vaadin.flow.component.textfield.testbench.TextFieldElement;
 import com.vaadin.testbench.TestBenchTestCase;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.WebElement;
 
-import javax.management.Notification;
-import java.awt.*;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class LoginTest extends TestBenchTestCase {
+public class Login extends TestBenchTestCase {
     //private ChromeDriver driver;
     @Before
     public void setup(){
@@ -45,7 +37,7 @@ public class LoginTest extends TestBenchTestCase {
         //driver = new ChromeDriver(options);
         setDriver(driver = new ChromeDriver(options));
         driver.get("https://localhost:8443");
-        driver.manage().timeouts().implicitlyWait(1000, TimeUnit.MILLISECONDS);
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         try{
             if($(H2Element.class).id("bootH2").isDisplayed()) {
                 BootUpSystem();
@@ -55,15 +47,13 @@ public class LoginTest extends TestBenchTestCase {
         }
     }
 
-
-
-
-    public void BootUpSystem(){
+    private void BootUpSystem() throws InterruptedException {
         ButtonElement bootTheSystemBtn = $(ButtonElement.class).first();
         //Assert.assertEquals("Boot the System", bootTheSystemBtn.getText());
 
         bootTheSystemBtn.click();
         //Assert.assertEquals("Please enter a system administrator username:", $(LabelElement.class).first().getText());
+        Thread.sleep(500);
         $(TextFieldElement.class).id("1").setValue("Administrator");
         $(PasswordFieldElement.class).id("2").setValue("Aa123456");
         $(ButtonElement.class).id("submit").click();
@@ -83,6 +73,7 @@ public class LoginTest extends TestBenchTestCase {
 
         Assert.assertTrue($(AppLayoutElement.class).id("footbalMain").isDisplayed());
         //Assert.assertEquals("Log out", $(SpanElement.class).id("about").getText());
+        logout();
     }
 
     @Test
@@ -92,17 +83,18 @@ public class LoginTest extends TestBenchTestCase {
         $(TextFieldElement.class).id("vaadinLoginUsername").setValue("oran");
         $(PasswordFieldElement.class).id("vaadinLoginPassword").setValue("Aa123456");
         $(ButtonElement.class).first().click();
-        Assert.assertEquals("About", $(SpanElement.class).id("about").getText());
-        logout();
+
+        Assert.assertEquals("Check that you have entered the correct username and password and try again.", $(LoginFormElement.class).id("loginForm").getErrorMessage());
     }
 
     @After
     public void tearDown(){
-
         driver.close();
     }
 
+//    @AfterClass
     public void logout(){
-        $(ButtonElement.class).id("logout").click();
+        $(ButtonElement.class).id("logoutBtn").click();
+        $(ButtonElement.class).last().click();
     }
 }

@@ -143,6 +143,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
             VerticalLayout alertView = new VerticalLayout();
             Label msg = new Label(message);
             Button close = new Button("Close");
+            close.setId("close");
             close.addClickListener(e -> {
                 alertWindow.close();
             });
@@ -260,7 +261,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
             lbl.setWidth("100%");
             vl.add(lbl);
             Button ok = new Button("Ok");
-
+            ok.setId("ok");
             ok.addClickListener(e -> {
                 newWindow.close();
             });
@@ -458,15 +459,17 @@ public class FootballMain extends AppLayout implements RouterLayout{
             ComboBox<String>[] multiInputsFromList = new ComboBox[numOfInputs];
 
             ComboBox<String> valuesForInt = new ComboBox<>();
+            valuesForInt.setId("valuesForInt");
             valuesForInt.setWidth("100%");
             MultiSelectListBox<String> valuesForString = new MultiSelectListBox<>();
-
+            valuesForString.setId("valuesForString");
             DatePicker picker = new DatePicker();
-
+            picker.setId("picker");
 
             Button submit = new Button("Submit");
+            submit.setId("submit");
             Button cancel = new Button("Cancel");
-
+            cancel.setId("cancel");
             cancel.addClickListener(e -> {
                 newWindow.close();
                 returnedValue.append(UIController.CANCEL_TASK_VALUE);
@@ -479,6 +482,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 {
                     if(displayValues.length <= 0)
                     {
+                        textFieldsArray[0].setId("firstTextField");
                         returnedValue.append(textFieldsArray[0].getValue());
 
                     }
@@ -622,6 +626,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
     private static void apendValuesToReturnValue(StringBuilder returnedValue, ComboBox<String>[] multiInputsFromList) {
         for (ComboBox<String> singleComboBox:
              multiInputsFromList) {
+            singleComboBox.setId(singleComboBox.getValue());
             returnedValue.append(singleComboBox.getValue()).append(UIController.STRING_DELIMETER);
         }
         returnedValue.setLength(returnedValue.length()-1);
@@ -642,6 +647,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
     private static void createMultiListInputs(VerticalLayout verticalLayout, int numOfInputs, ComboBox<String>[] multiInputsFromList, Button close, String[] messagesToDisplay, Collection<String>... displayValues) {
         for (int i = 0; i < numOfInputs; i++) {
             multiInputsFromList[i] = new ComboBox<>();
+            multiInputsFromList[i].setId(Integer.toString(i));
             verticalLayout.add(new Label(messagesToDisplay[i]));
             multiInputsFromList[i].setClearButtonVisible(true);
             multiInputsFromList[i].setItems(displayValues[i]);
@@ -685,6 +691,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
     private static void createMultiStringInputs(VerticalLayout verticalLayout, int numOfInputs, TextField[] textFieldsArray, Button close, String[] messagesToDisplay) {
         for (int i = 0; i < numOfInputs; i++) {
             textFieldsArray[i] = new TextField();
+            textFieldsArray[i].setId(textFieldsArray[i].getValue());
             //textFieldsArray[i].setLabel(messagesToDisplay[i]);
             verticalLayout.add(new Label(messagesToDisplay[i]));
             textFieldsArray[i].setValueChangeMode(ValueChangeMode.EAGER);
@@ -711,12 +718,14 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
             HorizontalLayout buttons = new HorizontalLayout();
             Button dismiss = new Button("Dismiss");
+            dismiss.setId("dismiss");
             dismiss.addClickListener(e -> {
                 confirmBox.close();
                 answer.append(UIController.CANCEL_TASK_VALUE);
             });
             dismiss.getElement().setAttribute("theme", "error tertiary");
             Button approve = new Button("Submit");
+            approve.setId("submit");
             approve.addClickListener(e -> {
                 System.out.println("FOOTBALL_MAIN: User confirmed");
                 confirmBox.close();
@@ -750,6 +759,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
         }
 
         Button ok = new Button("Ok");
+        ok.setId("ok");
         ok.addClickListener(e -> { newWindow.close(); });
         vl.add(ok);
         newWindow.add(vl);
