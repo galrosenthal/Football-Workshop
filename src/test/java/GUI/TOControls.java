@@ -119,6 +119,14 @@ public class TOControls extends TestBenchTestCase {
         addTeam("7");
         $(ButtonElement.class).id("addAnotherTeamOwner").click();
         Thread.sleep(500);
+        $(ComboBoxElement.class).first().selectByText("team7");
+        $(ButtonElement.class).id("submit").click();
+        Thread.sleep(500);
+        $(TextFieldElement.class).first().setValue("user3");
+        $(ButtonElement.class).id("submit").click();
+        Thread.sleep(500);
+        Assert.assertEquals("The new Team Owner added Successfully",$(NotificationElement.class).id("notification").getText());
+
     }
 
     @Test
