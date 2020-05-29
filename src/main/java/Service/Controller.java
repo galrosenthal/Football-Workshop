@@ -169,7 +169,7 @@ public class Controller {
         for (int i = 0; i < myTeams.size(); i++) {
             if (myTeams.get(i).getStatus() == TeamStatus.CLOSED)
                 teamsToShow.add(myTeams.get(i).getTeamName() + " (closed)");
-            else if (myTeams.get(i).getStatus() == TeamStatus.PERMENENTLY_CLOSED)
+            else if (myTeams.get(i).getStatus() == TeamStatus.PERMANENTLY_CLOSED)
                 teamsToShow.add(myTeams.get(i).getTeamName() + " (closed forever)");
             else //open
                 teamsToShow.add(myTeams.get(i).getTeamName());

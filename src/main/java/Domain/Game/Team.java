@@ -39,6 +39,22 @@ public class Team {
 
     }
 
+    public Team(String teamName,TeamStatus teamStatus ,  boolean addToDB) {
+        this.teamName = teamName;
+        teamOwners = new ArrayList<>();
+        playersAndCoaches = new HashSet<>();
+        teamManagers = new ArrayList<>();
+        seasons = new ArrayList<>();
+        stadiums = new ArrayList<>();
+        status = teamStatus;
+        permissionsPerTeamManager = new HashMap<>();
+        if(addToDB)
+        {
+            EntityManager.getInstance().addTeam(this);
+        }
+
+    }
+
     public Team(String teamName, TeamOwner to, boolean addToDB) {
         teamOwners = new ArrayList<>();
         teamOwners.add(to);

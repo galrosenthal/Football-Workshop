@@ -588,6 +588,7 @@ public class DBManagerForTest extends DBManager {
         }
         return pointsPolicyDetails;
     }
+
     @Override
     public int getSeasonId(String name, String years) {
         DSLContext dslContext = DBHandler.getContext();
@@ -599,14 +600,14 @@ public class DBManagerForTest extends DBManager {
         }
         return result.get(0).getValue(SEASON.SEASON_ID);
     }
+
     @Override
     public boolean addSeasonToTeam(int seasonID, String teamName) {
         DSLContext create = DBHandler.getContext();
         try {
-            create.insertInto(TEAMS_IN_SEASON,TEAMS_IN_SEASON.SEASON_ID , TEAMS_IN_SEASON.TEAM_NAME).values(seasonID,teamName).execute();
+            create.insertInto(TEAMS_IN_SEASON, TEAMS_IN_SEASON.SEASON_ID, TEAMS_IN_SEASON.TEAM_NAME).values(seasonID, teamName).execute();
             return true;
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -629,8 +630,7 @@ public class DBManagerForTest extends DBManager {
         try {
             create.deleteFrom(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.SEASON_ID.eq(seasonID).and(TEAMS_IN_SEASON.TEAM_NAME.eq(teamName)));
             return true;
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -640,19 +640,24 @@ public class DBManagerForTest extends DBManager {
     public List<HashMap<String, String>> getAllSeasonInTeam(String teamName) {
         DSLContext create = DBHandler.getContext();
         Result<?> records = create.select().from(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.TEAM_NAME.eq(teamName)).fetch();
+        List<Integer> seasonsID = records.getValues(TEAMS_IN_SEASON.SEASON_ID);
         List<HashMap<String, String>> seasonsDetails = new ArrayList<>();
-        //Add loop
-        for (int i = 0; i < records.size(); i++) {
-            for (int j = 0; j < records.fields().length; j++) {
+        for (int k = 0; k < seasonsID.size(); k++) {
+            Result<?> result = create.select().from(SEASON).where(SEASON.SEASON_ID.eq(seasonsID.get(k))).fetch();
+            //Add loop
+            for (int i = 0; i < result.size(); i++) {
                 HashMap<String, String> currentSeasonDetails = new HashMap<>();
-                String fieldName = records.get(i).fields()[j].getName();
-                String fieldValue = records.get(i).getValue(fieldName).toString();
-                if (fieldName.equals("points_policy_id")) {
-                    HashMap<String, String> pointsPolicyDetails = getPointsPolicyByID(Integer.parseInt(fieldValue));
-                    currentSeasonDetails.putAll(pointsPolicyDetails);
-                } else {
-                    currentSeasonDetails.put(fieldName, fieldValue);
+                for (int j = 0; j < result.fields().length; j++) {
+                    String fieldName = result.get(i).fields()[j].getName();
+                    String fieldValue = result.get(i).getValue(fieldName).toString();
+                    if (fieldName.equals("points_policy_id")) {
+                        HashMap<String, String> pointsPolicyDetails = getPointsPolicyByID(Integer.parseInt(fieldValue));
+                        currentSeasonDetails.putAll(pointsPolicyDetails);
+                    } else {
+                        currentSeasonDetails.put(fieldName, fieldValue);
+                    }
                 }
+                seasonsDetails.add(currentSeasonDetails);
             }
         }
         return seasonsDetails;
@@ -710,7 +715,7 @@ public class DBManagerForTest extends DBManager {
             create.update(MANAGER_IN_TEAMS).set(row(MANAGER_IN_TEAMS.REMOVE_PLAYER, MANAGER_IN_TEAMS.ADD_PLAYER,
                     MANAGER_IN_TEAMS.CHANGE_POSITION_PLAYER, MANAGER_IN_TEAMS.REMOVE_COACH, MANAGER_IN_TEAMS.ADD_COACH,
                     MANAGER_IN_TEAMS.CHANGE_TEAM_JOB_COACH), row(remove_player, add_player, change_position_player,
-                    remove_coach, add_coach ,change_team_job_coach )).where(MANAGER_IN_TEAMS.TEAM_NAME.eq(teamName)
+                    remove_coach, add_coach, change_team_job_coach)).where(MANAGER_IN_TEAMS.TEAM_NAME.eq(teamName)
                     .and(MANAGER_IN_TEAMS.USERNAME.eq(username))).execute();
         } catch (Exception e) {
             e.printStackTrace();
@@ -755,12 +760,31 @@ public class DBManagerForTest extends DBManager {
 
     @Override
     public void updateTeamStatus(String teamName, String status) {
-        try{
+        try {
             DSLContext create = DBHandler.getContext();
             create.update(TEAM).set(TEAM.STATUS, TeamStatus.valueOf(status)).execute();
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Override
+    public List<HashMap<String, String>> getTeamsPerSeason(String years, String league) {
+        int seasonID = this.getSeasonId(league,years);
+        List<HashMap<String, String>> teamsDetails = new ArrayList<>();
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.SEASON_ID.eq(seasonID)).fetch();
+        List<String> teams = records.getValues(TEAMS_IN_SEASON.TEAM_NAME);
+        for (int i = 0; i < records.size() ; i++) {
+            Result<?> result = create.select().from(TEAM).where(TEAM.NAME.eq(teams.get(i))).fetch();
+            List<String> teamName = result.getValues(TEAM.NAME);
+            List<TeamStatus> teamStatus = result.getValues(TEAM.STATUS);
+            HashMap<String,String> details = new HashMap<>();
+            details.put("name" , teamName.get(0));
+            details.put("status" , teamStatus.get(0).name());
+            teamsDetails.add(details);
+        }
+        return  teamsDetails;
     }
 }

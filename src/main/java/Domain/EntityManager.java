@@ -1020,7 +1020,7 @@ public class EntityManager {
             case "CLOSED":
                 return TeamStatus.CLOSED;
             case "PERMENENTLY_CLOSED":
-                return TeamStatus.PERMENENTLY_CLOSED;
+                return TeamStatus.PERMANENTLY_CLOSED;
         }
         return null;
 
@@ -1164,8 +1164,8 @@ public class EntityManager {
     /*todo: check*/
     public List<Season> getAllSeasonInTeam(Team team) {
         List<Season> seasons = new ArrayList<>();
-        List<HashMap<String,String>> seasonsDetails = DBManager.startTest().getAllSeasonInTeam(team.getTeamName());
-        for (int i = 0; i < seasons.size(); i++) {
+        List<HashMap<String,String>> seasonsDetails = DBManager.getInstance().getAllSeasonInTeam(team.getTeamName());
+        for (int i = 0; i < seasonsDetails.size(); i++) {
             HashMap<String,String> seasonDetails = seasonsDetails.get(i);
             boolean isUnderWay = false;
             if(seasonDetails.get("is_under_way").equals("true"))
@@ -1220,5 +1220,16 @@ public class EntityManager {
 
     public void updateTeamStatus(String teamName, TeamStatus status) {
         DBManager.getInstance().updateTeamStatus(teamName , status.name());
+    }
+
+    public List<Team> getTeamsPerSeason(Season season) {
+        List<HashMap<String, String>> TeamsInSeasonDetails = DBManager.getInstance().getTeamsPerSeason(season.getYears(),season.getLeague().getName());
+        List<Team> teams = new ArrayList<>();
+        for (int i = 0; i < TeamsInSeasonDetails.size(); i++) {
+            String teamName = TeamsInSeasonDetails.get(i).get("name");
+            TeamStatus teamStatus = TeamStatus.valueOf(TeamsInSeasonDetails.get(i).get("status"));
+            teams.add(new Team(teamName, teamStatus,false));
+        }
+        return teams;
     }
 }

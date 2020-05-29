@@ -1,5 +1,6 @@
 package Domain.Game;
 
+import Domain.EntityManager;
 import Domain.Users.Referee;
 
 import java.time.Year;
@@ -104,6 +105,7 @@ public class Season {
 
     public List<Team> getTeams() {
         /*TODO - DB*/
+        teams = EntityManager.getInstance().getTeamsPerSeason(this);
         return teams;
     }
 

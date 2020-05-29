@@ -60,7 +60,6 @@ public class TeamController {
                 SystemLoggerManager.logError(TeamController.class, msg);
                 throw new RoleExistsAlreadyException(msg);
             }
-            /*TODO DB CHECK!!!!!!!!!*/
             if (isAlreadyOwnedAnotherTeamInSeason(teamToOwn, teamOwner)) {
                 String msg = "This User is already a team owner of a different team in same league";
                 SystemLoggerManager.logError(TeamController.class, msg);
