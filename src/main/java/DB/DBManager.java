@@ -1,16 +1,13 @@
 package DB;
 
 import static DB.Tables.Tables.*;
-import static DB.Tables_Test.Tables.SEASON;
 
 import DB.Tables.enums.TeamStatus;
 import DB.Tables.enums.UserRolesRoleType;
 
 import DB.Tables.enums.CoachQualification;
 import DB.Tables.enums.RefereeTraining;
-import DB.Tables.tables.RefereeInGame;
 import Domain.Exceptions.UserNotFoundException;
-import Domain.Game.League;
 import javafx.util.Pair;
 import org.jooq.DSLContext;
 import org.jooq.Field;
