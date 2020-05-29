@@ -69,13 +69,15 @@ public class Team {
     }
 
     public List<TeamOwner> getTeamOwners() {
-        /*TODO db*/
+        /*DB*/
+        teamOwners = EntityManager.getInstance().getTeamsOwners(this);
         return teamOwners;
     }
 
     public List<String> getTeamOwnersString() {
         List<String> teamOwnersString = new ArrayList<>();
-
+        /*DB*/
+        teamOwners = EntityManager.getInstance().getTeamsOwners(this);
         for (TeamOwner to : teamOwners) {
             teamOwnersString.add(to.toString());
         }
@@ -117,7 +119,7 @@ public class Team {
     }
 
     public boolean addTeamCoach(TeamOwner townr, Role coach) {
-        if (!teamOwners.contains(townr) || status != TeamStatus.OPEN) {
+        if (!teamOwners.contains(townr) || status != TeamStatus.OPEN || !(EntityManager.getInstance().isTeamOwner(townr,this))) {
             return false;
         }
         if (coach.getType() == RoleTypes.COACH) {
@@ -128,12 +130,13 @@ public class Team {
 
 
     public boolean addTeamManager(TeamOwner townr, Role teamManager) {
-        if (!teamOwners.contains(townr) || status != TeamStatus.OPEN) {
+        if (!teamOwners.contains(townr) || status != TeamStatus.OPEN || !(EntityManager.getInstance().isTeamOwner(townr,this))) {
             return false;
         }
         if (teamManager.getType() == RoleTypes.TEAM_MANAGER) {
             boolean managerAdded = teamManagers.add((TeamManager) teamManager);
             if (managerAdded) {
+                /*already added to db*/
                 this.permissionsPerTeamManager.put((TeamManager) teamManager, new ArrayList<>());
                 return true;
             }
@@ -146,7 +149,7 @@ public class Team {
             return false;
         }
         if (teamOwner.getType() == RoleTypes.TEAM_OWNER && !teamOwners.contains(teamOwner) &&!(EntityManager.getInstance().isTeamOwner((TeamOwner)teamOwner,this))) {
-            /*UPDATE DB*/
+            /*DB*/
             EntityManager.getInstance().addTeamOwnerToTeam((TeamOwner)teamOwner, this);
             return teamOwners.add((TeamOwner) teamOwner);
         }
@@ -155,12 +158,13 @@ public class Team {
     }
 
     public boolean removeTeamOwner(TeamOwner teamOwner) {
-        /*update db*/
-        if (!teamOwners.contains(teamOwner) || status != TeamStatus.OPEN) {
+        if (!teamOwners.contains(teamOwner) || status != TeamStatus.OPEN || !(EntityManager.getInstance().isTeamOwner(teamOwner,this))) {
             return false;
         }
 
-        return teamOwners.remove(teamOwner);
+        teamOwners.remove(teamOwner);
+        /*update db*/
+        return EntityManager.getInstance().removeTeamOwner(teamOwner,this);
     }
 
     public List<Player> getTeamPlayers() {
@@ -194,11 +198,7 @@ public class Team {
         if (this == o) return true;
         if (!(o instanceof Team)) return false;
         Team team = (Team) o;
-        return teamOwners.equals(team.teamOwners) &&
-                teamManagers.equals(team.teamManagers) &&
-                stadiums.equals(team.stadiums) &&
-                playersAndCoaches.equals(team.playersAndCoaches) &&
-                teamName.equals(team.teamName);
+        return team.getTeamName().equals(this.teamName);
 //        return this.teamOwners.size() == team.teamOwners.size() &&
 //               this.teamManagers.size() == team.teamManagers.size() &&
 //                this.stadiums.size() == team.stadiums.size() &&
@@ -392,6 +392,8 @@ public class Team {
     }
 
     public void setStatus(TeamStatus status) {
+        /*update db*/
+        EntityManager.getInstance().updateTeamStatus(this.teamName,status);
         this.status = status;
     }
 
@@ -671,6 +673,7 @@ public class Team {
      */
     public void updatePermissionsPerTeamManger(TeamManager teamManager, List<TeamManagerPermissions> permissions) {
         this.permissionsPerTeamManager.put(teamManager, permissions);
+        /*DB*/
         EntityManager.getInstance().updateTeamMangerPermission(teamManager,permissions,this);
     }
 

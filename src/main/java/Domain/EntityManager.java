@@ -1200,4 +1200,27 @@ public class EntityManager {
         }
         DBManager.getInstance().updateTeamMangerPermission(teamManager.getSystemUser().getUsername() , team.getTeamName() ,permissionsToUpdate);
     }
+
+    public List<TeamOwner> getTeamsOwners(Team team) {
+        List<String> teamOwners = DBManager.getInstance().getTeamsOwners(team.getTeamName());
+        List<SystemUser> systemUsers = new ArrayList<>();
+        for (int i = 0; i < teamOwners.size(); i++) {
+            SystemUser systemUser = this.getUser(teamOwners.get(i));
+            systemUsers.add(systemUser);
+        }
+        List<TeamOwner> teamOwnerList = new ArrayList<>();
+        for (int i = 0; i < teamOwners.size(); i++) {
+            teamOwnerList.add((TeamOwner) systemUsers.get(i).getRole(RoleTypes.TEAM_OWNER));
+        }
+        return teamOwnerList;
+
+    }
+
+    public boolean removeTeamOwner(TeamOwner teamOwner, Team team) {
+        return DBManager.getInstance().removeTeamOwner(teamOwner.getSystemUser().getUsername() , team.getTeamName());
+    }
+
+    public void updateTeamStatus(String teamName, TeamStatus status) {
+        DBManager.getInstance().updateTeamStatus(teamName , status.name());
+    }
 }
