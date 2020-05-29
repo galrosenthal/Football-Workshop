@@ -9,7 +9,6 @@ import Domain.Game.TeamAsset;
 import Domain.Game.TeamStatus;
 import Domain.SystemLogger.*;
 import Domain.Users.*;
-import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -292,7 +291,7 @@ public class Controller {
      * the password does not meet the security requirements.
      */
     public static SystemUser signUp(String name, String usrNm, String pswrd, String email, boolean emailAlert)
-            throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException, Invalid {
+            throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException, InvalidEventException {
 
         return EntityManager.getInstance().signUp(name, usrNm, pswrd, email, emailAlert);
 

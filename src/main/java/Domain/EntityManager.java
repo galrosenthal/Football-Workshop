@@ -1,10 +1,7 @@
 package Domain;
 
-import Domain.Exceptions.InvalidEmailException;
-import Domain.Exceptions.AlreadyLoggedInUser;
-import Domain.Exceptions.UsernameAlreadyExistsException;
-import Domain.Exceptions.UsernameOrPasswordIncorrectException;
-import Domain.Exceptions.WeakPasswordException;
+import DB.DBManager;
+import Domain.Exceptions.*;
 import Domain.Game.*;
 import Domain.SystemLogger.*;
 import Domain.Users.Role;
@@ -12,7 +9,6 @@ import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
 import Domain.Game.Stadium;
 import Domain.Users.*;
-import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -64,14 +60,11 @@ public class EntityManager {
         if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
 
-            SystemUser admin = new SystemUser("Administrator",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"admin" , "test@gmail.com" , false);
-            SystemUser arnav = new SystemUser("arnav",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"arnav" , "test@gmail.com" , false);
-
-
-
-            admin.addNewRole(new SystemAdmin(admin));
-            admin.addNewRole(new AssociationRepresentative(admin));
-            admin.addNewRole(new Referee(admin,RefereeQualification.VAR_REFEREE));
+            SystemUser admin = new SystemUser("Administrator", org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"), "admin", "test@gmail.com", false, true);
+            SystemUser arnav = new SystemUser("arnav", org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"), "arnav", "test@gmail.com", false, true);
+            admin.addNewRole(new SystemAdmin(admin, true));
+            admin.addNewRole(new AssociationRepresentative(admin, true));
+            admin.addNewRole(new Referee(admin, RefereeQualification.VAR_REFEREE, true));
         }
 
         return entityManagerInstance;
@@ -761,7 +754,7 @@ public class EntityManager {
      * @throws Exception If user name is already belongs to a user in the system, or
      *                   the password does not meet the security requirements.
      */
-    public SystemUser signUp(String name, String usrNm, String pswrd, String email, boolean emailAlert) throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException, Invalid {
+    public SystemUser signUp(String name, String usrNm, String pswrd, String email, boolean emailAlert) throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException, InvalidEventException {
         //Checking if user name is already exists
         if (getUser(usrNm) != null) {
             String msg = "Username already exists";
@@ -802,7 +795,7 @@ public class EntityManager {
 
         }
 
-        throw new Invalid("something went wrong");
+        throw new InvalidEventException("something went wrong");
 
     }
 
