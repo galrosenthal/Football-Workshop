@@ -15,8 +15,6 @@ import org.jooq.Schema;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public enum UserRolesRoleType implements EnumType {
 
-    FAN("FAN"),
-
     PLAYER("PLAYER"),
 
     COACH("COACH"),

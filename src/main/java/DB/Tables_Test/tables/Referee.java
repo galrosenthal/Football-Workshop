@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Referee extends TableImpl<RefereeRecord> {
 
-    private static final long serialVersionUID = -1335964420;
+    private static final long serialVersionUID = -1811638318;
 
     /**
      * The reference instance of <code>fwdb_test.referee</code>
@@ -55,7 +55,7 @@ public class Referee extends TableImpl<RefereeRecord> {
     /**
      * The column <code>fwdb_test.referee.training</code>.
      */
-    public final TableField<RefereeRecord, RefereeTraining> TRAINING = createField(DSL.name("training"), org.jooq.impl.SQLDataType.VARCHAR(12).nullable(false).asEnumDataType(DB.Tables_Test.enums.RefereeTraining.class), this, "");
+    public final TableField<RefereeRecord, RefereeTraining> TRAINING = createField(DSL.name("training"), org.jooq.impl.SQLDataType.VARCHAR(12).defaultValue(org.jooq.impl.DSL.field("NULL", org.jooq.impl.SQLDataType.VARCHAR)).asEnumDataType(DB.Tables_Test.enums.RefereeTraining.class), this, "");
 
     /**
      * Create a <code>fwdb_test.referee</code> table reference

@@ -59,7 +59,7 @@ public class TeamOwner extends Role implements Subject {
         if (teamToOwn == null || appointer == null) {
             return false;
         }
-        if (!getOwnedTeams().contains(teamToOwn)) {
+        if (!getOwnedTeams().contains(teamToOwn) && !(EntityManager.getInstance().isTeamOwner(this, teamToOwn))) {
             teamsAndAppointers.put(teamToOwn, appointer);
             return true;
         }

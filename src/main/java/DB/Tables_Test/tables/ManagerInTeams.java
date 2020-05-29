@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ManagerInTeams extends TableImpl<ManagerInTeamsRecord> {
 
-    private static final long serialVersionUID = -910722672;
+    private static final long serialVersionUID = 11816862;
 
     /**
      * The reference instance of <code>fwdb_test.manager_in_teams</code>
@@ -59,7 +59,7 @@ public class ManagerInTeams extends TableImpl<ManagerInTeamsRecord> {
     /**
      * The column <code>fwdb_test.manager_in_teams.appointer</code>.
      */
-    public final TableField<ManagerInTeamsRecord, String> APPOINTER = createField(DSL.name("appointer"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.field("'\"\"'", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<ManagerInTeamsRecord, String> APPOINTER = createField(DSL.name("appointer"), org.jooq.impl.SQLDataType.VARCHAR(50).defaultValue(org.jooq.impl.DSL.field("NULL", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>fwdb_test.manager_in_teams.REMOVE_PLAYER</code>.

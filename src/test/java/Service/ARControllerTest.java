@@ -556,8 +556,8 @@ public class ARControllerTest {
         SystemUser arSystemUser = getSystemUserAR();
         new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
-        Team team1 = new Team("Hapoel Beit Shan", toRole);
-        Team team2 = new Team("Hapoel Beer Sheva", toRole);
+        Team team1 = new Team("Hapoel Beit Shan", toRole, true);
+        Team team2 = new Team("Hapoel Beer Sheva", toRole, true);
         //"There are no leagues"
         assertFalse(ARController.addTeamsToSeason(arSystemUser));
         League league = new League("Ligat ul", true);
@@ -628,8 +628,8 @@ public class ARControllerTest {
         SystemUser arSystemUser = getSystemUserAR();
         new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
-        Team team1 = new Team("Hapoel Beit Shan", toRole);
-        Team team2 = new Team("Hapoel Beer Sheva", toRole);
+        Team team1 = new Team("Hapoel Beit Shan", toRole, true);
+        Team team2 = new Team("Hapoel Beer Sheva", toRole, true);
         //"There are no leagues"
         assertFalse(ARController.removeTeamsFromSeason(arSystemUser));
         League league = new League("Ligat ul", true);

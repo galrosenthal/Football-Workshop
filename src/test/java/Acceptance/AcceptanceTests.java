@@ -189,7 +189,7 @@ public class AcceptanceTests {
     public void closeTeamATest() throws Exception {
         //setups
         TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
-        Team team = new Team("Hapoel Beit Shan", teamOwner);
+        Team team = new Team("Hapoel Beit Shan", teamOwner, true);
         teamOwner.addTeamToOwn(team,existingUser);
         //add team owner
         TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
@@ -228,7 +228,7 @@ public class AcceptanceTests {
     public void closeTeam2ATest() throws Exception {
         //setups
         TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
-        Team team = new Team("Hapoel Beit Shan", teamOwner);
+        Team team = new Team("Hapoel Beit Shan", teamOwner, true);
         teamOwner.addTeamToOwn(team,existingUser);
         //add team owner
         TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
@@ -266,7 +266,7 @@ public class AcceptanceTests {
     public void reopenTeamATest() throws Exception {
         //setups
         TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
-        Team team = new Team("Hapoel Beit Shan", teamOwner);
+        Team team = new Team("Hapoel Beit Shan", teamOwner, true);
         teamOwner.addTeamToOwn(team,existingUser);
         //add team owner
         TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
@@ -304,7 +304,7 @@ public class AcceptanceTests {
     public void reopenTeam2ATest() throws Exception {
         //setups
         TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
-        Team team = new Team("Hapoel Beit Shan", teamOwner);
+        Team team = new Team("Hapoel Beit Shan", teamOwner, true);
         teamOwner.addTeamToOwn(team,existingUser);
         //add team owner
         TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
@@ -342,7 +342,7 @@ public class AcceptanceTests {
     public void reopenTeam3ATest() throws Exception {
         //setups
         TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
-        Team team = new Team("Hapoel Beit Shan", teamOwner);
+        Team team = new Team("Hapoel Beit Shan", teamOwner, true);
         teamOwner.addTeamToOwn(team,existingUser);
         //add team manager, BUT NOT the team TO the manager
         TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
@@ -413,7 +413,7 @@ public class AcceptanceTests {
      */
     @Test
     public void addAsset1ATest() throws Exception {
-        Team beitShean = new Team("beitShean");
+        Team beitShean = new Team("beitShean", true);
 
         beitShean.setTeamName("Beit Shean");
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
@@ -439,7 +439,7 @@ public class AcceptanceTests {
      */
     @Test
     public void addAsset2ATest() throws Exception {
-        Team beitShean = new Team("beitShean");
+        Team beitShean = new Team("beitShean", true);
 
         beitShean.setTeamName("Beit Shean");
 
@@ -480,7 +480,7 @@ public class AcceptanceTests {
      */
     @Test
     public void modifyTeamAssetDetails1ATest() throws Exception {
-        Team beitShean = new Team("beitShean");
+        Team beitShean = new Team("beitShean", true);
         beitShean.setTeamName("Beit Shean");
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate, true);
@@ -512,7 +512,7 @@ public class AcceptanceTests {
      */
     @Test (expected = AssetsNotExistsException.class)
     public void modifyTeamAssetDetails2ATest() throws Exception {
-        Team beitShean = new Team("beitShean");
+        Team beitShean = new Team("beitShean", true);
         beitShean.setTeamName("Beit Shean");
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate, true);
@@ -755,7 +755,7 @@ public class AcceptanceTests {
         SystemUser teamOwnerUser = new SystemUser("to", "name");
         new TeamOwner(teamOwnerUser, true);
         TeamOwner toRole = (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
-        Team existingTeam = new Team("Hapoel Beit Shan", toRole);
+        Team existingTeam = new Team("Hapoel Beit Shan", toRole, true);
         EntityManager.getInstance().addTeam(existingTeam);
         //Team already exists
         UIController.setSelector(91021); // Hapoel Beit Shan
@@ -856,8 +856,8 @@ public class AcceptanceTests {
         new AssociationRepresentative(arSystemUser, true);
         new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
-        Team team1 = new Team("Hapoel Beit Shan", toRole);
-        Team team2 = new Team("Hapoel Beer Sheva", toRole);
+        Team team1 = new Team("Hapoel Beit Shan", toRole, true);
+        Team team2 = new Team("Hapoel Beer Sheva", toRole, true);
         League league = new League("Ligat ul", true);
         league.addSeason("2020/21");
         Season season = league.getLatestSeason();
@@ -882,8 +882,8 @@ public class AcceptanceTests {
         new AssociationRepresentative(arSystemUser, true);
         new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
-        Team team1 = new Team("Hapoel Beit Shan", toRole);
-        Team team2 = new Team("Hapoel Beer Sheva", toRole);
+        Team team1 = new Team("Hapoel Beit Shan", toRole, true);
+        Team team2 = new Team("Hapoel Beer Sheva", toRole, true);
         League league = new League("Ligat ul", true);
         league.addSeason("2020/21");
         Season season = league.getLatestSeason();
@@ -1069,7 +1069,7 @@ public class AcceptanceTests {
     }
 
     private Team createFullTeam(String teamName, TeamOwner teamOwner) {
-        Team team = new Team(teamName, teamOwner);
+        Team team = new Team(teamName, teamOwner, true);
         team.addStadium(new Stadium("stadium1"," location1"));
         for(int i = 1; i<= 11; i++){ //add 11 players
             SystemUser pSystemUser = new SystemUser("player"+teamName+""+i, "name"+i);
@@ -1094,8 +1094,8 @@ public class AcceptanceTests {
         new AssociationRepresentative(arSystemUser, true);
         new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
-        Team firstTeam = new Team("Hapoel Beit Shan", toRole);
-        Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
+        Team firstTeam = new Team("Hapoel Beit Shan", toRole, true);
+        Team secondTeam = new Team("Hapoel Beer Sheva", toRole, true);
 
         Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen"),new Date(2001, 01, 01), true);
@@ -1130,8 +1130,8 @@ public class AcceptanceTests {
         new AssociationRepresentative(arSystemUser, true);
         new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
-        Team firstTeam = new Team("Hapoel Beit Shan", toRole);
-        Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
+        Team firstTeam = new Team("Hapoel Beit Shan", toRole, true);
+        Team secondTeam = new Team("Hapoel Beer Sheva", toRole, true);
 
         Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen"),new Date(2001, 01, 01), true);

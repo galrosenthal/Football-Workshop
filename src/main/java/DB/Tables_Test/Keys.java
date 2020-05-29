@@ -104,6 +104,7 @@ public class Keys {
     public static final Identity<EventSwitchPlayersRecord, Integer> IDENTITY_EVENT_SWITCH_PLAYERS = Identities0.IDENTITY_EVENT_SWITCH_PLAYERS;
     public static final Identity<GameRecord, Integer> IDENTITY_GAME = Identities0.IDENTITY_GAME;
     public static final Identity<PointsPolicyRecord, Integer> IDENTITY_POINTS_POLICY = Identities0.IDENTITY_POINTS_POLICY;
+    public static final Identity<SchedulingPolicyRecord, Integer> IDENTITY_SCHEDULING_POLICY = Identities0.IDENTITY_SCHEDULING_POLICY;
     public static final Identity<SeasonRecord, Integer> IDENTITY_SEASON = Identities0.IDENTITY_SEASON;
 
     // -------------------------------------------------------------------------
@@ -219,6 +220,7 @@ public class Keys {
         public static Identity<EventSwitchPlayersRecord, Integer> IDENTITY_EVENT_SWITCH_PLAYERS = Internal.createIdentity(EventSwitchPlayers.EVENT_SWITCH_PLAYERS, EventSwitchPlayers.EVENT_SWITCH_PLAYERS.EVENT_ID);
         public static Identity<GameRecord, Integer> IDENTITY_GAME = Internal.createIdentity(Game.GAME, Game.GAME.GAME_ID);
         public static Identity<PointsPolicyRecord, Integer> IDENTITY_POINTS_POLICY = Internal.createIdentity(PointsPolicy.POINTS_POLICY, PointsPolicy.POINTS_POLICY.POLICY_ID);
+        public static Identity<SchedulingPolicyRecord, Integer> IDENTITY_SCHEDULING_POLICY = Internal.createIdentity(SchedulingPolicy.SCHEDULING_POLICY, SchedulingPolicy.SCHEDULING_POLICY.SCHEDULING_ID);
         public static Identity<SeasonRecord, Integer> IDENTITY_SEASON = Internal.createIdentity(Season.SEASON, Season.SEASON.SEASON_ID);
     }
 

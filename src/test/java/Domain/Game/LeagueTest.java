@@ -38,15 +38,15 @@ public class LeagueTest {
     @Test
     public void addSeasonITest() {
         assertFalse(league.doesSeasonExists("2020/21"));
-        assertTrue(this.league.addSeason("2020/21"));
+        assertNotNull(this.league.addSeason("2020/21"));
         assertTrue(league.doesSeasonExists("2020/21"));
     }
 
     @Test
     public void doesSeasonExistsITest() {
         assertFalse(league.doesSeasonExists("2020/21"));
-        assertTrue(this.league.addSeason("2020/21"));
-        assertTrue(this.league.addSeason("2021/22"));
+        assertNotNull(this.league.addSeason("2020/21"));
+        assertNotNull(this.league.addSeason("2021/22"));
         assertTrue(league.doesSeasonExists("2020/21"));
         assertTrue(league.doesSeasonExists("2021/22"));
     }

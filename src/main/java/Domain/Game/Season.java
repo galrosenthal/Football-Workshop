@@ -92,11 +92,13 @@ public class Season {
         return false;
     }
 
+
     /*  public boolean hasStarted() {
-          //TODO: Check if the season has started
-          return getIsUnderway();
-      }*/
+              //TODO: Check if the season has started
+              return getIsUnderway();
+          }*/
     public boolean removeTeam(Team team) {
+        /*todo DB*/
         if (!teams.contains(team)) {
             return false;
         }
@@ -104,6 +106,8 @@ public class Season {
     }
 
     public List<Team> getTeams() {
+        /*TODO - DB*/
+        teams = EntityManager.getInstance().getTeamsPerSeason(this);
         return teams;
     }
 

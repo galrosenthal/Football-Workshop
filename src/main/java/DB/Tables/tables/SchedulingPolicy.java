@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SchedulingPolicy extends TableImpl<SchedulingPolicyRecord> {
 
-    private static final long serialVersionUID = 1600162742;
+    private static final long serialVersionUID = -1056989266;
 
     /**
      * The reference instance of <code>fwdb.scheduling_policy</code>
@@ -49,7 +50,7 @@ public class SchedulingPolicy extends TableImpl<SchedulingPolicyRecord> {
     /**
      * The column <code>fwdb.scheduling_policy.scheduling_id</code>.
      */
-    public final TableField<SchedulingPolicyRecord, Integer> SCHEDULING_ID = createField(DSL.name("scheduling_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<SchedulingPolicyRecord, Integer> SCHEDULING_ID = createField(DSL.name("scheduling_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>fwdb.scheduling_policy.games_Per_Season</code>.
@@ -102,6 +103,11 @@ public class SchedulingPolicy extends TableImpl<SchedulingPolicyRecord> {
     @Override
     public Schema getSchema() {
         return Fwdb.FWDB;
+    }
+
+    @Override
+    public Identity<SchedulingPolicyRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_SCHEDULING_POLICY;
     }
 
     @Override

@@ -19,7 +19,7 @@ public enum TeamStatus implements EnumType {
 
     CLOSED("CLOSED"),
 
-    PERMENENTLY_CLOSED("PERMENENTLY_CLOSED");
+    PERMANENTLY_CLOSED("PERMANENTLY_CLOSED");
 
     private final String literal;
 

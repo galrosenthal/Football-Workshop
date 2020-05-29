@@ -16,10 +16,7 @@ public class SystemUser extends User implements Fan {
     private List<UserComplaints> complaints;
     protected List<Game> gamesAlert;
     protected String username;
-    private String password;
-    /**
-     * password is in hash format
-     */
+    private String password; /**  password is in hash format */
     private String name;
     private String email;
     private boolean alertEmail;
@@ -46,8 +43,9 @@ public class SystemUser extends User implements Fan {
             EntityManager.getInstance().addUser(this);
         }
     }
-    
-    public SystemUser(String username, String name) {
+
+    public SystemUser(String username, String name)
+    {
         this.roles = new ArrayList<>();
         this.username = username;
         this.name = name;
@@ -65,6 +63,8 @@ public class SystemUser extends User implements Fan {
     public boolean isAlertEmail() {
         return alertEmail;
     }
+
+
 
     public List<Game> getGamesAlert() {
         return gamesAlert;

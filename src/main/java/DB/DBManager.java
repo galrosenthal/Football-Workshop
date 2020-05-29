@@ -1,14 +1,16 @@
 package DB;
 
 import static DB.Tables.Tables.*;
+import static org.jooq.impl.DSL.row;
 
 import DB.Tables.enums.TeamStatus;
 import DB.Tables.enums.UserRolesRoleType;
 
 import DB.Tables.enums.CoachQualification;
 import DB.Tables.enums.RefereeTraining;
+import DB.Tables.tables.RefereeInGame;
 import Domain.Exceptions.UserNotFoundException;
-import javafx.util.Pair;
+import Domain.Pair;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Result;
@@ -63,16 +65,16 @@ public class DBManager {
     }
 
     /**
-     * @param name
+     * @param teamOwner
      * @return
      */
-    public List<Pair<String, String>> getTeams(String name) {
+    public List<Pair<String, String>> getTeams(String teamOwner) {
         List<String> teamsName;
         List<TeamStatus> statues;
         List<Pair<String, String>> teams = new ArrayList<>();
         DSLContext create = DBHandler.getContext();
         Result<?> result = create.select()
-                .from(OWNED_TEAMS.where(OWNED_TEAMS.USERNAME.eq(name)).join(TEAM)
+                .from(OWNED_TEAMS.where(OWNED_TEAMS.USERNAME.eq(teamOwner)).join(TEAM)
                         .on(TEAM.NAME.eq(OWNED_TEAMS.TEAM_NAME)))
                 .fetch();
         teamsName = result.getValues(OWNED_TEAMS.TEAM_NAME);
@@ -755,6 +757,189 @@ public class DBManager {
             return false;
         }
         return true;
+    }
+
+    public int getSeasonId(String name, String years) {
+        DSLContext dslContext = DBHandler.getContext();
+        Result<?> result = dslContext.select().
+                from(SEASON)
+                .where(SEASON.LEAGUE_NAME.eq(name)).and(SEASON.YEARS.eq(years)).fetch();
+        if (result.isEmpty()) {
+            return -1;
+        }
+        return result.get(0).getValue(SEASON.SEASON_ID);
+    }
+
+    public boolean addSeasonToTeam(int seasonID, String teamName) {
+        DSLContext create = DBHandler.getContext();
+        try {
+            create.insertInto(TEAMS_IN_SEASON, TEAMS_IN_SEASON.SEASON_ID, TEAMS_IN_SEASON.TEAM_NAME).values(seasonID, teamName).execute();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean isSeasonInTeam(int seasonID, String teamName) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.SEASON_ID.eq(seasonID).and(TEAMS_IN_SEASON.TEAM_NAME.eq(teamName))).fetch();
+        if (records.size() == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean removeSeasonInTeam(int seasonID, String teamName) {
+        DSLContext create = DBHandler.getContext();
+        try {
+            create.deleteFrom(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.SEASON_ID.eq(seasonID).and(TEAMS_IN_SEASON.TEAM_NAME.eq(teamName)));
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<HashMap<String, String>> getAllSeasonInTeam(String teamName) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.TEAM_NAME.eq(teamName)).fetch();
+        List<HashMap<String, String>> seasonsDetails = new ArrayList<>();
+        //Add loop
+        for (int i = 0; i < records.size(); i++) {
+            for (int j = 0; j < records.fields().length; j++) {
+                HashMap<String, String> currentSeasonDetails = new HashMap<>();
+                String fieldName = records.get(i).fields()[j].getName();
+                String fieldValue = records.get(i).getValue(fieldName).toString();
+                if (fieldName.equals("points_policy_id")) {
+                    HashMap<String, String> pointsPolicyDetails = getPointsPolicyByID(Integer.parseInt(fieldValue));
+                    currentSeasonDetails.putAll(pointsPolicyDetails);
+                } else {
+                    currentSeasonDetails.put(fieldName, fieldValue);
+                }
+            }
+        }
+        return seasonsDetails;
+    }
+
+    public boolean isTeamManager(String username, String teamName) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(MANAGER_IN_TEAMS).where(MANAGER_IN_TEAMS.USERNAME.eq(username).and(MANAGER_IN_TEAMS.TEAM_NAME.eq(teamName))).fetch();
+        if (records.size() != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean removeTeamManager(String username, String teamName) {
+        DSLContext create = DBHandler.getContext();
+        try {
+            create.deleteFrom(MANAGER_IN_TEAMS).where(MANAGER_IN_TEAMS.USERNAME.eq(username).and(MANAGER_IN_TEAMS.TEAM_NAME.eq(teamName))).execute();
+            if (this.isTeamMangerInOtherTeam(username)) {
+                create.deleteFrom(USER_ROLES).where(USER_ROLES.USERNAME.eq(username).and(USER_ROLES.ROLE_TYPE.eq(UserRolesRoleType.TEAM_MANAGER))).execute();
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    private boolean isTeamMangerInOtherTeam(String username) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(MANAGER_IN_TEAMS).where(MANAGER_IN_TEAMS.USERNAME.eq(username)).fetch();
+        if (records.size() != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public void updateTeamMangerPermission(String username, String teamName, List<String> permissions) {
+        /*    REMOVE_PLAYER,ADD_PLAYER,CHANGE_POSITION_PLAYER,REMOVE_COACH,ADD_COACH,CHANGE_TEAM_JOB_COACH; */
+        boolean remove_player = permissions.contains("REMOVE_PLAYER");
+        boolean add_player = permissions.contains("ADD_PLAYER");
+        boolean change_position_player = permissions.contains("CHANGE_POSITION_PLAYER");
+        boolean remove_coach = permissions.contains("REMOVE_COACH");
+        boolean add_coach = permissions.contains("ADD_COACH");
+        boolean change_team_job_coach = permissions.contains("CHANGE_TEAM_JOB_COACH");
+        try {
+            DSLContext create = DBHandler.getContext();
+            create.update(MANAGER_IN_TEAMS).set(row(MANAGER_IN_TEAMS.REMOVE_PLAYER, MANAGER_IN_TEAMS.ADD_PLAYER,
+                    MANAGER_IN_TEAMS.CHANGE_POSITION_PLAYER, MANAGER_IN_TEAMS.REMOVE_COACH, MANAGER_IN_TEAMS.ADD_COACH,
+                    MANAGER_IN_TEAMS.CHANGE_TEAM_JOB_COACH), row(remove_player, add_player, change_position_player,
+                    remove_coach, add_coach ,change_team_job_coach )).where(MANAGER_IN_TEAMS.TEAM_NAME.eq(teamName)
+                    .and(MANAGER_IN_TEAMS.USERNAME.eq(username))).execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public List<String> getTeamsOwners(String teamName) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(OWNED_TEAMS).where(OWNED_TEAMS.TEAM_NAME.eq(teamName)).fetch();
+        List<String> teamOwners;
+        teamOwners = records.getValues(OWNED_TEAMS.USERNAME);
+        return teamOwners;
+    }
+
+    public boolean removeTeamOwner(String username, String teamName) {
+        DSLContext create = DBHandler.getContext();
+        try {
+            create.deleteFrom(OWNED_TEAMS).where(OWNED_TEAMS.USERNAME.eq(username).and(OWNED_TEAMS.TEAM_NAME.eq(teamName))).execute();
+            if (this.isTeamOwnedOtherTeam(username)) {
+                create.deleteFrom(USER_ROLES).where(USER_ROLES.USERNAME.eq(username).and(USER_ROLES.ROLE_TYPE.eq(UserRolesRoleType.TEAM_OWNER))).execute();
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean isTeamOwnedOtherTeam(String username) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(OWNED_TEAMS).where(OWNED_TEAMS.USERNAME.eq(username)).fetch();
+        if (records.size() != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void updateTeamStatus(String teamName, String status) {
+        try{
+            DSLContext create = DBHandler.getContext();
+            create.update(TEAM).set(TEAM.STATUS, TeamStatus.valueOf(status)).execute();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+
+    public List<HashMap<String, String>> getTeamsPerSeason(String years, String league) {
+        int seasonID = this.getSeasonId(league,years);
+        List<HashMap<String, String>> teamsDetails = new ArrayList<>();
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.SEASON_ID.eq(seasonID)).fetch();
+        List<String> teams = records.getValues(TEAMS_IN_SEASON.TEAM_NAME);
+        for (int i = 0; i < records.size() ; i++) {
+            Result<?> result = create.select().from(TEAM).where(TEAM.NAME.eq(teams.get(i))).fetch();
+            List<String> teamName = result.getValues(TEAM.NAME);
+            List<TeamStatus> teamStatus = result.getValues(TEAM.STATUS);
+            HashMap<String,String> details = new HashMap<>();
+            details.put("name" , teamName.get(0));
+            details.put("status" , teamStatus.get(0).name());
+            teamsDetails.add(details);
+        }
+        return  teamsDetails;
     }
 }
 

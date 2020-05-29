@@ -95,7 +95,7 @@ public class AssociationRepresentative extends Role {
      * @return The new Team that was created.
      */
     private Team createNewTeam(String teamName, TeamOwner to) {
-        Team team = new Team(teamName, to);
+        Team team = new Team(teamName, to, true);
         EntityManager.getInstance().addTeam(team);
         return team;
     }
