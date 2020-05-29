@@ -32,8 +32,7 @@ public class Controller {
             SystemUser admin = null;
 
             admin = Controller.login(username, password);
-            if(!MainController.getUserRoles(username).contains(RoleTypes.SYSTEM_ADMIN.name()))
-            {
+            if (!MainController.getUserRoles(username).contains(RoleTypes.SYSTEM_ADMIN.name())) {
                 UIController.showNotification("You are not a System Admin please try different user");
 //                MainController.performLogout(username, admin, UI.getCurrent());
                 return false;
@@ -55,12 +54,10 @@ public class Controller {
             //Log the action
             SystemLoggerManager.logInfo(Controller.class, new SystemBootLogMsg(admin.getUsername()));
             return true;
-        } catch (CancellationException ce)
-        {
+        } catch (CancellationException ce) {
             ce.printStackTrace();
             return false;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             UIController.showNotification("Username or Password was incorrect!!!!!");
             e.printStackTrace();
             return false;
@@ -70,19 +67,19 @@ public class Controller {
     /**
      * The method gets a user who want to add a new owner to his team. the method checks the user
      * is a owner of a team, ask him for team selection and user selection for add.
+     *
      * @param systemUser - a Team owner
      * @return true if the method succeed adding a new team owner
      */
-    public static boolean addTeamOwner(SystemUser systemUser)
-    {
+    public static boolean addTeamOwner(SystemUser systemUser) {
         TeamOwner myTeamOwner = getUserIfIsTeamOwner(systemUser);
 
-        if(myTeamOwner == null){
+        if (myTeamOwner == null) {
             return false;
         }
         Team chosenTeam = getTeamByChoice(myTeamOwner);
 
-        if(chosenTeam.getStatus() != TeamStatus.OPEN) {
+        if (chosenTeam.getStatus() != TeamStatus.OPEN) {
             UIController.showNotification("Error: Cannot perform action on closed team.");
             return false; //cannot perform action on closed team.
         }
@@ -103,29 +100,31 @@ public class Controller {
     /**
      * The method gets a user who want to remove a team owner. The method checks the user is a team owner and
      * ask him for team selection and user selection he want to remove from the team he owned.
+     *
      * @param user - team owner who want to remove another team owner from the team he owned
      * @return true if the method succeed to remove the team owner
      */
-    public static boolean removeTeamOwner(SystemUser user){
+    public static boolean removeTeamOwner(SystemUser user) {
 
         TeamOwner myTeamOwner = getUserIfIsTeamOwner(user);
 
-        if(myTeamOwner == null){
+        if (myTeamOwner == null) {
             return false;
         }
 
         Team chosenTeam = getTeamByChoice(myTeamOwner);
-
-        if(chosenTeam == null){
+        if (chosenTeam.getStatus() != TeamStatus.OPEN) {
+            UIController.showNotification("Error: Cannot perform action on closed team.");
+            return false; //cannot perform action on closed team.
+        }
+        if (chosenTeam == null) {
             return false;
         }
         String newTeamOwnerUsername = getUserOwnerSelection(chosenTeam);
 
-        try{
-            TeamController.removeTeamOwner(newTeamOwnerUsername,chosenTeam,myTeamOwner);
-        }
-        catch (Exception e)
-        {
+        try {
+            TeamController.removeTeamOwner(newTeamOwnerUsername, chosenTeam, myTeamOwner);
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -135,45 +134,42 @@ public class Controller {
 
     /**
      * The method represent the owners of the team and ask for user selection
+     *
      * @param chosenTeam - The Owner's team
      * @return the chosen user
      */
     private static String getUserOwnerSelection(Team chosenTeam) {
         List<String> teamOwners = chosenTeam.getTeamOwnersString();
-        int i=0;
+        int i = 0;
 
-        String username = UIController.receiveString("Choose a Team Owner Number:",teamOwners);
+        String username = UIController.receiveString("Choose a Team Owner Number:", teamOwners);
         return username;
     }
 
 
     public static TeamOwner getUserIfIsTeamOwner(SystemUser systemUser) {
-        if(!systemUser.isType(RoleTypes.TEAM_OWNER))
-        {
+        if (!systemUser.isType(RoleTypes.TEAM_OWNER)) {
             return null;
         }
         Role myTeamOwnerRole = systemUser.getRole(RoleTypes.TEAM_OWNER);
-        if(!(myTeamOwnerRole instanceof TeamOwner))
-        {
+        if (!(myTeamOwnerRole instanceof TeamOwner)) {
             return null;
         }
-        return (TeamOwner)myTeamOwnerRole;
+        return (TeamOwner) myTeamOwnerRole;
     }
-
 
 
     public static Team getTeamByChoice(TeamOwner myTeamOwner) {
         List<Team> myTeams = myTeamOwner.getOwnedTeams();
-        if(myTeams == null|| myTeams.size() == 0)
-        {
+        if (myTeams == null || myTeams.size() == 0) {
             return null;
         }
         List<String> teamsToShow = new ArrayList<>();
-        for (int i = 0; i < myTeams.size() ; i++) {
-            if(myTeams.get(i).getStatus() == TeamStatus.CLOSED)
-                teamsToShow.add(myTeams.get(i).getTeamName()+" (closed)");
-            else if(myTeams.get(i).getStatus() == TeamStatus.PERMENENTLY_CLOSED)
-                teamsToShow.add(myTeams.get(i).getTeamName()+" (closed forever)");
+        for (int i = 0; i < myTeams.size(); i++) {
+            if (myTeams.get(i).getStatus() == TeamStatus.CLOSED)
+                teamsToShow.add(myTeams.get(i).getTeamName() + " (closed)");
+            else if (myTeams.get(i).getStatus() == TeamStatus.PERMANENTLY_CLOSED)
+                teamsToShow.add(myTeams.get(i).getTeamName() + " (closed forever)");
             else //open
                 teamsToShow.add(myTeams.get(i).getTeamName());
         }
@@ -189,21 +185,23 @@ public class Controller {
 
     /**
      * Team Owner Asks to add a new asset to the Team
+     *
      * @param systemUser - the System User of the Team Owner
      * @return true if the asset added successfully
      */
-    public static boolean addAsset(SystemUser systemUser) throws Exception
-    {
+    public static boolean addAsset(SystemUser systemUser) throws Exception {
         TeamOwner myTeamOwner = getUserIfIsTeamOwner(systemUser);
-        if(myTeamOwner == null)
-        {
+        if (myTeamOwner == null) {
             return false;
         }
 
         Team chosenTeam = getTeamByChoice(myTeamOwner);
-
-        if(chosenTeam == null)
-        {
+        if (chosenTeam.getStatus() != TeamStatus.OPEN) {
+            String msg = "Team Close";
+            SystemLoggerManager.logError(Controller.class, msg);
+            throw new TeamCloseException(msg);
+        }
+        if (chosenTeam == null) {
             String msg = "There was no Team found";
             SystemLoggerManager.logError(Controller.class, msg);
             throw new NoTeamExistsException(msg);
@@ -212,7 +210,7 @@ public class Controller {
         TeamAsset ass = getAssetTypeFromUser();
         String name = getNameFromUser("What is the asset name/username?");
 
-        return TeamController.addAssetToTeam(name,chosenTeam,myTeamOwner,ass);
+        return TeamController.addAssetToTeam(name, chosenTeam, myTeamOwner, ass);
     }
 
     private static String getNameFromUser(String msg) {
@@ -229,20 +227,20 @@ public class Controller {
 
         int assetIndex;
 
-        do{
+        do {
             assetIndex = UIController.receiveInt("Choose Asset Type: ", assetTypes);
-        }while (!(assetIndex >= 0 && assetIndex < TeamAsset.values().length));
+        } while (!(assetIndex >= 0 && assetIndex < TeamAsset.values().length));
 
         return TeamAsset.values()[assetIndex];
     }
 
     /**
      * Team Owner Asks to edit an asset to the Team
+     *
      * @param systemUser - the System User of the Team Owner
      * @return true if the asset was edit successfully, false otherwise.
      */
-    public static boolean modifyTeamAssetDetails(SystemUser systemUser) throws Exception
-    {
+    public static boolean modifyTeamAssetDetails(SystemUser systemUser) throws Exception {
         TeamOwner myTeamOwner = getUserIfIsTeamOwner(systemUser);
         if (myTeamOwner == null) {
             return false;
@@ -254,10 +252,15 @@ public class Controller {
             SystemLoggerManager.logError(Controller.class, msg);
             throw new NoTeamExistsException(msg);
         }
+        if (chosenTeam.getStatus() != TeamStatus.OPEN) {
+            String msg = "Team Close";
+            SystemLoggerManager.logError(Controller.class, msg);
+            throw new TeamCloseException(msg);
+        }
 
         boolean isSuccess = TeamController.editAssets(chosenTeam);
 
-        if(isSuccess)
+        if (isSuccess)
             UIController.showNotification("The action completed successfully");
 
         return isSuccess;
@@ -267,13 +270,14 @@ public class Controller {
      * Receives user name and password from the unregistered user who wants to log in to the system,
      * Delegates the responsibility to EntityManger.
      * Add system user to all AllSubscribers - userSystem list  - online
+     *
      * @param usrNm User name
      * @param pswrd Password
      * @return The user in the system with those credentials.
      * @throws UsernameOrPasswordIncorrectException If user name or password are incorrect.
      */
     public static SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException, AlreadyLoggedInUser {
-        SystemUser SystemUser =  EntityManager.getInstance().login(usrNm, pswrd);
+        SystemUser SystemUser = EntityManager.getInstance().login(usrNm, pswrd);
         return SystemUser;
     }
 
@@ -281,14 +285,15 @@ public class Controller {
     /**
      * Receives name, user name and password from the unregistered user who wants to sign up to the system,
      * Delegates the responsibility to EntityManger.
-     * @param name Name.
-     * @param usrNm User name.
-     * @param pswrd Password.
-     * @param email  email address
+     *
+     * @param name       Name.
+     * @param usrNm      User name.
+     * @param pswrd      Password.
+     * @param email      email address
      * @param emailAlert - boolean  - if send via email - true, otherwise false
      * @return New user with those credentials.
      * @throws Exception If user name is already belongs to a user in the system, or
-     * the password does not meet the security requirements.
+     *                   the password does not meet the security requirements.
      */
     public static SystemUser signUp(String name, String usrNm, String pswrd, String email, boolean emailAlert)
             throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException, InvalidEventException {

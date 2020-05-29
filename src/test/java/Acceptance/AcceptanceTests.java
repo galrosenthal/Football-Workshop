@@ -62,7 +62,7 @@ public class AcceptanceTests extends GenericTestAbstract {
     @Test
     public void addTeamOwnerATest() throws Exception {
         UIController.setIsTest(true);
-        Controller.addTeamOwner(new SystemUser("rosengal", "Gal"));
+        Controller.addTeamOwner(new SystemUser("rosengal", "Gal", true));
     }
 
 
@@ -148,7 +148,7 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void addLeagueATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         systemUser.addNewRole(new AssociationRepresentative(systemUser, true));
         EntityManager.getInstance().addUser(systemUser);
         UIController.setIsTest(true);
@@ -166,7 +166,7 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void addLeague2ATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         systemUser.addNewRole(new AssociationRepresentative(systemUser, true));
         EntityManager.getInstance().addUser(systemUser);
         EntityManager.getInstance().addLeague(new League("Premier League", true));
@@ -373,7 +373,7 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void addSeasonToLeagueATest(){
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         systemUser.addNewRole(new AssociationRepresentative(systemUser, true));
         EntityManager.getInstance().addUser(systemUser);
         EntityManager.getInstance().addLeague(new League("Premier League", true));
@@ -390,7 +390,7 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void addSeasonToLeague2ATest(){
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         systemUser.addNewRole(new AssociationRepresentative(systemUser, true));
         EntityManager.getInstance().addUser(systemUser);
         EntityManager.getInstance().addLeague(new League("Premier League", true));
@@ -419,7 +419,7 @@ public class AcceptanceTests extends GenericTestAbstract {
         TeamOwner abcOwner = new TeamOwner(abcCreate, true);
         abcOwner.addTeamToOwn(beitShean,abcCreate);
         beitShean.getTeamOwners().add(abcOwner);
-        SystemUser elisha = new SystemUser("elevy","Elisha Levy");
+        SystemUser elisha = new SystemUser("elevy","Elisha Levy", true);
 
         SystemUser abc = Controller.login("abc1","aBc12345");
         assertEquals(abc,abcCreate);
@@ -553,9 +553,9 @@ public class AcceptanceTests extends GenericTestAbstract {
 
 
     private void addRefereeSuccessTest() {
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         new AssociationRepresentative(systemUser, true);
-        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
+        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen", true);
 
         assertTrue(ARController.addReferee(systemUser));
 
@@ -571,9 +571,9 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void addReferee3ATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         new AssociationRepresentative(systemUser, true);
-        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
+        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen", true);
         new Referee(refereeUser, RefereeQualification.VAR_REFEREE, true);
 
         UIController.setSelector(9311);
@@ -587,10 +587,10 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void removeRefereeATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         new AssociationRepresentative(systemUser, true);
 
-        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
+        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen", true);
         new Referee(refereeUser, RefereeQualification.VAR_REFEREE, true);
         UIController.setSelector(9321);
         //There are no referees
@@ -604,10 +604,10 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void removeReferee2ATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         new AssociationRepresentative(systemUser, true);
 
-        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
+        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen", true);
 
         UIController.setSelector(9321);
         //There are no referees
@@ -620,13 +620,13 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void assignRefereeATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         new AssociationRepresentative(systemUser, true);
         UIController.setSelector(0);
         EntityManager.getInstance().addLeague(new League("Premier League", true));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
-        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
+        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen", true);
         new Referee(refereeUser, RefereeQualification.VAR_REFEREE, true);
         /*
         Expected: The referee has been assigned to the season successfully
@@ -640,13 +640,13 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void assignReferee2ATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         new AssociationRepresentative(systemUser, true);
         UIController.setSelector(0);
         EntityManager.getInstance().addLeague(new League("Premier League", true));
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
-        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen");
+        SystemUser refereeUser = new SystemUser("AviCohen", "Avi Cohen", true);
         new Referee(refereeUser, RefereeQualification.VAR_REFEREE, true);
         /*
         Expected: The referee has been assigned to the season successfully
@@ -665,9 +665,9 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void removeTeamOwner1ATest() throws TeamAlreadyExistsException, UserNotFoundException {
-        SystemUser arSystemUser = new SystemUser("oran", "oran");
-        SystemUser toSystemUser = new SystemUser("gal", "gal");
-        SystemUser to2SystemUser = new SystemUser("merav", "merav");
+        SystemUser arSystemUser = new SystemUser("oran", "oran", true);
+        SystemUser toSystemUser = new SystemUser("gal", "gal", true);
+        SystemUser to2SystemUser = new SystemUser("merav", "merav", true);
         new AssociationRepresentative(arSystemUser, true);
         UIController.setSelector(631);
         ARController.registerNewTeam(arSystemUser);
@@ -685,10 +685,10 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void removeTeamOwner2ATest() throws TeamAlreadyExistsException, UserNotFoundException {
-        SystemUser arSystemUser = new SystemUser("oran", "oran");
-        SystemUser toSystemUser = new SystemUser("gal", "gal");
-        SystemUser to2SystemUser = new SystemUser("merav", "merav");
-        SystemUser to3SystemUser = new SystemUser("nir", "nir");
+        SystemUser arSystemUser = new SystemUser("oran", "oran", true);
+        SystemUser toSystemUser = new SystemUser("gal", "gal", true);
+        SystemUser to2SystemUser = new SystemUser("merav", "merav", true);
+        SystemUser to3SystemUser = new SystemUser("nir", "nir", true);
         new AssociationRepresentative(arSystemUser, true);
         UIController.setSelector(631);
         ARController.registerNewTeam(arSystemUser);
@@ -709,9 +709,9 @@ public class AcceptanceTests extends GenericTestAbstract {
     @Test
     public void removeTeamOwner3ATest() throws TeamAlreadyExistsException, UserNotFoundException {
         try {
-            SystemUser arSystemUser = new SystemUser("oran", "oran");
-            SystemUser toSystemUser = new SystemUser("gal", "gal");
-            SystemUser to2SystemUser = new SystemUser("merav", "merav");
+            SystemUser arSystemUser = new SystemUser("oran", "oran", true);
+            SystemUser toSystemUser = new SystemUser("gal", "gal", true);
+            SystemUser to2SystemUser = new SystemUser("merav", "merav", true);
             new AssociationRepresentative(arSystemUser, true);
             UIController.setSelector(631);
             ARController.registerNewTeam(arSystemUser);
@@ -729,9 +729,9 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void registerNewTeamATest() throws TeamAlreadyExistsException, UserNotFoundException {
-        SystemUser arSystemUser = new SystemUser("username", "name");
+        SystemUser arSystemUser = new SystemUser("username", "name", true);
         new AssociationRepresentative(arSystemUser, true);
-        SystemUser userToBeOwner = new SystemUser("AviCohen", "name");
+        SystemUser userToBeOwner = new SystemUser("AviCohen", "name", true);
         UIController.setSelector(91011); // Hapoel Beit Shan
 
         assertTrue(ARController.registerNewTeam(arSystemUser));
@@ -747,11 +747,11 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void registerNewTeam2ATest() throws TeamAlreadyExistsException, UserNotFoundException {
-        SystemUser arSystemUser = new SystemUser("username", "name");
+        SystemUser arSystemUser = new SystemUser("username", "name", true);
         new AssociationRepresentative(arSystemUser, true);
-        SystemUser userToBeOwner = new SystemUser("AviCohen", "name");
+        SystemUser userToBeOwner = new SystemUser("AviCohen", "name", true);
 
-        SystemUser teamOwnerUser = new SystemUser("to", "name");
+        SystemUser teamOwnerUser = new SystemUser("to", "name", true);
         new TeamOwner(teamOwnerUser, true);
         TeamOwner toRole = (TeamOwner) teamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
         Team existingTeam = new Team("Hapoel Beit Shan", toRole, true);
@@ -774,7 +774,7 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void registerNewTeam3ATest() throws TeamAlreadyExistsException, UserNotFoundException {
-        SystemUser arSystemUser = new SystemUser("username", "name");
+        SystemUser arSystemUser = new SystemUser("username", "name", true);
         new AssociationRepresentative(arSystemUser, true);
         UIController.setSelector(91031); // Hapoel Beit Shan, then NOTaUSERNAME
         try {
@@ -792,7 +792,7 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void addPointsPolicyATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         new AssociationRepresentative(systemUser, true);
         UIController.setSelector(9511);//1,-1,0
         assertTrue(ARController.addPointsPolicy(systemUser));
@@ -808,7 +808,7 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void addPointsPolicy2ATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         new AssociationRepresentative(systemUser, true);
         UIController.setSelector(9511); //1,-1,0
         assertTrue(ARController.addPointsPolicy(systemUser));
@@ -824,7 +824,7 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void setPointsPolicyATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         new AssociationRepresentative(systemUser, true);
         EntityManager.getInstance().addLeague(new League("Premier League", true));
         League league = EntityManager.getInstance().getLeagues().get(0);
@@ -851,7 +851,7 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void addTeamsToSeasonATest(){
-        SystemUser arSystemUser = new SystemUser("username", "name");
+        SystemUser arSystemUser = new SystemUser("username", "name", true);
         new AssociationRepresentative(arSystemUser, true);
         new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
@@ -877,7 +877,7 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void removeTeamsFromSeasonATest() {
-        SystemUser arSystemUser = new SystemUser("username", "name");
+        SystemUser arSystemUser = new SystemUser("username", "name", true);
         new AssociationRepresentative(arSystemUser, true);
         new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
@@ -911,7 +911,7 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void addSchedulingPolicyATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         new AssociationRepresentative(systemUser, true);
         UIController.setSelector(962);//1,1,1,..
         assertTrue(ARController.addSchedulingPolicy(systemUser));
@@ -927,7 +927,7 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void addSchedulingPolicy2ATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         new AssociationRepresentative(systemUser, true);
         UIController.setSelector(962); //1,1,1,...
         assertTrue(ARController.addSchedulingPolicy(systemUser));
@@ -944,9 +944,9 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void activateSchedulingPolicyATest(){
-        SystemUser arSystemUser = new SystemUser("username", "name");
-        SystemUser to1SystemUser = new SystemUser("teamowner1", "Team Owner");
-        SystemUser to2SystemUser = new SystemUser("teamowner2", "Team Owner");
+        SystemUser arSystemUser = new SystemUser("username", "name", true);
+        SystemUser to1SystemUser = new SystemUser("teamowner1", "Team Owner", true);
+        SystemUser to2SystemUser = new SystemUser("teamowner2", "Team Owner", true);
         new AssociationRepresentative(arSystemUser, true);
         new TeamOwner(arSystemUser, true);
         new TeamOwner(to1SystemUser, true);
@@ -986,9 +986,9 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void activateSchedulingPolicy2ATest() throws Exception {
-        SystemUser arSystemUser = new SystemUser("username", "name");
-        SystemUser to1SystemUser = new SystemUser("teamowner1", "Team Owner");
-        SystemUser to2SystemUser = new SystemUser("teamowner2", "Team Owner");
+        SystemUser arSystemUser = new SystemUser("username", "name", true);
+        SystemUser to1SystemUser = new SystemUser("teamowner1", "Team Owner", true);
+        SystemUser to2SystemUser = new SystemUser("teamowner2", "Team Owner", true);
         new AssociationRepresentative(arSystemUser, true);
         new TeamOwner(arSystemUser, true);
         new TeamOwner(to1SystemUser, true);
@@ -1030,9 +1030,9 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void activateSchedulingPolicy3ATest() throws Exception {
-        SystemUser arSystemUser = new SystemUser("username", "name");
-        SystemUser to1SystemUser = new SystemUser("teamowner1", "Team Owner");
-        SystemUser to2SystemUser = new SystemUser("teamowner2", "Team Owner");
+        SystemUser arSystemUser = new SystemUser("username", "name", true);
+        SystemUser to1SystemUser = new SystemUser("teamowner1", "Team Owner", true);
+        SystemUser to2SystemUser = new SystemUser("teamowner2", "Team Owner", true);
         new AssociationRepresentative(arSystemUser, true);
         new TeamOwner(arSystemUser, true);
         new TeamOwner(to1SystemUser, true);
@@ -1071,7 +1071,7 @@ public class AcceptanceTests extends GenericTestAbstract {
         Team team = new Team(teamName, teamOwner, true);
         team.addStadium(new Stadium("stadium1"," location1"));
         for(int i = 1; i<= 11; i++){ //add 11 players
-            SystemUser pSystemUser = new SystemUser("player"+teamName+""+i, "name"+i);
+            SystemUser pSystemUser = new SystemUser("player"+teamName+""+i, "name"+i, true);
             new Player(pSystemUser, new Date(), true);
             Player player = (Player)pSystemUser.getRole(RoleTypes.PLAYER);
             team.addTeamPlayer(teamOwner, player);
@@ -1085,19 +1085,19 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void updateGameEventsATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         systemUser.addNewRole(new Referee(systemUser,RefereeQualification.VAR_REFEREE, true));
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
-        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
+        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser", true);
         new AssociationRepresentative(arSystemUser, true);
         new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
         Team firstTeam = new Team("Hapoel Beit Shan", toRole, true);
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole, true);
 
-        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen"),new Date(2001, 01, 01), true);
+        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
+        Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen", true),new Date(2001, 01, 01), true);
         firstTeam.addTeamPlayer(toRole,player1);
 
         game.addReferee(referee);
@@ -1121,19 +1121,19 @@ public class AcceptanceTests extends GenericTestAbstract {
      */
     @Test
     public void produceGameReportATest() {
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         systemUser.addNewRole(new Referee(systemUser,RefereeQualification.VAR_REFEREE, true));
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
-        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
+        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser", true);
         new AssociationRepresentative(arSystemUser, true);
         new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
         Team firstTeam = new Team("Hapoel Beit Shan", toRole, true);
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole, true);
 
-        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen"),new Date(2001, 01, 01), true);
+        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
+        Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen", true),new Date(2001, 01, 01), true);
         firstTeam.addTeamPlayer(toRole,player1);
 
         game.addReferee(referee);

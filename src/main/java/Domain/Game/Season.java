@@ -1,5 +1,6 @@
 package Domain.Game;
 
+import Domain.EntityManager;
 import Domain.Users.Referee;
 
 import java.time.Year;
@@ -8,6 +9,7 @@ import java.util.*;
 public class Season {
 
     private League league;
+
     private String years; //name
     private List<Team> teams;
     private List<Referee> referees;
@@ -49,6 +51,10 @@ public class Season {
         this.isUnderway = isUnderway;
     }
 
+    public League getLeague() {
+        return league;
+    }
+
     /**
      * Getter for the main year of the season - the later year.
      *
@@ -86,9 +92,6 @@ public class Season {
         return false;
     }
 
-    public League getLeague() {
-        return league;
-    }
 
     /*  public boolean hasStarted() {
               //TODO: Check if the season has started
@@ -104,6 +107,7 @@ public class Season {
 
     public List<Team> getTeams() {
         /*TODO - DB*/
+        teams = EntityManager.getInstance().getTeamsPerSeason(this);
         return teams;
     }
 
@@ -285,6 +289,7 @@ public class Season {
 
     public void setPointsPolicy(PointsPolicy pointsPolicy) {
         this.pointsPolicy = pointsPolicy;
+        EntityManager.getInstance().setPointsPolicy(this, pointsPolicy);
     }
 
     public PointsPolicy getPointsPolicy() {
@@ -324,7 +329,7 @@ public class Season {
         //Create games based on schedule
         for (int i = 0; i < scheduleMatches.size(); i++) {
             ScheduleMatch scheduleMatch = scheduleMatches.get(i);
-            Game game = new Game(scheduleMatch.getStadium(), scheduleMatch.getHomeTeam(), scheduleMatch.getAwayTeam(), scheduleMatch.getMatchDate(), scheduleMatch.getReferees());
+            Game game = new Game(scheduleMatch.getStadium(), scheduleMatch.getHomeTeam(), scheduleMatch.getAwayTeam(), scheduleMatch.getMatchDate(), scheduleMatch.getReferees(), true);
             this.games.add(game);
             for (Referee ref : scheduleMatch.getReferees()) {
                 ref.addGame(game);

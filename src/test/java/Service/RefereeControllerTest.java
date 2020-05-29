@@ -27,25 +27,25 @@ public class RefereeControllerTest extends GenericTestAbstract {
 
     @Test
     public void updateGameEventsUTest() {
-        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 0);
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 0, true);
         assertFalse(RefereeController.updateGameEvents(systemUser));
     }
 
     @Test
     public void updateGameEventsITest() {
-        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 1031);
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 1031, true);
         assertFalse(RefereeController.updateGameEvents(systemUser));
         //"There are no games for this referee"
     }
 
     @Test
     public void updateGameEvents2ITest() {
-        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 1031);
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 1031, true);
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
-        Team firstTeam = new TeamStub(9511);
-        Team secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Team firstTeam = new TeamStub(9511, true);
+        Team secondTeam = new TeamStub(9512, true);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         game.setEndDate(new Date()); // end the game, for the test
 
         game.addReferee(referee);
@@ -57,14 +57,14 @@ public class RefereeControllerTest extends GenericTestAbstract {
     }
     @Test
     public void updateGameEventsSuccessRedCardITest() {
-        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 1031);
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 1031, true);
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
-        TeamStub firstTeam = new TeamStub(9511);
-        TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
+        TeamStub firstTeam = new TeamStub(9511, true);
+        TeamStub secondTeam = new TeamStub(9512, true);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
+        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312, true));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0, true));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -90,11 +90,11 @@ public class RefereeControllerTest extends GenericTestAbstract {
         SystemUser systemUser = getSystemUserVarReferee();
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
-        TeamStub firstTeam = new TeamStub(9511);
-        TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
+        TeamStub firstTeam = new TeamStub(9511, true);
+        TeamStub secondTeam = new TeamStub(9512, true);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
+        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312, true));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0, true));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -117,13 +117,13 @@ public class RefereeControllerTest extends GenericTestAbstract {
     }
 
     private SystemUser getSystemUserVarReferee() {
-        SystemUser systemUser = new SystemUser("username", "name");
+        SystemUser systemUser = new SystemUser("username", "name", true);
         systemUser.addNewRole(new Referee(systemUser,RefereeQualification.VAR_REFEREE, true));
         return systemUser;
     }
 
     private SystemUser getSystemUserMainReferee() {
-        SystemUser systemUser = new SystemUser("username2", "name2");
+        SystemUser systemUser = new SystemUser("username2", "name2", true);
         systemUser.addNewRole(new Referee(systemUser,RefereeQualification.MAIN_REFEREE, true));
         return systemUser;
     }
@@ -136,11 +136,11 @@ public class RefereeControllerTest extends GenericTestAbstract {
         SystemUser systemUser2 = getSystemUserMainReferee();
         Referee mainRef = (Referee) systemUser2.getRole(RoleTypes.REFEREE);
 
-        TeamStub firstTeam = new TeamStub(9511);
-        TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("AviCohen", "Name1", 10312));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2", "Name2", 0));
+        TeamStub firstTeam = new TeamStub(9511, true);
+        TeamStub secondTeam = new TeamStub(9512, true);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
+        Player player1 = new PlayerStub(new SystemUserStub("AviCohen", "Name1", 10312, true));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2", "Name2", 0, true));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -191,11 +191,11 @@ public class RefereeControllerTest extends GenericTestAbstract {
         SystemUser systemUser = getSystemUserVarReferee();
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
-        TeamStub firstTeam = new TeamStub(9511);
-        TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
+        TeamStub firstTeam = new TeamStub(9511, true);
+        TeamStub secondTeam = new TeamStub(9512, true);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
+        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312, true));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0, true));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -222,11 +222,11 @@ public class RefereeControllerTest extends GenericTestAbstract {
         SystemUser systemUser = getSystemUserVarReferee();
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
-        TeamStub firstTeam = new TeamStub(9511);
-        TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
+        TeamStub firstTeam = new TeamStub(9511, true);
+        TeamStub secondTeam = new TeamStub(9512, true);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
+        Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0, true));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0, true));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -253,11 +253,11 @@ public class RefereeControllerTest extends GenericTestAbstract {
         SystemUser systemUser = getSystemUserVarReferee();
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
-        TeamStub firstTeam = new TeamStub(9511);
-        TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
+        TeamStub firstTeam = new TeamStub(9511, true);
+        TeamStub secondTeam = new TeamStub(9512, true);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
+        Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0, true));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0, true));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -283,11 +283,11 @@ public class RefereeControllerTest extends GenericTestAbstract {
         SystemUser systemUser = getSystemUserVarReferee();
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
-        TeamStub firstTeam = new TeamStub(9511);
-        TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
+        TeamStub firstTeam = new TeamStub(9511, true);
+        TeamStub secondTeam = new TeamStub(9512, true);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
+        Player player1 = new PlayerStub(new SystemUserStub("UserName1","Name1",0, true));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0, true));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -313,11 +313,11 @@ public class RefereeControllerTest extends GenericTestAbstract {
         SystemUser systemUser = getSystemUserVarReferee();
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
-        TeamStub firstTeam = new TeamStub(9511);
-        TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",10312 ));
+        TeamStub firstTeam = new TeamStub(9511, true);
+        TeamStub secondTeam = new TeamStub(9512, true);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
+        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312, true));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",10312, true));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -349,11 +349,11 @@ public class RefereeControllerTest extends GenericTestAbstract {
         SystemUser systemUser = getSystemUserVarReferee();
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
-        TeamStub firstTeam = new TeamStub(9511);
-        TeamStub secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312 ));
-        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0 ));
+        TeamStub firstTeam = new TeamStub(9511, true);
+        TeamStub secondTeam = new TeamStub(9512, true);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
+        Player player1 = new PlayerStub(new SystemUserStub("AviCohen","Name1",10312, true));
+        Player player2 = new PlayerStub(new SystemUserStub("UserName2","Name2",0, true));
         firstTeam.addPlayer(player1);
         firstTeam.addPlayer(player2);
 
@@ -378,15 +378,15 @@ public class RefereeControllerTest extends GenericTestAbstract {
         SystemUser systemUser = getSystemUserVarReferee();
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
-        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
+        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser", true);
         new AssociationRepresentative(arSystemUser, true);
         new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
         Team firstTeam = new Team("Hapoel Beit Shan", toRole, true);
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole, true);
 
-        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        Player player1 = new Player(new SystemUser("AviCohen","Name1"),new Date(2001, 01, 01), true);
+        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
+        Player player1 = new Player(new SystemUser("AviCohen","Name1", true),new Date(2001, 01, 01), true);
         firstTeam.addTeamPlayer(toRole,player1);
 
         game.addReferee(referee);
@@ -407,25 +407,25 @@ public class RefereeControllerTest extends GenericTestAbstract {
 
     @Test
     public void produceGameReportUTest() {
-        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 0);
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 0, true);
         assertFalse(RefereeController.produceGameReport(systemUser));
     }
 
     @Test
     public void produceGameReportITest() {
-        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 1031);
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 1031, true);
         assertFalse(RefereeController.produceGameReport(systemUser));
         //"There are no games for this referee"
     }
 
     @Test
     public void produceGameReport2ITest() {
-        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 1031);
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 1031, true);
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
-        Team firstTeam = new TeamStub(9511);
-        Team secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Team firstTeam = new TeamStub(9511, true);
+        Team secondTeam = new TeamStub(9512, true);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
 
         game.addReferee(referee);
         referee.addGame(game);
@@ -436,12 +436,12 @@ public class RefereeControllerTest extends GenericTestAbstract {
 
     @Test
     public void produceGameReport3ITest() {
-        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 1031);
+        SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 1031, true);
         Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
 
-        Team firstTeam = new TeamStub(9511);
-        Team secondTeam = new TeamStub(9512);
-        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        Team firstTeam = new TeamStub(9511, true);
+        Team secondTeam = new TeamStub(9512, true);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         game.setEndDate(new Date()); // end the game, for the test
 
         game.addReferee(referee);

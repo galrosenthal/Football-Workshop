@@ -1,5 +1,6 @@
 package Domain.Game;
 
+import Domain.EntityManager;
 import Domain.GameLogger.EventsLogger;
 import Domain.GameLogger.Goal;
 import Domain.Reports.GameReport;
@@ -15,11 +16,11 @@ public class Game extends Observable {
     private Team awayTeam;
     private Date gameDate;
     private Date endDate;
-    private List<Referee> referees; // - maybe array?
+    private List<Referee> referees;
     private EventsLogger eventsLogger;
     private GameReport gameReport;
 
-    public Game(Stadium stadium, Team homeTeam, Team awayTeam, Date gameDate, List<Referee> referees) {
+    public Game(Stadium stadium, Team homeTeam, Team awayTeam, Date gameDate, List<Referee> referees, boolean addToDB) {
         this.stadium = stadium;
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
@@ -28,7 +29,9 @@ public class Game extends Observable {
         this.eventsLogger = new EventsLogger();
         this.endDate = null;
         this.gameReport = new GameReport(this);
-        //TODO: Add to EntityManager?
+        if (addToDB) {
+            EntityManager.getInstance().addGame(this);
+        }
     }
 
     public Stadium getStadium() {
@@ -137,8 +140,8 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
-        this.eventsLogger.logGoal(scoringTeam, scoredOnTeam,playerScored, minute);
-        String notification =  scoringTeam.getTeamName() +" scored on "+scoredOnTeam.getTeamName();
+        this.eventsLogger.logGoal(scoringTeam, scoredOnTeam, playerScored, minute);
+        String notification = scoringTeam.getTeamName() + " scored on " + scoredOnTeam.getTeamName();
         notifyObservers(notification);
     }
 
@@ -238,10 +241,11 @@ public class Game extends Observable {
 
     /**
      * Adds an game-end event to the game
+     *
      * @param endDate - Date - The time the game ended
-     * @param minute - int - The minute game ended (maybe it ended before the 90th or 120th minute)
+     * @param minute  - int - The minute game ended (maybe it ended before the 90th or 120th minute)
      */
-    public void addEndGame(Date endDate, int minute){
+    public void addEndGame(Date endDate, int minute) {
         this.endDate = endDate;
         this.eventsLogger.logEndGameEvent(endDate, minute);
     }
@@ -253,11 +257,12 @@ public class Game extends Observable {
 
     /**
      * Returns how many hours passed since the game ended, from a given date.
+     *
      * @param currDate The date to measure the difference from the endDate to.
      * @return
      */
-    public int getHoursPassedSinceGameEnd(Date currDate){
-        if(!hasFinished())
+    public int getHoursPassedSinceGameEnd(Date currDate) {
+        if (!hasFinished())
             return 0;
         //milliseconds
         long different = currDate.getTime() - endDate.getTime();
@@ -277,7 +282,7 @@ public class Game extends Observable {
                 ", homeTeam=" + homeTeam.getTeamName() +
                 ", awayTeam=" + awayTeam.getTeamName() +
                 ", gameDate=" + gameDate;
-        if(endDate != null){
+        if (endDate != null) {
             str += ", endDate=" + endDate;
         }
         str += '}';
@@ -285,13 +290,11 @@ public class Game extends Observable {
     }
 
 
-    public Date getGameDate()
-    {
+    public Date getGameDate() {
         return this.gameDate;
     }
 
-    public Date getEndDate()
-    {
+    public Date getEndDate() {
         return this.endDate;
     }
 
@@ -323,7 +326,7 @@ public class Game extends Observable {
         super.notifyObservers();
     }
 
-    public String getGameTitle(){
+    public String getGameTitle() {
         return homeTeam.getTeamName() + " vs. " + awayTeam.getTeamName();
     }
 

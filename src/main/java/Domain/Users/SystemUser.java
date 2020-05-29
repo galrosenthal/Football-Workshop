@@ -44,7 +44,7 @@ public class SystemUser extends User implements Fan {
         }
     }
 
-    public SystemUser(String username, String name)
+    public SystemUser(String username, String name, boolean addToDB)
     {
         this.roles = new ArrayList<>();
         this.username = username;
@@ -53,7 +53,10 @@ public class SystemUser extends User implements Fan {
         this.password = "";
         this.email = "";
         this.alertEmail = false;
-        EntityManager.getInstance().addUser(this);
+        if(addToDB)
+        {
+            EntityManager.getInstance().addUser(this);
+        }
     }
 
     public String getEmail() {

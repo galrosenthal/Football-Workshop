@@ -132,7 +132,7 @@ public class ControllerTest extends GenericTestAbstract {
         UIController.setIsTest(true);
         UIController.setSelector(0);
         //false because of wrong username from user
-        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
+        assertFalse(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2, true)));
 
     }
 
@@ -152,16 +152,16 @@ public class ControllerTest extends GenericTestAbstract {
     public void addTeamOwner2ITest() {
         UIController.setIsTest(true);
 //        TeamOwnerStub.setSelector(0);
-        new SystemUserStub("newTOUsername", "newTO", 3);
+        new SystemUserStub("newTOUsername", "newTO", 3, true);
         UIController.setSelector(2);
 
-        assertTrue(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
+        assertTrue(Controller.addTeamOwner(new SystemUserStub("rosengal", "gal", 2, true)));
     }
 
     @Test
     public void addAssetUTest() throws Exception
     {
-        SystemUserStub test = new SystemUserStub("test","test User",0);
+        SystemUserStub test = new SystemUserStub("test","test User",0, true);
         assertFalse(Controller.addAsset(test));
         CoachStub c = new CoachStub(test);
         test.getRoles().add(c);
@@ -174,7 +174,7 @@ public class ControllerTest extends GenericTestAbstract {
     @Test (expected = NoTeamExistsException.class)
     public void addAssetNoSuchTeamUTest() throws Exception
     {
-        SystemUser test = new SystemUserStub("test","test User",6111);
+        SystemUser test = new SystemUserStub("test","test User",6111, true);
         TeamOwnerStub to = new TeamOwnerStub(test);
         to.setSelector(6111);
         assertFalse(Controller.addAsset(test));
@@ -183,7 +183,7 @@ public class ControllerTest extends GenericTestAbstract {
     @Test
     public void addAssetFalseUTest() throws Exception
     {
-        SystemUser test = new SystemUserStub("test","test User",6111);
+        SystemUser test = new SystemUserStub("test","test User",6111, true);
         TeamOwnerStub to = new TeamOwnerStub(test);
         to.setSelector(6113);
         UIController.setSelector(0);
@@ -193,7 +193,7 @@ public class ControllerTest extends GenericTestAbstract {
     @Test
     public void addAssetTestAssetTypeUTest() throws Exception
     {
-        SystemUser test = new SystemUserStub("test","test User",6111);
+        SystemUser test = new SystemUserStub("test","test User",6111, true);
         TeamOwnerStub to = new TeamOwnerStub(test);
         to.setSelector(6112);
         UIController.setSelector(61111);
@@ -204,8 +204,8 @@ public class ControllerTest extends GenericTestAbstract {
     @Test
     public void addAssetSystemUserStubITest() throws Exception
     {
-        SystemUser test = new SystemUserStub("test","test User",6111);
-        SystemUser anotherUser = new SystemUserStub("anotherUser","another test User",6112);
+        SystemUser test = new SystemUserStub("test","test User",6111, true);
+        SystemUser anotherUser = new SystemUserStub("anotherUser","another test User",6112, true);
         TeamOwner to = new TeamOwner(test, true);
         Team team = new Team("Test", true);
         team.getTeamOwners().add(to);
@@ -217,8 +217,8 @@ public class ControllerTest extends GenericTestAbstract {
     @Test
     public void addAssetSystemUserNoStubITest() throws Exception
     {
-        SystemUser test = new SystemUser("test","test User");
-        SystemUser anotherUser =new SystemUser("anotherUser","another test User");
+        SystemUser test = new SystemUser("test","test User", true);
+        SystemUser anotherUser =new SystemUser("anotherUser","another test User", true);
         TeamOwner to = new TeamOwner(test, true);
         Team team = new Team("Test", true);
         team.getTeamOwners().add(to);
@@ -230,32 +230,32 @@ public class ControllerTest extends GenericTestAbstract {
 
     @Test
     public void modifyTeamAssetDetails1UTest() throws Exception {
-        assertFalse(Controller.modifyTeamAssetDetails(new SystemUserStub("rosengal", "gal", 0)));
+        assertFalse(Controller.modifyTeamAssetDetails(new SystemUserStub("rosengal", "gal", 0, true)));
 
     }
 
     @Test(expected = NoTeamExistsException.class)
     public void modifyTeamAssetDetails2UTest() throws Exception {
-        Controller.modifyTeamAssetDetails(new SystemUserStub("rosengal", "gal", 6131));
+        Controller.modifyTeamAssetDetails(new SystemUserStub("rosengal", "gal", 6131, true));
     }
 
 
     @Test
     public void modifyTeamAssetDetails1ITest() throws Exception {
-        assertFalse(Controller.modifyTeamAssetDetails(new SystemUser("rosengal", "gal")));
+        assertFalse(Controller.modifyTeamAssetDetails(new SystemUser("rosengal", "gal", true)));
 
     }
 
     @Test(expected = NoTeamExistsException.class)
     public void modifyTeamAssetDetails2ITest() throws Exception {
-        SystemUser systemUser = new SystemUser("rosengal", "gal");
+        SystemUser systemUser = new SystemUser("rosengal", "gal", true);
         TeamOwner teamOwner = new TeamOwner(systemUser, true);
         Controller.modifyTeamAssetDetails(systemUser);
     }
 
     @Test
     public void modifyTeamAssetDetails3ITest() throws Exception {
-        SystemUser systemUser = new SystemUser("rosengal", "gal");
+        SystemUser systemUser = new SystemUser("rosengal", "gal", true);
         TeamOwner teamOwner = new TeamOwner(systemUser, true);
         Team team = new Team("Test", true);
         teamOwner.addTeamToOwn(team,systemUser);
@@ -274,7 +274,7 @@ public class ControllerTest extends GenericTestAbstract {
         UIController.setIsTest(true);
         UIController.setSelector(0);
         //false because username not owned a team
-        assertFalse(Controller.removeTeamOwner(new SystemUser("rosengal", "gal")));
+        assertFalse(Controller.removeTeamOwner(new SystemUser("rosengal", "gal", true)));
     }
 
     /**
@@ -284,7 +284,7 @@ public class ControllerTest extends GenericTestAbstract {
     public void removeTeamOwner2UTest(){
         UIController.setIsTest(true);
         UIController.setSelector(1);
-        SystemUser user = new SystemUser("rosengal", "gal");
+        SystemUser user = new SystemUser("rosengal", "gal", true);
         TeamOwnerStub teamOwner = new TeamOwnerStub(user);
         user.addNewRole(teamOwner);
         teamOwner.setSelector(6111);
@@ -301,7 +301,7 @@ public class ControllerTest extends GenericTestAbstract {
         UIController.setIsTest(true);
         UIController.setSelector(0);
         //false because of wrong username from user
-        assertFalse(Controller.removeTeamOwner(new SystemUserStub("rosengal", "gal", 2)));
+        assertFalse(Controller.removeTeamOwner(new SystemUserStub("rosengal", "gal", 2, true)));
     }
 
 //    /**
@@ -323,7 +323,7 @@ public class ControllerTest extends GenericTestAbstract {
         UIController.setIsTest(true);
         UIController.setSelector(1);
 
-        SystemUser owner = new SystemUser("rosengal", "gal");
+        SystemUser owner = new SystemUser("rosengal", "gal", true);
         owner.addNewRole(new TeamOwner(owner, true));
         assertFalse(Controller.removeTeamOwner(owner));
 

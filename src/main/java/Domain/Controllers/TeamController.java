@@ -30,7 +30,6 @@ public class TeamController {
      */
     public static boolean addTeamOwner(String username, Team teamToOwn, TeamOwner owner)
     throws Exception{
-
         List<TeamOwner> teamOwners = teamToOwn.getTeamOwners();
 
         if (!teamOwners.contains(owner) || !(EntityManager.getInstance().isTeamOwner(owner,teamToOwn)) ){
@@ -61,7 +60,6 @@ public class TeamController {
                 SystemLoggerManager.logError(TeamController.class, msg);
                 throw new RoleExistsAlreadyException(msg);
             }
-            /*TODO DB CHECK!!!!!!!!!*/
             if (isAlreadyOwnedAnotherTeamInSeason(teamToOwn, teamOwner)) {
                 String msg = "This User is already a team owner of a different team in same league";
                 SystemLoggerManager.logError(TeamController.class, msg);
@@ -348,7 +346,6 @@ public class TeamController {
         for(Coach coach : teamToClose.getTeamCoaches()){
             coach.removeTeam(teamToClose);
         }
-
         teamToClose.setStatus(TeamStatus.CLOSED);
         return true;
     }

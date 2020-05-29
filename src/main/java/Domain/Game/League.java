@@ -70,13 +70,13 @@ public class League {
      * Adds a season to this league with the given season years
      *
      * @param seasonYears - String - unique season years for this league
-     * @return - boolean - true if the addition completed successfully, else false
+     * @return - Season - no null if the addition completed successfully, else false
      */
-    public boolean addSeason(String seasonYears) {
+    public Season addSeason(String seasonYears) {
         Season season = new Season(this, seasonYears);
         this.seasons.add(season);
         EntityManager.getInstance().addSeason(this.name, season);
-        return true;
+        return season;
     }
     /**
      * Adds a season to this league with the given season years

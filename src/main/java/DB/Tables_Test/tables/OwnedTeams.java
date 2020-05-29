@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OwnedTeams extends TableImpl<OwnedTeamsRecord> {
 
-    private static final long serialVersionUID = 1823271819;
+    private static final long serialVersionUID = -905320565;
 
     /**
      * The reference instance of <code>fwdb_test.owned_teams</code>
@@ -59,7 +59,7 @@ public class OwnedTeams extends TableImpl<OwnedTeamsRecord> {
     /**
      * The column <code>fwdb_test.owned_teams.appointer</code>.
      */
-    public final TableField<OwnedTeamsRecord, String> APPOINTER = createField(DSL.name("appointer"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
+    public final TableField<OwnedTeamsRecord, String> APPOINTER = createField(DSL.name("appointer"), org.jooq.impl.SQLDataType.VARCHAR(50).defaultValue(org.jooq.impl.DSL.field("NULL", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * Create a <code>fwdb_test.owned_teams</code> table reference

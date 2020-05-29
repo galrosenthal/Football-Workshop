@@ -39,6 +39,22 @@ public class Team {
 
     }
 
+    public Team(String teamName,TeamStatus teamStatus ,  boolean addToDB) {
+        this.teamName = teamName;
+        teamOwners = new ArrayList<>();
+        playersAndCoaches = new HashSet<>();
+        teamManagers = new ArrayList<>();
+        seasons = new ArrayList<>();
+        stadiums = new ArrayList<>();
+        status = teamStatus;
+        permissionsPerTeamManager = new HashMap<>();
+        if(addToDB)
+        {
+            EntityManager.getInstance().addTeam(this);
+        }
+
+    }
+
     public Team(String teamName, TeamOwner to, boolean addToDB) {
         teamOwners = new ArrayList<>();
         teamOwners.add(to);
@@ -164,7 +180,8 @@ public class Team {
 
         teamOwners.remove(teamOwner);
         /*update db*/
-        return EntityManager.getInstance().removeTeamOwner(teamOwner,this);
+       // return EntityManager.getInstance().removeTeamOwner(teamOwner,this);
+        return true;
     }
 
     public List<Player> getTeamPlayers() {
@@ -641,13 +658,16 @@ public class Team {
         if (teamManagers.remove(teamManager)) {
             this.permissionsPerTeamManager.remove(teamManager);
             /*DB*/
-            EntityManager.getInstance().removeTeamManager(teamManager , this);
+            //EntityManager.getInstance().removeTeamManager(teamManager , this);
             return true;
         }
+        /*
         else if(EntityManager.getInstance().isTeamManager(teamManager , this))
         {
             return EntityManager.getInstance().removeTeamManager(teamManager , this);
         }
+
+         */
 
         return false;
     }

@@ -44,13 +44,13 @@ public class EntityManagerTest extends GenericTestAbstract {
     @Test
     public void getRefereesUTest() {
         assertTrue(EntityManager.getInstance().getReferees().isEmpty());
-        EntityManager.getInstance().addUser(new SystemUserStub("stubUsername","name",93121));
+        EntityManager.getInstance().addUser(new SystemUserStub("stubUsername","name",93121, true));
         assertFalse(EntityManager.getInstance().getReferees().isEmpty());
     }
     @Test
     public void getRefereesITest() {
         assertTrue(EntityManager.getInstance().getReferees().isEmpty());
-        SystemUser systemUser = new SystemUser("stubUsername","name");
+        SystemUser systemUser = new SystemUser("stubUsername","name", true);
         new Referee(systemUser, RefereeQualification.VAR_REFEREE, true);
         List<SystemUser> referees = EntityManager.getInstance().getReferees();
         assertFalse(referees.isEmpty());
