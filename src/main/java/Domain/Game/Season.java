@@ -92,9 +92,6 @@ public class Season {
         return false;
     }
 
-    public League getLeague() {
-        return league;
-    }
 
     /*  public boolean hasStarted() {
               //TODO: Check if the season has started
