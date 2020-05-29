@@ -30,7 +30,6 @@ public class TeamController {
      */
     public static boolean addTeamOwner(String username, Team teamToOwn, TeamOwner owner)
     throws Exception{
-
         List<TeamOwner> teamOwners = teamToOwn.getTeamOwners();
 
         if (!teamOwners.contains(owner) || !(EntityManager.getInstance().isTeamOwner(owner,teamToOwn)) ){

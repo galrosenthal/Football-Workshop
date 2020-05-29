@@ -16,8 +16,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import static DB.Tables.Tables.TEAMS_IN_SEASON;
 import static DB.Tables_Test.Tables.*;
+import static org.jooq.impl.DSL.row;
 
 
 public class DBManagerForTest extends DBManager {
@@ -633,6 +633,134 @@ public class DBManagerForTest extends DBManager {
         {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    @Override
+    public List<HashMap<String, String>> getAllSeasonInTeam(String teamName) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.TEAM_NAME.eq(teamName)).fetch();
+        List<HashMap<String, String>> seasonsDetails = new ArrayList<>();
+        //Add loop
+        for (int i = 0; i < records.size(); i++) {
+            for (int j = 0; j < records.fields().length; j++) {
+                HashMap<String, String> currentSeasonDetails = new HashMap<>();
+                String fieldName = records.get(i).fields()[j].getName();
+                String fieldValue = records.get(i).getValue(fieldName).toString();
+                if (fieldName.equals("points_policy_id")) {
+                    HashMap<String, String> pointsPolicyDetails = getPointsPolicyByID(Integer.parseInt(fieldValue));
+                    currentSeasonDetails.putAll(pointsPolicyDetails);
+                } else {
+                    currentSeasonDetails.put(fieldName, fieldValue);
+                }
+            }
+        }
+        return seasonsDetails;
+    }
+
+    @Override
+    public boolean isTeamManager(String username, String teamName) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(MANAGER_IN_TEAMS).where(MANAGER_IN_TEAMS.USERNAME.eq(username).and(MANAGER_IN_TEAMS.TEAM_NAME.eq(teamName))).fetch();
+        if (records.size() != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean removeTeamManager(String username, String teamName) {
+        DSLContext create = DBHandler.getContext();
+        try {
+            create.deleteFrom(MANAGER_IN_TEAMS).where(MANAGER_IN_TEAMS.USERNAME.eq(username).and(MANAGER_IN_TEAMS.TEAM_NAME.eq(teamName))).execute();
+            if (this.isTeamMangerInOtherTeam(username)) {
+                create.deleteFrom(USER_ROLES).where(USER_ROLES.USERNAME.eq(username).and(USER_ROLES.ROLE_TYPE.eq(UserRolesRoleType.TEAM_MANAGER))).execute();
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    private boolean isTeamMangerInOtherTeam(String username) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(MANAGER_IN_TEAMS).where(MANAGER_IN_TEAMS.USERNAME.eq(username)).fetch();
+        if (records.size() != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    @Override
+    public void updateTeamMangerPermission(String username, String teamName, List<String> permissions) {
+        /*    REMOVE_PLAYER,ADD_PLAYER,CHANGE_POSITION_PLAYER,REMOVE_COACH,ADD_COACH,CHANGE_TEAM_JOB_COACH; */
+        boolean remove_player = permissions.contains("REMOVE_PLAYER");
+        boolean add_player = permissions.contains("ADD_PLAYER");
+        boolean change_position_player = permissions.contains("CHANGE_POSITION_PLAYER");
+        boolean remove_coach = permissions.contains("REMOVE_COACH");
+        boolean add_coach = permissions.contains("ADD_COACH");
+        boolean change_team_job_coach = permissions.contains("CHANGE_TEAM_JOB_COACH");
+        try {
+            DSLContext create = DBHandler.getContext();
+            create.update(MANAGER_IN_TEAMS).set(row(MANAGER_IN_TEAMS.REMOVE_PLAYER, MANAGER_IN_TEAMS.ADD_PLAYER,
+                    MANAGER_IN_TEAMS.CHANGE_POSITION_PLAYER, MANAGER_IN_TEAMS.REMOVE_COACH, MANAGER_IN_TEAMS.ADD_COACH,
+                    MANAGER_IN_TEAMS.CHANGE_TEAM_JOB_COACH), row(remove_player, add_player, change_position_player,
+                    remove_coach, add_coach ,change_team_job_coach )).where(MANAGER_IN_TEAMS.TEAM_NAME.eq(teamName)
+                    .and(MANAGER_IN_TEAMS.USERNAME.eq(username))).execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Override
+    public List<String> getTeamsOwners(String teamName) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(OWNED_TEAMS).where(OWNED_TEAMS.TEAM_NAME.eq(teamName)).fetch();
+        List<String> teamOwners;
+        teamOwners = records.getValues(OWNED_TEAMS.USERNAME);
+        return teamOwners;
+    }
+
+    @Override
+    public boolean removeTeamOwner(String username, String teamName) {
+        DSLContext create = DBHandler.getContext();
+        try {
+            create.deleteFrom(OWNED_TEAMS).where(OWNED_TEAMS.USERNAME.eq(username).and(OWNED_TEAMS.TEAM_NAME.eq(teamName))).execute();
+            if (this.isTeamOwnedOtherTeam(username)) {
+                create.deleteFrom(USER_ROLES).where(USER_ROLES.USERNAME.eq(username).and(USER_ROLES.ROLE_TYPE.eq(UserRolesRoleType.TEAM_OWNER))).execute();
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean isTeamOwnedOtherTeam(String username) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(OWNED_TEAMS).where(OWNED_TEAMS.USERNAME.eq(username)).fetch();
+        if (records.size() != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void updateTeamStatus(String teamName, String status) {
+        try{
+            DSLContext create = DBHandler.getContext();
+            create.update(TEAM).set(TEAM.STATUS, TeamStatus.valueOf(status)).execute();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 }
