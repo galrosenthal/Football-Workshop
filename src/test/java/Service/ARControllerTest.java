@@ -119,8 +119,6 @@ public class ARControllerTest {
         assertTrue(ARController.addSeasonToLeague(systemUser));
         assertTrue(league.doesSeasonExists("2021/22"));
 
-        //cleanUp
-        assertTrue(EntityManager.getInstance().removeLeagueByName("newLeagueName"));
     }
 
     @Test
@@ -135,8 +133,6 @@ public class ARControllerTest {
         League league = EntityManager.getInstance().getLeagues().get(0);
         assertTrue(league.doesSeasonExists("2021/22"));
 
-        //cleanUp
-        assertTrue(EntityManager.getInstance().removeLeagueByName("newLeagueName"));
     }
 
     @Test

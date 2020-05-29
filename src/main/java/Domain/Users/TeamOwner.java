@@ -22,8 +22,11 @@ public class TeamOwner extends Role implements Subject {
      * @param addToDB    - boolean - Whether to add the new role to the database
      */
     public TeamOwner(SystemUser systemUser, boolean addToDB) {
-        super(RoleTypes.TEAM_OWNER, systemUser, addToDB);
+        super(RoleTypes.TEAM_OWNER, systemUser);
         teamsAndAppointers = new HashMap<>();
+        if (addToDB) {
+            EntityManager.getInstance().addRole(this);
+        }
     }
 
 

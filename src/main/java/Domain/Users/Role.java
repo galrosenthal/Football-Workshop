@@ -1,7 +1,5 @@
 package Domain.Users;
 
-import Domain.EntityManager;
-
 public abstract class Role {
     protected RoleTypes type;
 
@@ -10,17 +8,13 @@ public abstract class Role {
     /**
      * Constructor
      *
-     * @param systemUser - SystemUser - The system user to add the new role to
-     * @param addToDB    - boolean - Whether to add the new role to the database
      * @param type       - RoleTypes - the role type
+     * @param systemUser - SystemUser - The system user to add the new role to
      */
-    public Role(RoleTypes type, SystemUser systemUser, boolean addToDB) {
+    public Role(RoleTypes type, SystemUser systemUser) {
         this.type = type;
         this.systemUser = systemUser;
         systemUser.addNewRole(this);
-        if (addToDB) {
-            EntityManager.getInstance().addRole(this);
-        }
     }
 
     public SystemUser getSystemUser() {

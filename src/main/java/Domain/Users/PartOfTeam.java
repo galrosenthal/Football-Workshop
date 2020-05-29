@@ -15,12 +15,11 @@ public abstract class PartOfTeam extends Role implements Asset {
     /**
      * Constructor
      *
-     * @param systemUser - SystemUser - The system user to add the new role to
-     * @param addToDB    - boolean - Whether to add the new role to the database
      * @param type       - RoleTypes - the role type. PLAYER or COACH
+     * @param systemUser - SystemUser - The system user to add the new role to
      */
-    public PartOfTeam(RoleTypes type, SystemUser systemUser, boolean addToDB) {
-        super(type, systemUser, addToDB);
+    public PartOfTeam(RoleTypes type, SystemUser systemUser) {
+        super(type, systemUser);
         allTeamsConnections = new HashSet<>();
     }
 

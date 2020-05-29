@@ -1,6 +1,7 @@
 package Domain.Users;
 
 import Domain.Alert;
+import Domain.EntityManager;
 import Domain.Game.Team;
 import Domain.Subject;
 import Domain.UserComplaints;
@@ -18,7 +19,10 @@ public class SystemAdmin extends Role implements Subject {
      * @param addToDB    - boolean - Whether to add the new role to the database
      */
     public SystemAdmin(SystemUser systemUser, boolean addToDB) {
-        super(RoleTypes.SYSTEM_ADMIN, systemUser, addToDB);
+        super(RoleTypes.SYSTEM_ADMIN, systemUser);
+        if (addToDB) {
+            EntityManager.getInstance().addRole(this);
+        }
     }
 
 

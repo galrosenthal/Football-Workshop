@@ -1,5 +1,6 @@
 package Domain.Users;
 
+import Domain.EntityManager;
 import Domain.Game.Game;
 import Domain.Game.Season;
 
@@ -20,10 +21,13 @@ public class Referee extends Role {
      * @param training   - RefereeQualification - The training of the referee
      */
     public Referee(SystemUser systemUser, RefereeQualification training, boolean addToDB) {
-        super(RoleTypes.REFEREE, systemUser, addToDB);
+        super(RoleTypes.REFEREE, systemUser);
         this.training = training;
         this.games = new ArrayList<>();
         this.seasons = new ArrayList<>();
+        if (addToDB) {
+            EntityManager.getInstance().addRole(this);
+        }
     }
 
     /**
