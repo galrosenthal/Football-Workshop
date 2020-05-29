@@ -121,6 +121,7 @@ public class Referee extends Role {
 
     public void addGame(Game game) {
         this.games.add(game);
+        EntityManager.getInstance().addGame(game);
     }
 
     public void removeGame(Game game) {

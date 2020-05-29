@@ -1170,7 +1170,7 @@ public class EntityManager {
     }
 
     public void addGame(Game game) {
-        //TODO:!!!
+//        DBManager.getInstance().addGame(game);
     }
 
     public HashMap<String, Boolean> getRefereeGamesStatus(Referee referee) {
@@ -1288,8 +1288,6 @@ public class EntityManager {
         allLeagues = new HashSet<>();
         allTeams = new ArrayList<>();
         allStadiums = new ArrayList<>();
-        loggedInMap = new HashMap<>();
-        systemAdmins = new ArrayList<>();
         pointsPolicies = new ArrayList<>();
         schedulingPolicies = new ArrayList<>();
     }
