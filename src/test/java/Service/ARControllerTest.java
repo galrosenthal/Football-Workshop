@@ -4,6 +4,7 @@ import Domain.EntityManager;
 import Domain.Exceptions.TeamAlreadyExistsException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Game.*;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
 import org.junit.*;
 import Domain.Users.*;
@@ -18,6 +19,7 @@ public class ARControllerTest {
     @BeforeClass
     public static void beforeClass() throws Exception {
         EntityManager.getInstance().clearAll();
+        SystemLoggerManager.disableLoggers();
     }
 
     @Before

@@ -2,10 +2,12 @@ package Service;
 
 import Domain.EntityManager;
 import Domain.Game.*;
-import Domain.Logger.*;
+import Domain.GameLogger.*;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -16,6 +18,12 @@ import java.util.Date;
 import static org.junit.Assert.*;
 
 public class RefereeControllerTest {
+
+    @BeforeClass
+    public static void setUpBeforeAll() { //Will be called only once
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+    }
+
     @Before
     public void setUp() throws Exception {
         UIController.setIsTest(true);

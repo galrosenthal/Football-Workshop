@@ -1,10 +1,6 @@
 package GUI;
 
-import Domain.EntityManager;
 import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.KeyModifier;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Span;
@@ -54,16 +50,25 @@ public class Welcome extends FlexLayout
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
-        WrappedSession userSession = VaadinService.getCurrentRequest().getWrappedSession();
+        try{
+            WrappedSession userSession = VaadinService.getCurrentRequest().getWrappedSession();
 
-        //This is just a button disable for fun not needed!
-        if(userSession.getAttribute("username") != null)
-        {
-            next.setVisible(true);
+
+            //This is just a button disable for fun not needed!
+            if(userSession.getAttribute("username") != null)
+            {
+                next.setVisible(true);
+            }
+            else
+            {
+                next.setVisible(false);
+            }
         }
-        else
+        catch (Exception e)
         {
-            next.setVisible(false);
+            getUI().get().getPage().reload();
         }
+
+
     }
 }

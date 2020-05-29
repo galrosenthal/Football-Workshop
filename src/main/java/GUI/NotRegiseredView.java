@@ -1,7 +1,5 @@
 package GUI;
 
-import GUI.About.AboutView;
-import GUI.Login.LoginScreen;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;

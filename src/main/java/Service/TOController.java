@@ -4,6 +4,9 @@ package Service;
 import Domain.Controllers.TeamController;
 import Domain.Game.Team;
 import Domain.Game.TeamStatus;
+import Domain.SystemLogger.CloseTeamLogMsg;
+import Domain.SystemLogger.ReopenTeamLogMsg;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.SystemUser;
 import Domain.Users.TeamOwner;
 
@@ -34,7 +37,9 @@ public class TOController {
                 }
             }
             else{
-                throw new Exception("Expected \"close\" or \"reopen\" command");
+                String msg = "Expected \"close\" or \"reopen\" command";
+                SystemLoggerManager.logError(TOController.class, msg);
+                throw new Exception(msg);
             }
         }
 
@@ -54,6 +59,16 @@ public class TOController {
 
         UIController.showNotification("Team \""+chosenTeam.getTeamName()+"\" " + closeOrReopen+"ed successfully");
         myTeamOwner.closeReopenTeam(chosenTeam , closeOrReopen);
+        if(closeOrReopen.equals("reopen")){
+            //Log the action
+            SystemLoggerManager.logInfo(TOController.class,
+                    new ReopenTeamLogMsg(systemUser.getUsername(), chosenTeam.getTeamName()));
+        }
+        else if(closeOrReopen.equals("close")){
+            //Log the action
+            SystemLoggerManager.logInfo(TOController.class,
+                    new CloseTeamLogMsg(systemUser.getUsername(), chosenTeam.getTeamName()));
+        }
         return true;
     }
 

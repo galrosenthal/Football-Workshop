@@ -1,9 +1,8 @@
 package DB;
 
+import Domain.SystemLogger.SystemLoggerManager;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.*;
 
@@ -11,9 +10,7 @@ import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 
-import static org.jooq.impl.DSL.name;
 
 public class DBHandler implements CRUD {
     private static String username = "root";
@@ -51,9 +48,13 @@ public class DBHandler implements CRUD {
             connection = DriverManager.getConnection(url, username, password);
             System.out.println("Successful connection to server db ");
         } catch (SQLException e) {
-            System.out.println("error connecting to server. connection is now null");
+            String msg = "error connecting to server. connection is now null";
+            System.out.println(msg);
+            SystemLoggerManager.logFatal(DBHandler.class , msg);
         } catch (ClassNotFoundException e) {
-            System.out.println("error connecting to driver");
+            String msg = "error connecting to driver";
+            System.out.println(msg);
+            SystemLoggerManager.logFatal(DBHandler.class , msg);
         }
     }
 
@@ -67,7 +68,9 @@ public class DBHandler implements CRUD {
         try {
             connection.close();
         } catch (SQLException e) {
-            System.out.println("error closing connection of DB");
+            String msg = "error closing connection of DB";
+            System.out.println(msg);
+            SystemLoggerManager.logFatal(DBHandler.class , msg);
             return false;
         }
 

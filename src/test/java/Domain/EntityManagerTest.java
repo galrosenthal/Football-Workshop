@@ -3,9 +3,11 @@ package Domain;
 import Domain.Game.League;
 import Domain.Game.PointsPolicy;
 import Domain.Game.SchedulingPolicy;
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
@@ -13,6 +15,11 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class EntityManagerTest {
+
+    @BeforeClass
+    public static void setUpBeforeAll() { //Will be called only once
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+    }
 
 
     @Test

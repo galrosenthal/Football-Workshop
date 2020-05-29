@@ -1,11 +1,13 @@
 package Domain.Game;
 
+import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.Referee;
 import Domain.Users.RefereeQualification;
 import Domain.Users.RefereeStub;
 import Domain.Users.SystemUser;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -17,6 +19,11 @@ import static org.junit.Assert.*;
 public class SchedulingPolicyTest {
 
     private SchedulingPolicy schedulingPolicy;
+
+    @BeforeClass
+    public static void setUpBeforeAll() { //Will be called only once
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+    }
 
     @Before
     public void setUp() throws Exception {

@@ -9,7 +9,6 @@ import Domain.Game.SchedulingPolicy;
 import Domain.Game.League;
 import Domain.Game.Team;
 import Domain.Game.Season;
-import Service.UIController;
 
 import java.util.Date;
 import java.util.List;
@@ -72,9 +71,9 @@ public class AssociationRepresentative extends Role {
         else{
             teamOwner = (TeamOwner) newTeamOwnerRole;
         }
-        teamOwner.setAppointedOwner(this.getSystemUser());
         Team newTeam = createNewTeam(teamName, teamOwner);
-        teamOwner.addTeamToOwn(newTeam);
+//        teamOwner.setAppointedOwner(newTeam, this.getSystemUser());
+        teamOwner.addTeamToOwn(newTeam, this.getSystemUser());
         newTeam.addTeamOwner(teamOwner);
         return true;
     }

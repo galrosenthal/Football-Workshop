@@ -1,22 +1,17 @@
 package Domain;
 
-import DB.DBManager;
-import DB.Table;
 import Domain.Exceptions.InvalidEmailException;
 import Domain.Exceptions.AlreadyLoggedInUser;
 import Domain.Exceptions.UsernameAlreadyExistsException;
 import Domain.Exceptions.UsernameOrPasswordIncorrectException;
 import Domain.Exceptions.WeakPasswordException;
 import Domain.Game.*;
+import Domain.SystemLogger.*;
 import Domain.Users.Role;
 import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
 import Domain.Game.Stadium;
 import Domain.Users.*;
-import Domain.Game.Stadium;
-import Service.AllSubscribers;
-import Service.Observer;
-import Service.UIController;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -31,11 +26,13 @@ public class EntityManager{
     private List<Team> allTeams;
     private List<Stadium> allStadiums;
     private HashSet<League> allLeagues;
-    private List<SystemAdmin> systemAdmins;
+//    private List<SystemAdmin> sstemAdmins;
 
     private List<PointsPolicy> pointsPolicies;
     private List<SchedulingPolicy> schedulingPolicies;
-    private HashMap<SystemUser, Boolean> loggedInMap;
+//    private HashMap<SystemUser, Boolean> loggedInMap;
+
+    private boolean isSystemBooted = false;
 
 
 
@@ -46,8 +43,7 @@ public class EntityManager{
         allLeagues = new HashSet<>();
         allTeams = new ArrayList<>();
         allStadiums = new ArrayList<>();
-        loggedInMap = new HashMap<>();
-        systemAdmins = new ArrayList<>();
+//        loggedInMap = new HashMap<>();
         pointsPolicies = new ArrayList<>();
         schedulingPolicies = new ArrayList<>();
     }
@@ -63,8 +59,12 @@ public class EntityManager{
 
             SystemUser admin = new SystemUser("Administrator",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"admin" , "test@gmail.com" , false);
             SystemUser arnav = new SystemUser("arnav",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"arnav" , "test@gmail.com" , false);
+
+
+
             admin.addNewRole(new SystemAdmin(admin));
             admin.addNewRole(new AssociationRepresentative(admin));
+            admin.addNewRole(new Referee(admin,RefereeQualification.VAR_REFEREE));
         }
 
         return entityManagerInstance;
@@ -257,13 +257,14 @@ public class EntityManager{
      * @return - boolean - true if the SystemUser removed successfully, else false
      */
     public boolean removeUserByName(String username) {
-        for (SystemUser su : allUsers) {
-            if (su.getUsername().equals(username)) {
-                this.allUsers.remove(su);
-                return true;
-            }
-        }
-        return false;
+        return removeUserByReference(getUser(username));
+//        for (SystemUser su : allUsers) {
+//            if (su.getUsername().equals(username)) {
+//                this.allUsers.remove(su);
+//                return true;
+//            }
+//        }
+//        return false;
     }
 
     /**
@@ -350,7 +351,7 @@ public class EntityManager{
         allTeams = new ArrayList<>();
         pointsPolicies = new ArrayList<>();
         schedulingPolicies = new ArrayList<>();
-        loggedInMap = new HashMap<>();
+//        loggedInMap = new HashMap<>();
     }
 
     private void clearAllUsers() {
@@ -393,19 +394,28 @@ public class EntityManager{
      */
     public SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException,AlreadyLoggedInUser {
         SystemUser userWithUsrNm = getUser(usrNm);
-        if(loggedInMap.containsKey(userWithUsrNm) && loggedInMap.get(userWithUsrNm))
-        {
-            throw new AlreadyLoggedInUser("Error: The user " + usrNm + " is already logged in");
+//        if(loggedInMap.containsKey(userWithUsrNm) && loggedInMap.get(userWithUsrNm))
+//        {
+//            String msg = "Error: The user " + usrNm + " is already logged in";
+//            SystemLoggerManager.logError(EntityManager.class, msg);
+//            throw new AlreadyLoggedInUser(msg);
+//        }
+        if(userWithUsrNm == null) { //User name does not exists.
+            String msg = "Username or Password was incorrect!";
+            SystemLoggerManager.logError(EntityManager.class, msg);
+            throw new UsernameOrPasswordIncorrectException(msg);
         }
-        if(userWithUsrNm == null) //User name does not exists.
-            throw new UsernameOrPasswordIncorrectException("Username or Password was incorrect!");
 
         //User name exists, checking password.
         if(authenticate(userWithUsrNm, pswrd)){
-            loggedInMap.put(userWithUsrNm,true);
+//            loggedInMap.put(userWithUsrNm,true);
+            //Log the action
+            SystemLoggerManager.logInfo(this.getClass(), new LoginLogMsg(userWithUsrNm.getUsername()));
             return userWithUsrNm;
         }
 
+        String msg = "Username or Password was incorrect!";
+        SystemLoggerManager.logError(EntityManager.class, msg);
         throw new UsernameOrPasswordIncorrectException("Username or Password was incorrect!");
     }
 
@@ -446,7 +456,9 @@ public class EntityManager{
     public SystemUser signUp(String name, String usrNm, String pswrd,String email, boolean emailAlert) throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException {
         //Checking if user name is already exists
         if(getUser(usrNm) != null){
-            throw new UsernameAlreadyExistsException("Username already exists");
+            String msg = "Username already exists";
+            SystemLoggerManager.logError(EntityManager.class, msg);
+            throw new UsernameAlreadyExistsException(msg);
         }
 
         //Checking if the password meets the security requirements
@@ -457,11 +469,15 @@ public class EntityManager{
         // must not contain any spaces
         String pswrdRegEx = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$";
         if(!pswrd.matches(pswrdRegEx)){
-            throw new WeakPasswordException("Password does not meet the requirements");
+            String msg = "Password does not meet the requirements";
+            SystemLoggerManager.logError(EntityManager.class, msg);
+            throw new WeakPasswordException(msg);
         }
         if(!validate(email))
         {
-            throw new InvalidEmailException("Invalid Email");
+            String msg = "Invalid Email";
+            SystemLoggerManager.logError(EntityManager.class, msg);
+            throw new InvalidEmailException(msg);
         }
 
         //hash the password
@@ -469,7 +485,8 @@ public class EntityManager{
         SystemUser newUser = new SystemUser(usrNm, hashedPassword, name, email,emailAlert);
         addUser(newUser);
 
-
+        //Log the action
+        SystemLoggerManager.logInfo(this.getClass(), new SignUpLogMsg(newUser.getUsername()));
         return newUser;
 
     }
@@ -498,10 +515,9 @@ public class EntityManager{
         return null;
     }
 
-    public void logout(SystemUser logoutUser) {
-        loggedInMap.put(logoutUser,false);
-
-    }
+//    public void logout(SystemUser logoutUser) {
+////        loggedInMap.put(logoutUser,false);
+//    }
 
 /*
     public List<Referee> getAllRefereesPerGame(Game game) {
@@ -631,5 +647,13 @@ public class EntityManager{
     private static boolean validate(String emailStr) {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
         return matcher.find();
+    }
+
+    public boolean isSystemBooted() {
+        return isSystemBooted;
+    }
+
+    public void setIsBooted(boolean isSystemBoot) {
+        isSystemBooted = isSystemBoot;
     }
 }

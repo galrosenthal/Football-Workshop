@@ -305,4 +305,8 @@ public class Season {
             }
         }
     }
+
+    public List<Game> getGames() {
+        return games;
+    }
 }

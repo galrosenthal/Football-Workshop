@@ -1,16 +1,18 @@
 package Service;
 
-import DB.DBManager;
 import Domain.Controllers.TeamController;
 import Domain.EntityManager;
 import Domain.Exceptions.*;
 import Domain.Game.Team;
 import Domain.Game.TeamAsset;
 import Domain.Game.TeamStatus;
+import Domain.SystemLogger.*;
 import Domain.Users.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
+
 import static Service.UIController.getUsernameFromUser;
 
 public class Controller {
@@ -19,30 +21,48 @@ public class Controller {
         //Establishing connections to external DBMS
         //access DB
         //extract system admins
-
-        String username = UIController.receiveString("Please enter a system administrator username: ");
-        String password = UIController.receiveString("Please enter your password: ");
-
-        //Retrieve system user
-        SystemUser admin = null;
         try {
+            String usernameAndPassword = UIController.receiveUserLoginInfo("Please enter a system administrator username:;Please enter the password");
+            String username = usernameAndPassword.split(UIController.STRING_DELIMETER)[0];
+            String password = usernameAndPassword.split(UIController.STRING_DELIMETER)[1];
+
+            //Retrieve system user
+            SystemUser admin = null;
+
             admin = Controller.login(username, password);
-        } catch (Exception e) {
-            UIController.showNotification("Username or Password was incorrect!!!!!");
-            e.printStackTrace();
-        }
-        UIController.showNotification("Successful login. Welcome back, " + admin.getName());
-        //system boot choice
-        boolean choice = UIController.receiveChoice("Would you like to boot the system? y/n");
-        if (!choice) {
+            if(!MainController.getUserRoles(username).contains(RoleTypes.SYSTEM_ADMIN.name()))
+            {
+                UIController.showNotification("You are not a System Admin please try different user");
+//                MainController.performLogout(username, admin, UI.getCurrent());
+                return false;
+            }
+
+            UIController.showNotification("Successful login. Welcome back, " + admin.getName());
+            //system boot choice
+            boolean choice = UIController.receiveChoice("Would you like to boot the system? y/n");
+            if (!choice) {
+//                MainController.performLogout(username, admin, UI.getCurrent());
+                return false;
+            }
+
+            //Establishing connections to external financial system
+
+            //Establishing connections to external tax system
+            UIController.showNotification("The system was booted successfully");
+//            MainController.performLogout(username, admin, UI.getCurrent());
+            //Log the action
+            SystemLoggerManager.logInfo(Controller.class, new SystemBootLogMsg(admin.getUsername()));
+            return true;
+        } catch (CancellationException ce)
+        {
+            ce.printStackTrace();
             return false;
         }
-
-        //Establishing connections to external financial system
-
-        //Establishing connections to external tax system
-        UIController.showNotification("The system was booted successfully");
-        return true;
+        catch (Exception e) {
+            UIController.showNotification("Username or Password was incorrect!!!!!");
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -73,6 +93,7 @@ public class Controller {
             e.printStackTrace();
             return false;
         }
+
         return true;
 
     }
@@ -148,7 +169,7 @@ public class Controller {
         List<String> teamsToShow = new ArrayList<>();
         for (int i = 0; i < myTeams.size() ; i++) {
             if(myTeams.get(i).getStatus() == TeamStatus.CLOSED)
-                 teamsToShow.add(myTeams.get(i).getTeamName()+" (closed)");
+                teamsToShow.add(myTeams.get(i).getTeamName()+" (closed)");
             else if(myTeams.get(i).getStatus() == TeamStatus.PERMENENTLY_CLOSED)
                 teamsToShow.add(myTeams.get(i).getTeamName()+" (closed forever)");
             else //open
@@ -181,7 +202,9 @@ public class Controller {
 
         if(chosenTeam == null)
         {
-            throw new NoTeamExistsException("There was no Team found");
+            String msg = "There was no Team found";
+            SystemLoggerManager.logError(Controller.class, msg);
+            throw new NoTeamExistsException(msg);
         }
 
         TeamAsset ass = getAssetTypeFromUser();
@@ -225,7 +248,9 @@ public class Controller {
         Team chosenTeam = getTeamByChoice(myTeamOwner);
 
         if (chosenTeam == null) {
-            throw new NoTeamExistsException("There was no Team found");
+            String msg = "There was no Team found";
+            SystemLoggerManager.logError(Controller.class, msg);
+            throw new NoTeamExistsException(msg);
         }
 
         boolean isSuccess = TeamController.editAssets(chosenTeam);

@@ -1,7 +1,6 @@
 package GUI;
 
 import Service.MainController;
-import Service.UIController;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -14,7 +13,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
 
 import java.time.format.DateTimeFormatter;
@@ -148,27 +146,9 @@ public class ModifyUsers extends FlexLayout {
         seasonOfLeague.setVisible(false);
         verticalLayout.add(seasonOfLeague);
 
-        Button testAlert = new Button("test alerts");
-        testAlert.addClickListener(e -> {
-            VaadinSession se = VaadinSession.getCurrent();
-            UI lastUI = UI.getCurrent();
-            Thread t = new Thread(() -> {
-                UI.setCurrent(lastUI);
-                VaadinSession.setCurrent(se);
-                try
-                {
-                    Thread.sleep(2000);
-                }
-                catch (Exception exception)
-                {
-                    exception.printStackTrace();
-                }
-                MainController.testAlert(lastUI);
-            });
-            t.setName("Alert Testing");
-            t.start();
-        });
-        verticalLayout.add(testAlert);
+
+        verticalLayout.add(anotherButton("Test Alert"));
+        verticalLayout.add(anotherButton("Test ConfirmBox"));
 
         allLeagues.addValueChangeListener(e -> {
             if(e.getValue() != null)
@@ -186,6 +166,39 @@ public class ModifyUsers extends FlexLayout {
 
     }
 
+    private Button anotherButton(String btnText) {
+        Button newBtnToCreate = new Button(btnText);
+        newBtnToCreate.addClickListener(e -> {
+            VaadinSession se = VaadinSession.getCurrent();
+            UI lastUI = UI.getCurrent();
+            Thread t = new Thread(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                if(btnText.toLowerCase().contains("alert")) {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                    MainController.testAlert(se);
+                }
+                else if(btnText.toLowerCase().contains("confirm"))
+                {
+                    try
+                    {
+                        FootballMain.showConfirmBox(lastUI,"Testing ConfirmBox", new StringBuilder(),Thread.currentThread());
+                    }
+                    catch (Exception interruptedException)
+                    {
+                        interruptedException.printStackTrace();
+                    }
+                }
+            });
+            t.setName(btnText.toUpperCase());
+            t.start();
+        });
+        return newBtnToCreate;
+    }
 
 
     private Component buildModifyInfo() {
