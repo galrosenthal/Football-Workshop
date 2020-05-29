@@ -80,7 +80,9 @@ public class ARControls extends TestBenchTestCase {
         $(TextFieldElement.class).id("1").setValue("Administrator");
         $(PasswordFieldElement.class).id("2").setValue("Aa123456");
         $(ButtonElement.class).id("submit").click();
+        Thread.sleep(500);
         $(ButtonElement.class).id("yes").click();
+        Thread.sleep(500);
     }
 
     @Test

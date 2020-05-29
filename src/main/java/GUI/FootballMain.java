@@ -264,7 +264,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 newWindow.close();
             });
             Page page = UI.getCurrent().getPage();
-            page.executeJavaScript("document.getElementById(timeStamp).click();");
+            page.executeJavaScript("document.getElementById('timeStamp').click();");
 
             newWindow.add(vl);
             newWindow.add(ok);

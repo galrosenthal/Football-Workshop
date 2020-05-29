@@ -116,6 +116,32 @@ public class EntityManager{
         Team team3 = new Team("team3",(TeamOwner)EntityManager.getInstance().getUser("Administrator").getRole(RoleTypes.TEAM_OWNER));
         EntityManager.getInstance().addUser(user3);
         EntityManager.getInstance().addTeam(team3);
+        Stadium stadium3 = new Stadium("stadium3","london");
+        EntityManager.getInstance().addStadium(stadium3);
+        Stadium stadium4 = new Stadium("stadium4","london");
+        EntityManager.getInstance().addStadium(stadium4);
+
+        SystemUser systemUser = EntityManager.getInstance().getUser("Administrator");
+        Referee referee = (Referee)systemUser.getRole(RoleTypes.REFEREE);
+        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
+        new AssociationRepresentative(arSystemUser);
+        new TeamOwner(arSystemUser);
+        TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        Team firstTeam = new Team("Hapoel Beit Shan", toRole);
+        EntityManager.getInstance().addTeam(firstTeam);
+        Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
+        EntityManager.getInstance().addTeam(secondTeam);
+
+        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        SystemUser avi = new SystemUser("AviCohen", "Avi Cohen");
+        Player player1 = new Player(avi, new Date(2001, 01, 01));
+        avi.addNewRole(player1);
+        EntityManager.getInstance().addUser(avi);
+        firstTeam.addTeamPlayer(toRole, player1);
+
+        game.addReferee(referee);
+        referee.addGame(game);
+
     }
 
 

@@ -8,6 +8,7 @@ import com.vaadin.flow.component.notification.testbench.NotificationElement;
 import com.vaadin.flow.component.textfield.testbench.PasswordFieldElement;
 import com.vaadin.flow.component.textfield.testbench.TextFieldElement;
 import com.vaadin.testbench.TestBenchTestCase;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +70,9 @@ public class TOControls extends TestBenchTestCase {
         $(TextFieldElement.class).id("1").setValue("Administrator");
         $(PasswordFieldElement.class).id("2").setValue("Aa123456");
         $(ButtonElement.class).id("submit").click();
+        Thread.sleep(500);
         $(ButtonElement.class).id("yes").click();
+        Thread.sleep(500);
     }
 
     @Test
@@ -85,7 +88,6 @@ public class TOControls extends TestBenchTestCase {
         Assert.assertEquals("Team \"team4\" closeed successfully",$(NotificationElement.class).id("notification").getText());
         $(ButtonElement.class).id("close").click();
         Thread.sleep(500);
-        $(ButtonElement.class).id("close").click();
     }
 
     private void addTeam(String num) throws InterruptedException {
@@ -131,8 +133,61 @@ public class TOControls extends TestBenchTestCase {
 
     @Test
     public void addTeamAssetTest() throws InterruptedException {
+        addTeam("8");
         $(ButtonElement.class).id("addTeamAsset").click();
         Thread.sleep(500);
+        $(ComboBoxElement.class).first().selectByText("team8");
+        $(ButtonElement.class).id("submit").click();
+        Thread.sleep(500);
+        $(ComboBoxElement.class).first().selectByText("STADIUM");
+        $(ButtonElement.class).id("submit").click();
+        Thread.sleep(500);
+        $(TextFieldElement.class).first().setValue("stadium4");
+        $(ButtonElement.class).id("submit").click();
+        Thread.sleep(500);
+        $(TextFieldElement.class).first().setValue("stadium4");
+        $(ButtonElement.class).id("submit").click();
+        Thread.sleep(1000);
+        Assert.assertEquals("Asset Added Successfully",$(NotificationElement.class).id("notification").getText());
+    }
+
+    @Test
+    public void modifyTeamAssetTest() throws InterruptedException {
+        addTeam("9");
+        addStadium();
+        $(ButtonElement.class).id("modifyTeamAsset").click();
+        Thread.sleep(500);
+        $(ComboBoxElement.class).first().selectByText("team9");
+        $(ButtonElement.class).id("submit").click();
+        Thread.sleep(500);
+        $(ComboBoxElement.class).first().selectByText("stadium3");
+        $(ButtonElement.class).id("submit").click();
+        Thread.sleep(500);
+        $(ComboBoxElement.class).first().selectByText("Name");
+        $(ButtonElement.class).id("submit").click();
+        Thread.sleep(500);
+        $(TextFieldElement.class).first().setValue("stadium5");
+        $(ButtonElement.class).id("submit").click();
+        Thread.sleep(1000);
+        Assert.assertEquals("The action completed successfully",$(NotificationElement.class).id("notification").getText());
+
+    }
+
+    private void addStadium() throws InterruptedException {
+        $(ButtonElement.class).id("addTeamAsset").click();
+        Thread.sleep(500);
+        $(ComboBoxElement.class).first().selectByText("team9");
+        $(ButtonElement.class).id("submit").click();
+        Thread.sleep(500);
+        $(ComboBoxElement.class).first().selectByText("STADIUM");
+        $(ButtonElement.class).id("submit").click();
+        Thread.sleep(500);
+        $(TextFieldElement.class).first().setValue("stadium3");
+        $(ButtonElement.class).id("submit").click();
+        Thread.sleep(600);
+        $(TextFieldElement.class).first().setValue("stadium3");
+        $(ButtonElement.class).id("submit").click();
+        Thread.sleep(600);
     }
 
     private void addAndCloseTeam() throws InterruptedException {
@@ -156,9 +211,14 @@ public class TOControls extends TestBenchTestCase {
         Thread.sleep(1000);
         $(ButtonElement.class).id("close").click();
         Thread.sleep(500);
-        $(ButtonElement.class).id("close").click();
-        Thread.sleep(1000);
         $(SpanElement.class).id("team owner controls").click();
         Thread.sleep(1000);
+    }
+
+
+    @After
+    public void logout(){
+        $(ButtonElement.class).id("logoutBtn").click();
+        $(ButtonElement.class).last().click();
     }
 }
