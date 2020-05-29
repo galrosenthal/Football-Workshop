@@ -1158,6 +1158,7 @@ public class EntityManager {
         return DBManager.getInstance().removeSeasonInTeam(seasonID,team.getTeamName());
     }
 
+    /*todo: check*/
     public List<Season> getAllSeasonInTeam(Team team) {
         List<Season> seasons = new ArrayList<>();
         List<HashMap<String,String>> seasonsDetails = DBManager.startTest().getAllSeasonInTeam(team.getTeamName());
@@ -1172,5 +1173,22 @@ public class EntityManager {
         }
         return seasons;
 
+    }
+
+    public boolean isTeamManager(TeamManager teamManager, Team team) {
+        return DBManager.getInstance().isTeamManager(teamManager.getSystemUser().getUsername() , team.getTeamName());
+    }
+
+    public boolean removeTeamManager(TeamManager teamManager, Team team) {
+        return DBManager.getInstance().removeTeamManager(teamManager.getSystemUser().getUsername() , team.getTeamName());
+
+    }
+
+    public void updateTeamMangerPermission(TeamManager teamManager, List<TeamManagerPermissions> permissions, Team team) {
+        List<String> permissionsToUpdate = new ArrayList<>();
+        for (int i = 0; i < permissions.size(); i++) {
+            permissionsToUpdate.add(permissions.get(i).name());
+        }
+        DBManager.getInstance().updateTeamMangerPermission(teamManager.getSystemUser().getUsername() , team.getTeamName() ,permissionsToUpdate);
     }
 }

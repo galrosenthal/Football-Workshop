@@ -554,7 +554,7 @@ public class Team {
      */
     private Season getCurrentSeason() {
         Season currentSeason;
-        /*TODO DB*/
+        /*DB*/
         seasons = EntityManager.getInstance().getAllSeasonInTeam(this);
         if (seasons.size() == 0) {
             return null;
@@ -577,26 +577,26 @@ public class Team {
     public List<Season> getCurrentSeasons() {
         List<Season> currentSeasons = new ArrayList<>();
         Season currentSeason = getCurrentSeason();
-        /*TODO DB*/
+        /*DB - already in getCurrentSeason()*/
         if (seasons.size() == 0) {
             return null;
         }
-
         for (Season s : seasons) {
             if (s.getYear().equals(currentSeason.getYear())) {
                 currentSeasons.add(s);
             }
         }
-
         return currentSeasons;
     }
 
     public List<Season> getSeasons() {
+        /*DB*/
+        seasons = EntityManager.getInstance().getAllSeasonInTeam(this);
         return seasons;
     }
 
     public boolean addSeason(Season season) {
-        /*TODO : DB*/
+        /*DB*/
         if (!seasons.contains(season) && !(EntityManager.getInstance().seasonInTeam(season , this))) {
             seasons.add(season);
             EntityManager.getInstance().addSeasonToTeam(season , this);
@@ -607,7 +607,7 @@ public class Team {
 
 
     public boolean removeSeason(Season season) {
-        /*TODO : DB*/
+        /*DB*/
         if (!seasons.contains(season) || !(EntityManager.getInstance().seasonInTeam(season , this))) {
             return false;
         }
@@ -638,8 +638,15 @@ public class Team {
     public boolean removeTeamManager(TeamManager teamManager) {
         if (teamManagers.remove(teamManager)) {
             this.permissionsPerTeamManager.remove(teamManager);
+            /*DB*/
+            EntityManager.getInstance().removeTeamManager(teamManager , this);
             return true;
         }
+        else if(EntityManager.getInstance().isTeamManager(teamManager , this))
+        {
+            return EntityManager.getInstance().removeTeamManager(teamManager , this);
+        }
+
         return false;
     }
 
@@ -664,6 +671,7 @@ public class Team {
      */
     public void updatePermissionsPerTeamManger(TeamManager teamManager, List<TeamManagerPermissions> permissions) {
         this.permissionsPerTeamManager.put(teamManager, permissions);
+        EntityManager.getInstance().updateTeamMangerPermission(teamManager,permissions,this);
     }
 
 }
