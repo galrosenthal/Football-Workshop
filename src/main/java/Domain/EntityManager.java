@@ -1005,7 +1005,7 @@ public class EntityManager {
         List<Pair<String, String>> ownedTeams = DBManager.getInstance().getTeams(teamOwner.getSystemUser().getName());
         List<Team> teams = new ArrayList<>();
         for (int i = 0; i < ownedTeams.size(); i++) {
-            Team team = new Team(ownedTeams.get(i).getKey(), teamOwner);
+            Team team = new Team(ownedTeams.get(i).getKey(), teamOwner, true);
             team.setStatus(getTeamStatus(ownedTeams.get(i).getValue()));
             teams.add(team);
         }
@@ -1149,5 +1149,55 @@ public class EntityManager {
     public boolean addTeamOwnerToTeam(TeamOwner teamOwner, Team team) {
         return DBManager.getInstance().addTeamOwnerToTeam(teamOwner.getSystemUser().getUsername(), team.getTeamName());
 
+    }
+
+    public boolean addSeasonToTeam(Season season, Team team) {
+        int seasonID = DBManager.getInstance().getSeasonId(season.getLeague().getName(),season.getYears());
+        return DBManager.getInstance().addSeasonToTeam(seasonID,team.getTeamName());
+    }
+
+    public boolean seasonInTeam(Season season, Team team) {
+        int seasonID = DBManager.getInstance().getSeasonId(season.getLeague().getName(),season.getYears());
+        return DBManager.getInstance().isSeasonInTeam(seasonID,team.getTeamName());
+
+    }
+
+    public boolean removeSeasonFromTeam(Season season, Team team) {
+        int seasonID = DBManager.getInstance().getSeasonId(season.getLeague().getName(),season.getYears());
+        return DBManager.getInstance().removeSeasonInTeam(seasonID,team.getTeamName());
+    }
+
+    /*todo: check*/
+    public List<Season> getAllSeasonInTeam(Team team) {
+        List<Season> seasons = new ArrayList<>();
+        List<HashMap<String,String>> seasonsDetails = DBManager.startTest().getAllSeasonInTeam(team.getTeamName());
+        for (int i = 0; i < seasons.size(); i++) {
+            HashMap<String,String> seasonDetails = seasonsDetails.get(i);
+            boolean isUnderWay = false;
+            if(seasonDetails.get("is_under_way").equals("true"))
+            {
+                isUnderWay = true;
+            }
+            seasons.add(new Season(new League(seasonDetails.get("league_name"), false), seasonDetails.get("years"),new PointsPolicy(Integer.parseInt(seasonDetails.get("victory_points")),Integer.parseInt(seasonDetails.get("loss_points")), Integer.parseInt(seasonDetails.get("tie_points"))), isUnderWay));
+        }
+        return seasons;
+
+    }
+
+    public boolean isTeamManager(TeamManager teamManager, Team team) {
+        return DBManager.getInstance().isTeamManager(teamManager.getSystemUser().getUsername() , team.getTeamName());
+    }
+
+    public boolean removeTeamManager(TeamManager teamManager, Team team) {
+        return DBManager.getInstance().removeTeamManager(teamManager.getSystemUser().getUsername() , team.getTeamName());
+
+    }
+
+    public void updateTeamMangerPermission(TeamManager teamManager, List<TeamManagerPermissions> permissions, Team team) {
+        List<String> permissionsToUpdate = new ArrayList<>();
+        for (int i = 0; i < permissions.size(); i++) {
+            permissionsToUpdate.add(permissions.get(i).name());
+        }
+        DBManager.getInstance().updateTeamMangerPermission(teamManager.getSystemUser().getUsername() , team.getTeamName() ,permissionsToUpdate);
     }
 }

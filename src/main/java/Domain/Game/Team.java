@@ -23,7 +23,7 @@ public class Team {
     private HashMap<TeamManager, List<TeamManagerPermissions>> permissionsPerTeamManager;
 
 
-    public Team(String teamName) {
+    public Team(String teamName, boolean addToDB) {
         this.teamName = teamName;
         teamOwners = new ArrayList<>();
         playersAndCoaches = new HashSet<>();
@@ -32,11 +32,14 @@ public class Team {
         stadiums = new ArrayList<>();
         status = TeamStatus.OPEN;
         permissionsPerTeamManager = new HashMap<>();
-        EntityManager.getInstance().addTeam(this);
+        if(addToDB)
+        {
+            EntityManager.getInstance().addTeam(this);
+        }
 
     }
 
-    public Team(String teamName, TeamOwner to) {
+    public Team(String teamName, TeamOwner to, boolean addToDB) {
         teamOwners = new ArrayList<>();
         teamOwners.add(to);
         playersAndCoaches = new HashSet<>();
@@ -46,7 +49,10 @@ public class Team {
         seasons = new ArrayList<>();
         this.teamName = teamName;
         permissionsPerTeamManager = new HashMap<>();
-        EntityManager.getInstance().addTeam(this);
+        if(addToDB)
+        {
+            EntityManager.getInstance().addTeam(this);
+        }
 
     }
 
@@ -548,7 +554,8 @@ public class Team {
      */
     private Season getCurrentSeason() {
         Season currentSeason;
-
+        /*DB*/
+        seasons = EntityManager.getInstance().getAllSeasonInTeam(this);
         if (seasons.size() == 0) {
             return null;
         }
@@ -570,37 +577,44 @@ public class Team {
     public List<Season> getCurrentSeasons() {
         List<Season> currentSeasons = new ArrayList<>();
         Season currentSeason = getCurrentSeason();
-
+        /*DB - already in getCurrentSeason()*/
         if (seasons.size() == 0) {
             return null;
         }
-
         for (Season s : seasons) {
             if (s.getYear().equals(currentSeason.getYear())) {
                 currentSeasons.add(s);
             }
         }
-
         return currentSeasons;
     }
 
     public List<Season> getSeasons() {
+        /*DB*/
+        seasons = EntityManager.getInstance().getAllSeasonInTeam(this);
         return seasons;
     }
 
     public boolean addSeason(Season season) {
-        if (!seasons.contains(season)) {
+        /*DB*/
+        if (!seasons.contains(season) && !(EntityManager.getInstance().seasonInTeam(season , this))) {
             seasons.add(season);
+            EntityManager.getInstance().addSeasonToTeam(season , this);
             return true;
         }
         return false;
     }
 
+
     public boolean removeSeason(Season season) {
-        if (!seasons.contains(season)) {
+        /*DB*/
+        if (!seasons.contains(season) || !(EntityManager.getInstance().seasonInTeam(season , this))) {
             return false;
         }
-        return seasons.remove(season);
+        if(seasons.contains(season)) {
+            seasons.remove(season);
+        }
+        return EntityManager.getInstance().removeSeasonFromTeam(season , this);
     }
 
     private boolean removePlayerOrCoach(PartOfTeam playerOrCoach) {
@@ -624,8 +638,15 @@ public class Team {
     public boolean removeTeamManager(TeamManager teamManager) {
         if (teamManagers.remove(teamManager)) {
             this.permissionsPerTeamManager.remove(teamManager);
+            /*DB*/
+            EntityManager.getInstance().removeTeamManager(teamManager , this);
             return true;
         }
+        else if(EntityManager.getInstance().isTeamManager(teamManager , this))
+        {
+            return EntityManager.getInstance().removeTeamManager(teamManager , this);
+        }
+
         return false;
     }
 
@@ -650,6 +671,7 @@ public class Team {
      */
     public void updatePermissionsPerTeamManger(TeamManager teamManager, List<TeamManagerPermissions> permissions) {
         this.permissionsPerTeamManager.put(teamManager, permissions);
+        EntityManager.getInstance().updateTeamMangerPermission(teamManager,permissions,this);
     }
 
 }

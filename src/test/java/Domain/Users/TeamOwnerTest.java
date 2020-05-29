@@ -18,7 +18,7 @@ public class TeamOwnerTest {
      */
     @Test
     public void addTeamToOwnUTest() {
-        Team hapoelBash = new Team("Test");
+        Team hapoelBash = new Team("Test", true);
         hapoelBash.setTeamName("Hapoel Beer Sheeva");
 
         SystemUser sysUserTO = new SystemUserStub("OranSh", "Oran", 62);
@@ -32,7 +32,7 @@ public class TeamOwnerTest {
      */
     @Test
     public void removeTeamToOwnUTest() {
-        Team hapoelBash = new Team("Test");
+        Team hapoelBash = new Team("Test", true);
         hapoelBash.setTeamName("Hapoel Beer Sheeva");
 
         SystemUser sysUserTO = new SystemUserStub("OranSh", "Oran", 62);
@@ -47,7 +47,7 @@ public class TeamOwnerTest {
      */
     @Test
     public void setAppointedOwnerUTest() {
-        Team hapoelBash = new Team("Test");
+        Team hapoelBash = new Team("Test", true);
         hapoelBash.setTeamName("Hapoel Beer Sheeva");
 
         SystemUser sysUserTO = new SystemUserStub("OranSh", "Oran", 62);

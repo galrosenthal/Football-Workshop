@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import static DB.Tables.Tables.TEAMS_IN_SEASON;
 import static DB.Tables_Test.Tables.*;
 
 
@@ -41,7 +42,7 @@ public class DBManagerForTest extends DBManager {
 
 
     public static void startConnection() {
-        DBHandler.startConnection("jdbc:mysql://132.72.65.105:3306/fwdb_test");
+        DBHandler.startConnection("jdbc:mysql://localhost:3306/fwdb_test");
     }
 
     @Override
@@ -586,5 +587,52 @@ public class DBManagerForTest extends DBManager {
             pointsPolicyDetails.put(fieldName, fieldValue + "");
         }
         return pointsPolicyDetails;
+    }
+    @Override
+    public int getSeasonId(String name, String years) {
+        DSLContext dslContext = DBHandler.getContext();
+        Result<?> result = dslContext.select().
+                from(SEASON)
+                .where(SEASON.LEAGUE_NAME.eq(name)).and(SEASON.YEARS.eq(years)).fetch();
+        if (result.isEmpty()) {
+            return -1;
+        }
+        return result.get(0).getValue(SEASON.SEASON_ID);
+    }
+    @Override
+    public boolean addSeasonToTeam(int seasonID, String teamName) {
+        DSLContext create = DBHandler.getContext();
+        try {
+            create.insertInto(TEAMS_IN_SEASON,TEAMS_IN_SEASON.SEASON_ID , TEAMS_IN_SEASON.TEAM_NAME).values(seasonID,teamName).execute();
+            return true;
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isSeasonInTeam(int seasonID, String teamName) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.SEASON_ID.eq(seasonID).and(TEAMS_IN_SEASON.TEAM_NAME.eq(teamName))).fetch();
+        if (records.size() == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public boolean removeSeasonInTeam(int seasonID, String teamName) {
+        DSLContext create = DBHandler.getContext();
+        try {
+            create.deleteFrom(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.SEASON_ID.eq(seasonID).and(TEAMS_IN_SEASON.TEAM_NAME.eq(teamName)));
+            return true;
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
