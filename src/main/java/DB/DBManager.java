@@ -66,6 +66,8 @@ public class DBManager {
 
     }
 
+
+
     /**
      * @param teamOwner
      * @return
@@ -583,7 +585,7 @@ public class DBManager {
 
     }
 
-    private int getStadiumId(String name, String location) {
+    public int getStadiumId(String name, String location) {
         DSLContext create = DBHandler.getContext();
         Result<?> records = create.select().from(STADIUM).where(STADIUM.LOCATION.eq(location)).and(STADIUM.NAME.eq(name)).fetch();
         return records.getValues(STADIUM.STADIUM_ID).get(0);
@@ -976,6 +978,61 @@ public class DBManager {
             teamsDetails.add(details);
         }
         return  teamsDetails;
+    }
+
+    public List<String> getTeamManagers(String teamName) {
+        DSLContext create  = DBHandler.getContext();
+        Result<?> records = create.select().from(MANAGER_IN_TEAMS).where(MANAGER_IN_TEAMS.TEAM_NAME.eq(teamName)).fetch();
+        List<String> teamMangerNames = records.getValues(MANAGER_IN_TEAMS.USERNAME);
+        return teamMangerNames;
+    }
+
+
+
+    public static List<HashMap<String, String>> getStadiumsInTeam(String teamName) {
+
+        List<HashMap<String, String>> stadiums = new ArrayList<>();
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(STADIUM_HOME_TEAMS).where(STADIUM_HOME_TEAMS.TEAM_NAME.eq(teamName)).fetch();
+        List<Integer> stadiumsIDs = records.getValues(STADIUM_HOME_TEAMS.STADIUM_ID);
+        for (int i = 0; i < stadiumsIDs.size(); i++) {
+            Result<?> result = create.select().from(STADIUM).where(STADIUM.STADIUM_ID.eq(stadiumsIDs.get(i))).fetch();
+            List<String> stadiumName = result.getValues(STADIUM.NAME);
+            List<String> stadiumLocation = result.getValues(STADIUM.LOCATION);
+            HashMap<String,String> details = new HashMap<>();
+            details.put("name" , stadiumName.get(0));
+            details.put("location" , stadiumLocation.get(0));
+            stadiums.add(details);
+        }
+
+
+        return stadiums;
+    }
+
+    public void removeStadiumFromTeam(int stadiumID, String teamName)
+    {
+        try{
+            DSLContext create = DBHandler.getContext();
+            create.deleteFrom(STADIUM_HOME_TEAMS).where(STADIUM_HOME_TEAMS.TEAM_NAME.eq(teamName).and(STADIUM_HOME_TEAMS.STADIUM_ID.eq(stadiumID)));
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> getAllPlayersInTeam(String teamName) {
+        DSLContext create  = DBHandler.getContext();
+        Result<?> records = create.select().from(PLAYER_IN_TEAM).where(PLAYER_IN_TEAM.TEAM_NAME.eq(teamName)).fetch();
+        List<String> playerNames = records.getValues(PLAYER_IN_TEAM.USERNAME);
+        return playerNames;
+
+    }
+
+    public List<String> getAllCoachesInTeam(String teamName) {
+        DSLContext create  = DBHandler.getContext();
+        Result<?> records = create.select().from(COACH_IN_TEAM).where(COACH_IN_TEAM.TEAM_NAME.eq(teamName)).fetch();
+        List<String> playerNames = records.getValues(COACH_IN_TEAM.USERNAME);
+        return playerNames;
     }
 }
 

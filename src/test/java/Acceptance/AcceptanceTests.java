@@ -1070,7 +1070,7 @@ public class AcceptanceTests {
 
     private Team createFullTeam(String teamName, TeamOwner teamOwner) {
         Team team = new Team(teamName, teamOwner, true);
-        team.addStadium(new Stadium("stadium1"," location1"));
+        team.addStadium(new Stadium("stadium1"," location1", true));
         for(int i = 1; i<= 11; i++){ //add 11 players
             SystemUser pSystemUser = new SystemUser("player"+teamName+""+i, "name"+i, true);
             new Player(pSystemUser, new Date(), true);
@@ -1097,7 +1097,7 @@ public class AcceptanceTests {
         Team firstTeam = new Team("Hapoel Beit Shan", toRole, true);
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole, true);
 
-        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
+        Game game = new Game(new Stadium("staName", "staLoca", true), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen", true),new Date(2001, 01, 01), true);
         firstTeam.addTeamPlayer(toRole,player1);
 
@@ -1133,7 +1133,7 @@ public class AcceptanceTests {
         Team firstTeam = new Team("Hapoel Beit Shan", toRole, true);
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole, true);
 
-        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
+        Game game = new Game(new Stadium("staName", "staLoca", true), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
         Player player1 = new Player(new SystemUser("AviCohen","Avi Cohen", true),new Date(2001, 01, 01), true);
         firstTeam.addTeamPlayer(toRole,player1);
 

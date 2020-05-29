@@ -184,18 +184,24 @@ public class Team {
         return true;
     }
 
+    /*TODO: DB*/
     public List<Player> getTeamPlayers() {
-        List<Player> allPlayersInTeam = new ArrayList<>();
+        /*List<Player> allPlayersInTeam = new ArrayList<>();
+
         for (BelongToTeam po : playersAndCoaches) {
             PartOfTeam teamAssetConnection = po.getAssetOfTheTeam();
             if (teamAssetConnection instanceof Player) {
                 allPlayersInTeam.add((Player) teamAssetConnection);
             }
         }
+
+         */
+        List<Player> allPlayersInTeam = EntityManager.getInstance().getAllPlayersInTeam(this);
         return allPlayersInTeam;
     }
-
+    /*TODO: DB*/
     public List<Coach> getTeamCoaches() {
+        /*
         List<Coach> allPlayersInTeam = new ArrayList<>();
         for (BelongToTeam po : playersAndCoaches) {
             PartOfTeam teamAssetConnection = po.getAssetOfTheTeam();
@@ -203,10 +209,14 @@ public class Team {
                 allPlayersInTeam.add((Coach) teamAssetConnection);
             }
         }
-        return allPlayersInTeam;
+
+         */
+        List<Coach> allCoachesInTeam =EntityManager.getInstance().getAllCoachesInTeam(this);;
+        return allCoachesInTeam;
     }
 
     public List<TeamManager> getTeamManagers() {
+        teamManagers = EntityManager.getInstance().getTeamsManager(this);
         return teamManagers;
     }
 
@@ -420,6 +430,7 @@ public class Team {
      * @return list of Stadiums
      */
     public List<Stadium> getStadiums() {
+        stadiums = EntityManager.getInstance().getStadiumsInTeam(this);
         return stadiums;
     }
 
@@ -449,6 +460,11 @@ public class Team {
             this.stadiums.remove(stadium);
             return true;
         }
+        if(getStadiums().contains(stadium))
+        {
+            this.stadiums.remove(stadium);
+            EntityManager.getInstance().removeStadiumFromTeam(stadium , this);
+        }
         return false;
     }
 
@@ -462,8 +478,8 @@ public class Team {
         List<Asset> allTeamAssets = new ArrayList<>();
         allTeamAssets.addAll(getTeamPlayers());
         allTeamAssets.addAll(getTeamCoaches());
-        allTeamAssets.addAll(this.teamManagers);
-        allTeamAssets.addAll(this.stadiums);
+        allTeamAssets.addAll(getTeamManagers());
+        allTeamAssets.addAll(getStadiums());
         return allTeamAssets;
     }
 

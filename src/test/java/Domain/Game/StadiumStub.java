@@ -16,7 +16,7 @@ public class StadiumStub extends Stadium{
      * @param location
      */
     public StadiumStub(String name,String location) {
-        super(name,location);
+        super(name,location, true);
         homeTeams = new ArrayList<>();
         selector = 0;
     }

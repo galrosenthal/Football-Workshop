@@ -264,7 +264,7 @@ public class ControllerTest {
         TeamOwner teamOwner = new TeamOwner(systemUser, true);
         Team team = new Team("Test", true);
         teamOwner.addTeamToOwn(team,systemUser);
-        Stadium stadium = new Stadium("AESEAL" , "New York");
+        Stadium stadium = new Stadium("AESEAL" , "New York", true);
         team.addStadium(stadium);
         UIController.setSelector(6139);
         assertTrue(Controller.modifyTeamAssetDetails(systemUser));

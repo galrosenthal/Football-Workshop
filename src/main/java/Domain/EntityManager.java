@@ -461,7 +461,7 @@ public class EntityManager {
         if (stadiumList == null) {
             return null;
         }
-        Stadium stadium = new Stadium(stadiumList.get(0), stadiumList.get(1));
+        Stadium stadium = new Stadium(stadiumList.get(0), stadiumList.get(1), true);
         return stadium;
     }
 
@@ -1316,5 +1316,58 @@ public class EntityManager {
         }
         return teamsManaged;
 
+    }
+
+    public List<TeamManager> getTeamsManager(Team team) {
+        List<String> getTeamsManager = DBManager.getInstance().getTeamManagers(team.getTeamName());
+        List<TeamManager> teamManagers = new ArrayList<>();
+        for (int i = 0; i < getTeamsManager.size(); i++) {
+            SystemUser systemUser = getUser(getTeamsManager.get(i));
+            TeamManager teamManager = (TeamManager)systemUser.getRole(RoleTypes.TEAM_MANAGER);
+            teamManagers.add(teamManager);
+
+        }
+        return teamManagers;
+
+    }
+
+    public List<Stadium> getStadiumsInTeam(Team team) {
+        List<HashMap<String,String>> stadiumsDetails = DBManager.getStadiumsInTeam(team.getTeamName());
+        List<Stadium> stadiums = new ArrayList<>();
+        for (int i = 0; i < stadiumsDetails.size(); i++) {
+            String stadiumName = stadiumsDetails.get(i).get("name");
+            String stadiumLocation = stadiumsDetails.get(i).get("location");
+            stadiums.add(new Stadium(stadiumName, stadiumLocation,false));
+        }
+        return stadiums;
+    }
+
+    public void removeStadiumFromTeam(Stadium stadium, Team team) {
+        int stadiumID = DBManager.getInstance().getStadiumId(stadium.getName() , stadium.getLocation());
+        DBManager.getInstance().removeStadiumFromTeam(stadiumID , team.getTeamName());
+    }
+
+    public List<Player> getAllPlayersInTeam(Team team) {
+        List<String> getTeamsManager = DBManager.getInstance().getAllPlayersInTeam(team.getTeamName());
+        List<Player> players = new ArrayList<>();
+        for (int i = 0; i < getTeamsManager.size(); i++) {
+            SystemUser systemUser = getUser(getTeamsManager.get(i));
+            Player player = (Player)systemUser.getRole(RoleTypes.PLAYER);
+            players.add(player);
+
+        }
+        return players;
+    }
+
+    public List<Coach> getAllCoachesInTeam(Team team) {
+        List<String> getTeamsManager = DBManager.getInstance().getAllCoachesInTeam(team.getTeamName());
+        List<Coach> coaches = new ArrayList<>();
+        for (int i = 0; i < getTeamsManager.size(); i++) {
+            SystemUser systemUser = getUser(getTeamsManager.get(i));
+            Coach coach = (Coach)systemUser.getRole(RoleTypes.COACH);
+            coaches.add(coach);
+
+        }
+        return coaches;
     }
 }

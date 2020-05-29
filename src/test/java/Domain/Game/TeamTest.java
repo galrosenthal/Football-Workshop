@@ -327,21 +327,21 @@ public class TeamTest {
 
     @Test
     public void testAddStadiumsUTest() {
-        boolean result = team.addStadium(new Stadium("stadName", "stadLocation"));
+        boolean result = team.addStadium(new Stadium("stadName", "stadLocation", true));
         assertTrue(result);
-        result = team.addStadium(new Stadium("stadName", "stadLocation"));
+        result = team.addStadium(new Stadium("stadName", "stadLocation", true));
         assertTrue(result);
     }
 
 
     @Test
     public void testRemoveStadiumsUTest() {
-        team.addStadium(new Stadium("stadName", "stadLocation"));
-        boolean result = team.removeStadium(new Stadium("stadName", "stadLocation"));
+        team.addStadium(new Stadium("stadName", "stadLocation", true));
+        boolean result = team.removeStadium(new Stadium("stadName", "stadLocation", true));
         assertTrue(result);
 
 
-        result = team.removeStadium(new Stadium("stadName", "stadLocation"));
+        result = team.removeStadium(new Stadium("stadName", "stadLocation", true));
         Assert.assertFalse(result);
     }
 
@@ -431,7 +431,7 @@ public class TeamTest {
 
     @Test
     public void testAddAssetStadiumNotTrivialUTest() throws Exception {
-        Stadium stadiumStub = new Stadium("vas", "BS");
+        Stadium stadiumStub = new Stadium("vas", "BS", true);
         UIController.setIsTest(true);
         UIController.setSelector(6119);
         //No Team Owner
@@ -485,7 +485,7 @@ public class TeamTest {
     public void getAllAssets0ITest() {
         Team team = new Team("Test", true);
         assertEquals(0, team.getAllAssets().size());
-        Stadium stadium = new Stadium("vas", "BS");
+        Stadium stadium = new Stadium("vas", "BS", true);
         assertTrue(team.addStadium(stadium));
         assertEquals(1, team.getAllAssets().size());
         Player player = new PlayerStub(new SystemUser("teamTest1", "gal", true), new Date(), 6131);
@@ -505,7 +505,7 @@ public class TeamTest {
     public void getAllAssets1ITest() {
         Team team = new Team("Test", true);
         assertTrue(team.getAllAssets().size() == 0);
-        Stadium stadium = new Stadium("vas", "BS");
+        Stadium stadium = new Stadium("vas", "BS", true);
         team.addStadium(stadium);
         assertTrue(team.getAllAssets().size() == 1);
         Player player = new PlayerStub(new SystemUser("teamTest1", "gal", true), new Date(), 6131);
@@ -526,7 +526,7 @@ public class TeamTest {
     public void getAllAssets2ITest() {
         Team team = new Team("Test", true);
         assertTrue(team.getAllAssets().size() == 0);
-        Stadium stadium = new Stadium("vas", "BS");
+        Stadium stadium = new Stadium("vas", "BS", true);
         team.addStadium(stadium);
         assertTrue(team.getAllAssets().size() == 1);
         Player player = new Player(new SystemUser("teamTest1", "gal", true), new Date(), true);
@@ -547,7 +547,7 @@ public class TeamTest {
     public void getAllAssets3ITest() {
         Team team = new Team("Test", true);
         assertTrue(team.getAllAssets().size() == 0);
-        Stadium stadium = new Stadium("vas", "BS");
+        Stadium stadium = new Stadium("vas", "BS", true);
         team.addStadium(stadium);
         assertTrue(team.getAllAssets().size() == 1);
         Player player = new Player(new SystemUser("teamTest1", "gal", true), new Date(), true);
@@ -568,7 +568,7 @@ public class TeamTest {
     public void getAllAssets4ITest() {
         Team team = new Team("Test", true);
         assertTrue(team.getAllAssets().size() == 0);
-        Stadium stadium = new Stadium("vas", "BS");
+        Stadium stadium = new Stadium("vas", "BS", true);
         team.addStadium(stadium);
         assertTrue(team.getAllAssets().size() == 1);
         Player player = new Player(new SystemUser("teamTest1", "gal", true), new Date(), true);
@@ -592,7 +592,7 @@ public class TeamTest {
     public void getAllAssets5ITest() {
         Team team = new Team("Test", true);
         assertTrue(team.getAllAssets().size() == 0);
-        Stadium stadium = new Stadium("vas", "BS");
+        Stadium stadium = new Stadium("vas", "BS", true);
         team.addStadium(stadium);
         assertTrue(team.getAllAssets().size() == 1);
         Player player = new Player(new SystemUser("teamTest1", "gal", true), new Date(), true);
@@ -616,7 +616,7 @@ public class TeamTest {
     @Test
     public void getAllProperty1ITest() {
         Team team = new Team("Test", true);
-        Stadium stadium = new Stadium("vas", "BS");
+        Stadium stadium = new Stadium("vas", "BS", true);
         team.addStadium( stadium);
         List<Enum> enumList = team.getAllProperty(stadium , stadium.namePropertyString);
         assertNull(enumList);
