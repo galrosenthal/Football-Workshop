@@ -1,5 +1,7 @@
 package Acceptance;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.Exceptions.AssetsNotExistsException;
 import Domain.Exceptions.TeamAlreadyExistsException;
@@ -32,16 +34,18 @@ public class AcceptanceTests {
 
     @BeforeClass
     public static void setUp() { //Will be called only once
+        DBManager.startTest();
+        DBManagerForTest.startConnection();
+        SystemLoggerManager.disableLoggers(); // disable loggers in tests
+        UIController.setIsTest(true);
         String hashedPasswordForEu = org.apache.commons.codec.digest.DigestUtils.sha256Hex("aBc12345");
         String hashedPasswordForAviYosi = org.apache.commons.codec.digest.DigestUtils.sha256Hex("123Ab456");
         existingUser = new SystemUser("abc", hashedPasswordForEu, "abc", "test@gmail.com", false, true);
         existingUser.addNewRole(new TeamOwner(existingUser, true));
-        aviCohenSu = new SystemUser("avicohen", hashedPasswordForAviYosi, "Avi Cohen","test@gmail.com", false, true);
+        aviCohenSu = new SystemUser("avicohen", hashedPasswordForAviYosi, "Avi Cohen", "test@gmail.com", false, true);
         aviCohenSu.addNewRole(new TeamOwner(aviCohenSu, true));
-        yosiManagerSu = new SystemUser("yosilevi", hashedPasswordForAviYosi, "Yosi Levi","test@gmail.com", false, true);
+        yosiManagerSu = new SystemUser("yosilevi", hashedPasswordForAviYosi, "Yosi Levi", "test@gmail.com", false, true);
         yosiManagerSu.addNewRole(new TeamManager(yosiManagerSu, true));
-        UIController.setIsTest(true);
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
     }
 
 
@@ -55,7 +59,7 @@ public class AcceptanceTests {
 
     private void initEntities() {
         String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex("12345678");
-        SystemUser adminUser = new SystemUser("admin", hashedPassword, "administrator","test@gmail.com", false, true);
+        SystemUser adminUser = new SystemUser("admin", hashedPassword, "administrator", "test@gmail.com", false, true);
         adminUser.addNewRole(new SystemAdmin(adminUser, true));
         EntityManager.getInstance().addUser(adminUser);
     }
@@ -84,10 +88,9 @@ public class AcceptanceTests {
     public void login2ATest() throws Exception {
         //not a user
         try {
-        SystemUser user2 = Controller.login("notAUser", "aBc12345");
+            SystemUser user2 = Controller.login("notAUser", "aBc12345");
             Assert.fail();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -97,7 +100,7 @@ public class AcceptanceTests {
         EntityManager.getInstance().addUser(existingUser);
         //wrong password
         try {
-            SystemUser user3 =Controller.login("abc", "pass12345");
+            SystemUser user3 = Controller.login("abc", "pass12345");
             Assert.fail();
         } catch (Exception e) {
             e.printStackTrace();
@@ -157,9 +160,6 @@ public class AcceptanceTests {
         //First league creation
         assertTrue(ARController.addLeague(systemUser));
 
-        //CleanUp
-        EntityManager.getInstance().removeLeagueByName("Premier League");
-        assertFalse(EntityManager.getInstance().doesLeagueExists("Premier League"));
     }
 
     /**
@@ -176,9 +176,6 @@ public class AcceptanceTests {
         //Duplicated league creation
         assertFalse(ARController.addLeague(systemUser));
 
-        //CleanUp
-        EntityManager.getInstance().removeLeagueByName("Premier League");
-        assertFalse(EntityManager.getInstance().doesLeagueExists("Premier League"));
     }
 
 
@@ -233,11 +230,11 @@ public class AcceptanceTests {
         //add team owner
         TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
         team.addTeamOwner(aviTo);
-        aviTo.addTeamToOwn(team,aviCohenSu);
+        aviTo.addTeamToOwn(team, aviCohenSu);
         //add team manager
-        TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
+        TeamManager tmanager = (TeamManager) yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
-        tmanager.addTeam(team,teamOwner);
+        tmanager.addTeam(team, teamOwner);
         //add to Entity manager
         EntityManager.getInstance().addUser(existingUser);
         EntityManager.getInstance().addUser(aviCohenSu);
@@ -267,13 +264,13 @@ public class AcceptanceTests {
         //setups
         TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner, true);
-        teamOwner.addTeamToOwn(team,existingUser);
+        teamOwner.addTeamToOwn(team, existingUser);
         //add team owner
-        TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner aviTo = (TeamOwner) aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
         team.addTeamOwner(aviTo);
-        aviTo.addTeamToOwn(team,aviCohenSu);
+        aviTo.addTeamToOwn(team, aviCohenSu);
         //add team manager, BUT NOT the team TO the manager
-        TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
+        TeamManager tmanager = (TeamManager) yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
         //add to Entity manager
         EntityManager.getInstance().addUser(existingUser);
@@ -303,15 +300,15 @@ public class AcceptanceTests {
     @Test
     public void reopenTeam2ATest() throws Exception {
         //setups
-        TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner teamOwner = (TeamOwner) existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner, true);
-        teamOwner.addTeamToOwn(team,existingUser);
+        teamOwner.addTeamToOwn(team, existingUser);
         //add team owner
-        TeamOwner aviTo = (TeamOwner)aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner aviTo = (TeamOwner) aviCohenSu.getRole(RoleTypes.TEAM_OWNER);
         team.addTeamOwner(aviTo);
-        aviTo.addTeamToOwn(team,aviCohenSu);
+        aviTo.addTeamToOwn(team, aviCohenSu);
         //add team manager, BUT NOT the team TO the manager
-        TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
+        TeamManager tmanager = (TeamManager) yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
         //add to Entity manager
         EntityManager.getInstance().addUser(existingUser);
@@ -341,11 +338,11 @@ public class AcceptanceTests {
     @Test
     public void reopenTeam3ATest() throws Exception {
         //setups
-        TeamOwner teamOwner = (TeamOwner)existingUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner teamOwner = (TeamOwner) existingUser.getRole(RoleTypes.TEAM_OWNER);
         Team team = new Team("Hapoel Beit Shan", teamOwner, true);
-        teamOwner.addTeamToOwn(team,existingUser);
+        teamOwner.addTeamToOwn(team, existingUser);
         //add team manager, BUT NOT the team TO the manager
-        TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
+        TeamManager tmanager = (TeamManager) yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
         //add to Entity manager
         EntityManager.getInstance().addUser(existingUser);
@@ -416,14 +413,14 @@ public class AcceptanceTests {
         Team beitShean = new Team("beitShean", true);
 
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
+        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345", "test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate, true);
-        abcOwner.addTeamToOwn(beitShean,abcCreate);
+        abcOwner.addTeamToOwn(beitShean, abcCreate);
         beitShean.getTeamOwners().add(abcOwner);
         SystemUser elisha = new SystemUser("elevy","Elisha Levy", true);
 
-        SystemUser abc = Controller.login("abc1","aBc12345");
-        assertEquals(abc,abcCreate);
+        SystemUser abc = Controller.login("abc1", "aBc12345");
+        assertEquals(abc, abcCreate);
 
         UIController.setSelector(61118);
         assertTrue(Controller.addAsset(abc));
@@ -443,24 +440,22 @@ public class AcceptanceTests {
 
         beitShean.setTeamName("Beit Shean");
 
-        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
+        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345", "test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate, true);
-        abcOwner.addTeamToOwn(beitShean,abcCreate);
+        abcOwner.addTeamToOwn(beitShean, abcCreate);
         beitShean.getTeamOwners().add(abcOwner);
 
-        SystemUser abc = Controller.login("abc1","aBc12345");
-        assertEquals(abc,abcCreate);
+        SystemUser abc = Controller.login("abc1", "aBc12345");
+        assertEquals(abc, abcCreate);
 
         UIController.setSelector(61118);
-        try{
+        try {
             Controller.addAsset(abc);
             EntityManager.getInstance().removeUserByReference(abcCreate);
             fail();
-        }
-        catch (UserNotFoundException e)
-        {
+        } catch (UserNotFoundException e) {
             UIController.showNotification(e.getMessage());
-            assertEquals("Could not find user elevy",e.getMessage());
+            assertEquals("Could not find user elevy", e.getMessage());
         }
 
 
@@ -482,15 +477,15 @@ public class AcceptanceTests {
     public void modifyTeamAssetDetails1ATest() throws Exception {
         Team beitShean = new Team("beitShean", true);
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
+        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345", "test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate, true);
-        abcOwner.addTeamToOwn(beitShean,abcCreate);
+        abcOwner.addTeamToOwn(beitShean, abcCreate);
         beitShean.getTeamOwners().add(abcOwner);
 
         SystemUser abc = Controller.login("abc1", "aBc12345");
         assertEquals(abc, abcCreate);
 
-        SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy","test@gmail.com", false, true);
+        SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy", "test@gmail.com", false, true);
         Player playerElisha = new Player(elivyCreate, new Date(), true);
         beitShean.addTeamPlayer(abcOwner, playerElisha);
         UIController.setIsTest(true);
@@ -510,19 +505,19 @@ public class AcceptanceTests {
      * No assets to to team
      * failure!
      */
-    @Test (expected = AssetsNotExistsException.class)
+    @Test(expected = AssetsNotExistsException.class)
     public void modifyTeamAssetDetails2ATest() throws Exception {
         Team beitShean = new Team("beitShean", true);
         beitShean.setTeamName("Beit Shean");
-        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345","test@gmail.com", false);
+        SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345", "test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate, true);
-        abcOwner.addTeamToOwn(beitShean,abcCreate);
+        abcOwner.addTeamToOwn(beitShean, abcCreate);
         beitShean.getTeamOwners().add(abcOwner);
 
         SystemUser abc = Controller.login("abc1", "aBc12345");
         assertEquals(abc, abcCreate);
 
-        SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy","test@gmail.com", false, true);
+        SystemUser elivyCreate = new SystemUser("elivy", "abc12345", "elisha levy", "test@gmail.com", false, true);
         Player playerElisha = new Player(elivyCreate, new Date(), true);
 
         UIController.setIsTest(true);
@@ -661,6 +656,7 @@ public class AcceptanceTests {
 
     /**
      * Removes one team owner
+     *
      * @throws TeamAlreadyExistsException
      * @throws UserNotFoundException
      */
@@ -675,12 +671,13 @@ public class AcceptanceTests {
         UIController.setSelector(633);
         Controller.addTeamOwner(toSystemUser);
         assertTrue(Controller.removeTeamOwner(to2SystemUser));
-        assertEquals(EntityManager.getInstance().getTeam("Hapoel Ta").getTeamOwners().size(),1);
+        assertEquals(EntityManager.getInstance().getTeam("Hapoel Ta").getTeamOwners().size(), 1);
     }
 
 
     /**
      * Removes recursively two team owners
+     *
      * @throws TeamAlreadyExistsException
      * @throws UserNotFoundException
      */
@@ -699,11 +696,12 @@ public class AcceptanceTests {
         Controller.addTeamOwner(to2SystemUser);
         UIController.setSelector(633);
         assertTrue(Controller.removeTeamOwner(toSystemUser));
-        assertEquals(EntityManager.getInstance().getTeam("Hapoel Ta").getTeamOwners().size(),1);
+        assertEquals(EntityManager.getInstance().getTeam("Hapoel Ta").getTeamOwners().size(), 1);
     }
 
     /**
      * Exception by given a user doesnt exist
+     *
      * @throws TeamAlreadyExistsException
      * @throws UserNotFoundException
      */
@@ -719,9 +717,8 @@ public class AcceptanceTests {
             UIController.setSelector(635);
             Controller.addTeamOwner(toSystemUser);
             Controller.removeTeamOwner(to2SystemUser);
-        }
-        catch (Exception e){
-            assertEquals("Could not find a user by the given username",e.getMessage());
+        } catch (Exception e) {
+            assertEquals("Could not find a user by the given username", e.getMessage());
         }
     }
 
@@ -762,8 +759,7 @@ public class AcceptanceTests {
         try {
             ARController.registerNewTeam(arSystemUser);
             Assert.fail();
-        }
-        catch (TeamAlreadyExistsException e){
+        } catch (TeamAlreadyExistsException e) {
             e.printStackTrace();
         }
         assertNotNull(userToBeOwner);
@@ -781,8 +777,7 @@ public class AcceptanceTests {
         try {
             ARController.registerNewTeam(arSystemUser);
             Assert.fail();
-        }
-        catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -797,12 +792,13 @@ public class AcceptanceTests {
         new AssociationRepresentative(systemUser, true);
         UIController.setSelector(9511);//1,-1,0
         assertTrue(ARController.addPointsPolicy(systemUser));
-        assertTrue(EntityManager.getInstance().doesPointsPolicyExists(1,-1,0));
-        assertNotNull(EntityManager.getInstance().getPointsPolicy(1,-1,0));
+        assertTrue(EntityManager.getInstance().doesPointsPolicyExists(1, -1, 0));
+        assertNotNull(EntityManager.getInstance().getPointsPolicy(1, -1, 0));
         /*
         Expected: The new points policy has been added successfully
          */
     }
+
     /**
      * 9.5.1.b
      * failure scenario - A points policy
@@ -831,9 +827,9 @@ public class AcceptanceTests {
         League league = EntityManager.getInstance().getLeagues().get(0);
         league.addSeason("2019/20");
 
-        AssociationRepresentative aR = (AssociationRepresentative)systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        AssociationRepresentative aR = (AssociationRepresentative) systemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
         try {
-            aR.addPointsPolicy(1,-1,0);
+            aR.addPointsPolicy(1, -1, 0);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -952,10 +948,10 @@ public class AcceptanceTests {
         new TeamOwner(arSystemUser, true);
         new TeamOwner(to1SystemUser, true);
         new TeamOwner(to2SystemUser, true);
-        AssociationRepresentative aR = (AssociationRepresentative)arSystemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
-        TeamOwner to1 = (TeamOwner)arSystemUser.getRole(RoleTypes.TEAM_OWNER);
-        TeamOwner to2 = (TeamOwner)to1SystemUser.getRole(RoleTypes.TEAM_OWNER);
-        TeamOwner to3 = (TeamOwner)to2SystemUser.getRole(RoleTypes.TEAM_OWNER);
+        AssociationRepresentative aR = (AssociationRepresentative) arSystemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        TeamOwner to1 = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner to2 = (TeamOwner) to1SystemUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner to3 = (TeamOwner) to2SystemUser.getRole(RoleTypes.TEAM_OWNER);
 
         EntityManager.getInstance().addLeague(new League("Premier League", true));
         League league = EntityManager.getInstance().getLeagues().get(0);
@@ -994,10 +990,10 @@ public class AcceptanceTests {
         new TeamOwner(arSystemUser, true);
         new TeamOwner(to1SystemUser, true);
         new TeamOwner(to2SystemUser, true);
-        AssociationRepresentative aR = (AssociationRepresentative)arSystemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
-        TeamOwner to1 = (TeamOwner)arSystemUser.getRole(RoleTypes.TEAM_OWNER);
-        TeamOwner to2 = (TeamOwner)to1SystemUser.getRole(RoleTypes.TEAM_OWNER);
-        TeamOwner to3 = (TeamOwner)to2SystemUser.getRole(RoleTypes.TEAM_OWNER);
+        AssociationRepresentative aR = (AssociationRepresentative) arSystemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        TeamOwner to1 = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner to2 = (TeamOwner) to1SystemUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner to3 = (TeamOwner) to2SystemUser.getRole(RoleTypes.TEAM_OWNER);
 
         EntityManager.getInstance().addLeague(new League("Premier League", true));
         League league = EntityManager.getInstance().getLeagues().get(0);
@@ -1038,10 +1034,10 @@ public class AcceptanceTests {
         new TeamOwner(arSystemUser, true);
         new TeamOwner(to1SystemUser, true);
         new TeamOwner(to2SystemUser, true);
-        AssociationRepresentative aR = (AssociationRepresentative)arSystemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
-        TeamOwner to1 = (TeamOwner)arSystemUser.getRole(RoleTypes.TEAM_OWNER);
-        TeamOwner to2 = (TeamOwner)to1SystemUser.getRole(RoleTypes.TEAM_OWNER);
-        TeamOwner to3 = (TeamOwner)to2SystemUser.getRole(RoleTypes.TEAM_OWNER);
+        AssociationRepresentative aR = (AssociationRepresentative) arSystemUser.getRole(RoleTypes.ASSOCIATION_REPRESENTATIVE);
+        TeamOwner to1 = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner to2 = (TeamOwner) to1SystemUser.getRole(RoleTypes.TEAM_OWNER);
+        TeamOwner to3 = (TeamOwner) to2SystemUser.getRole(RoleTypes.TEAM_OWNER);
 
         EntityManager.getInstance().addLeague(new League("Premier League", true));
         League league = EntityManager.getInstance().getLeagues().get(0);
@@ -1074,7 +1070,7 @@ public class AcceptanceTests {
         for(int i = 1; i<= 11; i++){ //add 11 players
             SystemUser pSystemUser = new SystemUser("player"+teamName+""+i, "name"+i, true);
             new Player(pSystemUser, new Date(), true);
-            Player player = (Player)pSystemUser.getRole(RoleTypes.PLAYER);
+            Player player = (Player) pSystemUser.getRole(RoleTypes.PLAYER);
             team.addTeamPlayer(teamOwner, player);
         }
         return team;
@@ -1109,7 +1105,7 @@ public class AcceptanceTests {
         //The new Penalty has been added successfully
         Event event = game.getEventsLogger().getGameEvents().get(0);
         assertTrue(event instanceof Injury);
-        assertTrue(((Injury) event).getMinute()==1);
+        assertTrue(((Injury) event).getMinute() == 1);
         assertTrue(((Injury) event).getInjuredPlayer().equals(player1));
         /*
         Expected: The new Injury has been added successfully
@@ -1142,20 +1138,20 @@ public class AcceptanceTests {
 
         try {
             game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
-                   player1,2);
+                    player1, 2);
         } catch (Exception e) {
         }
-        game.addEndGame(new Date(),90); // end the game
+        game.addEndGame(new Date(), 90); // end the game
 
         UIController.setSelector(10411);//0,"."
         boolean succeeded = RefereeController.produceGameReport(systemUser);
         assertTrue(succeeded);
-        if(succeeded){
+        if (succeeded) {
             //delete the created report
             File dir = new File(".");
             File[] directoryListing = dir.listFiles();
             for (File file : directoryListing) {
-                if(file.getName().startsWith("GameReport_Hapoel")){
+                if (file.getName().startsWith("GameReport_Hapoel")) {
                     assertTrue(file.delete());
                 }
             }

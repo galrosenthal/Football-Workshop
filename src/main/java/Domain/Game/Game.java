@@ -330,4 +330,14 @@ public class Game extends Observable {
         return homeTeam.getTeamName() + " vs. " + awayTeam.getTeamName();
     }
 
+    /**
+     * Un-assigns a referee from this game
+     *
+     * @param referee - Referee - a referee role to be removed
+     */
+    public void unAssignReferee(Referee referee) {
+        if (referee != null) {
+            this.referees.remove(referee);
+        }
+    }
 }

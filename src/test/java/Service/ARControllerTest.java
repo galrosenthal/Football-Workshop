@@ -294,19 +294,19 @@ public class ARControllerTest {
         SystemUser refereeUser = new SystemUser("AviCohen", "name", true);
         new Referee(refereeUser, RefereeQualification.VAR_REFEREE, true);
         UIController.setSelector(9321);
-        //There are no referees
+
         assertTrue(ARController.removeReferee(systemUser));
         assertFalse(refereeUser.isType(RoleTypes.REFEREE));
     }
 
 
-    @Test //ITEST
+    @Test
     public void assignRefereeUTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 0, true);
         assertFalse(ARController.assignReferee(systemUser));
     }
 
-    @Test //ITEST
+    @Test
     public void assignReferee2UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321, true);
         /*
