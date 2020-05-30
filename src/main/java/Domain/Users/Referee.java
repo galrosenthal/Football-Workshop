@@ -89,7 +89,17 @@ public class Referee extends Role {
         for (Season season : this.seasons) {
             season.unAssignReferee(this);
         }
-        EntityManager.getInstance().unAssignRefereeFromAllSeasons(this);
+        //EntityManager.getInstance().unAssignRefereeFromAllSeasons(this); //Check:Should be covered with CASCADE
+        this.seasons = new ArrayList<>();
+    }
+    /**
+     * Un-assigns the referee role from all games
+     */
+    public void unAssignFromAllGames() {
+        for (Game game : this.games) {
+            game.unAssignReferee(this);
+        }
+        //EntityManager.getInstance().unAssignRefereeFromAllGames(this); //Check:Should be covered with CASCADE
         this.seasons = new ArrayList<>();
     }
 

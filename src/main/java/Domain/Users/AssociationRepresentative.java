@@ -110,8 +110,10 @@ public class AssociationRepresentative extends Role {
         Referee refereeRole = (Referee) chosenUser.getRole(RoleTypes.REFEREE);
         if (refereeRole != null) {
             if (!refereeRole.hasFutureGames()) {
-                refereeRole.unAssignFromAllSeasons();
-                chosenUser.removeRole(refereeRole); //TODO: NEED TO UN ASSIGN FROM GAMES ALSO - PROBLEM
+                if (chosenUser.removeRole(refereeRole)) { //TODO: NEED TO UN ASSIGN FROM GAMES ALSO - PROBLEM
+                    refereeRole.unAssignFromAllSeasons();
+                    refereeRole.unAssignFromAllGames();
+                }
                 return true;
             }
         }

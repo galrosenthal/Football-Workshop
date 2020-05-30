@@ -4,8 +4,8 @@ import DB.Tables_Test.enums.UserRolesRoleType;
 import DB.Tables_Test.enums.CoachQualification;
 import DB.Tables_Test.enums.RefereeTraining;
 import DB.Tables_Test.enums.TeamStatus;
-import Domain.Exceptions.UserNotFoundException;
-import Domain.Pair;
+import Domain.Exceptions.UserNotFoundException; //FIXME: This is a Domain Object and should not be here - MAYBE move all the exception out of the Domain.
+import Domain.Pair;  //FIXME: This is a Domain Object and should not be here
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Result;
@@ -880,5 +880,17 @@ public class DBManagerForTest extends DBManager {
             teamsDetails.add(details);
         }
         return teamsDetails;
+    }
+
+    @Override
+    public boolean removeRole(String username, String roleType) {
+        DSLContext create = DBHandler.getContext();
+        try {
+            create.delete(USER_ROLES).where(USER_ROLES.USERNAME.eq(username).and(USER_ROLES.ROLE_TYPE.eq(UserRolesRoleType.valueOf(roleType)))).execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

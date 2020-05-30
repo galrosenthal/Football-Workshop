@@ -939,5 +939,16 @@ public class DBManager {
         }
         return teamsDetails;
     }
+
+    public boolean removeRole(String username, String roleType) {
+        DSLContext create = DBHandler.getContext();
+        try {
+            create.delete(USER_ROLES).where(USER_ROLES.USERNAME.eq(username).and(USER_ROLES.ROLE_TYPE.eq(UserRolesRoleType.valueOf(roleType)))).execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 }
 

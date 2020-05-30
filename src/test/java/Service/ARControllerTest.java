@@ -294,7 +294,7 @@ public class ARControllerTest {
         SystemUser refereeUser = new SystemUser("AviCohen", "name");
         new Referee(refereeUser, RefereeQualification.VAR_REFEREE, true);
         UIController.setSelector(9321);
-        //There are no referees
+
         assertTrue(ARController.removeReferee(systemUser));
         assertFalse(refereeUser.isType(RoleTypes.REFEREE));
     }
