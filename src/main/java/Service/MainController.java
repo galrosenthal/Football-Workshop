@@ -234,7 +234,7 @@ public class MainController {
      * @return List<String of all the teams names
      */
     public static List<String> getAllTeamsByName() {
-        List<Team> allTeams = EntityManager.getInstance().getAllTeams();
+        List<Team> allTeams = EntityManager.getInstance().getTeams();
         List<String> teamsByName = new ArrayList<>();
         for (Team t :
                 allTeams) {

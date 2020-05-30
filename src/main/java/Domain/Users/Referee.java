@@ -47,7 +47,11 @@ public class Referee extends Role {
      * @return - List<Season> - A list of all the seasons that this referee is assigned to
      */
     public List<Season> getSeasons() {
-        return new ArrayList<>(seasons);
+        if (this.seasons.isEmpty()) {
+            this.seasons = EntityManager.getInstance().getRefereeSeasons(this);
+        }
+        return this.seasons;
+        //TODO:Pull From DB
     }
 
     /**
@@ -74,7 +78,7 @@ public class Referee extends Role {
                 return true;
             }
         }
-        for (Game game : this.games) {
+        for (Game game : getGames()) {
             if (!game.hasFinished()) {
                 return true;
             }
@@ -86,12 +90,13 @@ public class Referee extends Role {
      * Un-assigns the referee role from all seasons
      */
     public void unAssignFromAllSeasons() {
-        for (Season season : this.seasons) {
+        for (Season season : getSeasons()) {
             season.unAssignReferee(this);
         }
         //EntityManager.getInstance().unAssignRefereeFromAllSeasons(this); //Check:Should be covered with CASCADE
         this.seasons = new ArrayList<>();
     }
+
     /**
      * Un-assigns the referee role from all games
      */
@@ -110,7 +115,7 @@ public class Referee extends Role {
      */
     public void assignToSeason(Season chosenSeason) {
         if (chosenSeason != null) {
-            this.seasons.add(chosenSeason);
+            getSeasons().add(chosenSeason);
         }
     }
 
@@ -126,14 +131,19 @@ public class Referee extends Role {
     }
 
     public List<Game> getGames() {
+        if (this.games.isEmpty()) {
+            this.games = EntityManager.getInstance().getRefereeGames(this);
+        }
         return this.games;
     }
 
     public void addGame(Game game) {
-        this.games.add(game);
+        getGames().add(game);
+        EntityManager.getInstance().addRefereeToGame(this, game);
     }
 
     public void removeGame(Game game) {
-        this.games.remove(game);
+        getGames().remove(game);
+        //removal from DB based on CASCADE
     }
 }

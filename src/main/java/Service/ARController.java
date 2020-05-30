@@ -385,7 +385,7 @@ public class ARController {
 
         League chosenLeague = null;
         try {
-            chosenLeague = getLeagueThatHasntStartedByChoice();
+            chosenLeague = getLeagueThatHasNotStartedByChoice();
         } catch (Exception e) {
             UIController.showNotification(e.getMessage());
             return false;
@@ -504,7 +504,7 @@ public class ARController {
         return chosenTeams;
     }
 
-    private static League getLeagueThatHasntStartedByChoice() throws Exception {
+    private static League getLeagueThatHasNotStartedByChoice() throws Exception {
         List<League> leagues = EntityManager.getInstance().getLeagues();
         if (leagues == null || leagues.isEmpty()) {
             String msg = "There are no leagues";
@@ -597,7 +597,7 @@ public class ARController {
         //League selection
         League chosenLeague = null;
         try {
-            chosenLeague = getLeagueThatHasntStartedByChoice();
+            chosenLeague = getLeagueThatHasNotStartedByChoice();
         } catch (Exception e) {
             UIController.showNotification(e.getMessage());
             return false;
@@ -672,7 +672,7 @@ public class ARController {
         //League selection
         League chosenLeague = null;
         try {
-            chosenLeague = getLeagueThatHasntStartedByChoice();
+            chosenLeague = getLeagueThatHasNotStartedByChoice();
         } catch (Exception e) {
             UIController.showNotification(e.getMessage());
             return false;

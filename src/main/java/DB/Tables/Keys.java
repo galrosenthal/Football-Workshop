@@ -106,6 +106,7 @@ public class Keys {
     public static final Identity<PointsPolicyRecord, Integer> IDENTITY_POINTS_POLICY = Identities0.IDENTITY_POINTS_POLICY;
     public static final Identity<SchedulingPolicyRecord, Integer> IDENTITY_SCHEDULING_POLICY = Identities0.IDENTITY_SCHEDULING_POLICY;
     public static final Identity<SeasonRecord, Integer> IDENTITY_SEASON = Identities0.IDENTITY_SEASON;
+    public static final Identity<StadiumRecord, Integer> IDENTITY_STADIUM = Identities0.IDENTITY_STADIUM;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -194,7 +195,7 @@ public class Keys {
     public static final ForeignKey<RefereeInSeasonRecord, SeasonRecord> FK_REFEREE_IN_SEASON_SEASON = ForeignKeys0.FK_REFEREE_IN_SEASON_SEASON;
     public static final ForeignKey<SeasonRecord, LeagueRecord> FK_SEASON_LEAGUE = ForeignKeys0.FK_SEASON_LEAGUE;
     public static final ForeignKey<SeasonRecord, PointsPolicyRecord> FK_SEASON_POINTS_POLICY = ForeignKeys0.FK_SEASON_POINTS_POLICY;
-    public static final ForeignKey<StadiumHomeTeamsRecord, StadiumRecord> FK__STADIUM_TEAMS = ForeignKeys0.FK__STADIUM_TEAMS;
+    public static final ForeignKey<StadiumHomeTeamsRecord, StadiumRecord> FK_STADIUM_HOME_TEAMS_STADIUM = ForeignKeys0.FK_STADIUM_HOME_TEAMS_STADIUM;
     public static final ForeignKey<StadiumHomeTeamsRecord, TeamRecord> FK__TEAM_STADIUM = ForeignKeys0.FK__TEAM_STADIUM;
     public static final ForeignKey<SystemAdminRecord, UserRolesRecord> FK__USER_ROLES_SYSTEM_ADMIN = ForeignKeys0.FK__USER_ROLES_SYSTEM_ADMIN;
     public static final ForeignKey<TeamManagerRecord, UserRolesRecord> FK_TEAM_MANAGER_USER_ROLES = ForeignKeys0.FK_TEAM_MANAGER_USER_ROLES;
@@ -222,6 +223,7 @@ public class Keys {
         public static Identity<PointsPolicyRecord, Integer> IDENTITY_POINTS_POLICY = Internal.createIdentity(PointsPolicy.POINTS_POLICY, PointsPolicy.POINTS_POLICY.POLICY_ID);
         public static Identity<SchedulingPolicyRecord, Integer> IDENTITY_SCHEDULING_POLICY = Internal.createIdentity(SchedulingPolicy.SCHEDULING_POLICY, SchedulingPolicy.SCHEDULING_POLICY.SCHEDULING_ID);
         public static Identity<SeasonRecord, Integer> IDENTITY_SEASON = Internal.createIdentity(Season.SEASON, Season.SEASON.SEASON_ID);
+        public static Identity<StadiumRecord, Integer> IDENTITY_STADIUM = Internal.createIdentity(Stadium.STADIUM, Stadium.STADIUM.STADIUM_ID);
     }
 
     private static class UniqueKeys0 {
@@ -306,7 +308,7 @@ public class Keys {
         public static final ForeignKey<RefereeInSeasonRecord, SeasonRecord> FK_REFEREE_IN_SEASON_SEASON = Internal.createForeignKey(Keys.KEY_SEASON_PRIMARY, RefereeInSeason.REFEREE_IN_SEASON, "FK_referee_in_season_season", new TableField[] { RefereeInSeason.REFEREE_IN_SEASON.SEASON_ID }, true);
         public static final ForeignKey<SeasonRecord, LeagueRecord> FK_SEASON_LEAGUE = Internal.createForeignKey(Keys.KEY_LEAGUE_PRIMARY, Season.SEASON, "FK_season_league", new TableField[] { Season.SEASON.LEAGUE_NAME }, true);
         public static final ForeignKey<SeasonRecord, PointsPolicyRecord> FK_SEASON_POINTS_POLICY = Internal.createForeignKey(Keys.KEY_POINTS_POLICY_PRIMARY, Season.SEASON, "FK_season_points_policy", new TableField[] { Season.SEASON.POINTS_POLICY_ID }, true);
-        public static final ForeignKey<StadiumHomeTeamsRecord, StadiumRecord> FK__STADIUM_TEAMS = Internal.createForeignKey(Keys.KEY_STADIUM_PRIMARY, StadiumHomeTeams.STADIUM_HOME_TEAMS, "FK__stadium_teams", new TableField[] { StadiumHomeTeams.STADIUM_HOME_TEAMS.STADIUM_ID }, true);
+        public static final ForeignKey<StadiumHomeTeamsRecord, StadiumRecord> FK_STADIUM_HOME_TEAMS_STADIUM = Internal.createForeignKey(Keys.KEY_STADIUM_PRIMARY, StadiumHomeTeams.STADIUM_HOME_TEAMS, "FK_stadium_home_teams_stadium", new TableField[] { StadiumHomeTeams.STADIUM_HOME_TEAMS.STADIUM_ID }, true);
         public static final ForeignKey<StadiumHomeTeamsRecord, TeamRecord> FK__TEAM_STADIUM = Internal.createForeignKey(Keys.KEY_TEAM_PRIMARY, StadiumHomeTeams.STADIUM_HOME_TEAMS, "FK__team_stadium", new TableField[] { StadiumHomeTeams.STADIUM_HOME_TEAMS.TEAM_NAME }, true);
         public static final ForeignKey<SystemAdminRecord, UserRolesRecord> FK__USER_ROLES_SYSTEM_ADMIN = Internal.createForeignKey(Keys.KEY_USER_ROLES_PRIMARY, SystemAdmin.SYSTEM_ADMIN, "FK__user_roles_system_admin", new TableField[] { SystemAdmin.SYSTEM_ADMIN.USERNAME }, true);
         public static final ForeignKey<TeamManagerRecord, UserRolesRecord> FK_TEAM_MANAGER_USER_ROLES = Internal.createForeignKey(Keys.KEY_USER_ROLES_PRIMARY, TeamManager.TEAM_MANAGER, "FK_team_manager_user_roles", new TableField[] { TeamManager.TEAM_MANAGER.USERNAME }, true);
