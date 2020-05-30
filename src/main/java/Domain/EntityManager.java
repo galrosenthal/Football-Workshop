@@ -979,6 +979,7 @@ public class EntityManager {
     }
 
     public List<SchedulingPolicy> getSchedulingPolicies() {
+        //TODO: Like getPointsPolicies
         return schedulingPolicies;
     }
 
@@ -1300,28 +1301,10 @@ public class EntityManager {
 
     public boolean removeRole(SystemUser systemUser, Role role) {
         RoleTypes roleType = role.getType();
-        RoleTypes type = role.getType();
-        switch (type) {
-            case PLAYER:
-                return false; //TODO:remove PLAYER
-            case COACH:
-                return false;//TODO:remove COACH
-            case TEAM_MANAGER:
-                return false;//TODO:remove TEAM_MANAGER
-            case TEAM_OWNER:
-                return false;//TODO:remove TEAM_OWNER
-            case SYSTEM_ADMIN:
-                return false;//TODO:remove SYSTEM_ADMIN
-            case REFEREE:
-                //TODO: WE CAN USE THIS LINE ONLY!!!!!!
-                return DBManager.getInstance().removeRole(systemUser.getUsername(), roleType.name());
-            case ASSOCIATION_REPRESENTATIVE:
-                return false;//TODO:remove ASSOCIATION_REPRESENTATIVE
-        }
-        return false;
+        return DBManager.getInstance().removeRole(systemUser.getUsername(), roleType.name());
     }
 
     public boolean assignRefereeToSeason(Referee refereeRole, Season season) {
-        return DBManager.getInstance().addRefereeToSeason(refereeRole.getSystemUser().getUsername(),season.getLeague().getName(),season.getYears());
+        return DBManager.getInstance().addRefereeToSeason(refereeRole.getSystemUser().getUsername(), season.getLeague().getName(), season.getYears());
     }
 }
