@@ -1173,4 +1173,16 @@ public class DBManager {
             return new HashMap<>();
         }
     }
+
+    public void saveAlert(String username, String alert) {
+
+        try{
+            DSLContext create = DBHandler.getContext();
+            create.insertInto(ALERT, ALERT.USERNAME,ALERT.NOTIFICATION).values(username,alert);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
 }

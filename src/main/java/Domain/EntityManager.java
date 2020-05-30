@@ -1,5 +1,6 @@
 package Domain;
 
+import DB.DBHandler;
 import DB.DBManager;
 import Domain.Exceptions.*;
 import Domain.Game.*;
@@ -744,6 +745,7 @@ public class EntityManager {
             loggedInMap.put(userWithUsrNm, true);
             //Log the action
             SystemLoggerManager.logInfo(this.getClass(), new LoginLogMsg(userWithUsrNm.getUsername()));
+            /*TODO SHOW ALERT!  - in case he doesnt get alert in email*/
             return userWithUsrNm;
         }
 
@@ -1441,5 +1443,9 @@ public class EntityManager {
     public SystemUser getAppointedOwner(Team ownedTeam, TeamOwner teamOwner) {
         String systemUser = DBManager.getInstance().getAppointedOwner(ownedTeam.getTeamName() , teamOwner.getSystemUser().getUsername());
         return getUser(systemUser);
+    }
+
+    public void saveAlert(String username, String alert) {
+        DBManager.getInstance().saveAlert(username,alert);
     }
 }

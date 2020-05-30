@@ -1231,4 +1231,17 @@ public class DBManagerForTest extends DBManager {
             return new HashMap<>();
         }
     }
+
+    @Override
+    public void saveAlert(String username, String alert) {
+
+        try{
+            DSLContext create = DBHandler.getContext();
+            create.insertInto(ALERT, ALERT.USERNAME,ALERT.NOTIFICATION).values(username,alert);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
 }
