@@ -38,6 +38,11 @@ public class AcceptanceTests {
         DBManagerForTest.startConnection();
         SystemLoggerManager.disableLoggers(); // disable loggers in tests
         UIController.setIsTest(true);
+    }
+
+    @Before
+    public void start()
+    {
         String hashedPasswordForEu = org.apache.commons.codec.digest.DigestUtils.sha256Hex("aBc12345");
         String hashedPasswordForAviYosi = org.apache.commons.codec.digest.DigestUtils.sha256Hex("123Ab456");
         existingUser = new SystemUser("abc", hashedPasswordForEu, "abc", "test@gmail.com", false, true);
@@ -79,8 +84,6 @@ public class AcceptanceTests {
         //success
         SystemUser user = Controller.login("abc", "aBc12345");
 
-        //cleanup
-        EntityManager.getInstance().removeUserByReference(existingUser);
 
     }
 
@@ -115,15 +118,13 @@ public class AcceptanceTests {
 
     @Test
     public void signUpATest() throws Exception {
-        EntityManager.getInstance().removeUserByReference(existingUser);
         //success
-        SystemUser user = Controller.signUp("abc", "abc", "aBc12345","test@gmail.com", false);
+        SystemUser user = Controller.signUp("abc", "abc1", "aBc12345","test@gmail.com", false);
     }
 
     @Test
     public void signUp2ATest() throws Exception {
         //username already exists
-        EntityManager.getInstance().addUser(existingUser);
         try {
             SystemUser user2 = Controller.signUp("abc", "abc", "aBc12345","test@gmail.com", false);
             Assert.fail();
@@ -138,9 +139,8 @@ public class AcceptanceTests {
     @Test
     public void signUp3ATest() throws Exception {
         //password not strong
-        EntityManager.getInstance().removeUserByReference(existingUser);
         try {
-            SystemUser user3 = Controller.signUp("abc", "abc", "123","test@gmail.com", false);
+            SystemUser user3 = Controller.signUp("abc", "abc1", "123","test@gmail.com", false);
             Assert.fail();
         } catch (Exception e) {
             e.printStackTrace();
@@ -196,25 +196,12 @@ public class AcceptanceTests {
         TeamManager tmanager = (TeamManager)yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
         tmanager.addTeam(team,teamOwner);
-        //add to Entity manager
-        EntityManager.getInstance().addUser(existingUser);
-        EntityManager.getInstance().addUser(aviCohenSu);
-        EntityManager.getInstance().addUser(yosiManagerSu);
-        EntityManager.getInstance().addTeam(team);
 
         //success
         UIController.setIsTest(true);
         UIController.setSelector(6611);
         Assert.assertTrue(TOController.closeTeam(existingUser));
 
-        //cleanup
-        teamOwner.removeTeamOwned(team);
-        aviTo.removeTeamOwned(team);
-        tmanager.removeTeam(team);
-        EntityManager.getInstance().removeUserByName(existingUser.getUsername());
-        EntityManager.getInstance().removeUserByName(aviCohenSu.getUsername());
-        EntityManager.getInstance().removeUserByName(yosiManagerSu.getUsername());
-        EntityManager.getInstance().removeTeamByReference(team);
 
     }
 
@@ -235,25 +222,12 @@ public class AcceptanceTests {
         TeamManager tmanager = (TeamManager) yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
         tmanager.addTeam(team, teamOwner);
-        //add to Entity manager
-        EntityManager.getInstance().addUser(existingUser);
-        EntityManager.getInstance().addUser(aviCohenSu);
-        EntityManager.getInstance().addUser(yosiManagerSu);
-        EntityManager.getInstance().addTeam(team);
 
         //operation cancelled
         UIController.setIsTest(true);
         UIController.setSelector(6612);
         Assert.assertFalse(TOController.closeTeam(existingUser));
 
-        //cleanup
-        teamOwner.removeTeamOwned(team);
-        aviTo.removeTeamOwned(team);
-        tmanager.removeTeam(team);
-        EntityManager.getInstance().removeUserByName(existingUser.getUsername());
-        EntityManager.getInstance().removeUserByName(aviCohenSu.getUsername());
-        EntityManager.getInstance().removeUserByName(yosiManagerSu.getUsername());
-        EntityManager.getInstance().removeTeamByReference(team);
     }
 
     /**
@@ -272,11 +246,6 @@ public class AcceptanceTests {
         //add team manager, BUT NOT the team TO the manager
         TeamManager tmanager = (TeamManager) yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
-        //add to Entity manager
-        EntityManager.getInstance().addUser(existingUser);
-        EntityManager.getInstance().addUser(aviCohenSu);
-        EntityManager.getInstance().addUser(yosiManagerSu);
-        EntityManager.getInstance().addTeam(team);
 
         //success. Yosi the team manager got his team back.
         team.setStatus(TeamStatus.CLOSED); // set status to closed
@@ -284,14 +253,6 @@ public class AcceptanceTests {
         UIController.setSelector(6621);
         Assert.assertTrue(TOController.reopenTeam(existingUser));
 
-        //cleanup
-        teamOwner.removeTeamOwned(team);
-        aviTo.removeTeamOwned(team);
-        tmanager.removeTeam(team);
-        EntityManager.getInstance().removeUserByName(existingUser.getUsername());
-        EntityManager.getInstance().removeUserByName(aviCohenSu.getUsername());
-        EntityManager.getInstance().removeUserByName(yosiManagerSu.getUsername());
-        EntityManager.getInstance().removeTeamByReference(team);
     }
 
     /**
@@ -310,11 +271,7 @@ public class AcceptanceTests {
         //add team manager, BUT NOT the team TO the manager
         TeamManager tmanager = (TeamManager) yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
-        //add to Entity manager
-        EntityManager.getInstance().addUser(existingUser);
-        EntityManager.getInstance().addUser(aviCohenSu);
-        EntityManager.getInstance().addUser(yosiManagerSu);
-        EntityManager.getInstance().addTeam(team);
+
 
         //operation cancelled
         team.setStatus(TeamStatus.CLOSED); // set status to closed
@@ -322,14 +279,6 @@ public class AcceptanceTests {
         UIController.setSelector(6622);
         Assert.assertFalse(TOController.reopenTeam(existingUser));
 
-        //cleanup
-        teamOwner.removeTeamOwned(team);
-        aviTo.removeTeamOwned(team);
-        tmanager.removeTeam(team);
-        EntityManager.getInstance().removeUserByName(existingUser.getUsername());
-        EntityManager.getInstance().removeUserByName(aviCohenSu.getUsername());
-        EntityManager.getInstance().removeUserByName(yosiManagerSu.getUsername());
-        EntityManager.getInstance().removeTeamByReference(team);
     }
 
     /**
@@ -344,10 +293,6 @@ public class AcceptanceTests {
         //add team manager, BUT NOT the team TO the manager
         TeamManager tmanager = (TeamManager) yosiManagerSu.getRole(RoleTypes.TEAM_MANAGER);
         team.addTeamManager(teamOwner, tmanager);
-        //add to Entity manager
-        EntityManager.getInstance().addUser(existingUser);
-        EntityManager.getInstance().addUser(yosiManagerSu);
-        EntityManager.getInstance().addTeam(team);
 
         //success, but could not retrieve avi cohen's permissions
         team.setStatus(TeamStatus.CLOSED); // set status to closed
@@ -356,13 +301,6 @@ public class AcceptanceTests {
         UIController.setSelector(6623);
         Assert.assertTrue(TOController.reopenTeam(existingUser));
 
-        //cleanup
-        teamOwner.removeTeamOwned(team);
-        tmanager.removeTeam(team);
-        EntityManager.getInstance().removeUserByName(existingUser.getUsername());
-        EntityManager.getInstance().removeUserByName(aviCohenSu.getUsername());
-        EntityManager.getInstance().removeUserByName(yosiManagerSu.getUsername());
-        EntityManager.getInstance().removeTeamByReference(team);
     }
 
 
@@ -416,6 +354,8 @@ public class AcceptanceTests {
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345", "test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate, true);
         abcOwner.addTeamToOwn(beitShean, abcCreate);
+        beitShean.addTeamOwner(abcOwner);
+        abcOwner.setAppointedOwner(beitShean , abcCreate);
         beitShean.getTeamOwners().add(abcOwner);
         SystemUser elisha = new SystemUser("elevy","Elisha Levy", true);
 
@@ -425,7 +365,6 @@ public class AcceptanceTests {
         UIController.setSelector(61118);
         assertTrue(Controller.addAsset(abc));
 
-        EntityManager.getInstance().removeUserByReference(abcCreate);
 
 
     }
@@ -443,7 +382,8 @@ public class AcceptanceTests {
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345", "test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate, true);
         abcOwner.addTeamToOwn(beitShean, abcCreate);
-        beitShean.getTeamOwners().add(abcOwner);
+        beitShean.addTeamOwner(abcOwner);
+        abcOwner.setAppointedOwner(beitShean , abcCreate);
 
         SystemUser abc = Controller.login("abc1", "aBc12345");
         assertEquals(abc, abcCreate);
@@ -457,9 +397,6 @@ public class AcceptanceTests {
             UIController.showNotification(e.getMessage());
             assertEquals("Could not find user elevy", e.getMessage());
         }
-
-
-        EntityManager.getInstance().removeUserByReference(abcCreate);
     }
 
 
@@ -480,7 +417,8 @@ public class AcceptanceTests {
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345", "test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate, true);
         abcOwner.addTeamToOwn(beitShean, abcCreate);
-        beitShean.getTeamOwners().add(abcOwner);
+        beitShean.addTeamOwner(abcOwner);
+        abcOwner.setAppointedOwner(beitShean , abcCreate);
 
         SystemUser abc = Controller.login("abc1", "aBc12345");
         assertEquals(abc, abcCreate);
@@ -512,7 +450,8 @@ public class AcceptanceTests {
         SystemUser abcCreate = Controller.signUp("abc12", "abc1", "aBc12345", "test@gmail.com", false);
         TeamOwner abcOwner = new TeamOwner(abcCreate, true);
         abcOwner.addTeamToOwn(beitShean, abcCreate);
-        beitShean.getTeamOwners().add(abcOwner);
+        beitShean.addTeamOwner(abcOwner);
+        abcOwner.setAppointedOwner(beitShean , abcCreate);
 
         SystemUser abc = Controller.login("abc1", "aBc12345");
         assertEquals(abc, abcCreate);
@@ -1161,5 +1100,10 @@ public class AcceptanceTests {
     @After
     public void tearDown() throws Exception {
         EntityManager.getInstance().clearAll();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        DBManager.getInstance().closeConnection();
     }
 }

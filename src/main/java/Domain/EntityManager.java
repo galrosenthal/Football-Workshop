@@ -83,7 +83,6 @@ public class EntityManager {
             String username = systemUsersTable.getRecordValue(i, "username");
             String name = systemUsersTable.getRecordValue(i, "name");
             String[] roles = systemUsersTable.getRecordValue(i, "role").split(";");
-
             SystemUser newUser = new SystemUser(username, name);
             for (String role : roles) {
                 switch (role) {
@@ -114,24 +113,18 @@ public class EntityManager {
                     default:
                         throw new Exception("Error in Role type in the DB");
                 }
-
             }
             allUsers.add(newUser);
-
         }
     }
-
     private Role recreateRoleFromDB(String username, RoleTypes roleType) {
         Role newRole;
-
         try {
             Table roleRecords = DBManager.getInstance().getRelevantRecords(username, roleType);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
-
     }
      */
 
@@ -457,12 +450,18 @@ public class EntityManager {
      * @return The team with the given team name, if exists in the system.
      */
     public Team getTeam(String teamName) {
-        for (Team team : allTeams) {
-            if (team.getTeamName().toLowerCase().equals(teamName.toLowerCase())) {
-                return team;
-            }
-        }
-        return null;
+
+        HashMap<String,String> team = DBManager.getInstance().getTeam(teamName);
+        String name = team.get("name");
+        TeamStatus teamStatus = TeamStatus.valueOf(team.get("status"));
+        Team teamToGet = new Team(teamName, teamStatus,false);
+        return teamToGet;
+//        for (Team team : allTeams) {
+//            if (team.getTeamName().toLowerCase().equals(teamName.toLowerCase())) {
+//                return team;
+//            }
+//        }
+        //return null;
     }
 
     /**
@@ -591,7 +590,7 @@ public class EntityManager {
         return DBManager.getInstance().addTeam(team.getTeamName(), team.getStatus().toString());
 //        if (!(this.allTeams.contains(team))) {
 //            this.allTeams.add(team);
-//            return true;
+//            //return true;
 //        }
 //        return false;
     }
@@ -864,7 +863,6 @@ public class EntityManager {
     public List<Referee> getAllRefereesPerGame(Game game) {
         //need to import referees table
         List<Referee> referees = new ArrayList<>();
-
         for (int i = 0; i < this.allUsers.size(); i++) {
             Role role= allUsers.get(i).getRole(RoleTypes.REFEREE);
             if(role != null)
@@ -875,7 +873,6 @@ public class EntityManager {
         }
         return referees;
     }
-
  */
 
     /**
@@ -1262,9 +1259,7 @@ public class EntityManager {
 /*
     public boolean removeTeamManager(TeamManager teamManager, Team team) {
         return DBManager.getInstance().removeTeamManager(teamManager.getSystemUser().getUsername() , team.getTeamName());
-
     }
-
  */
 
     public void updateTeamMangerPermission(TeamManager teamManager, List<TeamManagerPermissions> permissions, Team team) {

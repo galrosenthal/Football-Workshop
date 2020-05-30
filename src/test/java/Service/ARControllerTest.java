@@ -452,10 +452,12 @@ public class ARControllerTest {
         assertFalse(ARController.registerNewTeam(systemUser));
     }
 
+    /*Irrelevant with db*/
+/*
     @Test
     public void registerNewTeam2UTest() throws TeamAlreadyExistsException, UserNotFoundException {
         SystemUser arSystemUser = new SystemUserStub("stubUsername", "stub", 9102, true); //AR
-        EntityManager.getInstance().addTeam(new TeamStub(9102, true));
+        EntityManager.getInstance().addTeam(new Team ("Test", true));
         UIController.setSelector(9102);
         try {
             ARController.registerNewTeam(arSystemUser);
@@ -465,6 +467,8 @@ public class ARControllerTest {
             e.printStackTrace();
         }
     }
+
+ */
 
     @Test
     public void registerNewTeam3UTest() throws TeamAlreadyExistsException, UserNotFoundException {
@@ -482,7 +486,7 @@ public class ARControllerTest {
     @Test
     public void registerNewTeam4UTest() throws TeamAlreadyExistsException, UserNotFoundException {
         SystemUser arSystemUser = new SystemUserStub("stubUsername", "stub", 9104, true); //AR
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "toName",91041, true));
+        EntityManager.getInstance().addUser(new SystemUser("AviCohen", "toName", true));
         UIController.setSelector(91041);
         assertTrue(ARController.registerNewTeam(arSystemUser));
     }
@@ -490,7 +494,7 @@ public class ARControllerTest {
     @Test
     public void registerNewTeamITest() throws TeamAlreadyExistsException, UserNotFoundException {
         SystemUser systemUser = getSystemUserAR();
-        EntityManager.getInstance().addUser(new SystemUserStub("AviCohen", "toName",91051, true));
+        EntityManager.getInstance().addUser(new SystemUser("AviCohen", "toName", true));
         UIController.setSelector(91051);
         assertTrue(ARController.registerNewTeam(systemUser));
     }

@@ -1151,5 +1151,26 @@ public class DBManager {
                 eq(teamName).and(OWNED_TEAMS.USERNAME.eq(username))).fetch();
         return  records.getValues(OWNED_TEAMS.APPOINTER).get(0);
     }
-}
 
+    public HashMap<String, String> getTeam(String teamName) {
+        try{
+            DSLContext create = DBHandler.getContext();
+            Result<?> records = create.select().from(TEAM).where(TEAM.NAME.eq(teamName)).fetch();
+            HashMap<String, String> teamDetails = new HashMap<>();
+            if(records.isEmpty())
+            {
+                return teamDetails;
+            }
+            List<String> name = records.getValues(TEAM.NAME);
+            List<TeamStatus> teamStatus = records.getValues(TEAM.STATUS);
+            teamDetails.put("name" , name.get(0));
+            teamDetails.put("status" , teamStatus.get(0).name());
+            return  teamDetails;
+
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return new HashMap<>();
+        }
+    }
+}

@@ -43,7 +43,7 @@ public class DBManagerForTest extends DBManager {
 
 
     public static void startConnection() {
-        DBHandler.startConnection("jdbc:mysql://132.72.65.105:3306/fwdb_test");
+        DBHandler.startConnection("jdbc:mysql://localhost:3306/fwdb_test");
     }
 
     @Override
@@ -309,9 +309,15 @@ public class DBManagerForTest extends DBManager {
         List<Pair<String, String>> details = new ArrayList<>();
         for (int i = 0; i < user.fields().length; i++) {
             String fieldName = user.fields()[i].getName();
-            String fieldValue = user.getValues(i).get(0).toString();
-            Pair<String, String> pair = new Pair<>(fieldName, fieldValue);
-            details.add(pair);
+            if(user.getValues(i).get(0)!= null) {
+                String fieldValue = user.getValues(i).get(0).toString();
+                Pair<String, String> pair = new Pair<>(fieldName, fieldValue);
+                details.add(pair);
+            }
+            else{
+                Pair<String, String> pair = new Pair<>(fieldName, null);
+                details.add(pair);
+            }
         }
 
         return details;
@@ -402,13 +408,18 @@ public class DBManagerForTest extends DBManager {
     @Override
     public void addCoach(String username, String qualification) {
         DSLContext create = DBHandler.getContext();
-        if (!(hasRole(username, "COACH"))) {
-            create.insertInto(USER_ROLES, USER_ROLES.USERNAME, USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.COACH).execute();
-            if (qualification != null) {
-                create.insertInto(COACH, COACH.USERNAME, COACH.QUALIFICATION).values(username, CoachQualification.valueOf(qualification)).execute();
-            } else {
-                create.insertInto(COACH, COACH.USERNAME, COACH.QUALIFICATION).values(username, null).execute();
+        try {
+            if (!(hasRole(username, "COACH"))) {
+                create.insertInto(USER_ROLES, USER_ROLES.USERNAME, USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.COACH).execute();
+                if (qualification != null) {
+                    create.insertInto(COACH, COACH.USERNAME, COACH.QUALIFICATION).values(username, CoachQualification.valueOf(qualification)).execute();
+                } else {
+                    create.insertInto(COACH, COACH.USERNAME, COACH.QUALIFICATION).values(username, null).execute();
+                }
             }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 
@@ -452,14 +463,19 @@ public class DBManagerForTest extends DBManager {
     @Override
     public void addReferee(String username, String training) {
         DSLContext create = DBHandler.getContext();
-        //todo: check!!!!
-        if (!(hasRole(username, "REFEREE"))) {
-            create.insertInto(USER_ROLES, USER_ROLES.USERNAME, USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.REFEREE).execute();
-            if (training != null) {
-                create.insertInto(REFEREE, REFEREE.USERNAME, REFEREE.TRAINING).values(username, RefereeTraining.valueOf(training)).execute();
-            } else {
-                create.insertInto(REFEREE, REFEREE.USERNAME, REFEREE.TRAINING).values(username, null).execute();
+        try {
+            //todo: check!!!!
+            if (!(hasRole(username, "REFEREE"))) {
+                create.insertInto(USER_ROLES, USER_ROLES.USERNAME, USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.REFEREE).execute();
+                if (training != null) {
+                    create.insertInto(REFEREE, REFEREE.USERNAME, REFEREE.TRAINING).values(username, RefereeTraining.valueOf(training)).execute();
+                } else {
+                    create.insertInto(REFEREE, REFEREE.USERNAME, REFEREE.TRAINING).values(username, null).execute();
+                }
             }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 
@@ -467,10 +483,14 @@ public class DBManagerForTest extends DBManager {
     public void addAssociationRepresentative(String username) {
         DSLContext create = DBHandler.getContext();
         //todo: check!!!!
-        create.insertInto(USER_ROLES, USER_ROLES.USERNAME, USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.ASSOCIATION_REPRESENTATIVE).execute();
+        try {
+            create.insertInto(USER_ROLES, USER_ROLES.USERNAME, USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.ASSOCIATION_REPRESENTATIVE).execute();
 
-        create.insertInto(ASSOCIATION_REPRESENTATIVE, ASSOCIATION_REPRESENTATIVE.USERNAME).values(username).execute();
-
+            create.insertInto(ASSOCIATION_REPRESENTATIVE, ASSOCIATION_REPRESENTATIVE.USERNAME).values(username).execute();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
     }
 
@@ -1187,5 +1207,28 @@ public class DBManagerForTest extends DBManager {
             return false;
         }
 
+    }
+
+    @Override
+    public HashMap<String, String> getTeam(String teamName) {
+        try{
+            DSLContext create = DBHandler.getContext();
+            Result<?> records = create.select().from(TEAM).where(TEAM.NAME.eq(teamName)).fetch();
+            HashMap<String, String> teamDetails = new HashMap<>();
+            if(records.isEmpty())
+            {
+                return teamDetails;
+            }
+            List<String> name = records.getValues(TEAM.NAME);
+            List<TeamStatus> teamStatus = records.getValues(TEAM.STATUS);
+            teamDetails.put("name" , name.get(0));
+            teamDetails.put("status" , teamStatus.get(0).name());
+            return  teamDetails;
+
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return new HashMap<>();
+        }
     }
 }
