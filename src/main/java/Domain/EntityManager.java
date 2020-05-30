@@ -168,7 +168,31 @@ public class EntityManager {
     }
 
     public List<Team> getTeams() {
-        return new ArrayList<Team>(allTeams);
+        if (this.allTeams.isEmpty()) {//TODO: Replace with a function that checks if additional records should be pulled from the DB
+            List<Team> teams = new ArrayList<>();
+
+            List<HashMap<String, String>> allTeamsDetails = DBManager.getInstance().getTeamsDetails();
+
+            for (int i = 0; i < allTeamsDetails.size(); i++) {
+                HashMap<String, String> currentTeamDetails = allTeamsDetails.get(i);
+                String teamName = currentTeamDetails.get("name");
+                TeamStatus teamStatus = TeamStatus.valueOf(currentTeamDetails.get("status"));
+                Team currentTeam = reCreateTeam(teamName, teamStatus);
+                teams.add(currentTeam);
+            }
+            //load teams
+            for (Team teamFromDB : teams) {
+                if (!this.allTeams.contains(teamFromDB)) {
+                    this.allTeams.add(teamFromDB);
+                }
+            }
+        }
+        //return a copy
+        return new ArrayList<Team>(this.allTeams);
+    }
+
+    private Team reCreateTeam(String teamName, TeamStatus teamStatus) {
+        return new Team(teamName, teamStatus, false);
     }
 
     public List<SystemUser> getAllUsers() {
@@ -457,7 +481,7 @@ public class EntityManager {
      * @return The team with the given team name, if exists in the system.
      */
     public Team getTeam(String teamName) {
-        for (Team team : allTeams) {
+        for (Team team : this.getTeams()) {
             if (team.getTeamName().toLowerCase().equals(teamName.toLowerCase())) {
                 return team;
             }
@@ -624,7 +648,7 @@ public class EntityManager {
     public boolean addStadium(Stadium stadium) {
         if (!(this.allStadiums.contains(stadium))) {
             this.allStadiums.add(stadium);
-            DBManager.getInstance().addStadium(stadium.getName() , stadium.getLocation());
+            DBManager.getInstance().addStadium(stadium.getName(), stadium.getLocation());
             return true;
         }
         return false;
@@ -834,16 +858,6 @@ public class EntityManager {
 
     }
 
-
-    /**
-     * Get a list of all Teams by thier name
-     *
-     * @return List<String of all the teams names
-     */
-    public List<Team> getAllTeams() {
-        return allTeams;
-    }
-
     public League getLeagueByName(String leagueName) {
         for (League lg :
                 allLeagues) {
@@ -1041,12 +1055,12 @@ public class EntityManager {
      * @return - List<Team> - owned by teamOwner
      */
     public List<Team> getOwnedTeams(TeamOwner teamOwner) {
-        List<HashMap<String,String>> ownedTeams = DBManager.getInstance().getTeams(teamOwner.getSystemUser().getUsername());
+        List<HashMap<String, String>> ownedTeams = DBManager.getInstance().getTeams(teamOwner.getSystemUser().getUsername());
         List<Team> teamsManaged = new ArrayList<>();
         for (int i = 0; i < ownedTeams.size(); i++) {
             String teamName = ownedTeams.get(i).get("name");
             TeamStatus teamStatus = TeamStatus.valueOf(ownedTeams.get(i).get("status"));
-            teamsManaged.add(new Team(teamName, teamStatus,false));
+            teamsManaged.add(new Team(teamName, teamStatus, false));
         }
         return teamsManaged;
     }
@@ -1199,10 +1213,6 @@ public class EntityManager {
         return null;
     }
 
-    public void addGame(Game game) {
-        //TODO:!!!
-    }
-
     public HashMap<String, Boolean> getRefereeGamesStatus(Referee referee) {
         List<HashMap<String, String>> refereeGamesDetails = DBManager.getInstance().getRefereeGames(referee.getSystemUser().getUsername());
         HashMap<String, Boolean> gamesStatus = new HashMap<>();
@@ -1241,6 +1251,7 @@ public class EntityManager {
     }
 
     /*todo: check*/
+
     public List<Season> getAllSeasonInTeam(Team team) {
         List<Season> seasons = new ArrayList<>();
         List<HashMap<String, String>> seasonsDetails = DBManager.getInstance().getAllSeasonInTeam(team.getTeamName());
@@ -1259,14 +1270,14 @@ public class EntityManager {
     public boolean isTeamManager(TeamManager teamManager, Team team) {
         return DBManager.getInstance().isTeamManager(teamManager.getSystemUser().getUsername(), team.getTeamName());
     }
-/*
-    public boolean removeTeamManager(TeamManager teamManager, Team team) {
-        return DBManager.getInstance().removeTeamManager(teamManager.getSystemUser().getUsername() , team.getTeamName());
 
-    }
+    /*
+        public boolean removeTeamManager(TeamManager teamManager, Team team) {
+            return DBManager.getInstance().removeTeamManager(teamManager.getSystemUser().getUsername() , team.getTeamName());
 
- */
+        }
 
+     */
     public void updateTeamMangerPermission(TeamManager teamManager, List<TeamManagerPermissions> permissions, Team team) {
         List<String> permissionsToUpdate = new ArrayList<>();
         for (int i = 0; i < permissions.size(); i++) {
@@ -1291,9 +1302,8 @@ public class EntityManager {
     }
 
     public boolean removeTeamOwner(TeamOwner teamOwner, Team team) {
-        return DBManager.getInstance().removeTeamOwner(teamOwner.getSystemUser().getUsername() , team.getTeamName());
+        return DBManager.getInstance().removeTeamOwner(teamOwner.getSystemUser().getUsername(), team.getTeamName());
     }
-
 
 
     public void updateTeamStatus(String teamName, TeamStatus status) {
@@ -1301,12 +1311,12 @@ public class EntityManager {
     }
 
     public List<Team> getTeamsPerSeason(Season season) {
-        List<HashMap<String, String>> teamsInSeasonDetails = DBManager.getInstance().getTeamsPerSeason(season.getYears(),season.getLeague().getName());
+        List<HashMap<String, String>> teamsInSeasonDetails = DBManager.getInstance().getTeamsPerSeason(season.getYears(), season.getLeague().getName());
         List<Team> teams = new ArrayList<>();
         for (int i = 0; i < teamsInSeasonDetails.size(); i++) {
             String teamName = teamsInSeasonDetails.get(i).get("name");
             TeamStatus teamStatus = TeamStatus.valueOf(teamsInSeasonDetails.get(i).get("status"));
-            teams.add(new Team(teamName, teamStatus,false));
+            teams.add(new Team(teamName, teamStatus, false));
         }
         return teams;
     }
@@ -1333,12 +1343,12 @@ public class EntityManager {
     }
 
     public List<Team> getTeamsManaged(TeamManager teamManager) {
-        List<HashMap<String,String>> teams = DBManager.getInstance().getTeamManaged(teamManager.getSystemUser().getUsername());
+        List<HashMap<String, String>> teams = DBManager.getInstance().getTeamManaged(teamManager.getSystemUser().getUsername());
         List<Team> teamsManaged = new ArrayList<>();
         for (int i = 0; i < teams.size(); i++) {
             String teamName = teams.get(i).get("name");
             TeamStatus teamStatus = TeamStatus.valueOf(teams.get(i).get("status"));
-            teamsManaged.add(new Team(teamName, teamStatus,false));
+            teamsManaged.add(new Team(teamName, teamStatus, false));
         }
         return teamsManaged;
 
@@ -1349,7 +1359,7 @@ public class EntityManager {
         List<TeamManager> teamManagers = new ArrayList<>();
         for (int i = 0; i < getTeamsManager.size(); i++) {
             SystemUser systemUser = getUser(getTeamsManager.get(i));
-            TeamManager teamManager = (TeamManager)systemUser.getRole(RoleTypes.TEAM_MANAGER);
+            TeamManager teamManager = (TeamManager) systemUser.getRole(RoleTypes.TEAM_MANAGER);
             teamManagers.add(teamManager);
 
         }
@@ -1358,19 +1368,19 @@ public class EntityManager {
     }
 
     public List<Stadium> getStadiumsInTeam(Team team) {
-        List<HashMap<String,String>> stadiumsDetails = DBManager.getInstance().getStadiumsInTeam(team.getTeamName());
+        List<HashMap<String, String>> stadiumsDetails = DBManager.getInstance().getStadiumsInTeam(team.getTeamName());
         List<Stadium> stadiums = new ArrayList<>();
         for (int i = 0; i < stadiumsDetails.size(); i++) {
             String stadiumName = stadiumsDetails.get(i).get("name");
             String stadiumLocation = stadiumsDetails.get(i).get("location");
-            stadiums.add(new Stadium(stadiumName, stadiumLocation,false));
+            stadiums.add(new Stadium(stadiumName, stadiumLocation, false));
         }
         return stadiums;
     }
 
     public void removeStadiumFromTeam(Stadium stadium, Team team) {
-        int stadiumID = DBManager.getInstance().getStadiumId(stadium.getName() , stadium.getLocation());
-        DBManager.getInstance().removeStadiumFromTeam(stadiumID , team.getTeamName());
+        int stadiumID = DBManager.getInstance().getStadiumId(stadium.getName(), stadium.getLocation());
+        DBManager.getInstance().removeStadiumFromTeam(stadiumID, team.getTeamName());
     }
 
     public List<Player> getAllPlayersInTeam(Team team) {
@@ -1378,7 +1388,7 @@ public class EntityManager {
         List<Player> players = new ArrayList<>();
         for (int i = 0; i < getPlayers.size(); i++) {
             SystemUser systemUser = getUser(getPlayers.get(i));
-            Player player = (Player)systemUser.getRole(RoleTypes.PLAYER);
+            Player player = (Player) systemUser.getRole(RoleTypes.PLAYER);
             players.add(player);
 
         }
@@ -1390,7 +1400,7 @@ public class EntityManager {
         List<Coach> coaches = new ArrayList<>();
         for (int i = 0; i < getTeamsManager.size(); i++) {
             SystemUser systemUser = getUser(getTeamsManager.get(i));
-            Coach coach = (Coach)systemUser.getRole(RoleTypes.COACH);
+            Coach coach = (Coach) systemUser.getRole(RoleTypes.COACH);
             coaches.add(coach);
 
         }
@@ -1398,53 +1408,143 @@ public class EntityManager {
     }
 
     public boolean updateStadiumName(Stadium stadium, String toChange) {
-        return DBManager.getInstance().updateStadiumName(stadium.getName() , stadium.getLocation() , toChange);
+        return DBManager.getInstance().updateStadiumName(stadium.getName(), stadium.getLocation(), toChange);
     }
 
     public List<Team> getAllStadiumTeams(Stadium stadium) {
-        List<HashMap<String, String>> teamsInStadium = DBManager.getInstance().getAllStadiumTeams(stadium.getName(),stadium.getLocation());
+        List<HashMap<String, String>> teamsInStadium = DBManager.getInstance().getAllStadiumTeams(stadium.getName(), stadium.getLocation());
         List<Team> teams = new ArrayList<>();
         for (int i = 0; i < teamsInStadium.size(); i++) {
             String teamName = teamsInStadium.get(i).get("name");
             TeamStatus teamStatus = TeamStatus.valueOf(teamsInStadium.get(i).get("status"));
-            teams.add(new Team(teamName, teamStatus,false));
+            teams.add(new Team(teamName, teamStatus, false));
         }
         return teams;
     }
 
     /*TODO CHECK*/
+
     public List<TeamManagerPermissions> getAllPermissionsPerTeam(Team team, TeamManager teamManager) {
-        List<String> permissions = DBManager.getInstance().getAllPermissionsPerTeam(team.getTeamName() , teamManager.getSystemUser().getUsername());
+        List<String> permissions = DBManager.getInstance().getAllPermissionsPerTeam(team.getTeamName(), teamManager.getSystemUser().getUsername());
         List<TeamManagerPermissions> teamManagerPermissions = new ArrayList<>();
-        if(permissions.contains(TeamManagerPermissions.ADD_COACH.name()))
-        {
+        if (permissions.contains(TeamManagerPermissions.ADD_COACH.name())) {
             teamManagerPermissions.add(TeamManagerPermissions.ADD_COACH);
         }
-        if(permissions.contains(TeamManagerPermissions.ADD_PLAYER.name()))
-        {
+        if (permissions.contains(TeamManagerPermissions.ADD_PLAYER.name())) {
             teamManagerPermissions.add(TeamManagerPermissions.ADD_PLAYER);
         }
-        if(permissions.contains(TeamManagerPermissions.REMOVE_COACH.name()))
-        {
+        if (permissions.contains(TeamManagerPermissions.REMOVE_COACH.name())) {
             teamManagerPermissions.add(TeamManagerPermissions.REMOVE_COACH);
         }
-        if(permissions.contains(TeamManagerPermissions.REMOVE_PLAYER.name()))
-        {
+        if (permissions.contains(TeamManagerPermissions.REMOVE_PLAYER.name())) {
             teamManagerPermissions.add(TeamManagerPermissions.REMOVE_PLAYER);
         }
-        if(permissions.contains(TeamManagerPermissions.CHANGE_POSITION_PLAYER.name()))
-        {
+        if (permissions.contains(TeamManagerPermissions.CHANGE_POSITION_PLAYER.name())) {
             teamManagerPermissions.add(TeamManagerPermissions.CHANGE_POSITION_PLAYER);
         }
-        if(permissions.contains(TeamManagerPermissions.CHANGE_TEAM_JOB_COACH.name()))
-        {
+        if (permissions.contains(TeamManagerPermissions.CHANGE_TEAM_JOB_COACH.name())) {
             teamManagerPermissions.add(TeamManagerPermissions.CHANGE_TEAM_JOB_COACH);
         }
         return teamManagerPermissions;
     }
 
     public SystemUser getAppointedOwner(Team ownedTeam, TeamOwner teamOwner) {
-        String systemUser = DBManager.getInstance().getAppointedOwner(ownedTeam.getTeamName() , teamOwner.getSystemUser().getUsername());
+        String systemUser = DBManager.getInstance().getAppointedOwner(ownedTeam.getTeamName(), teamOwner.getSystemUser().getUsername());
         return getUser(systemUser);
+    }
+
+    public List<Game> getSeasonGames(Season season) {
+        List<Game> seasonGames = new ArrayList<>();
+
+        List<HashMap<String, String>> seasonGamesDetails = DBManager.getInstance().getSeasonGamesDetails(season.getLeague().getName(), season.getYears());
+
+        for (int i = 0; i < seasonGamesDetails.size(); i++) {
+            HashMap<String, String> currentGameDetails = seasonGamesDetails.get(i);
+            seasonGames.add(reCreateGame(currentGameDetails));
+        }
+        //return a copy
+        return seasonGames;
+    }
+
+    private Game reCreateGame(HashMap<String, String> gameDetails) {
+        Stadium stadium = getStadium(gameDetails.get("stadium_name"));
+        Team homeTeam = this.getTeam(gameDetails.get("home_team"));
+        Team awayTeam = this.getTeam(gameDetails.get("away_team"));
+
+        Date startDate = convertStringToDate(gameDetails.get("start_date"));
+        Date endDate = convertStringToDate(gameDetails.get("end_date"));
+
+        boolean finishedString = Boolean.parseBoolean(gameDetails.get("away_team"));
+
+
+        Game game = new Game(stadium, homeTeam, awayTeam, startDate,/*Check*/new ArrayList<>(), false);
+        if (endDate != null) {
+            game.setEndDate(endDate);
+        }
+        return game;
+    }
+
+    private Date convertStringToDate(String dateString) {
+        if (dateString != null) {
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            Date date = null;
+            try {
+                date = format.parse(dateString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return date;
+        }
+        return null;
+    }
+
+    public boolean removeGamesFromSeason(Season season) {
+        return DBManager.getInstance().removeGamesFromSeason(season.getLeague().getName(), season.getYears());
+    }
+
+    public void addGame(Game game) {
+        DBManager.getInstance().addGame(game.getStadium().getName(), game.getStadium().getLocation(), game.getHomeTeam().getTeamName()
+                , game.getAwayTeam().getTeamName(), game.getGameDate(), game.getEndDate(), game.hasFinished());
+        //game
+    }
+
+    public void addRefereeToGame(Referee referee, Game game) {
+        DBManager.getInstance().addRefereeToGame(referee.getSystemUser().getUsername(), game.getStadium().getName(), game.getStadium().getLocation(), game.getHomeTeam().getTeamName(), game.getAwayTeam().getTeamName());
+        //referee_in_game
+    }
+
+    public void addGameToSeason(Season season, Game game) {
+        DBManager.getInstance().addGameToSeason(season.getLeague().getName(), season.getYears(), game.getStadium().getName(), game.getStadium().getLocation(), game.getHomeTeam().getTeamName(), game.getAwayTeam().getTeamName());
+        //game_in_season
+    }
+
+    public List<Referee> getSeasonReferees(Season season) {
+        List<Referee> seasonReferees = new ArrayList<>();
+
+        List<String> refereesUsernames = DBManager.getInstance().getRefereesUsernamesOfSeason(season.getLeague().getName(), season.getYears());
+        for (String refereeUsername : refereesUsernames) {
+            seasonReferees.add((Referee) getUser(refereeUsername).getRole(RoleTypes.REFEREE));
+        }
+        return seasonReferees;
+    }
+
+    public List<Season> getRefereeSeasons(Referee referee) {
+        List<Season> refereeSeasons = new ArrayList<>();
+        List<HashMap<String, String>> refereeSeasonsDetails = DBManager.getInstance().getRefereeSeasonsDetails(referee.getSystemUser().getUsername());
+        List<League> leagues = getLeagues();
+        for (HashMap<String, String> seasonsDetails : refereeSeasonsDetails) {
+            for (League league : leagues) {
+                if (league.equals(seasonsDetails.get("league_name"))) {
+                    for (Season season : league.getSeasons()) {
+                        if (season.getYears().equals(seasonsDetails.get("years"))) {
+                            refereeSeasons.add(season);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return refereeSeasons;
+
     }
 }

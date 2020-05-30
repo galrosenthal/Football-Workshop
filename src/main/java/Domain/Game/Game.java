@@ -83,16 +83,22 @@ public class Game extends Observable {
     }
 
     public List<Referee> getReferees() {
+        if (this.referees == null) {
+            //TODO:Pull From DB
+        }
         return referees;
     }
 
     public EventsLogger getEventsLogger() {
+        if (this.eventsLogger == null) {
+            //TODO:Pull From DB
+        }
         return eventsLogger;
     }
 
 
     public List<String> getGameEventsStringList() {
-        return this.eventsLogger.getEventsStringList();
+        return getEventsLogger().getEventsStringList();
     }
 
     /**
@@ -140,7 +146,7 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
-        this.eventsLogger.logGoal(scoringTeam, scoredOnTeam, playerScored, minute);
+        getEventsLogger().logGoal(scoringTeam, scoredOnTeam, playerScored, minute);
         String notification = scoringTeam.getTeamName() + " scored on " + scoredOnTeam.getTeamName();
         notifyObservers(notification);
     }
@@ -160,7 +166,7 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
-        this.eventsLogger.logCardEvent(cardType, player, minute);
+        getEventsLogger().logCardEvent(cardType, player, minute);
     }
 
     /**
@@ -177,7 +183,7 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
-        this.eventsLogger.logOffsideEvent(teamWhoCommitted, minute);
+        getEventsLogger().logOffsideEvent(teamWhoCommitted, minute);
     }
 
     /**
@@ -194,7 +200,7 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
-        this.eventsLogger.logPenaltyEvent(teamWhoCommitted, minute);
+        getEventsLogger().logPenaltyEvent(teamWhoCommitted, minute);
     }
 
     /**
@@ -219,7 +225,7 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
-        this.eventsLogger.logSwitchPlayersEvent(teamWhoCommitted, enteringPlayer, exitingPlayer, minute);
+        getEventsLogger().logSwitchPlayersEvent(teamWhoCommitted, enteringPlayer, exitingPlayer, minute);
     }
 
     /**
@@ -236,7 +242,7 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
-        this.eventsLogger.logInjuryEvent(player, minute);
+        getEventsLogger().logInjuryEvent(player, minute);
     }
 
     /**
@@ -247,12 +253,12 @@ public class Game extends Observable {
      */
     public void addEndGame(Date endDate, int minute) {
         this.endDate = endDate;
-        this.eventsLogger.logEndGameEvent(endDate, minute);
+        getEventsLogger().logEndGameEvent(endDate, minute);
     }
 
 
     public void addReferee(Referee referee) {
-        this.referees.add(referee);
+        getReferees().add(referee);
     }
 
     /**
@@ -337,7 +343,7 @@ public class Game extends Observable {
      */
     public void unAssignReferee(Referee referee) {
         if (referee != null) {
-            this.referees.remove(referee);
+            getReferees().remove(referee);
         }
     }
 }
