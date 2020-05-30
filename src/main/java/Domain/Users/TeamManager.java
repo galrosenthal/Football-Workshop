@@ -82,6 +82,10 @@ public class TeamManager extends Role implements Asset {
         if (this.permissionsPerTeam.get(team) != null) {
             permissions = this.permissionsPerTeam.get(team);
         }
+        else
+        {
+            permissions = EntityManager.getInstance().getAllPermissionsPerTeam(team , this);
+        }
         return permissions;
     }
 

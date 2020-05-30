@@ -334,9 +334,9 @@ public class TeamControllerTest {
         UIController.setSelector(6132);
         SystemUserStub systemTeamOwnerStub =  new SystemUserStub("teamOwnerStub", "gal", 6132, true);
         TeamOwnerStub teamOwnerStub = new TeamOwnerStub(systemTeamOwnerStub);
-        PlayerStub playerStub = new PlayerStub(new SystemUserStub("playerStub", "gal", 6132, true), new Date(), 6132);
+        Player player = new PlayerStub(new SystemUserStub("playerStub", "gal", 6132, true), new Date(), 6132);
         team.addTeamOwner(teamOwnerStub);
-        team.addTeamPlayer(teamOwnerStub, playerStub);
+        team.addTeamPlayer(teamOwnerStub, player);
         TeamController.editAssets(team);
     }
 

@@ -1,5 +1,6 @@
 package Domain;
 
+import DB.DBHandler;
 import DB.DBManager;
 import Domain.Exceptions.*;
 import Domain.Game.*;
@@ -1023,14 +1024,14 @@ public class EntityManager {
      * @return - List<Team> - owned by teamOwner
      */
     public List<Team> getOwnedTeams(TeamOwner teamOwner) {
-        List<Pair<String, String>> ownedTeams = DBManager.getInstance().getTeams(teamOwner.getSystemUser().getName());
-        List<Team> teams = new ArrayList<>();
+        List<HashMap<String,String>> ownedTeams = DBManager.getInstance().getTeams(teamOwner.getSystemUser().getUsername());
+        List<Team> teamsManaged = new ArrayList<>();
         for (int i = 0; i < ownedTeams.size(); i++) {
-            Team team = new Team(ownedTeams.get(i).getKey(), teamOwner, true);
-            team.setStatus(getTeamStatus(ownedTeams.get(i).getValue()));
-            teams.add(team);
+            String teamName = ownedTeams.get(i).get("name");
+            TeamStatus teamStatus = TeamStatus.valueOf(ownedTeams.get(i).get("status"));
+            teamsManaged.add(new Team(teamName, teamStatus,false));
         }
-        return teams;
+        return teamsManaged;
     }
 
     /**
@@ -1284,11 +1285,11 @@ public class EntityManager {
     }
 
     public List<Team> getTeamsPerSeason(Season season) {
-        List<HashMap<String, String>> TeamsInSeasonDetails = DBManager.getInstance().getTeamsPerSeason(season.getYears(),season.getLeague().getName());
+        List<HashMap<String, String>> teamsInSeasonDetails = DBManager.getInstance().getTeamsPerSeason(season.getYears(),season.getLeague().getName());
         List<Team> teams = new ArrayList<>();
-        for (int i = 0; i < TeamsInSeasonDetails.size(); i++) {
-            String teamName = TeamsInSeasonDetails.get(i).get("name");
-            TeamStatus teamStatus = TeamStatus.valueOf(TeamsInSeasonDetails.get(i).get("status"));
+        for (int i = 0; i < teamsInSeasonDetails.size(); i++) {
+            String teamName = teamsInSeasonDetails.get(i).get("name");
+            TeamStatus teamStatus = TeamStatus.valueOf(teamsInSeasonDetails.get(i).get("status"));
             teams.add(new Team(teamName, teamStatus,false));
         }
         return teams;
@@ -1369,5 +1370,56 @@ public class EntityManager {
 
         }
         return coaches;
+    }
+
+    public boolean updateStadiumName(Stadium stadium, String toChange) {
+        return DBManager.getInstance().updateStadiumName(stadium.getName() , stadium.getLocation() , toChange);
+    }
+
+    public List<Team> getAllStadiumTeams(Stadium stadium) {
+        List<HashMap<String, String>> teamsInStadium = DBManager.getInstance().getAllStadiumTeams(stadium.getName(),stadium.getLocation());
+        List<Team> teams = new ArrayList<>();
+        for (int i = 0; i < teamsInStadium.size(); i++) {
+            String teamName = teamsInStadium.get(i).get("name");
+            TeamStatus teamStatus = TeamStatus.valueOf(teamsInStadium.get(i).get("status"));
+            teams.add(new Team(teamName, teamStatus,false));
+        }
+        return teams;
+    }
+
+    /*TODO CHECK*/
+    public List<TeamManagerPermissions> getAllPermissionsPerTeam(Team team, TeamManager teamManager) {
+        List<String> permissions = DBManager.getInstance().getAllPermissionsPerTeam(team.getTeamName() , teamManager.getSystemUser().getUsername());
+        List<TeamManagerPermissions> teamManagerPermissions = new ArrayList<>();
+        if(permissions.contains(TeamManagerPermissions.ADD_COACH.name()))
+        {
+            teamManagerPermissions.add(TeamManagerPermissions.ADD_COACH);
+        }
+        if(permissions.contains(TeamManagerPermissions.ADD_PLAYER.name()))
+        {
+            teamManagerPermissions.add(TeamManagerPermissions.ADD_PLAYER);
+        }
+        if(permissions.contains(TeamManagerPermissions.REMOVE_COACH.name()))
+        {
+            teamManagerPermissions.add(TeamManagerPermissions.REMOVE_COACH);
+        }
+        if(permissions.contains(TeamManagerPermissions.REMOVE_PLAYER.name()))
+        {
+            teamManagerPermissions.add(TeamManagerPermissions.REMOVE_PLAYER);
+        }
+        if(permissions.contains(TeamManagerPermissions.CHANGE_POSITION_PLAYER.name()))
+        {
+            teamManagerPermissions.add(TeamManagerPermissions.CHANGE_POSITION_PLAYER);
+        }
+        if(permissions.contains(TeamManagerPermissions.CHANGE_TEAM_JOB_COACH.name()))
+        {
+            teamManagerPermissions.add(TeamManagerPermissions.CHANGE_TEAM_JOB_COACH);
+        }
+        return teamManagerPermissions;
+    }
+
+    public SystemUser getAppointedOwner(Team ownedTeam, TeamOwner teamOwner) {
+        String systemUser = DBManager.getInstance().getAppointedOwner(ownedTeam.getTeamName() , teamOwner.getSystemUser().getUsername());
+        return getUser(systemUser);
     }
 }

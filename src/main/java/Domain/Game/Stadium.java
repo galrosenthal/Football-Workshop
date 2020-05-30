@@ -46,9 +46,12 @@ public class Stadium implements Asset{
     {
         if(property.equalsIgnoreCase(namePropertyString))
         {
-            this.stadName=toChange;
             /*TODO: update stadium name*/
+
+            EntityManager.getInstance().updateStadiumName(this , toChange);
+            this.stadName=toChange;
             return true;
+
         }
         return false;
     }
@@ -59,8 +62,7 @@ public class Stadium implements Asset{
         if (!(o instanceof Stadium)) return false;
         Stadium stadium = (Stadium) o;
         return stadName.equals(stadium.stadName) &&
-                stadLocation.equals(stadium.stadLocation) &&
-                homeTeams.size() == stadium.homeTeams.size();
+                stadLocation.equals(stadium.stadLocation);
     }
     @Override
     public boolean isListProperty(String property) {
@@ -80,6 +82,7 @@ public class Stadium implements Asset{
     public boolean addTeam(Team team, TeamOwner teamOwner) {
         if(team != null && team.isTeamOwner(teamOwner))
         {
+            /*already update in team*/
             homeTeams.add(team);
             return team.addStadium(this);
         }
@@ -151,10 +154,13 @@ public class Stadium implements Asset{
     }
 
     public boolean removeTeam(Team team){
+        /*already update db in team*/
         return this.homeTeams.remove(team);
     }
 
     public List<Team> getTeams() {
+
+        homeTeams = EntityManager.getInstance().getAllStadiumTeams(this);
         return this.homeTeams;
     }
 }

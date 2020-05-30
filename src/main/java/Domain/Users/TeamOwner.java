@@ -31,7 +31,9 @@ public class TeamOwner extends Role implements Subject {
 
 
     public List<Team> getOwnedTeams() {
-        List<Team> allTeams = new ArrayList<Team>(teamsAndAppointers.keySet());
+        //List<Team> allTeams = new ArrayList<Team>(teamsAndAppointers.keySet());
+        List<Team> allTeams = EntityManager.getInstance().getOwnedTeams(this);
+
         return allTeams;
     }
 
@@ -60,6 +62,7 @@ public class TeamOwner extends Role implements Subject {
             return false;
         }
         if (!getOwnedTeams().contains(teamToOwn) && !(EntityManager.getInstance().isTeamOwner(this, teamToOwn))) {
+            /*already update db in team*/
             teamsAndAppointers.put(teamToOwn, appointer);
             return true;
         }
@@ -67,6 +70,7 @@ public class TeamOwner extends Role implements Subject {
     }
 
     public boolean removeTeamOwned(Team team) {
+        removeTeamOwnerNotify(this , team);
         return this.teamsAndAppointers.remove(team) != null;
     }
 
@@ -94,7 +98,9 @@ public class TeamOwner extends Role implements Subject {
      * @return the SystemUser who appointed this team owner.
      */
     public SystemUser getAppointedOwner(Team ownedTeam) {
-        return teamsAndAppointers.get(ownedTeam);
+
+        //return teamsAndAppointers.get(ownedTeam);
+        return EntityManager.getInstance().getAppointedOwner(ownedTeam , this);
     }
 
     /**

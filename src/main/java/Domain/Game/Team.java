@@ -441,7 +441,7 @@ public class Team {
 
             if (EntityManager.getInstance().addStadium(stadium, this)) {
                 this.stadiums.add(stadium);
-
+                return true;
             }
 
 
