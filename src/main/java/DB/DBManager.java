@@ -10,11 +10,9 @@ import DB.Tables.enums.UserRolesRoleType;
 
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Pair;
-import Domain.Users.SystemUser;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Result;
-import org.jooq.impl.DSL;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
