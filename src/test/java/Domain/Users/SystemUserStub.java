@@ -75,7 +75,7 @@ public class SystemUserStub extends SystemUser{
         }else if(selector == 6111)
         {
             return getRoles().get(0);
-        }else if(selector == 6112)
+        }else if(selector == 6112 || selector == 6132)
         {
             return new Player(this,new Date(), true);
         }

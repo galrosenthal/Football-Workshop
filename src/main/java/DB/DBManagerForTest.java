@@ -327,11 +327,13 @@ public class DBManagerForTest extends DBManager {
         if (result.isEmpty()) {
             return null;
         }
-        List<String> rolesTypes = new ArrayList<>();
-        for (int i = 0; i < result.fields().length; i++) {
-            rolesTypes.add(result.getValues(i).get(0).toString());
+        List<UserRolesRoleType> rolesTypes = result.getValues(USER_ROLES.ROLE_TYPE);
+        List<String> answer = new ArrayList<>();
+        for (int i = 0; i < rolesTypes.size(); i++) {
+            /*FIXME - CHANGE GETNAME() TO NAME()*/
+            answer.add(rolesTypes.get(i).name());
         }
-        return rolesTypes;
+        return answer;
     }
 
     @Override

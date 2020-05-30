@@ -1349,10 +1349,10 @@ public class EntityManager {
     }
 
     public List<Player> getAllPlayersInTeam(Team team) {
-        List<String> getTeamsManager = DBManager.getInstance().getAllPlayersInTeam(team.getTeamName());
+        List<String> getPlayers = DBManager.getInstance().getAllPlayersInTeam(team.getTeamName());
         List<Player> players = new ArrayList<>();
-        for (int i = 0; i < getTeamsManager.size(); i++) {
-            SystemUser systemUser = getUser(getTeamsManager.get(i));
+        for (int i = 0; i < getPlayers.size(); i++) {
+            SystemUser systemUser = getUser(getPlayers.get(i));
             Player player = (Player)systemUser.getRole(RoleTypes.PLAYER);
             players.add(player);
 
