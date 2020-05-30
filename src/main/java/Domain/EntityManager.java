@@ -168,6 +168,28 @@ public class EntityManager {
         return new ArrayList<Team>(allTeams);
     }
 
+    public List<SystemUser> getAllUsers() {
+        if (this.allUsers.isEmpty()) {//TODO: Replace with a function that checks if additional records should be pulled from the DB
+            List<String> allUsernames = DBManager.getInstance().getUsernames();
+            List<SystemUser> users = new ArrayList<>();
+
+            for (int i = 0; i < allUsernames.size(); i++) {
+                String currentUsername = allUsernames.get(i);
+                SystemUser currentSystemUser = getUser(currentUsername);
+                users.add(currentSystemUser);
+            }
+
+            //load systemUsers
+            for (SystemUser userFromDB : users) {
+                if (!this.allUsers.contains(userFromDB)) {
+                    this.allUsers.add(userFromDB);
+                }
+            }
+        }
+        //return a copy
+        return new ArrayList<>(this.allUsers);
+    }
+
     /**
      * Returns a SystemUser by his username
      *
@@ -675,7 +697,8 @@ public class EntityManager {
      */
     public List<SystemUser> getReferees() {
         List<SystemUser> referees = new ArrayList<>();
-        for (SystemUser user : this.allUsers) {
+        List<SystemUser> allSystemUsers = this.getAllUsers();
+        for (SystemUser user : allSystemUsers) {
             if (user.isType(RoleTypes.REFEREE)) {
                 referees.add(user);
             }
@@ -799,10 +822,6 @@ public class EntityManager {
 
     }
 
-
-    public List<SystemUser> getAllUsers() {
-        return allUsers;
-    }
 
     /**
      * Get a list of all Teams by thier name
@@ -1300,5 +1319,9 @@ public class EntityManager {
                 return false;//TODO:remove ASSOCIATION_REPRESENTATIVE
         }
         return false;
+    }
+
+    public boolean assignRefereeToSeason(Referee refereeRole, Season season) {
+        return DBManager.getInstance().addRefereeToSeason(refereeRole.getSystemUser().getUsername(),season.getLeague().getName(),season.getYears());
     }
 }

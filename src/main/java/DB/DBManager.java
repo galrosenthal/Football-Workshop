@@ -950,5 +950,29 @@ public class DBManager {
         }
         return true;
     }
+
+    public List<String> getUsernames() {
+        DSLContext dslContext = DBHandler.getContext();
+        Result<?> result = dslContext.select(SYSTEMUSER.USERNAME).
+                from(SYSTEMUSER).fetch();
+
+        List<String> usernames = result.getValues(SYSTEMUSER.USERNAME);
+        return usernames;
+    }
+
+    public boolean addRefereeToSeason(String username, String leagueName, String seasonYears) {
+        int seasonID = this.getSeasonId(leagueName, seasonYears);
+        DSLContext create = DBHandler.getContext();
+
+        try {
+            create.insertInto(REFEREE_IN_SEASON, REFEREE_IN_SEASON.USERNAME,
+                    REFEREE_IN_SEASON.SEASON_ID).values(username, seasonID).execute();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
 }
 

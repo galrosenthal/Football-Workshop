@@ -300,13 +300,13 @@ public class ARControllerTest {
     }
 
 
-    @Test //ITEST
+    @Test
     public void assignRefereeUTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 0);
         assertFalse(ARController.assignReferee(systemUser));
     }
 
-    @Test //ITEST
+    @Test
     public void assignReferee2UTest() {
         SystemUser systemUser = new SystemUserStub("stubUsername", "stub", 9321);
         /*
