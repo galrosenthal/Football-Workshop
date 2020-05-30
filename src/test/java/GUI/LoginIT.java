@@ -17,7 +17,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.concurrent.TimeUnit;
 
-public class Login extends TestBenchTestCase {
+public class LoginIT extends TestBenchTestCase {
     //private ChromeDriver driver;
     @Before
     public void setup(){

@@ -95,8 +95,9 @@ public class RefereeControls extends TestBenchTestCase {
         $(ButtonElement.class).id("submit").click();
         Thread.sleep(500);
         $(ComboBoxElement.class).id("0").selectByText("AviCohen");
-        Thread.sleep(500);
+        Thread.sleep(1000);
         $(ComboBoxElement.class).id("1").selectByText("10");
+        Thread.sleep(500);
         $(ButtonElement.class).id("submit").click();
         Thread.sleep(1000);
 

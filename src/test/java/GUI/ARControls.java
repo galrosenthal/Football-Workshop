@@ -96,8 +96,8 @@ public class ARControls extends TestBenchTestCase {
         $(TextFieldElement.class).first().setValue("Administrator");
         $(ButtonElement.class).id("submit").click();
         Thread.sleep(1000);
-        Assert.assertEquals("The team Hapoel Beer Sheva4 has been created successfully",$(NotificationElement.class).id("notification").getText());
-        createLeagueAndSeason();
+        //Assert.assertEquals("The team Hapoel Beer Sheva4 has been created successfully",$(NotificationElement.class).id("notification").getText());
+        createLeagueAndSeason("3");
         $(ButtonElement.class).id("addTeamsToSeason").click();
         $(ComboBoxElement.class).first().selectByText("league3");
         $(ButtonElement.class).id("submit").click();
@@ -108,16 +108,16 @@ public class ARControls extends TestBenchTestCase {
         Assert.assertEquals("The teams have been successfully assigned to the league's latest season",$(NotificationElement.class).id("notification").getText());
     }
 
-    private void createLeagueAndSeason() throws InterruptedException {
+    private void createLeagueAndSeason(String numLeague) throws InterruptedException {
         $(ButtonElement.class).id("addNewLeague").click();
         Thread.sleep(500);
-        $(TextFieldElement.class).first().setValue("league3");
+        $(TextFieldElement.class).first().setValue("league"+ numLeague);
         $(ButtonElement.class).id("submit").click();
         Thread.sleep(500);
         $(SpanElement.class).id("ar controls").click();
         $(ButtonElement.class).id("addSeasonToLeague").click();
         Thread.sleep(500);
-        $(ComboBoxElement.class).first().selectByText("league3");
+        $(ComboBoxElement.class).first().selectByText("league"+ numLeague);
         $(ButtonElement.class).id("submit").click();
         Thread.sleep(500);
         $(TextFieldElement.class).first().setValue("2019/20");
@@ -149,11 +149,11 @@ public class ARControls extends TestBenchTestCase {
     }
 
     @Test
-    public void setPointsPolicy() throws InterruptedException {
-        createLeagueAndSeason();
+    public void setPointsPolicyTest() throws InterruptedException {
+        createLeagueAndSeason("4");
         createNewPointPolicy();
         $(ButtonElement.class).id("setPointsPolicy").click();
-        $(ComboBoxElement.class).first().selectByText("league3");
+        $(ComboBoxElement.class).first().selectByText("league4");
         $(ButtonElement.class).id("submit").click();
         Thread.sleep(500);
         $(ComboBoxElement.class).first().selectByText("victoryPoints=3, lossPoints=-2, tiePoints=1");
@@ -176,13 +176,13 @@ public class ARControls extends TestBenchTestCase {
 
     @Test
     public void ActivateSchedulingPolicy() throws InterruptedException {
-        createLeagueAndSeason();
+        createLeagueAndSeason("5");
         createGamePolicy();
         //addTeamToSeason();
         createTeams();
         $(ButtonElement.class).id("activeSchedulingPolicy").click();
         Thread.sleep(500);
-        $(ComboBoxElement.class).first().selectByText("league3");
+        $(ComboBoxElement.class).first().selectByText("league5");
         $(ButtonElement.class).id("submit").click();
         Thread.sleep(500);
         $(DatePickerElement.class).id("picker").setDate(LocalDate.now());
@@ -191,7 +191,7 @@ public class ARControls extends TestBenchTestCase {
         $(ComboBoxElement.class).first().selectByText("Games Per Day = 3, Games Per Season = 2, Minimum rest days = 4");
         $(ButtonElement.class).id("submit").click();
         Thread.sleep(1000);
-        Assert.assertEquals("The chosen points policy was set successfully",$(NotificationElement.class).id("notification").getText());
+        Assert.assertEquals("The chosen schedule policy was activated successfully",$(NotificationElement.class).id("notification").getText());
     }
 
 //    private void addTeamToSeason() throws InterruptedException {
@@ -200,7 +200,7 @@ public class ARControls extends TestBenchTestCase {
 //    }
 
     @Test
-    public void addNewLeague() throws InterruptedException {
+    public void addNewLeagueTest() throws InterruptedException {
         $(ButtonElement.class).id("addNewLeague").click();
         Thread.sleep(500);
         $(TextFieldElement.class).first().setValue("liga");
@@ -210,7 +210,7 @@ public class ARControls extends TestBenchTestCase {
     }
 
     @Test
-    public void addSeasonToLeague() throws InterruptedException {
+    public void addSeasonToLeagueTest() throws InterruptedException {
         createLeague();
         $(ButtonElement.class).id("addSeasonToLeague").click();
         Thread.sleep(500);
@@ -255,11 +255,11 @@ public class ARControls extends TestBenchTestCase {
 
     @Test
     public void assignRefereeTest() throws InterruptedException {
-        createLeagueAndSeason();
+        createLeagueAndSeason("6");
         addReferee();
         $(ButtonElement.class).id("assignReferee").click();
         Thread.sleep(500);
-        $(ComboBoxElement.class).first().selectByText("league3");
+        $(ComboBoxElement.class).first().selectByText("league6");
         $(ButtonElement.class).id("submit").click();
         Thread.sleep(500);
         $(ComboBoxElement.class).first().selectByText("2019/20");
@@ -273,10 +273,10 @@ public class ARControls extends TestBenchTestCase {
 
     @Test
     public void addTeamsToSeasonTest() throws InterruptedException {
-        createLeagueAndSeason();
+        createLeagueAndSeason("7");
         $(ButtonElement.class).id("addTeamsToSeason").click();
         Thread.sleep(500);
-        $(ComboBoxElement.class).first().selectByText("league3");
+        $(ComboBoxElement.class).first().selectByText("league7");
         $(ButtonElement.class).id("submit").click();
         Thread.sleep(500);
         $(ListBoxElement.class).first().selectByText("team1");
@@ -287,11 +287,11 @@ public class ARControls extends TestBenchTestCase {
 
     @Test
     public void removeTeamsFromSeason() throws InterruptedException {
-        createLeagueAndSeason();
+        createLeagueAndSeason("8");
         addTeamsToSeason();
         $(ButtonElement.class).id("removeTeamsFromSeason").click();
         Thread.sleep(500);
-        $(ComboBoxElement.class).first().selectByText("league3");
+        $(ComboBoxElement.class).first().selectByText("league8");
         $(ButtonElement.class).id("submit").click();
         Thread.sleep(500);
         $(ListBoxElement.class).first().selectByText("team1");
@@ -304,7 +304,7 @@ public class ARControls extends TestBenchTestCase {
     private void addTeamsToSeason() throws InterruptedException {
         $(ButtonElement.class).id("addTeamsToSeason").click();
         Thread.sleep(500);
-        $(ComboBoxElement.class).first().selectByText("league3");
+        $(ComboBoxElement.class).first().selectByText("league8");
         $(ButtonElement.class).id("submit").click();
         Thread.sleep(500);
         try {
@@ -347,7 +347,7 @@ public class ARControls extends TestBenchTestCase {
 
         $(ButtonElement.class).id("addTeamsToSeason").click();
         Thread.sleep(500);
-        $(ComboBoxElement.class).first().selectByText("league3");
+        $(ComboBoxElement.class).first().selectByText("league5");
         $(ButtonElement.class).id("submit").click();
         Thread.sleep(500);
         $(ListBoxElement.class).first().selectByText("team1");
@@ -355,7 +355,7 @@ public class ARControls extends TestBenchTestCase {
         Thread.sleep(500);
         $(ButtonElement.class).id("addTeamsToSeason").click();
         Thread.sleep(500);
-        $(ComboBoxElement.class).first().selectByText("league3");
+        $(ComboBoxElement.class).first().selectByText("league5");
         $(ButtonElement.class).id("submit").click();
         Thread.sleep(500);
         $(ListBoxElement.class).first().selectByText("team2");
