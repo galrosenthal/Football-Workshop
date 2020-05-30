@@ -82,8 +82,9 @@ public class AssociationRepresentative extends Role {
         }
         Team newTeam = createNewTeam(teamName, teamOwner);
 //        teamOwner.setAppointedOwner(newTeam, this.getSystemUser());
-        teamOwner.addTeamToOwn(newTeam, this.getSystemUser());
         newTeam.addTeamOwner(teamOwner);
+        teamOwner.addTeamToOwn(newTeam, this.getSystemUser());
+        teamOwner.setAppointedOwner(newTeam,this.getSystemUser());
         return true;
     }
 

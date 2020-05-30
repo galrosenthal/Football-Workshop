@@ -68,6 +68,7 @@ public class Team {
         if(addToDB)
         {
             EntityManager.getInstance().addTeam(this);
+            EntityManager.getInstance().addTeamOwnerToTeam(to, this);
         }
 
     }
@@ -110,7 +111,7 @@ public class Team {
      * @return true if the player added successfully to the Team.
      */
     public boolean addTeamPlayer(TeamOwner townr, Role teamPlayer) {
-        if (!teamOwners.contains(townr) || status != TeamStatus.OPEN || !(EntityManager.getInstance().isTeamOwner(townr,this))) {
+        if (status != TeamStatus.OPEN || !(EntityManager.getInstance().isTeamOwner(townr,this))) {
             return false;
         }
         if (teamPlayer.getType() == RoleTypes.PLAYER) {
@@ -135,7 +136,7 @@ public class Team {
     }
 
     public boolean addTeamCoach(TeamOwner townr, Role coach) {
-        if (!teamOwners.contains(townr) || status != TeamStatus.OPEN || !(EntityManager.getInstance().isTeamOwner(townr,this))) {
+        if (status != TeamStatus.OPEN || !(EntityManager.getInstance().isTeamOwner(townr,this))) {
             return false;
         }
         if (coach.getType() == RoleTypes.COACH) {
@@ -146,7 +147,7 @@ public class Team {
 
 
     public boolean addTeamManager(TeamOwner townr, Role teamManager) {
-        if (!teamOwners.contains(townr) || status != TeamStatus.OPEN || !(EntityManager.getInstance().isTeamOwner(townr,this))) {
+        if (status != TeamStatus.OPEN || !(EntityManager.getInstance().isTeamOwner(townr,this))) {
             return false;
         }
         if (teamManager.getType() == RoleTypes.TEAM_MANAGER) {
@@ -165,6 +166,7 @@ public class Team {
             return false;
         }
         if (teamOwner.getType() == RoleTypes.TEAM_OWNER && !teamOwners.contains(teamOwner) &&!(EntityManager.getInstance().isTeamOwner((TeamOwner)teamOwner,this))) {
+
             /*DB*/
             EntityManager.getInstance().addTeamOwnerToTeam((TeamOwner)teamOwner, this);
             return teamOwners.add((TeamOwner) teamOwner);
@@ -492,6 +494,10 @@ public class Team {
             return true;
         }
         /*check in db*/
+        if(teamOwner == null)
+        {
+            return false;
+        }
         return EntityManager.getInstance().isTeamOwner(teamOwner, this);
         //   return false;
     }

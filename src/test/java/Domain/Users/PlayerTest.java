@@ -93,8 +93,8 @@ public class PlayerTest {
 
     @Test
     public void changePropertyUTest() {
-        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131, true) , new Date(), true);
-        TeamStub ts = new TeamStub(61120, true);
+        Player player = new Player(new SystemUser("playerTest" , "gal" , true) , new Date(), true);
+        Team ts = new Team("Test", true);
         BelongToTeamStub bgStub = new BelongToTeamStub(ts,player);
         player.addTeamConnection(bgStub);
         Assert.assertTrue(player.changeProperty(ts,player.fieldJobString , PlayerFieldJobs.DEFENSE.toString()));

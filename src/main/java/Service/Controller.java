@@ -22,7 +22,7 @@ public class Controller {
     public static boolean systemBoot() {
         //Establishing connections to external DBMS
         //access DB
-        DBManager.getInstance().startConnection();
+        //DBManager.getInstance().startConnection();
         //extract system admins
         try {
             String usernameAndPassword = UIController.receiveUserLoginInfo("Please enter a system administrator username:;Please enter the password");
@@ -197,17 +197,17 @@ public class Controller {
         }
 
         Team chosenTeam = getTeamByChoice(myTeamOwner);
-        if (chosenTeam.getStatus() != TeamStatus.OPEN) {
-            String msg = "Team Close";
-            SystemLoggerManager.logError(Controller.class, msg);
-            throw new TeamCloseException(msg);
-        }
+
         if (chosenTeam == null) {
             String msg = "There was no Team found";
             SystemLoggerManager.logError(Controller.class, msg);
             throw new NoTeamExistsException(msg);
         }
-
+        if (chosenTeam.getStatus() != TeamStatus.OPEN) {
+            String msg = "Team Close";
+            SystemLoggerManager.logError(Controller.class, msg);
+            throw new TeamCloseException(msg);
+        }
         TeamAsset ass = getAssetTypeFromUser();
         String name = getNameFromUser("What is the asset name/username?");
 

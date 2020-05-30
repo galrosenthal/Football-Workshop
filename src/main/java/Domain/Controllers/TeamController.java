@@ -69,9 +69,6 @@ public class TeamController {
         }
 
         teamOwner.addTeamToOwn(teamToOwn, owner.getSystemUser());
-
-
-        //TODO: maybe this if is not needed?
         if(teamToOwn.addTeamOwner(teamOwner)){
             teamOwner.setAppointedOwner(teamToOwn,owner.getSystemUser());
         }

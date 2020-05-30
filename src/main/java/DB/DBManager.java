@@ -1257,5 +1257,38 @@ public class DBManager {
         }
         return getDetailsFromResult(records);
     }
-}
 
+    public HashMap<String, String> getTeam(String teamName) {
+        try{
+            DSLContext create = DBHandler.getContext();
+            Result<?> records = create.select().from(TEAM).where(TEAM.NAME.eq(teamName)).fetch();
+            HashMap<String, String> teamDetails = new HashMap<>();
+            if(records.isEmpty())
+            {
+                return teamDetails;
+            }
+            List<String> name = records.getValues(TEAM.NAME);
+            List<TeamStatus> teamStatus = records.getValues(TEAM.STATUS);
+            teamDetails.put("name" , name.get(0));
+            teamDetails.put("status" , teamStatus.get(0).name());
+            return  teamDetails;
+
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return new HashMap<>();
+        }
+    }
+
+    public void saveAlert(String username, String alert) {
+
+        try{
+            DSLContext create = DBHandler.getContext();
+            create.insertInto(ALERT, ALERT.USERNAME,ALERT.NOTIFICATION).values(username,alert);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+}
