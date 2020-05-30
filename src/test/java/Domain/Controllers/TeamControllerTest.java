@@ -355,6 +355,12 @@ public class TeamControllerTest {
         UIController.setIsTest(true);
         UIController.setSelector(6135);
         TeamController.editAssets(team);
+        TeamController.editAssets(team);
+        TeamController.editAssets(team);
+        TeamController.editAssets(team);
+        TeamController.editAssets(team);
+        TeamController.editAssets(team);
+        TeamController.editAssets(team);
 
     }
 
@@ -366,6 +372,7 @@ public class TeamControllerTest {
         TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal", true), true);
         team.addTeamOwner(teamOwner);
         team.addTeamManager(teamOwner, teamManager);
+        teamManager.addTeam(team,teamOwner);
         UIController.setIsTest(true);
         UIController.setSelector(6134);
 
@@ -381,6 +388,8 @@ public class TeamControllerTest {
         TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal", true), true);
         team.addTeamOwner(teamOwner);
         team.addTeamManager(teamOwner, teamManager);
+        teamManager.addTeam(team,teamOwner);
+
         UIController.setIsTest(true);
         UIController.setSelector(6135);
         Assert.assertTrue(TeamController.editAssets(team));
@@ -400,6 +409,7 @@ public class TeamControllerTest {
         TeamManager teamManager = new TeamManager(new SystemUser("teamManagerTest", "gal", true), true);
         team.addTeamOwner(teamOwner);
         team.addTeamManager(teamOwner, teamManager);
+        teamManager.addTeam(team,teamOwner);
         UIController.setIsTest(true);
         UIController.setSelector(6135);
         Assert.assertTrue(TeamController.editAssets(team));
