@@ -16,6 +16,7 @@ public class TeamOwnerTest {
     /**
      * Check if teamOwner is added successfully
      */
+    /*TODO FIX!!!!!!!!!*/
     @Test
     public void addTeamToOwnUTest() {
         Team hapoelBash = new Team("Test", true);

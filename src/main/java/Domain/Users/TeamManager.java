@@ -28,6 +28,7 @@ public class TeamManager extends Role implements Asset {
         permissionsPerTeam = new HashMap<>();
         if (addToDB) {
             EntityManager.getInstance().addRole(this);
+
         }
     }
 
