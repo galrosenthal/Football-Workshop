@@ -24,7 +24,9 @@ public class BootSystem extends VerticalLayout {
     }
 
     private void buildTheBootView() {
-        add(new H2("The System is not booted yet."));
+        H2 h2 = new H2("The System is not booted yet.");
+        h2.setId("bootH2");
+        add(h2);
         add(new H3("if you wish to boot the system, please use a System Admin user."));
 
         Button bootTheSystem = new Button("Boot the System");

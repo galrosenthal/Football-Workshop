@@ -34,7 +34,7 @@ public class RefereeControls extends VerticalLayout {
     private void createReportDownload() {
         String buttonTaskName = "Create report";
         Button downloadReport = new Button(buttonTaskName);
-
+        downloadReport.setId("createReport");
         downloadReport.addClickListener(e-> {
             UI lastUI = UI.getCurrent();
             VaadinSession se = VaadinSession.getCurrent();
@@ -67,6 +67,7 @@ public class RefereeControls extends VerticalLayout {
     private void createDisplayScheduleGame() {
         String buttonTaskName = "View Game Schedule";
         Button watchGamesBtn = new Button(buttonTaskName);
+        watchGamesBtn.setId("viewGameSched");
         watchGamesBtn.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -85,7 +86,7 @@ public class RefereeControls extends VerticalLayout {
     private void createShowActiveGameButton() {
         String buttonTaskName = "Update Game Events";
         Button activeGamesEventsBtn = new Button(buttonTaskName);
-
+        activeGamesEventsBtn.setId("updateGame");
         activeGamesEventsBtn.addClickListener(e-> {
             UI lastUI = UI.getCurrent();
             VaadinSession se = VaadinSession.getCurrent();

@@ -65,9 +65,83 @@ public class EntityManager{
             admin.addNewRole(new SystemAdmin(admin));
             admin.addNewRole(new AssociationRepresentative(admin));
             admin.addNewRole(new Referee(admin,RefereeQualification.VAR_REFEREE));
+            admin.addNewRole(new TeamOwner(admin));
+            createObjectsForGuiTests();
         }
 
         return entityManagerInstance;
+    }
+
+    private static void createObjectsForGuiTests() {
+        //AR Controls tests
+        Stadium stadium1 = new Stadium("stadium1","london");
+        Stadium stadium2 = new Stadium("stadium2","paris");
+        EntityManager.getInstance().addStadium(stadium1);
+        EntityManager.getInstance().addStadium(stadium2);
+
+        SystemUser user1 = new SystemUser("user1","Aa123456","Oran","oran@gmail.com",false);
+        EntityManager.getInstance().addUser(user1);
+        SystemUser user2 = new SystemUser("user2","Aa123456","Oran","oran@gmail.com",false);
+        EntityManager.getInstance().addUser(user2);
+        TeamOwner to1 = new TeamOwner(user1);
+        TeamOwner to2 = new TeamOwner(user2);
+        Team team1 = new Team("team1",to1);
+        Team team2 = new Team("team2",to2);
+
+        for (int i=0; i < 12;i++){
+            SystemUser user = new SystemUser(Integer.toString(i),Integer.toString(i));
+            Player player = new Player(user,new Date());
+            EntityManager.getInstance().addUser(user);
+            team1.addTeamPlayer(to1,player);
+        }
+        for (int i=12; i < 25;i++){
+            SystemUser user = new SystemUser(Integer.toString(i),Integer.toString(i));
+            Player player = new Player(user,new Date());
+            EntityManager.getInstance().addUser(user);
+            team2.addTeamPlayer(to2,player);
+        }
+
+        team1.addStadium(stadium1);
+        team2.addStadium(stadium2);
+
+        EntityManager.getInstance().addTeam(team1);
+        EntityManager.getInstance().addTeam(team2);
+        SystemUser refUser = new SystemUser("referee","referee");
+
+        EntityManager.getInstance().addUser(refUser);
+
+        //To Controls Tests
+        SystemUser user3 = new SystemUser("user3","user3");
+        TeamOwner to3 = new TeamOwner(user3);
+        Team team3 = new Team("team3",(TeamOwner)EntityManager.getInstance().getUser("Administrator").getRole(RoleTypes.TEAM_OWNER));
+        EntityManager.getInstance().addUser(user3);
+        EntityManager.getInstance().addTeam(team3);
+        Stadium stadium3 = new Stadium("stadium3","london");
+        EntityManager.getInstance().addStadium(stadium3);
+        Stadium stadium4 = new Stadium("stadium4","london");
+        EntityManager.getInstance().addStadium(stadium4);
+
+        SystemUser systemUser = EntityManager.getInstance().getUser("Administrator");
+        Referee referee = (Referee)systemUser.getRole(RoleTypes.REFEREE);
+        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
+        new AssociationRepresentative(arSystemUser);
+        new TeamOwner(arSystemUser);
+        TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        Team firstTeam = new Team("Hapoel Beit Shan", toRole);
+        EntityManager.getInstance().addTeam(firstTeam);
+        Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
+        EntityManager.getInstance().addTeam(secondTeam);
+
+        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        SystemUser avi = new SystemUser("AviCohen", "Avi Cohen");
+        Player player1 = new Player(avi, new Date(2001, 01, 01));
+        avi.addNewRole(player1);
+        EntityManager.getInstance().addUser(avi);
+        firstTeam.addTeamPlayer(toRole, player1);
+
+        game.addReferee(referee);
+        referee.addGame(game);
+
     }
 
 
