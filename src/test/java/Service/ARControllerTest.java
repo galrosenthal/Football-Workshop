@@ -186,6 +186,8 @@ public class ARControllerTest {
 
         assertTrue(ARController.addReferee(systemUser));
     }
+    /*
+    Irrelevant because of DB integration
     @Test
     public void addReferee2ITest() {
         SystemUser systemUser = getSystemUserAR();
@@ -195,6 +197,8 @@ public class ARControllerTest {
 
         assertFalse(ARController.addReferee(systemUser));
     }
+
+     */
 
     @Test
     public void addReferee3ITest() {
