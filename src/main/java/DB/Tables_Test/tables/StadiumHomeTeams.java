@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StadiumHomeTeams extends TableImpl<StadiumHomeTeamsRecord> {
 
-    private static final long serialVersionUID = 52071817;
+    private static final long serialVersionUID = -867132439;
 
     /**
      * The reference instance of <code>fwdb_test.stadium_home_teams</code>
@@ -106,11 +106,11 @@ public class StadiumHomeTeams extends TableImpl<StadiumHomeTeamsRecord> {
 
     @Override
     public List<ForeignKey<StadiumHomeTeamsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<StadiumHomeTeamsRecord, ?>>asList(Keys.FK__STADIUM_TEAMS, Keys.FK__TEAM_STADIUM);
+        return Arrays.<ForeignKey<StadiumHomeTeamsRecord, ?>>asList(Keys.FK_STADIUM_HOME_TEAMS_STADIUM, Keys.FK__TEAM_STADIUM);
     }
 
     public Stadium stadium() {
-        return new Stadium(this, Keys.FK__STADIUM_TEAMS);
+        return new Stadium(this, Keys.FK_STADIUM_HOME_TEAMS_STADIUM);
     }
 
     public Team team() {

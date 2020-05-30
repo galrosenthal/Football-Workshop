@@ -17,8 +17,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import static DB.Tables.Tables.REFEREE_IN_SEASON;
-import static DB.Tables.Tables.SEASON;
 import static DB.Tables_Test.Tables.*;
 import static org.jooq.impl.DSL.row;
 import static org.jooq.impl.DSL.select;
@@ -1224,7 +1222,7 @@ public class DBManagerForTest extends DBManager {
         int succeed = dslContext.insertInto(GAME, GAME.STADIUM_ID, GAME.HOME_TEAM,
                 GAME.AWAY_TEAM, GAME.START_DATE, GAME.END_DATE, GAME.FINISHED)
                 .values(getStadiumId(stadiumName, stadiumLocation), homeTeamName,
-                        awayTeamName, startDate, endDate, finished).execute();
+                        awayTeamName, convertToLocalDateViaInstant(startDate), convertToLocalDateViaInstant(endDate), finished).execute();
         if (succeed == 0) {
             return false;
         }

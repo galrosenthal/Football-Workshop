@@ -9,7 +9,6 @@ import DB.Tables.enums.UserRolesRoleType;
 
 import DB.Tables.enums.CoachQualification;
 import DB.Tables.enums.RefereeTraining;
-import DB.Tables.tables.Game;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Pair;
 import org.jooq.DSLContext;
@@ -1194,7 +1193,7 @@ public class DBManager {
         int succeed = dslContext.insertInto(GAME, GAME.STADIUM_ID, GAME.HOME_TEAM,
                 GAME.AWAY_TEAM, GAME.START_DATE, GAME.END_DATE, GAME.FINISHED)
                 .values(getStadiumId(stadiumName, stadiumLocation), homeTeamName,
-                        awayTeamName, startDate, endDate, finished).execute();
+                        awayTeamName, convertToLocalDateViaInstant(startDate), convertToLocalDateViaInstant(endDate), finished).execute();
         if (succeed == 0) {
             return false;
         }

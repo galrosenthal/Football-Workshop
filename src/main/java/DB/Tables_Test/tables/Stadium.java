@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row3;
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Stadium extends TableImpl<StadiumRecord> {
 
-    private static final long serialVersionUID = 1553524119;
+    private static final long serialVersionUID = 1436909792;
 
     /**
      * The reference instance of <code>fwdb_test.stadium</code>
@@ -49,7 +50,7 @@ public class Stadium extends TableImpl<StadiumRecord> {
     /**
      * The column <code>fwdb_test.stadium.stadium_id</code>.
      */
-    public final TableField<StadiumRecord, Integer> STADIUM_ID = createField(DSL.name("stadium_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<StadiumRecord, Integer> STADIUM_ID = createField(DSL.name("stadium_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>fwdb_test.stadium.name</code>.
@@ -97,6 +98,11 @@ public class Stadium extends TableImpl<StadiumRecord> {
     @Override
     public Schema getSchema() {
         return FwdbTest.FWDB_TEST;
+    }
+
+    @Override
+    public Identity<StadiumRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_STADIUM;
     }
 
     @Override
