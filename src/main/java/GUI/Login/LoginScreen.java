@@ -39,11 +39,13 @@ public class LoginScreen extends FlexLayout {
         // login form, centered in the available part of the screen
         LoginForm loginForm = new LoginForm();
         loginForm.addLoginListener(this::login);
+        loginForm.setId("loginForm");
         loginForm.addForgotPasswordListener(
                 event -> Notification.show("Sorry We cannot help you"));
 
         //SignUp button
         Button signup = new Button("Sign Up Here");
+        signup.setId("Sign Up Here");
         signup.addClickListener(event -> {
             getUI().get().navigate("Registration");
         });
@@ -89,7 +91,7 @@ public class LoginScreen extends FlexLayout {
         loginInfoText.setWidth("100%");
         loginInformation.add(loginInfoHeader);
         loginInformation.add(loginInfoText);
-
+        loginInfoText.setId("loginInfoText");
         return loginInformation;
     }
 

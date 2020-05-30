@@ -71,7 +71,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
     public FootballMain() {
 // Header of the menu (the navbar)
-
+        this.setId("footbalMain");
         // menu toggle
         final DrawerToggle drawerToggle = new DrawerToggle();
         drawerToggle.addClassName("menu-toggle");
@@ -90,10 +90,12 @@ public class FootballMain extends AppLayout implements RouterLayout{
         final Image image = new Image(resolvedImage, "");
         final Label title = new Label("Football Workshop");
         loginBtn = new Button("Login");
+        loginBtn.setId("login");
         loginBtn.addClickListener(e -> {
             getUI().get().navigate("Login");
         });
         signupBtn = new Button("Sign Up");
+        signupBtn.setId("signup");
         signupBtn.addClickListener(e -> {
             getUI().get().navigate("Registration");
         });
@@ -127,6 +129,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
         // Create logout button but don't add it yet; admin view might be added
         // in between (see #onAttach())
         logoutButton = createMenuButton("Logout", VaadinIcon.SIGN_OUT.create());
+        logoutButton.setId("logoutBtn");
         logoutButton.setEnabled(false);
         logoutButton.addClickListener(e -> logout());
         logoutButton.getElement().setAttribute("title", "Logout (Ctrl+L)");
@@ -138,6 +141,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
             VerticalLayout alertView = new VerticalLayout();
             Label msg = new Label(message);
             Button close = new Button("Close");
+            close.setId("close");
             close.addClickListener(e -> {
                 alertWindow.close();
             });
@@ -158,22 +162,26 @@ public class FootballMain extends AppLayout implements RouterLayout{
             loginDialog.setCloseOnOutsideClick(false);
 
             VerticalLayout usernameAndPassword = new VerticalLayout();
-
+            usernameAndPassword.setId("loginPassword");
             usernameAndPassword.add(new Label(message.split(UIController.STRING_DELIMETER)[0]));
             TextField username = new TextField();
+            username.setId("1");
             usernameAndPassword.add(username);
             usernameAndPassword.add(new Label(message.split(UIController.STRING_DELIMETER)[1]));
             PasswordField password = new PasswordField();
+            password.setId("2");
             usernameAndPassword.add(password);
 
             HorizontalLayout buttons = new HorizontalLayout();
             Button submit = new Button("Submit");
+            submit.setId("submit");
             submit.addClickListener(e -> {
                returnedValue.append(username.getValue()).append(UIController.STRING_DELIMETER).append(password.getValue());
                loginDialog.close();
                callingThread.interrupt();
             });
             Button close = new Button("Close");
+            close.setId("close");
             close.addClickListener(e -> {
                 loginDialog.close();
                 returnedValue.append(UIController.CANCEL_TASK_VALUE);
@@ -201,12 +209,14 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
             HorizontalLayout buttons = new HorizontalLayout();
             Button yes = new Button("Yes");
+            yes.setId("yes");
             yes.addClickListener(e -> {
                 choiceSelected.append("y");
                 choiceDialog.close();
                 callingThread.interrupt();
             });
             Button no = new Button("No");
+            no.setId("no");
             no.addClickListener(e -> {
                 choiceDialog.close();
                 choiceSelected.append("No");
@@ -249,12 +259,12 @@ public class FootballMain extends AppLayout implements RouterLayout{
             lbl.setWidth("100%");
             vl.add(lbl);
             Button ok = new Button("Ok");
-
+            ok.setId("ok");
             ok.addClickListener(e -> {
                 newWindow.close();
             });
             Page page = UI.getCurrent().getPage();
-            page.executeJavaScript("document.getElementById(timeStamp).click();");
+            page.executeJavaScript("document.getElementById('timeStamp').click();");
 
             newWindow.add(vl);
             newWindow.add(ok);
@@ -352,7 +362,9 @@ public class FootballMain extends AppLayout implements RouterLayout{
         final RouterLink routerLink = new RouterLink(null, viewClass);
         routerLink.setClassName("menu-link");
         routerLink.add(icon);
-        routerLink.add(new Span(caption));
+        Span span = new Span(caption);
+        span.setId(caption.toLowerCase());
+        routerLink.add(span);
         icon.setSize("24px");
         return routerLink;
     }
@@ -400,6 +412,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
         if(msg != null)
         {
             Notification notification = new Notification(msg,2500, Notification.Position.TOP_CENTER);
+            notification.setId("notification");
             if(msg.toLowerCase().contains("success"))
             {
                 notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
@@ -450,15 +463,17 @@ public class FootballMain extends AppLayout implements RouterLayout{
             ComboBox<String>[] multiInputsFromList = new ComboBox[numOfInputs];
 
             ComboBox<String> valuesForInt = new ComboBox<>();
+            valuesForInt.setId("valuesForInt");
             valuesForInt.setWidth("100%");
             MultiSelectListBox<String> valuesForString = new MultiSelectListBox<>();
-
+            valuesForString.setId("valuesForString");
             DatePicker picker = new DatePicker();
-
+            picker.setId("picker");
 
             Button submit = new Button("Submit");
+            submit.setId("submit");
             Button cancel = new Button("Cancel");
-
+            cancel.setId("cancel");
             cancel.addClickListener(e -> {
                 newWindow.close();
                 returnedValue.append(UIController.CANCEL_TASK_VALUE);
@@ -471,6 +486,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 {
                     if(displayValues.length <= 0)
                     {
+                        textFieldsArray[0].setId("firstTextField");
                         returnedValue.append(textFieldsArray[0].getValue());
 
                     }
@@ -614,6 +630,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
     private static void apendValuesToReturnValue(StringBuilder returnedValue, ComboBox<String>[] multiInputsFromList) {
         for (ComboBox<String> singleComboBox:
              multiInputsFromList) {
+            singleComboBox.setId(singleComboBox.getValue());
             returnedValue.append(singleComboBox.getValue()).append(UIController.STRING_DELIMETER);
         }
         returnedValue.setLength(returnedValue.length()-1);
@@ -634,6 +651,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
     private static void createMultiListInputs(VerticalLayout verticalLayout, int numOfInputs, ComboBox<String>[] multiInputsFromList, Button close, String[] messagesToDisplay, Collection<String>... displayValues) {
         for (int i = 0; i < numOfInputs; i++) {
             multiInputsFromList[i] = new ComboBox<>();
+            multiInputsFromList[i].setId(Integer.toString(i));
             verticalLayout.add(new Label(messagesToDisplay[i]));
             multiInputsFromList[i].setClearButtonVisible(true);
             multiInputsFromList[i].setItems(displayValues[i]);
@@ -677,6 +695,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
     private static void createMultiStringInputs(VerticalLayout verticalLayout, int numOfInputs, TextField[] textFieldsArray, Button close, String[] messagesToDisplay) {
         for (int i = 0; i < numOfInputs; i++) {
             textFieldsArray[i] = new TextField();
+            textFieldsArray[i].setId(textFieldsArray[i].getValue());
             //textFieldsArray[i].setLabel(messagesToDisplay[i]);
             verticalLayout.add(new Label(messagesToDisplay[i]));
             textFieldsArray[i].setValueChangeMode(ValueChangeMode.EAGER);
@@ -703,12 +722,14 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
             HorizontalLayout buttons = new HorizontalLayout();
             Button dismiss = new Button("Dismiss");
+            dismiss.setId("dismiss");
             dismiss.addClickListener(e -> {
                 confirmBox.close();
                 answer.append(UIController.CANCEL_TASK_VALUE);
             });
             dismiss.getElement().setAttribute("theme", "error tertiary");
             Button approve = new Button("Submit");
+            approve.setId("submit");
             approve.addClickListener(e -> {
                 System.out.println("FOOTBALL_MAIN: User confirmed");
                 confirmBox.close();
@@ -742,6 +763,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
         }
 
         Button ok = new Button("Ok");
+        ok.setId("ok");
         ok.addClickListener(e -> { newWindow.close(); });
         vl.add(ok);
         newWindow.add(vl);
