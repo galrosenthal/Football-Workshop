@@ -121,7 +121,7 @@ public class DBManager {
     }
 
     public static void startConnection() {
-        DBHandler.startConnection("jdbc:mysql://132.72.65.105:3306/fwdb");
+        DBHandler.startConnection("jdbc:mysql://localhost:3306/fwdb");
     }
 
     /**

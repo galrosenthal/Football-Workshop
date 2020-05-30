@@ -58,15 +58,13 @@ public class EntityManager {
         if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
 
-            SystemUser admin = new SystemUser("Administrator",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"admin" , "test@gmail.com" , false);
-            SystemUser arnav = new SystemUser("arnav",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"arnav" , "test@gmail.com" , false);
+            SystemUser admin = new SystemUser("Administrator",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"admin" , "test@gmail.com" , false, false);
+            SystemUser arnav = new SystemUser("arnav",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"arnav" , "test@gmail.com" , false, false);
 
-
-
-            admin.addNewRole(new SystemAdmin(admin));
-            admin.addNewRole(new AssociationRepresentative(admin));
-            admin.addNewRole(new Referee(admin,RefereeQualification.VAR_REFEREE));
-            admin.addNewRole(new TeamOwner(admin));
+            admin.addNewRole(new SystemAdmin(admin, false));
+            admin.addNewRole(new AssociationRepresentative(admin, false));
+            admin.addNewRole(new Referee(admin,RefereeQualification.VAR_REFEREE, false));
+            admin.addNewRole(new TeamOwner(admin, false));
             createObjectsForGuiTests();
         }
 
@@ -80,24 +78,24 @@ public class EntityManager {
         EntityManager.getInstance().addStadium(stadium1);
         EntityManager.getInstance().addStadium(stadium2);
 
-        SystemUser user1 = new SystemUser("user1","Aa123456","Oran","oran@gmail.com",false);
+        SystemUser user1 = new SystemUser("user1","Aa123456","Oran","oran@gmail.com",false, false);
         EntityManager.getInstance().addUser(user1);
-        SystemUser user2 = new SystemUser("user2","Aa123456","Oran","oran@gmail.com",false);
+        SystemUser user2 = new SystemUser("user2","Aa123456","Oran","oran@gmail.com",false, false);
         EntityManager.getInstance().addUser(user2);
-        TeamOwner to1 = new TeamOwner(user1);
-        TeamOwner to2 = new TeamOwner(user2);
-        Team team1 = new Team("team1",to1);
-        Team team2 = new Team("team2",to2);
+        TeamOwner to1 = new TeamOwner(user1, false);
+        TeamOwner to2 = new TeamOwner(user2, false);
+        Team team1 = new Team("team1",to1, false);
+        Team team2 = new Team("team2",to2, false);
 
         for (int i=0; i < 12;i++){
-            SystemUser user = new SystemUser(Integer.toString(i),Integer.toString(i));
-            Player player = new Player(user,new Date());
+            SystemUser user = new SystemUser(Integer.toString(i),Integer.toString(i), false);
+            Player player = new Player(user,new Date(), false);
             EntityManager.getInstance().addUser(user);
             team1.addTeamPlayer(to1,player);
         }
         for (int i=12; i < 25;i++){
-            SystemUser user = new SystemUser(Integer.toString(i),Integer.toString(i));
-            Player player = new Player(user,new Date());
+            SystemUser user = new SystemUser(Integer.toString(i),Integer.toString(i), false);
+            Player player = new Player(user,new Date(), false);
             EntityManager.getInstance().addUser(user);
             team2.addTeamPlayer(to2,player);
         }
@@ -107,14 +105,14 @@ public class EntityManager {
 
         EntityManager.getInstance().addTeam(team1);
         EntityManager.getInstance().addTeam(team2);
-        SystemUser refUser = new SystemUser("referee","referee");
+        SystemUser refUser = new SystemUser("referee","referee", false);
 
         EntityManager.getInstance().addUser(refUser);
 
         //To Controls Tests
-        SystemUser user3 = new SystemUser("user3","user3");
-        TeamOwner to3 = new TeamOwner(user3);
-        Team team3 = new Team("team3",(TeamOwner)EntityManager.getInstance().getUser("Administrator").getRole(RoleTypes.TEAM_OWNER));
+        SystemUser user3 = new SystemUser("user3","user3", false);
+        TeamOwner to3 = new TeamOwner(user3, false);
+        Team team3 = new Team("team3",(TeamOwner)EntityManager.getInstance().getUser("Administrator").getRole(RoleTypes.TEAM_OWNER), false);
         EntityManager.getInstance().addUser(user3);
         EntityManager.getInstance().addTeam(team3);
         Stadium stadium3 = new Stadium("stadium3","london");
@@ -124,18 +122,18 @@ public class EntityManager {
 
         SystemUser systemUser = EntityManager.getInstance().getUser("Administrator");
         Referee referee = (Referee)systemUser.getRole(RoleTypes.REFEREE);
-        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
-        new AssociationRepresentative(arSystemUser);
-        new TeamOwner(arSystemUser);
+        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser", false);
+        new AssociationRepresentative(arSystemUser, false);
+        new TeamOwner(arSystemUser, false);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
-        Team firstTeam = new Team("Hapoel Beit Shan", toRole);
+        Team firstTeam = new Team("Hapoel Beit Shan", toRole, false);
         EntityManager.getInstance().addTeam(firstTeam);
-        Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
+        Team secondTeam = new Team("Hapoel Beer Sheva", toRole, false);
         EntityManager.getInstance().addTeam(secondTeam);
 
-        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
-        SystemUser avi = new SystemUser("AviCohen", "Avi Cohen");
-        Player player1 = new Player(avi, new Date(2001, 01, 01));
+        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), false);
+        SystemUser avi = new SystemUser("AviCohen", "Avi Cohen", false);
+        Player player1 = new Player(avi, new Date(2001, 01, 01), false);
         avi.addNewRole(player1);
         EntityManager.getInstance().addUser(avi);
         firstTeam.addTeamPlayer(toRole, player1);
@@ -252,6 +250,11 @@ public class EntityManager {
     // otherwise ask dbManager.getUserDetails(String username) and receive all Details to create user system
     // then ask dbManager.getUserRoles(String username) - ask dbManager for each role Details.
     public SystemUser getUser(String username) {
+        for (SystemUser su : allUsers) {
+            if (su.getUsername().equals(username)) {
+                return su;
+            }
+        }
         List<Pair<String, String>> userDetails = null;
         try {
             userDetails = DBManager.getInstance().getUser(username);
@@ -263,11 +266,6 @@ public class EntityManager {
         SystemUser systemUser = reCreateSystemUser(userDetails);
         reCreateSystemUserRole(systemUser, rolesDetails);
 
-        for (SystemUser su : allUsers) {
-            if (su.getUsername().equals(username)) {
-                return su;
-            }
-        }
         return systemUser;
         //return null;
     }
