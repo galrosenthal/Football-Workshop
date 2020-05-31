@@ -24,28 +24,28 @@ public class TOController {
         {
             return false;
         }
+
+        if(!(closeOrReopen.equals("close") || closeOrReopen.equals("reopen"))){
+            String msg = "Expected \"close\" or \"reopen\" command";
+            SystemLoggerManager.logError(TOController.class, msg);
+            throw new Exception(msg);
+        }
+
         Team chosenTeam;
-        if(closeOrReopen.equals("reopen")){
-            chosenTeam = getClosedTeamByChoice(myTeamOwner);
+        chosenTeam = Controller.getTeamByChoice(myTeamOwner);
+        if(chosenTeam == null)
+        {
+            UIController.showNotification(systemUser.getUsername() + " has no teams");
+            return false;
         }
         else {
             if (closeOrReopen.equals("close")) {
-                chosenTeam = Controller.getTeamByChoice(myTeamOwner);
-                if(chosenTeam == null)
-                {
-                    UIController.showNotification(systemUser.getUsername() + " has no teams");
-                    return false;
-                }
                 if (chosenTeam.getStatus() != TeamStatus.OPEN) {
                     UIController.showNotification("Cannot perform action on closed team.");
                     return false; //cannot perform action on closed team.
                 }
             }
-            else{
-                String msg = "Expected \"close\" or \"reopen\" command";
-                SystemLoggerManager.logError(TOController.class, msg);
-                throw new Exception(msg);
-            }
+
         }
 
         boolean choice = UIController.receiveChoice("Are you sure you want to "+closeOrReopen+" the team \""+
