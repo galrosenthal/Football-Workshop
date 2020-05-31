@@ -148,6 +148,7 @@ public class Game extends Observable {
             throw new IllegalArgumentException("minute must be positive integer");
         }
         getEventsLogger().logGoal(scoringTeam, scoredOnTeam, playerScored, minute);
+        EntityManager.getInstance().updateGoalEvent(this, scoringTeam,scoredOnTeam ,playerScored.getSystemUser().getUsername(), minute);
         String notification = scoringTeam.getTeamName() + " scored on " + scoredOnTeam.getTeamName();
         notifyObservers(notification);
     }
@@ -167,6 +168,7 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
+        EntityManager.getInstance().updateCardEvent(this, cardType, player.getSystemUser().getUsername(), minute);
         getEventsLogger().logCardEvent(cardType, player, minute);
     }
 
@@ -184,6 +186,7 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
+        EntityManager.getInstance().updateOffsideEvent(this,teamWhoCommitted,minute);
         getEventsLogger().logOffsideEvent(teamWhoCommitted, minute);
     }
 
@@ -201,6 +204,7 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
+        EntityManager.getInstance().updatePenaltyEvent(this, teamWhoCommitted, minute);
         getEventsLogger().logPenaltyEvent(teamWhoCommitted, minute);
     }
 
@@ -226,6 +230,7 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
+        EntityManager.getInstance().updateSwitchEvent(this, teamWhoCommitted,enteringPlayer,exitingPlayer ,minute);
         getEventsLogger().logSwitchPlayersEvent(teamWhoCommitted, enteringPlayer, exitingPlayer, minute);
     }
 
@@ -243,6 +248,7 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
+        EntityManager.getInstance().addInjuryEvent(this, player ,minute);
         getEventsLogger().logInjuryEvent(player, minute);
     }
 

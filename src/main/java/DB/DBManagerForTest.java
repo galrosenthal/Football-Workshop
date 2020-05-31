@@ -1,5 +1,6 @@
 package DB;
 
+import DB.Tables_Test.enums.EventCardType;
 import DB.Tables_Test.enums.UserRolesRoleType;
 import DB.Tables_Test.enums.CoachQualification;
 import DB.Tables_Test.enums.RefereeTraining;
@@ -19,9 +20,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import static DB.Tables.Tables.GAME;
-import static DB.Tables.Tables.REFEREE_IN_GAME;
 import static DB.Tables_Test.Tables.*;
+
 import static org.jooq.impl.DSL.row;
 import static org.jooq.impl.DSL.select;
 
@@ -398,7 +398,7 @@ public class DBManagerForTest extends DBManager {
 
             try {
                 create.insertInto(USER_ROLES, USER_ROLES.USERNAME, USER_ROLES.ROLE_TYPE).values(username, UserRolesRoleType.PLAYER).execute();
-                create.insertInto(PLAYER, PLAYER.USERNAME, PLAYER.BIRTHDAY).values(username, this.convertToLocalDateViaInstant(bday)).execute();
+                create.insertInto(PLAYER, PLAYER.USERNAME, PLAYER.BIRTHDAY).values(username, convertToLocalDateViaInstant(bday)).execute();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -838,7 +838,7 @@ public class DBManagerForTest extends DBManager {
         DSLContext create = DBHandler.getContext();
         try {
             create.deleteFrom(MANAGER_IN_TEAMS).where(MANAGER_IN_TEAMS.USERNAME.eq(username).and(MANAGER_IN_TEAMS.TEAM_NAME.eq(teamName))).execute();
-            if (this.isTeamMangerInOtherTeam(username)) {
+            if (isTeamMangerInOtherTeam(username)) {
                 create.deleteFrom(USER_ROLES).where(USER_ROLES.USERNAME.eq(username).and(USER_ROLES.ROLE_TYPE.eq(UserRolesRoleType.TEAM_MANAGER))).execute();
             }
             return true;
@@ -900,7 +900,7 @@ public class DBManagerForTest extends DBManager {
         DSLContext create = DBHandler.getContext();
         try {
             create.deleteFrom(OWNED_TEAMS).where(OWNED_TEAMS.USERNAME.eq(username).and(OWNED_TEAMS.TEAM_NAME.eq(teamName))).execute();
-            if (this.isTeamOwnedOtherTeam(username)) {
+            if (isTeamOwnedOtherTeam(username)) {
                 create.deleteFrom(USER_ROLES).where(USER_ROLES.USERNAME.eq(username).and(USER_ROLES.ROLE_TYPE.eq(UserRolesRoleType.TEAM_OWNER))).execute();
             }
             return true;
@@ -933,7 +933,7 @@ public class DBManagerForTest extends DBManager {
 
     @Override
     public List<HashMap<String, String>> getTeamsPerSeason(String years, String league) {
-        int seasonID = this.getSeasonId(league, years);
+        int seasonID = getSeasonId(league, years);
         List<HashMap<String, String>> teamsDetails = new ArrayList<>();
         DSLContext create = DBHandler.getContext();
         Result<?> records = create.select().from(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.SEASON_ID.eq(seasonID)).fetch();
@@ -1077,7 +1077,7 @@ public class DBManagerForTest extends DBManager {
 
     @Override
     public List<HashMap<String, String>> getAllStadiumTeams(String name, String location) {
-        int stadiumID = this.getStadiumId(name, location);
+        int stadiumID = getStadiumId(name, location);
         List<HashMap<String, String>> teamsDetails = new ArrayList<>();
         DSLContext create = DBHandler.getContext();
         Result<?> records = create.select().from(STADIUM_HOME_TEAMS).where(STADIUM_HOME_TEAMS.STADIUM_ID.eq(stadiumID)).fetch();
@@ -1173,7 +1173,7 @@ public class DBManagerForTest extends DBManager {
 
     @Override
     public boolean addRefereeToSeason(String username, String leagueName, String seasonYears) {
-        int seasonID = this.getSeasonId(leagueName, seasonYears);
+        int seasonID = getSeasonId(leagueName, seasonYears);
         DSLContext create = DBHandler.getContext();
 
         try {
@@ -1460,6 +1460,131 @@ public class DBManagerForTest extends DBManager {
         DSLContext create = DBHandler.getContext();
         try{
             create.update(GAME).set(GAME.END_DATE,endGameDate).where(GAME.GAME_ID.eq(gameId)).execute();
+            create.update(GAME).set(GAME.FINISHED,true).where(GAME.GAME_ID.eq(gameId)).execute();
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateCardEvent(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, String cardType, String username, int minute) {
+        int gameId = getGameID(stadiumName,stadiumLocation,homeTeamName,awayTeamName);
+        DSLContext create = DBHandler.getContext();
+        try{
+            if(cardType.toLowerCase().equals("yellow"))
+            {
+                create.insertInto(EVENT_CARD,EVENT_CARD.GAME_ID,
+                        EVENT_CARD.TYPE, EVENT_CARD.OFFENDER_NAME,
+                        EVENT_GOAL.MINUTE)
+                        .values(gameId,EventCardType.YELLOW,username,minute).execute();
+            }
+            else
+            {
+                create.insertInto(EVENT_CARD,EVENT_CARD.GAME_ID,
+                        EVENT_CARD.TYPE, EVENT_CARD.OFFENDER_NAME,
+                        EVENT_GOAL.MINUTE)
+                        .values(gameId,EventCardType.RED,username,minute).execute();
+            }
+
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateGoalEvent(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName,
+                                   String scoringTeam, String scoredOnTeam, String scorrerUsername, int minute) {
+        int gameId = getGameID(stadiumName,stadiumLocation,homeTeamName,awayTeamName);
+        DSLContext create = DBHandler.getContext();
+
+        try{
+            create.insertInto(EVENT_GOAL,EVENT_GOAL.GAME_ID,
+                    EVENT_GOAL.SCORED_TEAM, EVENT_GOAL.SCORED_ON_TEAM,EVENT_GOAL.SCORER_NAME,
+                    EVENT_GOAL.MINUTE)
+                    .values(gameId,scoringTeam,scoredOnTeam, scorrerUsername,minute).execute();
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateOffsideEvent(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, String teamWhoCommitted, int minute) {
+        int gameId = getGameID(stadiumName,stadiumLocation,homeTeamName,awayTeamName);
+        DSLContext create = DBHandler.getContext();
+
+        try{
+            create.insertInto(EVENT_OFFSIDE,EVENT_OFFSIDE.GAME_ID,
+                    EVENT_OFFSIDE.TEAM_NAME,EVENT_OFFSIDE.MINUTE)
+                    .values(gameId,teamWhoCommitted,minute).execute();
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updatePenaltyEvent(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, String teamWhoCommitted, int minute) {
+        int gameId = getGameID(stadiumName,stadiumLocation,homeTeamName,awayTeamName);
+        DSLContext create = DBHandler.getContext();
+
+        try{
+            create.insertInto(EVENT_PENALTY,EVENT_PENALTY.GAME_ID,
+                    EVENT_PENALTY.TEAM_NAME,EVENT_PENALTY.MINUTE)
+                    .values(gameId,teamWhoCommitted,minute).execute();
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateSwitchPlayerEvent(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, String teamWhoCommitted
+            , String enteringPlayerUsername, String exitingPlayerUsername, int minute) {
+        int gameId = getGameID(stadiumName,stadiumLocation,homeTeamName,awayTeamName);
+        DSLContext create = DBHandler.getContext();
+
+        try{
+            create.insertInto(EVENT_SWITCH_PLAYERS,EVENT_SWITCH_PLAYERS.GAME_ID,
+                    EVENT_SWITCH_PLAYERS.TEAM_NAME,EVENT_SWITCH_PLAYERS.ENTERING_PLAYER,
+                    EVENT_SWITCH_PLAYERS.EXITING_PLAYER,EVENT_SWITCH_PLAYERS.MINUTE)
+                    .values(gameId,teamWhoCommitted,enteringPlayerUsername,exitingPlayerUsername,minute).execute();
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean addInjuryEvent(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, String username, int minute) {
+        int gameId = getGameID(stadiumName,stadiumLocation,homeTeamName,awayTeamName);
+        DSLContext create = DBHandler.getContext();
+
+        try{
+            create.insertInto(EVENT_INJURY,EVENT_INJURY.GAME_ID,
+                    EVENT_INJURY.INJURED_NAME,EVENT_INJURY.MINUTE)
+                    .values(gameId,username,minute).execute();
             return true;
         }
         catch (Exception e)

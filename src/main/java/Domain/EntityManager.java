@@ -1673,8 +1673,39 @@ public class EntityManager{
         return referees;
     }
 
-    public void updateEndGame(Game game, Date endDate) {
-        DBManager.getInstance().updateEndGame(game.getStadium().getName(),game.getStadium().getLocation(),
+    public boolean updateEndGame(Game game, Date endDate) {
+        return DBManager.getInstance().updateEndGame(game.getStadium().getName(),game.getStadium().getLocation(),
                 game.getHomeTeam().getTeamName(),game.getAwayTeam().getTeamName(),endDate);
+    }
+
+    public boolean updateCardEvent(Game game, String cardType, String username, int minute) {
+        return DBManager.getInstance().updateCardEvent(game.getStadium().getName(),game.getStadium().getLocation(),
+                game.getHomeTeam().getTeamName(),game.getAwayTeam().getTeamName(),cardType, username,minute);
+    }
+
+    public boolean updateGoalEvent(Game game, Team scoringTeam, Team scoredOnTeam, String scorrerUsername, int minute) {
+        return DBManager.getInstance().updateGoalEvent(game.getStadium().getName(),game.getStadium().getLocation(),
+                game.getHomeTeam().getTeamName(),game.getAwayTeam().getTeamName(),scoringTeam.getTeamName(),scoredOnTeam.getTeamName(),scorrerUsername,minute);
+    }
+
+    public boolean updateOffsideEvent(Game game, Team teamWhoCommitted, int minute) {
+        return DBManager.getInstance().updateOffsideEvent(game.getStadium().getName(),game.getStadium().getLocation(),
+                game.getHomeTeam().getTeamName(),game.getAwayTeam().getTeamName(),teamWhoCommitted.getTeamName(),minute);
+    }
+
+    public boolean updatePenaltyEvent(Game game, Team teamWhoCommitted, int minute) {
+        return DBManager.getInstance().updatePenaltyEvent(game.getStadium().getName(),game.getStadium().getLocation(),
+                game.getHomeTeam().getTeamName(),game.getAwayTeam().getTeamName(),teamWhoCommitted.getTeamName(),minute);
+    }
+
+    public boolean updateSwitchEvent(Game game, Team teamWhoCommitted, Player enteringPlayer, Player exitingPlayer, int minute) {
+        return DBManager.getInstance().updateSwitchPlayerEvent(game.getStadium().getName(),game.getStadium().getLocation(),
+                game.getHomeTeam().getTeamName(),game.getAwayTeam().getTeamName(),teamWhoCommitted.getTeamName(),
+                enteringPlayer.getSystemUser().getUsername(),exitingPlayer.getSystemUser().getUsername(),minute);
+    }
+
+    public boolean addInjuryEvent(Game game, Player player, int minute) {
+        return DBManager.getInstance().addInjuryEvent(game.getStadium().getName(),game.getStadium().getLocation(),
+                game.getHomeTeam().getTeamName(),game.getAwayTeam().getTeamName(),player.getSystemUser().getUsername(),minute);
     }
 }

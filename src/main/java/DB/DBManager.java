@@ -3,15 +3,11 @@ package DB;
 import static DB.Tables.Tables.*;
 import static org.jooq.impl.DSL.*;
 
-import DB.Tables.enums.CoachQualification;
-import DB.Tables.enums.RefereeTraining;
-import DB.Tables.enums.TeamStatus;
-import DB.Tables.enums.UserRolesRoleType;
+import DB.Tables.enums.*;
 
 import DB.Tables.tables.Stadium;
 import Domain.Exceptions.GameNotFoundException;
 import Domain.Exceptions.UserNotFoundException;
-import Domain.Game.Game;
 import Domain.Pair;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -1539,7 +1535,7 @@ public class DBManager {
             return new ArrayList<>();
         }
         return  records.getValues(REFEREE_IN_GAME.USERNAME);
-        
+
     }
 
     public boolean updateEndGame(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, Date endDate) {
@@ -1549,6 +1545,124 @@ public class DBManager {
         try{
             create.update(GAME).set(GAME.END_DATE,endGameDate).where(GAME.GAME_ID.eq(gameId)).execute();
             create.update(GAME).set(GAME.FINISHED,true).where(GAME.GAME_ID.eq(gameId)).execute();
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateCardEvent(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, String cardType, String username, int minute) {
+        int gameId = getGameID(stadiumName,stadiumLocation,homeTeamName,awayTeamName);
+        DSLContext create = DBHandler.getContext();
+        try{
+            if(cardType.toLowerCase().equals("yellow"))
+            {
+                create.insertInto(EVENT_CARD,EVENT_CARD.GAME_ID,
+                        EVENT_CARD.TYPE, EVENT_CARD.OFFENDER_NAME,
+                        EVENT_GOAL.MINUTE)
+                        .values(gameId,EventCardType.YELLOW,username,minute).execute();
+            }
+            else
+            {
+                create.insertInto(EVENT_CARD,EVENT_CARD.GAME_ID,
+                        EVENT_CARD.TYPE, EVENT_CARD.OFFENDER_NAME,
+                        EVENT_GOAL.MINUTE)
+                        .values(gameId,EventCardType.RED,username,minute).execute();
+            }
+
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateGoalEvent(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName,
+                                   String scoringTeam, String scoredOnTeam, String scorrerUsername, int minute) {
+        int gameId = getGameID(stadiumName,stadiumLocation,homeTeamName,awayTeamName);
+        DSLContext create = DBHandler.getContext();
+
+        try{
+            create.insertInto(EVENT_GOAL,EVENT_GOAL.GAME_ID,
+                    EVENT_GOAL.SCORED_TEAM, EVENT_GOAL.SCORED_ON_TEAM,EVENT_GOAL.SCORER_NAME,
+                    EVENT_GOAL.MINUTE)
+                    .values(gameId,scoringTeam,scoredOnTeam, scorrerUsername,minute).execute();
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateOffsideEvent(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, String teamWhoCommitted, int minute) {
+        int gameId = getGameID(stadiumName,stadiumLocation,homeTeamName,awayTeamName);
+        DSLContext create = DBHandler.getContext();
+
+        try{
+            create.insertInto(EVENT_OFFSIDE,EVENT_OFFSIDE.GAME_ID,
+                    EVENT_OFFSIDE.TEAM_NAME,EVENT_OFFSIDE.MINUTE)
+                    .values(gameId,teamWhoCommitted,minute).execute();
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updatePenaltyEvent(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, String teamWhoCommitted, int minute) {
+        int gameId = getGameID(stadiumName,stadiumLocation,homeTeamName,awayTeamName);
+        DSLContext create = DBHandler.getContext();
+
+        try{
+            create.insertInto(EVENT_PENALTY,EVENT_PENALTY.GAME_ID,
+                    EVENT_PENALTY.TEAM_NAME,EVENT_PENALTY.MINUTE)
+                    .values(gameId,teamWhoCommitted,minute).execute();
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateSwitchPlayerEvent(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, String teamWhoCommitted
+            , String enteringPlayerUsername, String exitingPlayerUsername, int minute) {
+        int gameId = getGameID(stadiumName,stadiumLocation,homeTeamName,awayTeamName);
+        DSLContext create = DBHandler.getContext();
+
+        try{
+            create.insertInto(EVENT_SWITCH_PLAYERS,EVENT_SWITCH_PLAYERS.GAME_ID,
+                    EVENT_SWITCH_PLAYERS.TEAM_NAME,EVENT_SWITCH_PLAYERS.ENTERING_PLAYER,
+                    EVENT_SWITCH_PLAYERS.EXITING_PLAYER,EVENT_SWITCH_PLAYERS.MINUTE)
+                    .values(gameId,teamWhoCommitted,enteringPlayerUsername,exitingPlayerUsername,minute).execute();
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean addInjuryEvent(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, String username, int minute) {
+        int gameId = getGameID(stadiumName,stadiumLocation,homeTeamName,awayTeamName);
+        DSLContext create = DBHandler.getContext();
+
+        try{
+            create.insertInto(EVENT_INJURY,EVENT_INJURY.GAME_ID,
+                    EVENT_INJURY.INJURED_NAME,EVENT_INJURY.MINUTE)
+                    .values(gameId,username,minute).execute();
             return true;
         }
         catch (Exception e)
