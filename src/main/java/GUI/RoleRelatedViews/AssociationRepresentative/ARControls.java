@@ -20,6 +20,7 @@ public class ARControls extends VerticalLayout {
         setJustifyContentMode(JustifyContentMode.START);
         setAlignItems(Alignment.START);
         buildUI();
+        this.setId("ARControls");
     }
 
     private void buildUI() {
@@ -41,6 +42,7 @@ public class ARControls extends VerticalLayout {
     private void createActivateSchedulingPolicyButton() {
         String buttonTaskName = "Activate Scheduling Policy";
         Button removeTeamsFromSeason = new Button(buttonTaskName);
+        removeTeamsFromSeason.setId("activeSchedulingPolicy");
         removeTeamsFromSeason.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -62,6 +64,7 @@ public class ARControls extends VerticalLayout {
     private void createChangePointsPolicyButton() {
         String buttonTaskName = "Set Points Policy";
         Button removeTeamsFromSeason = new Button(buttonTaskName);
+        removeTeamsFromSeason.setId("setPointsPolicy");
         removeTeamsFromSeason.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -83,6 +86,7 @@ public class ARControls extends VerticalLayout {
     private void createRemoveTeamsFromSeasonButton() {
         String buttonTaskName = "Remove Teams To Season";
         Button removeTeamsFromSeason = new Button(buttonTaskName);
+        removeTeamsFromSeason.setId("removeTeamsFromSeason");
         removeTeamsFromSeason.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -104,6 +108,7 @@ public class ARControls extends VerticalLayout {
     private void createAddTeamsToSeasonButton() {
         String buttonTaskName = "Add Teams To Season";
         Button addTeamsToSeason = new Button(buttonTaskName);
+        addTeamsToSeason.setId("addTeamsToSeason");
         addTeamsToSeason.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -125,6 +130,7 @@ public class ARControls extends VerticalLayout {
     private void createAssignRefereeButton() {
         String buttonTaskName = "Assign a Referee";
         Button assignReferee = new Button(buttonTaskName);
+        assignReferee.setId("assignReferee");
         assignReferee.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -146,6 +152,7 @@ public class ARControls extends VerticalLayout {
     private void createRemoveRefereeButton() {
         String buttonTaskName = "Remove a Referee";
         Button removeReferee = new Button(buttonTaskName);
+        removeReferee.setId("removeReferee");
         removeReferee.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -167,6 +174,7 @@ public class ARControls extends VerticalLayout {
     private void createAddRefereeButton() {
         String buttonTaskName = "Add New Referee";
         Button addReferee = new Button(buttonTaskName);
+        addReferee.setId("addReferee");
         addReferee.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -188,6 +196,7 @@ public class ARControls extends VerticalLayout {
     private void createAddSeasonToLeagueButton() {
         String buttonTaskName = "Add Season to League";
         Button addSeasonToLeague = new Button(buttonTaskName);
+        addSeasonToLeague.setId("addSeasonToLeague");
         addSeasonToLeague.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -209,6 +218,7 @@ public class ARControls extends VerticalLayout {
     private void createAddLeaugeButton() {
         String buttonTaskName = "Add New Leauge";
         Button addNewLeague = new Button(buttonTaskName);
+        addNewLeague.setId("addNewLeague");
         addNewLeague.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -232,6 +242,7 @@ public class ARControls extends VerticalLayout {
 
     private void createDefineGamesPolicyButton() {
         Button defineGamePolicy = new Button("Create New Games Policy");
+        defineGamePolicy.setId("defineGamePolicy");
         defineGamePolicy.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -252,6 +263,7 @@ public class ARControls extends VerticalLayout {
 
     private void createDefinePointsPolicyButton() {
         Button definePointPolicy = new Button("Create New Points Policy");
+        definePointPolicy.setId("definePointPolicy");
         definePointPolicy.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -272,6 +284,7 @@ public class ARControls extends VerticalLayout {
 
     private void createRegNewTeamButton() {
         Button regNewTeam = new Button("Create a new Team");
+        regNewTeam.setId("regNewTeam");
         regNewTeam.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();

@@ -1,23 +1,16 @@
 package Service;
 
 import GUI.FootballMain;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.server.Command;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.server.WrappedSession;
 
 import java.util.Collection;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import static java.lang.Thread.sleep;
 
-import java.util.Date;
-import java.util.Scanner;
 
 public class UIController {
 
@@ -32,6 +25,7 @@ public class UIController {
     public static final String SEND_TYPE_FOR_GUI_MULTIPLE_STRINGS = "multiple";
     public static final String SEND_TYPE_FOR_GUI_MULTIPLE_INPUTS = "multiple_inputs";
     public static final String CANCEL_TASK_VALUE = "canceled";
+    //public static final String SEND_TYPE_FOR_GUI_FILE_DOWNLOAD = "download_file";
 
 
     public static void setSelector(int selector) {
@@ -599,11 +593,14 @@ public class UIController {
 
     }
 
-    public static void showAlert(UI sessionUI, String alert) {
+    public static void showAlert(VaadinSession sessionUI, String alert) {
         if(!isTest) {
-            sessionUI.access(() -> {
-                FootballMain.showAlert(alert,sessionUI);
-                sessionUI.push();
+            sessionUI.access(()->{
+                Collection<UI> uis = sessionUI.getUIs();
+                UI currUI = (UI)uis.toArray()[uis.toArray().length-1];
+                currUI.access(() -> {
+                    FootballMain.showAlert(alert,currUI);
+                });
             });
         }
         else
@@ -718,14 +715,24 @@ public class UIController {
      * Get a path to a folder, from the user.
      * @return String that represents the path to a folder.
      */
-    public static String receiveFolderPath() {
+    public static void downloadReport(String report) {
         if (!isTest) {
-            //TODO: fill
+            UI lastUI = UI.getCurrent();
+            VaadinSession se = VaadinSession.getCurrent();
+            se.access(() -> {
+                UI.setCurrent(lastUI);
+                VaadinSession.setCurrent(se);
+                FootballMain.downloadReport(report,lastUI);
+            });
+
+
         } else {
-            if(selector == 10411)
-                return "."; //current folder path
+            if(selector == 10411){
+
+            }
+              //  return folderPath; //current folder path
         }
-        return null;
+
     }
 
     public static String receiveUserLoginInfo(String message) {
@@ -769,9 +776,7 @@ public class UIController {
 
     public static void showModal(Collection<String>... valuesToDisplay) {
 
-            //FootballMain.showModal(s,valuesToDisplay);
         UI lastUI = UI.getCurrent();
-
         VaadinSession se = VaadinSession.getCurrent();
         se.access(() -> FootballMain.showModal(valuesToDisplay));
     }

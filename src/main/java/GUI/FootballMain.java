@@ -4,12 +4,12 @@ package GUI;
 import Domain.SystemLogger.LogoutLogMsg;
 import Domain.SystemLogger.SystemLoggerManager;
 import GUI.About.AboutView;
-import GUI.Registration.ConfirmPassValidator;
 import GUI.RoleRelatedViews.AssociationRepresentative.ARControls;
 import GUI.RoleRelatedViews.Referee.RefereeControls;
 import GUI.RoleRelatedViews.TeamOwner.TOControls;
 import Service.MainController;
 import Service.UIController;
+//import com.sun.jmx.snmp.Timestamp;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -19,33 +19,36 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
-import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.PWA;
+import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.server.Version;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CancellationException;
 
 
 /**
@@ -68,7 +71,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
     public FootballMain() {
 // Header of the menu (the navbar)
-
+        this.setId("footbalMain");
         // menu toggle
         final DrawerToggle drawerToggle = new DrawerToggle();
         drawerToggle.addClassName("menu-toggle");
@@ -87,10 +90,12 @@ public class FootballMain extends AppLayout implements RouterLayout{
         final Image image = new Image(resolvedImage, "");
         final Label title = new Label("Football Workshop");
         loginBtn = new Button("Login");
+        loginBtn.setId("login");
         loginBtn.addClickListener(e -> {
             getUI().get().navigate("Login");
         });
         signupBtn = new Button("Sign Up");
+        signupBtn.setId("signup");
         signupBtn.addClickListener(e -> {
             getUI().get().navigate("Registration");
         });
@@ -124,6 +129,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
         // Create logout button but don't add it yet; admin view might be added
         // in between (see #onAttach())
         logoutButton = createMenuButton("Logout", VaadinIcon.SIGN_OUT.create());
+        logoutButton.setId("logoutBtn");
         logoutButton.setEnabled(false);
         logoutButton.addClickListener(e -> logout());
         logoutButton.getElement().setAttribute("title", "Logout (Ctrl+L)");
@@ -135,6 +141,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
             VerticalLayout alertView = new VerticalLayout();
             Label msg = new Label(message);
             Button close = new Button("Close");
+            close.setId("close");
             close.addClickListener(e -> {
                 alertWindow.close();
             });
@@ -155,22 +162,26 @@ public class FootballMain extends AppLayout implements RouterLayout{
             loginDialog.setCloseOnOutsideClick(false);
 
             VerticalLayout usernameAndPassword = new VerticalLayout();
-
+            usernameAndPassword.setId("loginPassword");
             usernameAndPassword.add(new Label(message.split(UIController.STRING_DELIMETER)[0]));
             TextField username = new TextField();
+            username.setId("1");
             usernameAndPassword.add(username);
             usernameAndPassword.add(new Label(message.split(UIController.STRING_DELIMETER)[1]));
             PasswordField password = new PasswordField();
+            password.setId("2");
             usernameAndPassword.add(password);
 
             HorizontalLayout buttons = new HorizontalLayout();
             Button submit = new Button("Submit");
+            submit.setId("submit");
             submit.addClickListener(e -> {
                returnedValue.append(username.getValue()).append(UIController.STRING_DELIMETER).append(password.getValue());
                loginDialog.close();
                callingThread.interrupt();
             });
             Button close = new Button("Close");
+            close.setId("close");
             close.addClickListener(e -> {
                 loginDialog.close();
                 returnedValue.append(UIController.CANCEL_TASK_VALUE);
@@ -198,12 +209,14 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
             HorizontalLayout buttons = new HorizontalLayout();
             Button yes = new Button("Yes");
+            yes.setId("yes");
             yes.addClickListener(e -> {
                 choiceSelected.append("y");
                 choiceDialog.close();
                 callingThread.interrupt();
             });
             Button no = new Button("No");
+            no.setId("no");
             no.addClickListener(e -> {
                 choiceDialog.close();
                 choiceSelected.append("No");
@@ -219,6 +232,50 @@ public class FootballMain extends AppLayout implements RouterLayout{
         });
     }
 
+    public static void downloadReport(String report,UI lastUI) {
+        //String timeStamp = (new Timestamp(new Date().getTime())).toString();
+        String [] gameReport = report.split(UIController.STRING_DELIMETER);
+        String reportText = gameReport[0];
+        String gameDate = gameReport[1];
+        lastUI.access(() -> {
+            Dialog newWindow = new Dialog();
+            newWindow.setCloseOnOutsideClick(false);
+            newWindow.setCloseOnEsc(false);
+            newWindow.setVisible(true);
+            VerticalLayout vl = new VerticalLayout();
+            newWindow.setCloseOnEsc(false);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            DataOutputStream out = new DataOutputStream(byteArrayOutputStream);
+
+
+            InputStream is = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            StreamResource myResource = new StreamResource(report, () -> is);
+            Anchor downloadLink = new Anchor(new StreamResource("GameReport_" + gameDate + ".txt", () -> createResource(reportText)), "");
+            downloadLink.setId("timeStamp");
+            downloadLink.getElement().getStyle().set("display", "none");
+            downloadLink.getElement().setAttribute("download", true);
+            vl.add(downloadLink);
+            Label lbl = new Label("The report is Downloading!!");
+            lbl.setWidth("100%");
+            vl.add(lbl);
+            Button ok = new Button("Ok");
+            ok.setId("ok");
+            ok.addClickListener(e -> {
+                newWindow.close();
+            });
+            Page page = UI.getCurrent().getPage();
+            page.executeJavaScript("document.getElementById('timeStamp').click();");
+
+            newWindow.add(vl);
+            newWindow.add(ok);
+            newWindow.open();
+            lastUI.push();
+        });
+    }
+
+    private static InputStream createResource(String report) {
+        return new ByteArrayInputStream(report.getBytes(StandardCharsets.UTF_8));
+    }
 
     private void createNavItems() {
         VaadinSession userSession = VaadinSession.getCurrent();
@@ -271,9 +328,13 @@ public class FootballMain extends AppLayout implements RouterLayout{
             UI.setCurrent(lastUI);
             VaadinSession.setCurrent(userSession);
             System.out.println("Trying to logout");
-            if(MainController.logout(username)){
+            if(MainController.logout(username,userSession)){
                 System.out.println("MainController logged out successfully");
-                userSession.access(()-> userSession.setAttribute(USERNAME_ATTRIBUTE_NAME, null));
+                userSession.access(()-> {
+//                    if(AllSubscribers.getInstance().isLastConnection(username)){
+                    userSession.setAttribute(USERNAME_ATTRIBUTE_NAME, null);
+//                    }
+                });
                 lastUI.accessSynchronously(() -> {
 
                     getUI().get().navigate("");
@@ -301,7 +362,9 @@ public class FootballMain extends AppLayout implements RouterLayout{
         final RouterLink routerLink = new RouterLink(null, viewClass);
         routerLink.setClassName("menu-link");
         routerLink.add(icon);
-        routerLink.add(new Span(caption));
+        Span span = new Span(caption);
+        span.setId(caption.toLowerCase());
+        routerLink.add(span);
         icon.setSize("24px");
         return routerLink;
     }
@@ -349,6 +412,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
         if(msg != null)
         {
             Notification notification = new Notification(msg,2500, Notification.Position.TOP_CENTER);
+            notification.setId("notification");
             if(msg.toLowerCase().contains("success"))
             {
                 notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
@@ -399,15 +463,17 @@ public class FootballMain extends AppLayout implements RouterLayout{
             ComboBox<String>[] multiInputsFromList = new ComboBox[numOfInputs];
 
             ComboBox<String> valuesForInt = new ComboBox<>();
+            valuesForInt.setId("valuesForInt");
             valuesForInt.setWidth("100%");
             MultiSelectListBox<String> valuesForString = new MultiSelectListBox<>();
-
+            valuesForString.setId("valuesForString");
             DatePicker picker = new DatePicker();
-
+            picker.setId("picker");
 
             Button submit = new Button("Submit");
+            submit.setId("submit");
             Button cancel = new Button("Cancel");
-
+            cancel.setId("cancel");
             cancel.addClickListener(e -> {
                 newWindow.close();
                 returnedValue.append(UIController.CANCEL_TASK_VALUE);
@@ -420,6 +486,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 {
                     if(displayValues.length <= 0)
                     {
+                        textFieldsArray[0].setId("firstTextField");
                         returnedValue.append(textFieldsArray[0].getValue());
 
                     }
@@ -464,6 +531,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
                 {
                     apendValuesToReturnValue(returnedValue, multiInputsFromList);
                 }
+
                 newWindow.close();
                 callingThread.interrupt();
 //            UI.setCurrent(lastUI);
@@ -562,6 +630,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
     private static void apendValuesToReturnValue(StringBuilder returnedValue, ComboBox<String>[] multiInputsFromList) {
         for (ComboBox<String> singleComboBox:
              multiInputsFromList) {
+            singleComboBox.setId(singleComboBox.getValue());
             returnedValue.append(singleComboBox.getValue()).append(UIController.STRING_DELIMETER);
         }
         returnedValue.setLength(returnedValue.length()-1);
@@ -582,6 +651,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
     private static void createMultiListInputs(VerticalLayout verticalLayout, int numOfInputs, ComboBox<String>[] multiInputsFromList, Button close, String[] messagesToDisplay, Collection<String>... displayValues) {
         for (int i = 0; i < numOfInputs; i++) {
             multiInputsFromList[i] = new ComboBox<>();
+            multiInputsFromList[i].setId(Integer.toString(i));
             verticalLayout.add(new Label(messagesToDisplay[i]));
             multiInputsFromList[i].setClearButtonVisible(true);
             multiInputsFromList[i].setItems(displayValues[i]);
@@ -625,6 +695,7 @@ public class FootballMain extends AppLayout implements RouterLayout{
     private static void createMultiStringInputs(VerticalLayout verticalLayout, int numOfInputs, TextField[] textFieldsArray, Button close, String[] messagesToDisplay) {
         for (int i = 0; i < numOfInputs; i++) {
             textFieldsArray[i] = new TextField();
+            textFieldsArray[i].setId(textFieldsArray[i].getValue());
             //textFieldsArray[i].setLabel(messagesToDisplay[i]);
             verticalLayout.add(new Label(messagesToDisplay[i]));
             textFieldsArray[i].setValueChangeMode(ValueChangeMode.EAGER);
@@ -651,12 +722,14 @@ public class FootballMain extends AppLayout implements RouterLayout{
 
             HorizontalLayout buttons = new HorizontalLayout();
             Button dismiss = new Button("Dismiss");
+            dismiss.setId("dismiss");
             dismiss.addClickListener(e -> {
                 confirmBox.close();
                 answer.append(UIController.CANCEL_TASK_VALUE);
             });
             dismiss.getElement().setAttribute("theme", "error tertiary");
             Button approve = new Button("Submit");
+            approve.setId("submit");
             approve.addClickListener(e -> {
                 System.out.println("FOOTBALL_MAIN: User confirmed");
                 confirmBox.close();
@@ -690,11 +763,14 @@ public class FootballMain extends AppLayout implements RouterLayout{
         }
 
         Button ok = new Button("Ok");
+        ok.setId("ok");
         ok.addClickListener(e -> { newWindow.close(); });
         vl.add(ok);
         newWindow.add(vl);
         newWindow.open();
     }
+
+
 }
 
 

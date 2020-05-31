@@ -86,22 +86,22 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>9.4.22.v20191022</version>
                 <configuration>
-<!--                    <scanIntervalSeconds>2</scanIntervalSeconds>-->
-<!--                    &lt;!&ndash; Use war output directory to get the webpack files &ndash;&gt;-->
-<!--                    <webAppConfig>-->
-<!--                        <allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>-->
-<!--                    </webAppConfig>-->
-<!--                    To Enable http on port 8080 insert the line: -->
-<!--                    ${project.basedir}/src/main/resources/jetty-http.xml,-->
+                    <!--                    <scanIntervalSeconds>2</scanIntervalSeconds>-->
+                    <!--                    &lt;!&ndash; Use war output directory to get the webpack files &ndash;&gt;-->
+                    <!--                    <webAppConfig>-->
+                    <!--                        <allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>-->
+                    <!--                    </webAppConfig>-->
+                    <!--                    To Enable http on port 8080 insert the line: -->
+                    <!--                    ${project.basedir}/src/main/resources/jetty-http.xml,-->
                     <jettyXml>
                         ${project.basedir}/src/main/resources/jetty.xml,${project.basedir}/src/main/resources/jetty-ssl.xml,${project.basedir}/src/main/resources/jetty-https.xml
                     </jettyXml>
                 </configuration>
-<!--                <configuration>-->
-<!--                    <httpConnector>-->
-<!--                        <port>80</port>-->
-<!--                    </httpConnector>-->
-<!--                </configuration>-->
+                <!--                <configuration>-->
+                <!--                    <httpConnector>-->
+                <!--                        <port>80</port>-->
+                <!--                    </httpConnector>-->
+                <!--                </configuration>-->
 
             </plugin>
 
@@ -237,7 +237,12 @@
             <version>1.6</version>
             <scope>compile</scope>
         </dependency>
-
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>3.0.0</version>
+            <!--            <scope>test</scope> -->
+        </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq</artifactId>
@@ -321,6 +326,10 @@
             </properties>
 
             <dependencies>
+                <dependency>
+                    <groupId>com.vaadin</groupId>
+                    <artifactId>vaadin-testbench</artifactId>
+                </dependency>
                 <dependency>
                     <groupId>com.vaadin</groupId>
                     <artifactId>flow-server-production-mode</artifactId>

@@ -3,7 +3,6 @@ package Service;
 import Domain.EntityManager;
 import Domain.Exceptions.NoRoleForUser;
 import Domain.Game.Game;
-import Domain.Game.Stadium;
 import Domain.Game.Team;
 import Domain.GameLogger.Event;
 import Domain.SystemLogger.*;
@@ -83,10 +82,10 @@ public class RefereeController {
             return false;
         }
 
-        String folderPath = UIController.receiveFolderPath();
         try {
             //produce the report
-            chosenGame.getGameReport().produceReport(folderPath);
+            String report = chosenGame.getGameReport().produceReport();
+            UIController.downloadReport(report);
         } catch (Exception e) {
             UIController.showNotification(e.getMessage());
             return false;
@@ -99,7 +98,7 @@ public class RefereeController {
     }
 
     /**
-     * Only for tests
+     * For test only
      */
 //    public static boolean alreadyARun = false;
 //    private static void createGameForTest() {

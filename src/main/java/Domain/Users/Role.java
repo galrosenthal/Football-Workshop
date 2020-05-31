@@ -1,5 +1,6 @@
 package Domain.Users;
 
+
 public abstract class Role {
     protected RoleTypes type;
 

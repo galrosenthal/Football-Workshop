@@ -1,19 +1,10 @@
 package GUI;
 
-import Service.AllSubscribers;
 import Service.MainController;
-import Service.UIController;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.login.AbstractLogin;
-import com.vaadin.flow.component.login.LoginForm;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.FlexLayout;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.router.PageTitle;
@@ -33,7 +24,9 @@ public class BootSystem extends VerticalLayout {
     }
 
     private void buildTheBootView() {
-        add(new H2("The System is not booted yet."));
+        H2 h2 = new H2("The System is not booted yet.");
+        h2.setId("bootH2");
+        add(h2);
         add(new H3("if you wish to boot the system, please use a System Admin user."));
 
         Button bootTheSystem = new Button("Boot the System");

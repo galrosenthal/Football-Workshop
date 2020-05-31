@@ -30,6 +30,7 @@ public class TOControls extends VerticalLayout {
     private void createModifyAssetButton() {
         String buttonTaskName = "Modify Team Asset";
         Button modifyAssetButton = new Button(buttonTaskName);
+        modifyAssetButton.setId("modifyTeamAsset");
         modifyAssetButton.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -51,6 +52,7 @@ public class TOControls extends VerticalLayout {
     private void createAddTeamAssetButton() {
         String buttonTaskName = "Add Team Asset";
         Button addTeamAssetButton = new Button(buttonTaskName);
+        addTeamAssetButton.setId("addTeamAsset");
         addTeamAssetButton.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -72,6 +74,7 @@ public class TOControls extends VerticalLayout {
     private void createAddAnotherTeamOwnerButton() {
         String buttonTaskName = "Add Another Team Owner";
         Button anotherTeamOwnerButton = new Button(buttonTaskName);
+        anotherTeamOwnerButton.setId("addAnotherTeamOwner");
         anotherTeamOwnerButton.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -93,6 +96,7 @@ public class TOControls extends VerticalLayout {
     private void createReopenTeamButton() {
         String buttonTaskName = "ReOpen Team";
         Button reopenTeamButton = new Button(buttonTaskName);
+        reopenTeamButton.setId("reopenTeam");
         reopenTeamButton.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();
@@ -114,6 +118,7 @@ public class TOControls extends VerticalLayout {
     private void createCloseTeamButton() {
         String buttonTaskName = "Close Team";
         Button closeTeamButton = new Button(buttonTaskName);
+        closeTeamButton.setId("closetTeam");
         closeTeamButton.addClickListener(e -> {
 
             UI lastUI = UI.getCurrent();

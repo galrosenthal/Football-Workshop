@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TeamOwner extends Role implements Subject {
 
-    //    private List<Team> ownedTeams;
+//    private List<Team> ownedTeams;
 //    private SystemUser appointedOwner; /** The team owner who appointed -this- team owner */
     private HashMap<Team, SystemUser> teamsAndAppointers;
 
@@ -94,7 +94,6 @@ public class TeamOwner extends Role implements Subject {
 
     /**
      * Get the SystemUser who appointed this team owner.
-     *
      * @return the SystemUser who appointed this team owner.
      */
     public SystemUser getAppointedOwner(Team ownedTeam) {
@@ -105,7 +104,6 @@ public class TeamOwner extends Role implements Subject {
 
     /**
      * Set the SystemUser who appointed this team owner.
-     *
      * @param appointedOwner SystemUser to set as the appointing team owner.
      * @return true if successfully seted.
      */
@@ -131,12 +129,13 @@ public class TeamOwner extends Role implements Subject {
 
     @Override
     public String toString() {
-        return "TeamOwner{" + this.getSystemUser().getName() + " }";
+        return "TeamOwner{"+ this.getSystemUser().getName() +" }";
     }
 
 
     /*notify teamOwners  and TeamMangers and systemAdmins - close team or reopen team*/
-    public void closeReopenTeam(Team team, String closeOrReopen) {
+    public void closeReopenTeam(Team team , String closeOrReopen)
+    {
         List<TeamOwner> teamOwners = new ArrayList<>();
         List<TeamManager> teamManagers = new ArrayList<>();
         EntityManager entityManager = EntityManager.getInstance();
@@ -144,16 +143,23 @@ public class TeamOwner extends Role implements Subject {
         List<SystemUser> systemUsers = new ArrayList<>();
         teamOwners.addAll(team.getTeamOwners());
         teamManagers.addAll(team.getTeamManagers());
-        for (int i = 0; i < teamOwners.size(); i++) {
-            systemUsers.add(teamOwners.get(i).getSystemUser());
+        for (int i = 0; i <teamOwners.size() ; i++) {
+            if(!systemUsers.contains(teamOwners.get(i).getSystemUser()))
+            {
+                systemUsers.add(teamOwners.get(i).getSystemUser());
+            }
         }
-        for (int i = 0; i < teamManagers.size(); i++) {
-            systemUsers.add(teamManagers.get(i).getSystemUser());
+        for (int i = 0; i <teamManagers.size() ; i++) {
+            if(!systemUsers.contains(teamManagers.get(i).getSystemUser())) {
+                systemUsers.add(teamManagers.get(i).getSystemUser());
+            }
         }
-        for (int i = 0; i < SystemAdmins.size(); i++) {
-            systemUsers.add(SystemAdmins.get(i).getSystemUser());
+        for (int i = 0; i <SystemAdmins.size() ; i++) {
+            if(!systemUsers.contains(SystemAdmins.get(i).getSystemUser())) {
+                systemUsers.add(SystemAdmins.get(i).getSystemUser());
+            }
         }
-        String alert = team.getTeamName() + " has been " + closeOrReopen;
+        String alert = team.getTeamName()+" has been "+ closeOrReopen;
         notifyObserver(systemUsers, alert);
     }
 

@@ -66,7 +66,7 @@ public class ControllerTest {
         Assert.assertEquals("nir", result2.getUsername());
         Assert.assertEquals("Nir", result2.getName());
         Assert.assertEquals(hashedPassword, result2.getPassword());
-        EntityManager.getInstance().logout(result2);
+//        EntityManager.getInstance().logout(result2);
         //password incorrect
         try{
             Controller.login("nir", "pswrdNotCorrect");

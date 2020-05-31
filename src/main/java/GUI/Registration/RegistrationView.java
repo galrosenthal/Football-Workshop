@@ -3,7 +3,6 @@ package GUI.Registration;
 import GUI.FootballMain;
 import GUI.NotRegiseredView;
 import Service.MainController;
-import Service.UIController;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -39,7 +38,7 @@ public class RegistrationView extends VerticalLayout {
         FormLayout layoutWithBinder = new FormLayout();
         add(layoutWithBinder);
         Binder<ValidatorUser> binder = new Binder<>();
-
+        this.setId("register");
 // The object that will be edited
 //        Unregistered contactBeingEdited = new Unregistered();
 
@@ -47,24 +46,31 @@ public class RegistrationView extends VerticalLayout {
         TextField username = new TextField();
         username.setValueChangeMode(ValueChangeMode.EAGER);
         username.setPlaceholder("Enter Username");
+        username.setId("username");
         TextField firstName = new TextField();
+        firstName.setId("firstName");
         firstName.setValueChangeMode(ValueChangeMode.EAGER);
         firstName.setPlaceholder("Enter Your First Name");
         TextField lastName = new TextField();
+        lastName.setId("lastName");
         lastName.setValueChangeMode(ValueChangeMode.EAGER);
         lastName.setPlaceholder("Enter Your Last Name");
         PasswordField pass = new PasswordField();
+        pass.setId("password");
         pass.setValueChangeMode(ValueChangeMode.EAGER);
         pass.setPlaceholder("Enter Password");
         PasswordField confirmPass = new PasswordField();
+        confirmPass.setId("confPass");
         confirmPass.setValueChangeMode(ValueChangeMode.EAGER);
         confirmPass.setPlaceholder("Confirm Password");
 
         EmailField email = new EmailField();
+        email.setId("email");
         email.setValueChangeMode(ValueChangeMode.LAZY);
         email.setPlaceholder("Enter Email Address");
 
         Checkbox wantEmail = new Checkbox();
+        wantEmail.setId("wantEmail");
         wantEmail.setLabel("Do you want to receive alerts by email?");
         VerticalLayout emailAndCheckBox = new VerticalLayout();
         emailAndCheckBox.add(email,wantEmail);
@@ -74,9 +80,11 @@ public class RegistrationView extends VerticalLayout {
         emailAndCheckBox.getElement().removeAttribute("theme");
 
         Button save = new Button("Save");
+        save.setId("save");
         Button reset = new Button("Reset");
+        reset.setId("reset");
         Button back = new Button("Back");
-
+        back.setId("back");
         layoutWithBinder.addFormItem(username, "Username");
         layoutWithBinder.addFormItem(firstName, "First name");
         layoutWithBinder.addFormItem(lastName, "Last name");

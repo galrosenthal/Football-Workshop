@@ -9,7 +9,6 @@ import Domain.Users.RoleTypes;
 import Domain.Users.SystemUser;
 import Domain.Game.Stadium;
 import Domain.Users.*;
-import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -18,7 +17,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EntityManager {
+public class EntityManager{
     private static EntityManager entityManagerInstance = null;
 
     private static final Pattern VALID_EMAIL_ADDRESS_REGEX =
@@ -31,27 +30,20 @@ public class EntityManager {
 
     private List<PointsPolicy> pointsPolicies;
     private List<SchedulingPolicy> schedulingPolicies;
-    private HashMap<SystemUser, Boolean> loggedInMap;
+//    private HashMap<SystemUser, Boolean> loggedInMap;
 
     private boolean isSystemBooted = false;
 
-    public boolean isLoggedIn() {
-        return loggedIn;
-    }
 
-    public void setLoggedIn(boolean loggedIn) {
-        this.loggedIn = loggedIn;
-    }
 
-    private boolean loggedIn = false;
+
 
     private EntityManager() {
         allUsers = new ArrayList<>();
         allLeagues = new HashSet<>();
         allTeams = new ArrayList<>();
         allStadiums = new ArrayList<>();
-        loggedInMap = new HashMap<>();
-        systemAdmins = new ArrayList<>();
+//        loggedInMap = new HashMap<>();
         pointsPolicies = new ArrayList<>();
         schedulingPolicies = new ArrayList<>();
     }
@@ -70,9 +62,83 @@ public class EntityManager {
             admin.addNewRole(new SystemAdmin(admin, true));
             admin.addNewRole(new AssociationRepresentative(admin, true));
             admin.addNewRole(new Referee(admin, RefereeQualification.VAR_REFEREE, true));
+            admin.addNewRole(new TeamOwner(admin));
+            createObjectsForGuiTests();
         }
 
         return entityManagerInstance;
+    }
+
+    private static void createObjectsForGuiTests() {
+        //AR Controls tests
+        Stadium stadium1 = new Stadium("stadium1","london");
+        Stadium stadium2 = new Stadium("stadium2","paris");
+        EntityManager.getInstance().addStadium(stadium1);
+        EntityManager.getInstance().addStadium(stadium2);
+
+        SystemUser user1 = new SystemUser("user1","Aa123456","Oran","oran@gmail.com",false);
+        EntityManager.getInstance().addUser(user1);
+        SystemUser user2 = new SystemUser("user2","Aa123456","Oran","oran@gmail.com",false);
+        EntityManager.getInstance().addUser(user2);
+        TeamOwner to1 = new TeamOwner(user1);
+        TeamOwner to2 = new TeamOwner(user2);
+        Team team1 = new Team("team1",to1);
+        Team team2 = new Team("team2",to2);
+
+        for (int i=0; i < 12;i++){
+            SystemUser user = new SystemUser(Integer.toString(i),Integer.toString(i));
+            Player player = new Player(user,new Date());
+            EntityManager.getInstance().addUser(user);
+            team1.addTeamPlayer(to1,player);
+        }
+        for (int i=12; i < 25;i++){
+            SystemUser user = new SystemUser(Integer.toString(i),Integer.toString(i));
+            Player player = new Player(user,new Date());
+            EntityManager.getInstance().addUser(user);
+            team2.addTeamPlayer(to2,player);
+        }
+
+        team1.addStadium(stadium1);
+        team2.addStadium(stadium2);
+
+        EntityManager.getInstance().addTeam(team1);
+        EntityManager.getInstance().addTeam(team2);
+        SystemUser refUser = new SystemUser("referee","referee");
+
+        EntityManager.getInstance().addUser(refUser);
+
+        //To Controls Tests
+        SystemUser user3 = new SystemUser("user3","user3");
+        TeamOwner to3 = new TeamOwner(user3);
+        Team team3 = new Team("team3",(TeamOwner)EntityManager.getInstance().getUser("Administrator").getRole(RoleTypes.TEAM_OWNER));
+        EntityManager.getInstance().addUser(user3);
+        EntityManager.getInstance().addTeam(team3);
+        Stadium stadium3 = new Stadium("stadium3","london");
+        EntityManager.getInstance().addStadium(stadium3);
+        Stadium stadium4 = new Stadium("stadium4","london");
+        EntityManager.getInstance().addStadium(stadium4);
+
+        SystemUser systemUser = EntityManager.getInstance().getUser("Administrator");
+        Referee referee = (Referee)systemUser.getRole(RoleTypes.REFEREE);
+        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser");
+        new AssociationRepresentative(arSystemUser);
+        new TeamOwner(arSystemUser);
+        TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
+        Team firstTeam = new Team("Hapoel Beit Shan", toRole);
+        EntityManager.getInstance().addTeam(firstTeam);
+        Team secondTeam = new Team("Hapoel Beer Sheva", toRole);
+        EntityManager.getInstance().addTeam(secondTeam);
+
+        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>());
+        SystemUser avi = new SystemUser("AviCohen", "Avi Cohen");
+        Player player1 = new Player(avi, new Date(2001, 01, 01));
+        avi.addNewRole(player1);
+        EntityManager.getInstance().addUser(avi);
+        firstTeam.addTeamPlayer(toRole, player1);
+
+        game.addReferee(referee);
+        referee.addGame(game);
+
     }
 
 
@@ -113,20 +179,27 @@ public class EntityManager {
                     default:
                         throw new Exception("Error in Role type in the DB");
                 }
+
             }
             allUsers.add(newUser);
+
         }
     }
+
     private Role recreateRoleFromDB(String username, RoleTypes roleType) {
         Role newRole;
+
         try {
             Table roleRecords = DBManager.getInstance().getRelevantRecords(username, roleType);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+
     }
      */
+
 
 
     public List<League> getLeagues() {
@@ -212,8 +285,7 @@ public class EntityManager {
 
     /**
      * Returns a SystemUser by his username
-     *
-     * @param username - String - The username of the user to get the SystemUser of.
+     * @param username
      * @return The SystemUser with the username, if exists in the system.
      */
     //todo: check is username in allUsers list,
@@ -469,7 +541,6 @@ public class EntityManager {
 
     /**
      * Returns a Team by its team name
-     *
      * @param teamName
      * @return The team with the given team name, if exists in the system.
      */
@@ -511,7 +582,6 @@ public class EntityManager {
 
     /**
      * Returns all system admins
-     *
      * @return List<SystemAdmin> SystemAdmin
      */
     public List<SystemAdmin> getSystemAdmins() {
@@ -519,7 +589,8 @@ public class EntityManager {
         for (SystemUser user :
                 allUsers) {
             Role userAdmin = user.getRole(RoleTypes.SYSTEM_ADMIN);
-            if (userAdmin != null && userAdmin.getType() == RoleTypes.SYSTEM_ADMIN) {
+            if (userAdmin != null && userAdmin.getType() == RoleTypes.SYSTEM_ADMIN )
+            {
                 sysAdmins.add((SystemAdmin) userAdmin);
             }
         }
@@ -529,11 +600,10 @@ public class EntityManager {
 
     /**
      * Checks if a team with a name that matches the given name already exists.
-     *
      * @param name - String - name
      * @return - boolean - True if a team with a name that matches the given name already exists, else false
      */
-    public boolean doesTeamExists(String name) {
+    public boolean doesTeamExists(String name){
         for (Team team : allTeams) {
             if (team.getTeamName().toLowerCase().equals(name.toLowerCase())) {
                 return true;
@@ -544,11 +614,10 @@ public class EntityManager {
 
     /**
      * Checks if a league with a name that matches the given name already exists.
-     *
      * @param name - String - name
      * @return - boolean - True if a league with a name that matches the given name already exists, else false
      */
-    public boolean doesLeagueExists(String name) {
+    public boolean doesLeagueExists(String name){
         for (League league : allLeagues) {
             if (league.getName().equals(name)) {
                 return true;
@@ -561,7 +630,6 @@ public class EntityManager {
 
     /**
      * Adds a given SystemUser to the user's list of the system.
-     *
      * @param systemUser User to add
      * @return true if successfully added the SystemUser to the system.
      */
@@ -579,7 +647,6 @@ public class EntityManager {
 
     /**
      * Removes a SystemUser by a given reference to the SystemUser to remove.
-     *
      * @param systemUser - SystemUser - the SystemUser to remove.
      * @return - boolean - true if the SystemUser removed successfully, else false
      */
@@ -589,23 +656,22 @@ public class EntityManager {
 
     /**
      * Removes a SystemUser by a given username
-     *
      * @param username - String - a name of the user to be removed
      * @return - boolean - true if the SystemUser removed successfully, else false
      */
     public boolean removeUserByName(String username) {
-        for (SystemUser su : allUsers) {
-            if (su.getUsername().equals(username)) {
-                this.allUsers.remove(su);
-                return true;
-            }
-        }
-        return false;
+        return removeUserByReference(getUser(username));
+//        for (SystemUser su : allUsers) {
+//            if (su.getUsername().equals(username)) {
+//                this.allUsers.remove(su);
+//                return true;
+//            }
+//        }
+//        return false;
     }
 
     /**
      * Adds a given Team to the team's list of the system.
-     *
      * @param team Team to add
      * @return true if successfully added the Team to the system.
      */
@@ -621,7 +687,6 @@ public class EntityManager {
 
     /**
      * Adds a given League to the league's list of the system.
-     *
      * @param league league to add
      * @return true if successfully added the League to the system.
      */
@@ -640,14 +705,12 @@ public class EntityManager {
 
     /**
      * Adds a given Stadium to the stadium's list of the system.
-     *
      * @param stadium Stadium to add
      * @return true if successfully added the Stadium to the system.
      */
     public boolean addStadium(Stadium stadium) {
         if (!(this.allStadiums.contains(stadium))) {
             this.allStadiums.add(stadium);
-            DBManager.getInstance().addStadium(stadium.getName(), stadium.getLocation());
             return true;
         }
         return false;
@@ -655,17 +718,15 @@ public class EntityManager {
 
     /**
      * Checks if a given Stadium exists in the system.
-     *
      * @param stadium
      * @return true if the given Stadium exists in the system.
      */
-    public boolean isStadiumExists(Stadium stadium) {
+    public boolean isStadiumExists(Stadium stadium){
         return allStadiums.contains(stadium);
     }
 
     /**
      * Removes a Team by a given reference to the Team to remove.
-     *
      * @param team - Team - the Team to remove.
      * @return - boolean - true if the Team removed successfully, else false
      */
@@ -675,7 +736,6 @@ public class EntityManager {
 
     /**
      * Removes a league by a given name
-     *
      * @param leagueName - String - a name of the league to be removed
      * @return - boolean - true if the league removed successfully, else false
      */
@@ -700,12 +760,7 @@ public class EntityManager {
         allTeams = new ArrayList<>();
         pointsPolicies = new ArrayList<>();
         schedulingPolicies = new ArrayList<>();
-        loggedInMap = new HashMap<>();
-        try {
-            DBManager.deleteData("fwdb_test");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        loggedInMap = new HashMap<>();
     }
 
     private void clearAllUsers() {
@@ -717,7 +772,6 @@ public class EntityManager {
 
     /**
      * Removes a Stadium by a given reference to the Stadium to remove.
-     *
      * @param st - Stadium - the Stadium to remove.
      * @return - boolean - true if the Stadium removed successfully, else false
      */
@@ -727,7 +781,6 @@ public class EntityManager {
 
     /**
      * Returns a list of all the system users that are referees.
-     *
      * @return - List<SystemUser> - A list of all the system users that are referees
      */
     public List<SystemUser> getReferees() {
@@ -744,7 +797,6 @@ public class EntityManager {
     /**
      * Receives user name and password from the unregistered user who wants to log in to the system,
      * performs validation and returns the relevant user.
-     *
      * @param usrNm User name
      * @param pswrd Password
      * @return The user in the system with those credentials.
@@ -752,20 +804,21 @@ public class EntityManager {
      */
     public SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException, AlreadyLoggedInUser {
         SystemUser userWithUsrNm = getUser(usrNm);
-        if (loggedInMap.containsKey(userWithUsrNm) && loggedInMap.get(userWithUsrNm)) {
-            String msg = "Error: The user " + usrNm + " is already logged in";
-            SystemLoggerManager.logError(EntityManager.class, msg);
-            throw new AlreadyLoggedInUser(msg);
-        }
-        if (userWithUsrNm == null) { //User name does not exists.
+//        if(loggedInMap.containsKey(userWithUsrNm) && loggedInMap.get(userWithUsrNm))
+//        {
+//            String msg = "Error: The user " + usrNm + " is already logged in";
+//            SystemLoggerManager.logError(EntityManager.class, msg);
+//            throw new AlreadyLoggedInUser(msg);
+//        }
+        if(userWithUsrNm == null) { //User name does not exists.
             String msg = "Username or Password was incorrect!";
             SystemLoggerManager.logError(EntityManager.class, msg);
             throw new UsernameOrPasswordIncorrectException(msg);
         }
 
         //User name exists, checking password.
-        if (authenticate(userWithUsrNm, pswrd)) {
-            loggedInMap.put(userWithUsrNm, true);
+        if(authenticate(userWithUsrNm, pswrd)){
+//            loggedInMap.put(userWithUsrNm,true);
             //Log the action
             SystemLoggerManager.logInfo(this.getClass(), new LoginLogMsg(userWithUsrNm.getUsername()));
             /*TODO SHOW ALERT!  - in case he doesnt get alert in email*/
@@ -779,9 +832,8 @@ public class EntityManager {
 
     /**
      * This Function is used to authenticate the username with its password
-     *
      * @param userWithUsrNm the SystemUser of the username from the entity manager
-     * @param pswrd         the password recieved from the UI
+     * @param pswrd the password recieved from the UI
      * @return true if the password is correct and the user is able to login
      */
     private boolean authenticate(SystemUser userWithUsrNm, String pswrd) {
@@ -803,19 +855,18 @@ public class EntityManager {
      * At least 1 lower case letter.
      * Must not contain any spaces.
      * Adds new user with the role fan to the system, and returns the relevant user.
-     *
-     * @param name       Name.
-     * @param usrNm      User name.
-     * @param pswrd      Password.
-     * @param email      email address
+     * @param name Name.
+     * @param usrNm User name.
+     * @param pswrd Password.
+     * @param email  email address
      * @param emailAlert - boolean  - if send via email - true, otherwise false
      * @return New user with those credentials.
      * @throws Exception If user name is already belongs to a user in the system, or
-     *                   the password does not meet the security requirements.
+     * the password does not meet the security requirements.
      */
-    public SystemUser signUp(String name, String usrNm, String pswrd, String email, boolean emailAlert) throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException, Invalid {
+    public SystemUser signUp(String name, String usrNm, String pswrd,String email, boolean emailAlert) throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException {
         //Checking if user name is already exists
-        if (getUser(usrNm) != null) {
+        if(getUser(usrNm) != null){
             String msg = "Username already exists";
             SystemLoggerManager.logError(EntityManager.class, msg);
             throw new UsernameAlreadyExistsException(msg);
@@ -828,12 +879,13 @@ public class EntityManager {
         // at least 1 lower case letter
         // must not contain any spaces
         String pswrdRegEx = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$";
-        if (!pswrd.matches(pswrdRegEx)) {
+        if(!pswrd.matches(pswrdRegEx)){
             String msg = "Password does not meet the requirements";
             SystemLoggerManager.logError(EntityManager.class, msg);
             throw new WeakPasswordException(msg);
         }
-        if (!validate(email)) {
+        if(!validate(email))
+        {
             String msg = "Invalid Email";
             SystemLoggerManager.logError(EntityManager.class, msg);
             throw new InvalidEmailException(msg);
@@ -852,9 +904,8 @@ public class EntityManager {
 
             return newUser;
 
-        }
+    }
 
-        throw new Invalid("something went wrong");
 
     }
 
@@ -869,15 +920,15 @@ public class EntityManager {
         return null;
     }
 
-    public void logout(SystemUser logoutUser) {
-        loggedInMap.put(logoutUser, false);
-
-    }
+//    public void logout(SystemUser logoutUser) {
+////        loggedInMap.put(logoutUser,false);
+//    }
 
 /*
     public List<Referee> getAllRefereesPerGame(Game game) {
         //need to import referees table
         List<Referee> referees = new ArrayList<>();
+
         for (int i = 0; i < this.allUsers.size(); i++) {
             Role role= allUsers.get(i).getRole(RoleTypes.REFEREE);
             if(role != null)
@@ -888,6 +939,7 @@ public class EntityManager {
         }
         return referees;
     }
+
  */
 
     /**

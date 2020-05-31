@@ -1,10 +1,8 @@
 package GUI.Login;
 
-import Domain.EntityManager;
 import GUI.FootballMain;
 import Service.AllSubscribers;
 import Service.MainController;
-import Service.UIController;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -18,9 +16,7 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.server.WrappedSession;
 
 /**
  * UI content when the user is not logged in yet.
@@ -43,11 +39,13 @@ public class LoginScreen extends FlexLayout {
         // login form, centered in the available part of the screen
         LoginForm loginForm = new LoginForm();
         loginForm.addLoginListener(this::login);
+        loginForm.setId("loginForm");
         loginForm.addForgotPasswordListener(
                 event -> Notification.show("Sorry We cannot help you"));
 
         //SignUp button
         Button signup = new Button("Sign Up Here");
+        signup.setId("Sign Up Here");
         signup.addClickListener(event -> {
             getUI().get().navigate("Registration");
         });
@@ -93,7 +91,7 @@ public class LoginScreen extends FlexLayout {
         loginInfoText.setWidth("100%");
         loginInformation.add(loginInfoHeader);
         loginInformation.add(loginInfoText);
-
+        loginInfoText.setId("loginInfoText");
         return loginInformation;
     }
 
@@ -116,7 +114,7 @@ public class LoginScreen extends FlexLayout {
                 UI currSessionUI = getUI().get();
                 currSessionUI.navigate("");
 
-                AllSubscribers.getInstance().login(event.getUsername(),currSessionUI);
+                AllSubscribers.getInstance().login(event.getUsername(),session);
             }
 
         } else {

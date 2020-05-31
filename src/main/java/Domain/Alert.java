@@ -1,7 +1,5 @@
 package Domain;
 
-import Domain.Users.AssociationRepresentative;
-import Domain.Users.SystemAdmin;
 import Domain.Users.SystemUser;
 import Service.AllSubscribers;
 import Service.Observer;

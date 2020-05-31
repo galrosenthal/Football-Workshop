@@ -5,7 +5,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -19,6 +18,7 @@ public class AboutView extends VerticalLayout {
     private final Button back;
 
     public AboutView() {
+        this.setId("about");
         add(VaadinIcon.INFO_CIRCLE.create());
         add(new Span(" This is our Football System Created by Team 17! "
                 + Version.getFullVersion() + "."));
