@@ -110,7 +110,6 @@ public class Season {
     }
 
     public List<Team> getTeams() {
-        /*TODO - DB*/
         teams = EntityManager.getInstance().getTeamsPerSeason(this);
         return teams;
     }
