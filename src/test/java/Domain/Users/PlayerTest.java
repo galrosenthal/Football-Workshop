@@ -50,22 +50,22 @@ public class PlayerTest {
         assertFalse(p1.addTeam(teamStub,ownerStub));
     }
 
-
-    @Test
-    public void addAllPropertiesUTest() throws Exception{
-        UIController.setIsTest(true);
-        UIController.setSelector(61120);
-        Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
-        Player p1 = new Player(testUser,bday, true);
-
-        TeamStub ts = new TeamStub(61120, true);
-        BelongToTeamStub bgStub = new BelongToTeamStub(ts, p1);
-        p1.addTeamConnection(bgStub);
-
-
-        assertTrue(p1.addAllProperties(ts));
-
-    }
+/*irrelevant test*/
+//    @Test
+//    public void addAllPropertiesUTest() throws Exception{
+//        UIController.setIsTest(true);
+//        UIController.setSelector(61120);
+//        Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
+//        Player p1 = new Player(testUser,bday, true);
+//
+//        TeamStub ts = new TeamStub(61120, true);
+//        BelongToTeamStub bgStub = new BelongToTeamStub(ts, p1);
+//        p1.addTeamConnection(bgStub);
+//
+//
+//        assertTrue(p1.addAllProperties(ts));
+//
+//    }
 
     @Test
     public void addPropertyUTest() throws Exception{

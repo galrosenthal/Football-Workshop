@@ -86,7 +86,7 @@ public class DBManager {
     }
 
     public static void startConnection() {
-        DBHandler.startConnection("jdbc:mysql://132.72.65.105:3306/fwdb");
+        DBHandler.startConnection("jdbc:mysql://localhost:3306/fwdb");
     }
 
     /**
@@ -1044,12 +1044,14 @@ public class DBManager {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
     }
-    public void addStadium(String name, String location) {
+    public boolean addStadium(String name, String location) {
         DSLContext create = DBHandler.getContext();
         try {
             create.insertInto(STADIUM, STADIUM.NAME, STADIUM.LOCATION).values(name, location).execute();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 

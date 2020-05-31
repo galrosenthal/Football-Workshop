@@ -21,7 +21,6 @@ public class Controller {
     public static boolean systemBoot() {
         //Establishing connections to external DBMS
         //access DB
-        //DBManager.getInstance().startConnection();
         //extract system admins
         try {
             String usernameAndPassword = UIController.receiveUserLoginInfo("Please enter a system administrator username:;Please enter the password");
@@ -303,7 +302,7 @@ public class Controller {
      * the password does not meet the security requirements.
      */
     public static SystemUser signUp(String name, String usrNm, String pswrd, String email, boolean emailAlert)
-            throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException {
+            throws Exception {
 
         return EntityManager.getInstance().signUp(name, usrNm, pswrd, email, emailAlert);
 
