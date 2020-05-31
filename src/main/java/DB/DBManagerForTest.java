@@ -44,7 +44,7 @@ public class DBManagerForTest extends DBManager {
 
 
     public static void startConnection() {
-        DBHandler.startConnection("jdbc:mysql://132.72.65.105:3306/fwdb_test");
+        DBHandler.startConnection("jdbc:mysql://localhost:3306/fwdb_test");
     }
 
     @Override
