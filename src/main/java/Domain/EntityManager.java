@@ -1036,12 +1036,19 @@ public class EntityManager{
      * @return - SchedulingPolicy - A scheduling policy matching the given parameters
      */
     public SchedulingPolicy getSchedulingPolicy(int gamesPerSeason, int gamesPerDay, int minRest) {
-        for (SchedulingPolicy schedulingPolicy : this.schedulingPolicies) {
-            if (schedulingPolicy.equals(gamesPerSeason, gamesPerDay, minRest)) {
-                return schedulingPolicy;
-            }
-        }
-        return null;
+
+        HashMap<String , String> schedulingPolicyDetails = DBManager.getInstance().getSchedulingPolicy(gamesPerSeason, gamesPerDay,  minRest);
+        gamesPerSeason = Integer.parseInt(schedulingPolicyDetails.get("games_Per_Season"));
+        gamesPerDay = Integer.parseInt(schedulingPolicyDetails.get("games_Per_Day"));
+        minRest = Integer.parseInt(schedulingPolicyDetails.get("minimum_Rest_Days"));
+        return new SchedulingPolicy(gamesPerSeason,gamesPerDay,minRest);
+
+//        for (SchedulingPolicy schedulingPolicy : this.schedulingPolicies) {
+//            if (schedulingPolicy.equals(gamesPerSeason, gamesPerDay, minRest)) {
+//                return schedulingPolicy;
+//            }
+//        }
+//        return null;
     }
 
     /**
@@ -1058,7 +1065,14 @@ public class EntityManager{
     }
 
     public List<SchedulingPolicy> getSchedulingPolicies() {
-        //TODO: Like getPointsPolicies
+        List<HashMap<String , String> >schedulingPolicyDetails = DBManager.getInstance().getSchedulingPolicies();
+        List<SchedulingPolicy>  schedulingPolicies = new ArrayList<>();
+        for (int i = 0; i < schedulingPolicyDetails.size(); i++) {
+            int gamesPerSeason = Integer.parseInt(schedulingPolicyDetails.get(i).get("games_Per_Season"));
+            int gamesPerDay = Integer.parseInt(schedulingPolicyDetails.get(i).get("games_Per_Day"));
+            int minRest = Integer.parseInt(schedulingPolicyDetails.get(i).get("minimum_Rest_Days"));
+            schedulingPolicies.add(new SchedulingPolicy(gamesPerSeason,gamesPerDay,minRest));
+        }
         return schedulingPolicies;
     }
 

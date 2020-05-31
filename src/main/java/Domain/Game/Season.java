@@ -103,7 +103,6 @@ public class Season {
     }
 
     public boolean removeTeam(Team team) {
-        /*todo DB*/
         if (!teams.contains(team)) {
             return false;
         }

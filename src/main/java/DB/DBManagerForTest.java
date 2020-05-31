@@ -782,7 +782,7 @@ public class DBManagerForTest extends DBManager {
     public boolean removeSeasonInTeam(int seasonID, String teamName) {
         DSLContext create = DBHandler.getContext();
         try {
-            create.deleteFrom(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.SEASON_ID.eq(seasonID).and(TEAMS_IN_SEASON.TEAM_NAME.eq(teamName)));
+            create.deleteFrom(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.SEASON_ID.eq(seasonID).and(TEAMS_IN_SEASON.TEAM_NAME.eq(teamName))).execute();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
