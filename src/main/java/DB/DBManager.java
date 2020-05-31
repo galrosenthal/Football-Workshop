@@ -868,7 +868,7 @@ public class DBManager {
     public boolean removeSeasonInTeam(int seasonID, String teamName) {
         DSLContext create = DBHandler.getContext();
         try {
-            create.deleteFrom(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.SEASON_ID.eq(seasonID).and(TEAMS_IN_SEASON.TEAM_NAME.eq(teamName)));
+            create.deleteFrom(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.SEASON_ID.eq(seasonID).and(TEAMS_IN_SEASON.TEAM_NAME.eq(teamName))).execute();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -1669,6 +1669,57 @@ public class DBManager {
         {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public boolean doesTeamExists(String teamName) {
+        DSLContext create = DBHandler.getContext();
+        try{
+            Result<?> records = create.select().from(TEAM).where(TEAM.NAME.eq(teamName)).fetch();
+            if(records.isEmpty())
+            {
+                return false;
+            }
+            return true;
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public HashMap<String, String> getSchedulingPolicy(int gamesPerSeason, int gamesPerDay, int minRest) {
+        try{
+            DSLContext create = DBHandler.getContext();
+            Result<?> records = create.select().from(SCHEDULING_POLICY).
+                    where(SCHEDULING_POLICY.GAMES_PER_SEASON.eq(gamesPerSeason).and(SCHEDULING_POLICY.GAMES_PER_DAY.eq(gamesPerDay)
+                            .and(SCHEDULING_POLICY.MINIMUM_REST_DAYS.eq(minRest)))).fetch();
+            if (records.isEmpty())
+            {
+                return new HashMap<>();
+            }
+            return getDetailsFromResult(records).get(0);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return new HashMap<>();
+        }
+    }
+
+    public List<HashMap<String, String>> getSchedulingPolicies() {
+        try{
+            DSLContext create = DBHandler.getContext();
+            Result<?> records = create.select().from(SCHEDULING_POLICY).fetch();
+            if (records.isEmpty())
+            {
+                return new ArrayList<>();
+            }
+             return getDetailsFromResult(records);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 }

@@ -784,7 +784,7 @@ public class DBManagerForTest extends DBManager {
     public boolean removeSeasonInTeam(int seasonID, String teamName) {
         DSLContext create = DBHandler.getContext();
         try {
-            create.deleteFrom(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.SEASON_ID.eq(seasonID).and(TEAMS_IN_SEASON.TEAM_NAME.eq(teamName)));
+            create.deleteFrom(TEAMS_IN_SEASON).where(TEAMS_IN_SEASON.SEASON_ID.eq(seasonID).and(TEAMS_IN_SEASON.TEAM_NAME.eq(teamName))).execute();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -1588,6 +1588,22 @@ public class DBManagerForTest extends DBManager {
             return true;
         }
         catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    @Override
+    public boolean doesTeamExists(String teamName) {
+        DSLContext create = DBHandler.getContext();
+        try{
+            Result<?> records = create.select().from(TEAM).where(TEAM.NAME.eq(teamName)).fetch();
+            if(records.isEmpty())
+            {
+                return false;
+            }
+            return true;
+        }catch (Exception e)
         {
             e.printStackTrace();
             return false;

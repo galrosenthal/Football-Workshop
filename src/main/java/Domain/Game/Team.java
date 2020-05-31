@@ -647,7 +647,7 @@ public class Team {
 
     public boolean removeSeason(Season season) {
         /*DB*/
-        if (!seasons.contains(season) || !(EntityManager.getInstance().seasonInTeam(season , this))) {
+        if (!(EntityManager.getInstance().seasonInTeam(season , this))) {
             return false;
         }
         if(seasons.contains(season)) {
