@@ -308,7 +308,7 @@ public class Controller {
      * the password does not meet the security requirements.
      */
     public static SystemUser signUp(String name, String usrNm, String pswrd, String email, boolean emailAlert)
-            throws Exception {
+            throws InvalidEventException, InvalidEmailException, UsernameAlreadyExistsException, WeakPasswordException {
 
         return EntityManager.getInstance().signUp(name, usrNm, pswrd, email, emailAlert);
 

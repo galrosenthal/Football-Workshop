@@ -872,7 +872,7 @@ public class EntityManager{
      * @throws Exception If user name is already belongs to a user in the system, or
      * the password does not meet the security requirements.
      */
-    public SystemUser signUp(String name, String usrNm, String pswrd,String email, boolean emailAlert) throws Exception {
+    public SystemUser signUp(String name, String usrNm, String pswrd,String email, boolean emailAlert) throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException, InvalidEventException {
         //Checking if user name is already exists
         if(getUser(usrNm) != null){
             String msg = "Username already exists";
@@ -918,8 +918,6 @@ public class EntityManager{
 
     }
 
-
-    }
 
     public League getLeagueByName(String leagueName) {
         for (League lg :
@@ -1276,7 +1274,7 @@ public class EntityManager{
             Team awayTeam = new Team(gameRecord.get(DB.Tables.tables.Game.GAME.AWAY_TEAM.getName()),false);
             Stadium gameStadium = new Stadium(gameRecord.get(DB.Tables.tables.Stadium.STADIUM.NAME.getName()),
                     gameRecord.get(DB.Tables.tables.Stadium.STADIUM.LOCATION.getName()),false);
-            Date gameDate = getDateFromLocalDate(gameRecord.get(DB.Tables.tables.Game.GAME.DATE));
+            Date gameDate = getDateFromLocalDate(gameRecord.get(DB.Tables.tables.Game.GAME.START_DATE));
             allRefereeGames.add(new Game(gameStadium,homeTeam,awayTeam,gameDate,null,false));
         }
         return null;
@@ -1426,7 +1424,7 @@ public class EntityManager{
         allTeams = new ArrayList<>();
         allStadiums = new ArrayList<>();
         //loggedInMap = new HashMap<>();
-        systemAdmins = new ArrayList<>();
+       // systemAdmins = new ArrayList<>();
         pointsPolicies = new ArrayList<>();
         schedulingPolicies = new ArrayList<>();
     }
@@ -1529,7 +1527,7 @@ public class EntityManager{
         DBManager.getInstance().addGameToReferee(refereeUsername,gameStad.getAssetName(), gameStad.getLocation(), homeTeam.getTeamName(),awayTeam.getTeamName(), gameDate, isFinished);
 
     }
-}
+
 
     /*TODO CHECK*/
 
@@ -1613,12 +1611,6 @@ public class EntityManager{
 
     public boolean removeGamesFromSeason(Season season) {
         return DBManager.getInstance().removeGamesFromSeason(season.getLeague().getName(), season.getYears());
-    }
-
-    public void addGame(Game game) {
-        DBManager.getInstance().addGame(game.getStadium().getName(), game.getStadium().getLocation(), game.getHomeTeam().getTeamName()
-                , game.getAwayTeam().getTeamName(), game.getGameDate(), game.getEndDate(), game.hasFinished());
-        //game
     }
 
     public void addRefereeToGame(Referee referee, Game game) {

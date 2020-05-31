@@ -7,7 +7,6 @@ import DB.Tables_Test.enums.TeamStatus;
 import Domain.Exceptions.GameNotFoundException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Pair;
-import Domain.Pair;  //FIXME: This is a Domain Object and should not be here
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
@@ -923,7 +922,7 @@ public class DBManagerForTest extends DBManager {
     public void updateTeamStatus(String teamName, String status) {
         try {
             DSLContext create = DBHandler.getContext();
-            create.update(TEAM).set(TEAM.STATUS, TeamStatus.valueOf(status)).execute();
+            create.update(TEAM).set(TEAM.STATUS,TeamStatus.valueOf(status)).where(TEAM.NAME.eq(teamName)).execute();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1351,7 +1350,7 @@ public class DBManagerForTest extends DBManager {
         LocalDate gameLocalDate = convertToLocalDateViaInstant(gameDate);
         DSLContext create = DBHandler.getContext();
         try{
-            create.insertInto(GAME , GAME.STADIUM_ID , GAME.HOME_TEAM, GAME.AWAY_TEAM, GAME.DATE, GAME.FINISHED)
+            create.insertInto(GAME , GAME.STADIUM_ID , GAME.HOME_TEAM, GAME.AWAY_TEAM, GAME.START_DATE, GAME.FINISHED)
                     .values(stadId, homeTeamName, awayTeamName, gameLocalDate, isFinished).execute();
         }catch (Exception e)
         {
@@ -1369,7 +1368,7 @@ public class DBManagerForTest extends DBManager {
         if(records.isEmpty())
         {
             try{
-                create.insertInto(GAME , GAME.STADIUM_ID , GAME.HOME_TEAM, GAME.AWAY_TEAM, GAME.DATE, GAME.FINISHED)
+                create.insertInto(GAME , GAME.STADIUM_ID , GAME.HOME_TEAM, GAME.AWAY_TEAM, GAME.START_DATE, GAME.FINISHED)
                         .values(stadId, homeTeamName, awayTeamName, gameLocalDate, isFinished).execute();
                 records = getGameRecordsByGameParams(homeTeamName, awayTeamName, stadId, gameLocalDate, create);
             }catch (Exception e)
@@ -1392,7 +1391,7 @@ public class DBManagerForTest extends DBManager {
 
 
     private Result<Record> getGameRecordsByGameParams(String homeTeamName, String awayTeamName, int stadId, LocalDate gameLocalDate, DSLContext create) {
-        return create.select().from(GAME).where(GAME.DATE.eq(gameLocalDate)
+        return create.select().from(GAME).where(GAME.START_DATE.eq(gameLocalDate)
                 .and(GAME.HOME_TEAM.eq(homeTeamName).and(GAME.AWAY_TEAM.eq(awayTeamName)
                         .and(GAME.STADIUM_ID.eq(stadId))))).fetch();
     }
