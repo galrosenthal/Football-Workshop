@@ -1257,7 +1257,6 @@ public class EntityManager{
 
     public List<Game> getRefereeGames(Referee referee) {
         List<HashMap<String, String>> refereeGamesDetails = DBManager.getInstance().getRefereeGames(referee.getSystemUser().getUsername());
-        //TODO: Loop all games and recreate teams using Merav's functions.
         List<Game> allRefereeGames = new ArrayList<>();
         for (HashMap<String, String> gameRecord :
                 refereeGamesDetails) {
@@ -1266,13 +1265,22 @@ public class EntityManager{
             Stadium gameStadium = new Stadium(gameRecord.get(DB.Tables.tables.Stadium.STADIUM.NAME.getName()),
                     gameRecord.get(DB.Tables.tables.Stadium.STADIUM.LOCATION.getName()),false);
             Date gameDate = getDateFromLocalDate(gameRecord.get(DB.Tables.tables.Game.GAME.START_DATE.getName()));
-            allRefereeGames.add(new Game(gameStadium,homeTeam,awayTeam,gameDate,null,false));
+
+            String endGameDateString = gameRecord.get(DB.Tables.tables.Game.GAME.END_DATE.getName());
+            Date endGameDate = null;
+            if(!(endGameDateString == null))
+            {
+               endGameDate = getDateFromLocalDate(endGameDateString);
+            }
+            Game g = new Game(gameStadium,homeTeam,awayTeam,gameDate,null,false);
+            g.setEndDate(endGameDate);
+            allRefereeGames.add(g);
         }
         return allRefereeGames;
     }
 
     private Date getDateFromLocalDate(String gameDate) {
-        DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         Date date = null;
         try {
             date = format.parse(gameDate);

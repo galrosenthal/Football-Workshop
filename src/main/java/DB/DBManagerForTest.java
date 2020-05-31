@@ -1459,7 +1459,7 @@ public class DBManagerForTest extends DBManager {
         LocalDate endGameDate = convertToLocalDateViaInstant(endDate);
         DSLContext create = DBHandler.getContext();
         try{
-            create.update(GAME).set(GAME.END_DATE,endGameDate).where(GAME.GAME_ID.eq(gameId));
+            create.update(GAME).set(GAME.END_DATE,endGameDate).where(GAME.GAME_ID.eq(gameId)).execute();
             return true;
         }
         catch (Exception e)
