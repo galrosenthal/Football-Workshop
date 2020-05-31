@@ -85,7 +85,7 @@ public class DBManager {
         DBHandler.closeConnection();
     }
 
-    public static void startConnection() {
+    public void startConnection() {
         DBHandler.startConnection("jdbc:mysql://localhost:3306/fwdb");
     }
 

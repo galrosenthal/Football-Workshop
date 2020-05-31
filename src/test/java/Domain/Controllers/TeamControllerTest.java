@@ -19,12 +19,6 @@ import static org.junit.Assert.*;
 
 public class TeamControllerTest {
 
-    @BeforeClass
-    public static void beforeClass() {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-    }
 
     SystemUser teamOwnerUser;
     SystemUser teamOwnerToAdd;
@@ -735,8 +729,4 @@ public class TeamControllerTest {
 
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

@@ -22,10 +22,7 @@ public class PlayerTest {
     Player playerToTest;
     SystemUser testUser;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();    }
+
 
     @Before
     public void setUp() throws Exception {
@@ -229,8 +226,4 @@ public class PlayerTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

@@ -17,11 +17,6 @@ public class RefereeTest {
 
     private Referee referee;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();    }
-
     @Before
     public void setUp() {
         this.referee = new Referee(new SystemUser("username", "name", true), RefereeQualification.MAIN_REFEREE, true);
@@ -107,8 +102,4 @@ public class RefereeTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

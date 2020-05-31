@@ -17,10 +17,6 @@ public class AssociationRepresentativeTest {
 
     private AssociationRepresentative aR;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();    }
 
     @Test
     public void testAddLeagueITest() throws Exception {
@@ -402,10 +398,6 @@ public class AssociationRepresentativeTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }
 
 

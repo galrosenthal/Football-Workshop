@@ -23,13 +23,7 @@ public class TeamTest {
     private TeamOwnerStub localTeamOwner;
     private SystemUser testUser;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
 
-    }
 
     @Before
     public void setUp() {
@@ -724,8 +718,5 @@ public class TeamTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
+
 }

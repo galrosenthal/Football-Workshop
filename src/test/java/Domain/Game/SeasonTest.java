@@ -15,13 +15,7 @@ public class SeasonTest {
 
     private Season season;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
 
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -93,8 +87,5 @@ public class SeasonTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
+
 }

@@ -13,12 +13,6 @@ import static org.junit.Assert.assertTrue;
 
 public class TOControllerTest {
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-    }
 
     @Test
     public void closeTeamUTest() throws Exception {
@@ -76,9 +70,6 @@ public class TOControllerTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
+
 }
 

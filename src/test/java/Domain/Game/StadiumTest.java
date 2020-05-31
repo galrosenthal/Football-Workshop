@@ -14,13 +14,7 @@ import java.util.List;
 
 public class StadiumTest {
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
 
-    }
 
     @Test
     public void getPropertiesUTest() {
@@ -94,8 +88,5 @@ public class StadiumTest {
         Assert.assertFalse(stadium.removeProperty(stadium.namePropertyString ,CoachQualification.MAIN_COACH ,new TeamStub(6131, true)));
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
+
 }

@@ -20,13 +20,6 @@ public class GameTest {
     private TeamStub firstTeam;
     private TeamStub secondTeam;
 
-    @BeforeClass
-    public static void beforeClass() {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -386,8 +379,5 @@ public class GameTest {
         assertEquals(3, game.getHoursPassedSinceGameEnd(currDate));
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
+
 }

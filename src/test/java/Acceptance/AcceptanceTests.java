@@ -32,13 +32,6 @@ public class AcceptanceTests {
     private static SystemUser aviCohenSu;
     private static SystemUser yosiManagerSu;
 
-    @BeforeClass
-    public static void setUp() { //Will be called only once
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-        UIController.setIsTest(true);
-    }
 
     @Before
     public void start()
@@ -1102,8 +1095,4 @@ public class AcceptanceTests {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

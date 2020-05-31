@@ -22,13 +22,7 @@ public class ControllerTest {
     SystemUser systemUser; //For testing login and signUp. Moved From UnregisteredTest
     String hashedPassword;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
 
-    }
 
 
     @Before
@@ -340,8 +334,4 @@ public class ControllerTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

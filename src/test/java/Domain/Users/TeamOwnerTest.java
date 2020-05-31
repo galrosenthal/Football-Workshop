@@ -11,10 +11,6 @@ import javax.validation.constraints.AssertTrue;
 
 public class TeamOwnerTest {
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();    }
 
     /**
      * Check if teamOwner is added successfully
@@ -73,8 +69,4 @@ public class TeamOwnerTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

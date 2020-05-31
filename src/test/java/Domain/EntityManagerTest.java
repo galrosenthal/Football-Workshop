@@ -15,13 +15,7 @@ import static org.junit.Assert.*;
 
 public class EntityManagerTest {
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
 
-    }
 
     @Test
     public void doesLeagueExistsUTest() {
@@ -111,8 +105,5 @@ public class EntityManagerTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
+
 }

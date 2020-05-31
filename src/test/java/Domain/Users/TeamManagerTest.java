@@ -13,10 +13,6 @@ import static org.junit.Assert.*;
 
 public class TeamManagerTest {
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();    }
 
     @Test
     public void getPropertiesUTest() {
@@ -196,8 +192,4 @@ public class TeamManagerTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

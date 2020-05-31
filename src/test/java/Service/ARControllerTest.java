@@ -17,13 +17,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ARControllerTest {
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        EntityManager.getInstance().clearAll();
-        SystemLoggerManager.disableLoggers();
-    }
+
 
     @Before
     public void setUp() throws Exception {
@@ -858,8 +852,4 @@ public class ARControllerTest {
         EntityManager.getInstance().clearAll();
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
 }

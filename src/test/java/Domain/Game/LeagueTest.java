@@ -12,12 +12,7 @@ public class LeagueTest {
 
     private League league;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        DBManager.startTest();
-        DBManagerForTest.startConnection();
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-    }
+
 
     @Before
     public void setUp() throws Exception {
@@ -56,8 +51,5 @@ public class LeagueTest {
         this.league = null;
     }
 
-    @AfterClass
-    public static void afterClass() {
-        DBManager.getInstance().closeConnection();
-    }
+
 }
