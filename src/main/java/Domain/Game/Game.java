@@ -1,5 +1,6 @@
 package Domain.Game;
 
+import DB.DBManager;
 import Domain.EntityManager;
 import Domain.GameLogger.EventsLogger;
 import Domain.GameLogger.Goal;
@@ -25,7 +26,7 @@ public class Game extends Observable {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.gameDate = gameDate;
-        this.referees = referees;
+//        this.referees = referees;
         this.eventsLogger = new EventsLogger();
         this.endDate = null;
         this.gameReport = new GameReport(this);
@@ -84,7 +85,7 @@ public class Game extends Observable {
 
     public List<Referee> getReferees() {
         if (this.referees == null) {
-            //TODO:Pull From DB
+            return EntityManager.getInstance().getAllRefereesInGame(this);
         }
         return referees;
     }
@@ -252,7 +253,7 @@ public class Game extends Observable {
      * @param minute  - int - The minute game ended (maybe it ended before the 90th or 120th minute)
      */
     public void addEndGame(Date endDate, int minute) {
-        this.endDate = endDate;
+        EntityManager.getInstance().updateEndGame(this, endDate);
         getEventsLogger().logEndGameEvent(endDate, minute);
     }
 
