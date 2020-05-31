@@ -31,6 +31,11 @@ public class TOController {
         else {
             if (closeOrReopen.equals("close")) {
                 chosenTeam = Controller.getTeamByChoice(myTeamOwner);
+                if(chosenTeam == null)
+                {
+                    UIController.showNotification(systemUser.getUsername() + " has no teams");
+                    return false;
+                }
                 if (chosenTeam.getStatus() != TeamStatus.OPEN) {
                     UIController.showNotification("Cannot perform action on closed team.");
                     return false; //cannot perform action on closed team.
