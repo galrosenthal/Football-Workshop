@@ -440,18 +440,18 @@ public class TeamTest extends GenericTestAbstract {
         assertTrue(team.addAsset("vas", localTeamOwner, TeamAsset.STADIUM));
     }
 
-    @Test
-    public void testAddAssetStadiumNotTrivialUTest() throws Exception {
-        Stadium stadiumStub = new Stadium("vas", "BS", true);
-        UIController.setIsTest(true);
-        UIController.setSelector(6119);
-        //No Team Owner
-        assertFalse(team.addAsset("vas", localTeamOwner, TeamAsset.STADIUM));
-
-        team.getTeamOwners().add(localTeamOwner);
-        stadiumStub.changeProperty(team,"name", "vas");
-        assertTrue(team.addAsset("vas", localTeamOwner, TeamAsset.STADIUM));
-    }
+//    @Test
+//    public void testAddAssetStadiumNotTrivialUTest() throws Exception {
+//        Stadium stadiumStub = new Stadium("vas", "BS", true);
+//        UIController.setIsTest(true);
+//        UIController.setSelector(6119);
+//        //No Team Owner
+//        assertFalse(team.addAsset("vas", localTeamOwner, TeamAsset.STADIUM));
+//
+//        team.getTeamOwners().add(localTeamOwner);
+//        stadiumStub.changeProperty(team,"name", "vas");
+//        assertTrue(team.addAsset("vas", localTeamOwner, TeamAsset.STADIUM));
+//    }
 
 
     @Test

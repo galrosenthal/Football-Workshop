@@ -50,7 +50,6 @@
                         <include>**/*Test.java</include>
                         <include>**/*Tests.java</include>
                     </includes>
-                    <skipTests>false</skipTests>
                 </configuration>
             </plugin>
 
