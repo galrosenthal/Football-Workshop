@@ -145,10 +145,11 @@ public class AssociationRepresentativeTest  extends GenericTestAbstract {
     public void assignRefereeToSeasonUTest() {
         SystemUser aRUser = new SystemUser("arUsername", "arName", true);
         aR = new AssociationRepresentative(aRUser, true);
-        SystemUser newRefereeUser = new SystemUserStub("refUsername", "refName", 93121, true);
+        SystemUser newRefereeUser = new SystemUser("refUsername", "refName", true);
+        new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE , true);
         Referee refereeRole = (Referee) newRefereeUser.getRole(RoleTypes.REFEREE);
-        //new RefereeStub(newRefereeUser, "refTraining");
-        Season season = new Season(new League("noName", true), "2020/21");
+        League league = new League("noName", true);
+        Season season = league.addSeason("2020/21");
 
         boolean thrown = false;
         try {
@@ -166,11 +167,11 @@ public class AssociationRepresentativeTest  extends GenericTestAbstract {
     public void assignRefereeToSeasonITest() {
         SystemUser aRUser = new SystemUser("arUsername", "arName", true);
         aR = new AssociationRepresentative(aRUser, true);
-        SystemUser newRefereeUser = new SystemUserStub("refUsername", "refName", 93121, true);
+        SystemUser newRefereeUser = new SystemUser("refUsername", "refName", true);
+        new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE , true);
         Referee refereeRole = (Referee) newRefereeUser.getRole(RoleTypes.REFEREE);
-        //new RefereeStub(newRefereeUser, "refTraining");
-        Season season = new Season(new League("noName", true), "2020/21");
-
+        League league = new League("noName", true);
+        Season season = league.addSeason( "2020/21");
         boolean thrown = false;
         try {
             aR.assignRefereeToSeason(season, refereeRole);
@@ -195,7 +196,8 @@ public class AssociationRepresentativeTest  extends GenericTestAbstract {
         aR = new AssociationRepresentative(aRUser, true);
         SystemUser newRefereeUser = new SystemUser("refUsername", "refName", true);
         Referee refereeRole = new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE, true);
-        Season season = new Season(new League("noName", true), "2020/21");
+        League league = new League("noName", true);
+        Season season = league.addSeason( "2020/21");
 
         boolean thrown = false;
         try {
@@ -215,7 +217,8 @@ public class AssociationRepresentativeTest  extends GenericTestAbstract {
         aR = new AssociationRepresentative(aRUser, true);
         SystemUser newRefereeUser = new SystemUser("refUsername", "refName", true);
         Referee refereeRole = new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE, true);
-        Season season = new Season(new League("noName", true), "2020/21");
+        League league = new League("noName", true);
+        Season season = league.addSeason( "2020/21");
 
 
         boolean thrown = false;

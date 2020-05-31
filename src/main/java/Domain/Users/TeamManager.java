@@ -28,6 +28,7 @@ public class TeamManager extends Role implements Asset {
         permissionsPerTeam = new HashMap<>();
         if (addToDB) {
             EntityManager.getInstance().addRole(this);
+
         }
     }
 
@@ -81,6 +82,10 @@ public class TeamManager extends Role implements Asset {
         List<TeamManagerPermissions> permissions = new ArrayList<>();
         if (this.permissionsPerTeam.get(team) != null) {
             permissions = this.permissionsPerTeam.get(team);
+        }
+        else
+        {
+            permissions = EntityManager.getInstance().getAllPermissionsPerTeam(team , this);
         }
         return permissions;
     }
@@ -220,7 +225,8 @@ public class TeamManager extends Role implements Asset {
     }
 
     public List<Team> getTeamsManaged() {
-        List<Team> allTeams = new ArrayList<>(managedTeamsAndAppointed.keySet());
+        //List<Team> allTeams = new ArrayList<>(managedTeamsAndAppointed.keySet());
+        List<Team> allTeams = EntityManager.getInstance().getTeamsManaged(this);
         return allTeams;
     }
 

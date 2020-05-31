@@ -69,9 +69,6 @@ public class TeamController {
         }
 
         teamOwner.addTeamToOwn(teamToOwn, owner.getSystemUser());
-
-
-        //TODO: maybe this if is not needed?
         if(teamToOwn.addTeamOwner(teamOwner)){
             teamOwner.setAppointedOwner(teamToOwn,owner.getSystemUser());
         }
@@ -479,6 +476,9 @@ public class TeamController {
         for (TeamOwner toRemove:
                 teamOwnersToRemove) {
             team.removeTeamOwner(toRemove);
+            toRemove.removeTeamOwned(team);
+            /*update db*/
+            EntityManager.getInstance().removeTeamOwner(toRemove,team);
             //Log the action
             SystemLoggerManager.logInfo(TeamController.class,
                     new RemoveTeamOwnerLogMsg(username,toRemove.getSystemUser().getUsername(), team.getTeamName()));

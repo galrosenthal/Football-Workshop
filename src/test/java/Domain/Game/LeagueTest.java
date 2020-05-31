@@ -14,6 +14,7 @@ public class LeagueTest extends GenericTestAbstract {
     private League league;
 
 
+
     @Before
     public void setUp() throws Exception {
         this.league = new League("test league name", true);

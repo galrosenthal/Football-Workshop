@@ -49,6 +49,7 @@ public class DBHandler implements CRUD {
     public static void startConnection(String url) {
         //connect to DB and save to field in class.
         try {
+            System.out.println("url: "+url+" username "+username+" password: "+password);
             Class.forName(myDriver);
             System.out.println("Username: " + username);
             System.out.println("Password: " + password);

@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Game extends TableImpl<GameRecord> {
 
-    private static final long serialVersionUID = -1064352965;
+    private static final long serialVersionUID = -622197369;
 
     /**
      * The reference instance of <code>fwdb_test.game</code>
@@ -69,9 +69,14 @@ public class Game extends TableImpl<GameRecord> {
     public final TableField<GameRecord, String> AWAY_TEAM = createField(DSL.name("away_team"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
-     * The column <code>fwdb_test.game.Date</code>.
+     * The column <code>fwdb_test.game.start_date</code>.
      */
-    public final TableField<GameRecord, LocalDate> DATE = createField(DSL.name("Date"), org.jooq.impl.SQLDataType.LOCALDATE.nullable(false), this, "");
+    public final TableField<GameRecord, LocalDate> START_DATE = createField(DSL.name("start_date"), org.jooq.impl.SQLDataType.LOCALDATE.nullable(false), this, "");
+
+    /**
+     * The column <code>fwdb_test.game.end_date</code>.
+     */
+    public final TableField<GameRecord, LocalDate> END_DATE = createField(DSL.name("end_date"), org.jooq.impl.SQLDataType.LOCALDATE.defaultValue(org.jooq.impl.DSL.field("NULL", org.jooq.impl.SQLDataType.LOCALDATE)), this, "");
 
     /**
      * The column <code>fwdb_test.game.finished</code>.
@@ -175,11 +180,11 @@ public class Game extends TableImpl<GameRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, Integer, String, String, LocalDate, Boolean> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Integer, Integer, String, String, LocalDate, LocalDate, Boolean> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

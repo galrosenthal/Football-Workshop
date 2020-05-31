@@ -28,7 +28,7 @@ public class TeamOwnerStub extends TeamOwner {
         List<Team> test = new ArrayList<>();
         if (selector == 0 || selector == 66143 || selector == 66144 || selector == 66151 || selector == 66163
                 || selector == 66251) {
-            TeamStub teamStub = new TeamStub(selector, true);
+            TeamStub teamStub = new TeamStub(selector, false);
             test.add(teamStub);
             teamStub.addTeamOwner(this);
         }

@@ -104,4 +104,6 @@ public class EntityManagerTest extends GenericTestAbstract {
     public void tearDown() throws Exception {
         EntityManager.getInstance().clearAll();
     }
+
+
 }

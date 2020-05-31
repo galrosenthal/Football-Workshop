@@ -49,7 +49,11 @@ public class Referee extends Role {
      * @return - List<Season> - A list of all the seasons that this referee is assigned to
      */
     public List<Season> getSeasons() {
-        return new ArrayList<>(seasons);
+        if (this.seasons.isEmpty()) {
+            this.seasons = EntityManager.getInstance().getRefereeSeasons(this);
+        }
+        return this.seasons;
+        //TODO:Pull From DB
     }
 
     /**
@@ -88,10 +92,21 @@ public class Referee extends Role {
      * Un-assigns the referee role from all seasons
      */
     public void unAssignFromAllSeasons() {
-        for (Season season : this.seasons) {
+        for (Season season : getSeasons()) {
             season.unAssignReferee(this);
         }
-        EntityManager.getInstance().unAssignRefereeFromAllSeasons(this);
+        //EntityManager.getInstance().unAssignRefereeFromAllSeasons(this); //Check:Should be covered with CASCADE
+        this.seasons = new ArrayList<>();
+    }
+
+    /**
+     * Un-assigns the referee role from all games
+     */
+    public void unAssignFromAllGames() {
+        for (Game game : getGames()) {
+            game.unAssignReferee(this);
+        }
+        //EntityManager.getInstance().unAssignRefereeFromAllGames(this); //Check:Should be covered with CASCADE
         this.seasons = new ArrayList<>();
     }
 
@@ -102,7 +117,9 @@ public class Referee extends Role {
      */
     public void assignToSeason(Season chosenSeason) {
         if (chosenSeason != null) {
-            this.seasons.add(chosenSeason);
+
+            //TOOD: This will not work
+            getSeasons().add(chosenSeason);
         }
     }
 

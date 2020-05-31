@@ -48,22 +48,22 @@ public class PlayerTest  extends GenericTestAbstract {
         assertFalse(p1.addTeam(teamStub,ownerStub));
     }
 
-
-    @Test
-    public void addAllPropertiesUTest() throws Exception{
-        UIController.setIsTest(true);
-        UIController.setSelector(61120);
-        Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
-        Player p1 = new Player(testUser,bday, true);
-
-        TeamStub ts = new TeamStub(61120, true);
-        BelongToTeamStub bgStub = new BelongToTeamStub(ts, p1);
-        p1.addTeamConnection(bgStub);
-
-
-        assertTrue(p1.addAllProperties(ts));
-
-    }
+/*irrelevant test*/
+//    @Test
+//    public void addAllPropertiesUTest() throws Exception{
+//        UIController.setIsTest(true);
+//        UIController.setSelector(61120);
+//        Date bday = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/1993");
+//        Player p1 = new Player(testUser,bday, true);
+//
+//        TeamStub ts = new TeamStub(61120, true);
+//        BelongToTeamStub bgStub = new BelongToTeamStub(ts, p1);
+//        p1.addTeamConnection(bgStub);
+//
+//
+//        assertTrue(p1.addAllProperties(ts));
+//
+//    }
 
     @Test
     public void addPropertyUTest() throws Exception{
@@ -91,8 +91,8 @@ public class PlayerTest  extends GenericTestAbstract {
 
     @Test
     public void changePropertyUTest() {
-        Player player = new Player(new SystemUserStub("playerTest" , "gal" , 6131, true) , new Date(), true);
-        TeamStub ts = new TeamStub(61120, true);
+        Player player = new Player(new SystemUser("playerTest" , "gal" , true) , new Date(), true);
+        Team ts = new Team("Test", true);
         BelongToTeamStub bgStub = new BelongToTeamStub(ts,player);
         player.addTeamConnection(bgStub);
         Assert.assertTrue(player.changeProperty(ts,player.fieldJobString , PlayerFieldJobs.DEFENSE.toString()));

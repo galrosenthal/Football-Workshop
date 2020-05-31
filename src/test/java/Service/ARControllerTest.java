@@ -181,6 +181,8 @@ public class ARControllerTest extends GenericTestAbstract {
 
         assertTrue(ARController.addReferee(systemUser));
     }
+    /*
+    Irrelevant because of DB integration
     @Test
     public void addReferee2ITest() {
         SystemUser systemUser = getSystemUserAR();
@@ -190,6 +192,8 @@ public class ARControllerTest extends GenericTestAbstract {
 
         assertFalse(ARController.addReferee(systemUser));
     }
+
+     */
 
     @Test
     public void addReferee3ITest() {
@@ -447,6 +451,8 @@ public class ARControllerTest extends GenericTestAbstract {
         assertFalse(ARController.registerNewTeam(systemUser));
     }
 
+    /*Irrelevant with db*/
+/*
     @Test
     public void registerNewTeam2UTest() throws TeamAlreadyExistsException, UserNotFoundException {
         SystemUser arSystemUser = new SystemUserStub("stubUsername", "stub", 9102, true); //AR
@@ -460,6 +466,8 @@ public class ARControllerTest extends GenericTestAbstract {
             e.printStackTrace();
         }
     }
+
+ */
 
     @Test
     public void registerNewTeam3UTest() throws TeamAlreadyExistsException, UserNotFoundException {

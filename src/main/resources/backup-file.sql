@@ -73,7 +73,7 @@ DROP TABLE IF EXISTS `coach`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `coach` (
   `username` varchar(50) NOT NULL,
-  `qualification` enum('MAIN_COACH','SECOND_COACH','JUNIOR_COACH') NOT NULL,
+  `qualification` enum('MAIN_COACH','SECOND_COACH','JUNIOR_COACH') DEFAULT NULL,
   PRIMARY KEY (`username`),
   CONSTRAINT `FK_coach_user_roles` FOREIGN KEY (`username`) REFERENCES `user_roles` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -369,7 +369,8 @@ CREATE TABLE `game` (
   `stadium_id` int(11) NOT NULL,
   `home_team` varchar(50) NOT NULL,
   `away_team` varchar(50) NOT NULL,
-  `Date` date NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date DEFAULT NULL,
   `finished` bit(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`game_id`),
   KEY `FK_game_stadium` (`stadium_id`),
@@ -448,6 +449,7 @@ DROP TABLE IF EXISTS `manager_in_teams`;
 CREATE TABLE `manager_in_teams` (
   `username` varchar(50) NOT NULL,
   `team_name` varchar(50) NOT NULL,
+  `appointer` varchar(50) DEFAULT NULL,
   `REMOVE_PLAYER` bit(1) NOT NULL DEFAULT b'0',
   `ADD_PLAYER` bit(1) NOT NULL DEFAULT b'0',
   `CHANGE_POSITION_PLAYER` bit(1) NOT NULL DEFAULT b'0',
@@ -456,8 +458,10 @@ CREATE TABLE `manager_in_teams` (
   `CHANGE_TEAM_JOB_COACH` bit(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`username`,`team_name`) USING BTREE,
   KEY `FK_managed_teams_team` (`team_name`),
+  KEY `FK_manager_in_teams_systemuser` (`appointer`),
   CONSTRAINT `FK_managed_teams_team` FOREIGN KEY (`team_name`) REFERENCES `team` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_managed_teams_team_manager` FOREIGN KEY (`username`) REFERENCES `team_manager` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_managed_teams_team_manager` FOREIGN KEY (`username`) REFERENCES `team_manager` (`username`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_manager_in_teams_systemuser` FOREIGN KEY (`appointer`) REFERENCES `systemuser` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -480,10 +484,13 @@ DROP TABLE IF EXISTS `owned_teams`;
 CREATE TABLE `owned_teams` (
   `username` varchar(50) NOT NULL,
   `team_name` varchar(50) NOT NULL,
+  `appointer` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`username`,`team_name`),
   KEY `FK__team` (`team_name`),
+  KEY `FK_owned_teams_systemuser` (`appointer`),
   CONSTRAINT `FK__team` FOREIGN KEY (`team_name`) REFERENCES `team` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK__team_owner` FOREIGN KEY (`username`) REFERENCES `team_owner` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK__team_owner` FOREIGN KEY (`username`) REFERENCES `team_owner` (`username`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_owned_teams_systemuser` FOREIGN KEY (`appointer`) REFERENCES `systemuser` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -505,7 +512,7 @@ DROP TABLE IF EXISTS `player`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `player` (
   `username` varchar(50) NOT NULL,
-  `birthdate` date NOT NULL,
+  `birthday` date NOT NULL,
   PRIMARY KEY (`username`),
   CONSTRAINT `FK_player_user_roles` FOREIGN KEY (`username`) REFERENCES `user_roles` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -530,7 +537,7 @@ DROP TABLE IF EXISTS `player_in_team`;
 CREATE TABLE `player_in_team` (
   `username` varchar(50) NOT NULL,
   `team_name` varchar(50) NOT NULL,
-  `field_job` enum('DEFENSE','GOAL_KEEPER','FRONT') NOT NULL,
+  `field_job` enum('DEFENSE','GOAL_KEEPER','FRONT') DEFAULT NULL,
   PRIMARY KEY (`username`,`team_name`),
   KEY `FK_player_in_team_team` (`team_name`),
   CONSTRAINT `FK__player` FOREIGN KEY (`username`) REFERENCES `player` (`username`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -560,7 +567,7 @@ CREATE TABLE `points_policy` (
   `loss_points` int(11) NOT NULL,
   `tie_points` int(11) NOT NULL,
   PRIMARY KEY (`policy_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -581,7 +588,7 @@ DROP TABLE IF EXISTS `referee`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `referee` (
   `username` varchar(50) NOT NULL,
-  `training` varchar(50) NOT NULL,
+  `training` enum('MAIN_REFEREE','SIDE_REFEREE','VAR_REFEREE') DEFAULT NULL,
   PRIMARY KEY (`username`),
   CONSTRAINT `FK_refree_user_roles` FOREIGN KEY (`username`) REFERENCES `user_roles` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -656,7 +663,7 @@ DROP TABLE IF EXISTS `scheduling_policy`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `scheduling_policy` (
-  `scheduling_id` int(11) NOT NULL,
+  `scheduling_id` int(11) NOT NULL AUTO_INCREMENT,
   `games_Per_Season` int(11) NOT NULL,
   `games_Per_Day` int(11) NOT NULL,
   `minimum_Rest_Days` int(11) NOT NULL,
@@ -692,7 +699,7 @@ CREATE TABLE `season` (
   KEY `FK_season_points_policy` (`points_policy_id`) USING BTREE,
   CONSTRAINT `FK_season_league` FOREIGN KEY (`league_name`) REFERENCES `league` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_season_points_policy` FOREIGN KEY (`points_policy_id`) REFERENCES `points_policy` (`policy_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=256 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -712,7 +719,7 @@ DROP TABLE IF EXISTS `stadium`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `stadium` (
-  `stadium_id` int(11) NOT NULL,
+  `stadium_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `location` varchar(50) NOT NULL,
   PRIMARY KEY (`stadium_id`)
@@ -740,8 +747,8 @@ CREATE TABLE `stadium_home_teams` (
   `team_name` varchar(50) NOT NULL,
   PRIMARY KEY (`stadium_id`,`team_name`),
   KEY `FK__team_stadium` (`team_name`),
-  CONSTRAINT `FK__stadium_teams` FOREIGN KEY (`stadium_id`) REFERENCES `stadium` (`stadium_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK__team_stadium` FOREIGN KEY (`team_name`) REFERENCES `team` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK__team_stadium` FOREIGN KEY (`team_name`) REFERENCES `team` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_stadium_home_teams_stadium` FOREIGN KEY (`stadium_id`) REFERENCES `stadium` (`stadium_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -812,7 +819,7 @@ DROP TABLE IF EXISTS `team`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `team` (
   `name` varchar(50) NOT NULL,
-  `status` enum('OPEN','CLOSED','PERMENENTLY_CLOSED') NOT NULL DEFAULT 'OPEN',
+  `status` enum('OPEN','CLOSED','PERMANENTLY_CLOSED') NOT NULL DEFAULT 'OPEN',
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -835,10 +842,7 @@ DROP TABLE IF EXISTS `team_manager`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `team_manager` (
   `username` varchar(50) NOT NULL,
-  `appointer` varchar(50) NOT NULL,
-  PRIMARY KEY (`appointer`,`username`),
-  KEY `FK_team_manager_user_roles` (`username`),
-  CONSTRAINT `FK_team_manager_team_owner` FOREIGN KEY (`appointer`) REFERENCES `team_owner` (`username`) ON DELETE CASCADE ON UPDATE CASCADE,
+  PRIMARY KEY (`username`) USING BTREE,
   CONSTRAINT `FK_team_manager_user_roles` FOREIGN KEY (`username`) REFERENCES `user_roles` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -861,11 +865,8 @@ DROP TABLE IF EXISTS `team_owner`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `team_owner` (
   `username` varchar(50) NOT NULL,
-  `appointer` varchar(50) NOT NULL,
   PRIMARY KEY (`username`),
-  KEY `FK_team_owner_systemuser` (`appointer`),
-  CONSTRAINT `FK__user_roles` FOREIGN KEY (`username`) REFERENCES `user_roles` (`username`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_team_owner_systemuser` FOREIGN KEY (`appointer`) REFERENCES `systemuser` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK__user_roles` FOREIGN KEY (`username`) REFERENCES `user_roles` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -942,7 +943,7 @@ DROP TABLE IF EXISTS `user_roles`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_roles` (
   `username` varchar(50) NOT NULL,
-  `role_type` enum('FAN','PLAYER','COACH','TEAM_MANAGER','TEAM_OWNER','SYSTEM_ADMIN','REFEREE','ASSOCIATION_REPRESENTATIVE') NOT NULL,
+  `role_type` enum('PLAYER','COACH','TEAM_MANAGER','TEAM_OWNER','SYSTEM_ADMIN','REFEREE','ASSOCIATION_REPRESENTATIVE') NOT NULL,
   PRIMARY KEY (`username`,`role_type`) USING BTREE,
   CONSTRAINT `FK_role_systemuser` FOREIGN KEY (`username`) REFERENCES `systemuser` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -966,4 +967,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-05-29 19:03:19
+-- Dump completed on 2020-05-30 16:00:16

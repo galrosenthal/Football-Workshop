@@ -119,6 +119,7 @@ public class SystemUser extends User implements Fan {
     public boolean removeRole(Role role) {
         if (role != null) {
             roles.remove(role);
+            EntityManager.getInstance().removeRole(this, role);
             return true;
         }
         return false;

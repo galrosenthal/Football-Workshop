@@ -82,8 +82,9 @@ public class AssociationRepresentative extends Role {
         }
         Team newTeam = createNewTeam(teamName, teamOwner);
 //        teamOwner.setAppointedOwner(newTeam, this.getSystemUser());
-        teamOwner.addTeamToOwn(newTeam, this.getSystemUser());
         newTeam.addTeamOwner(teamOwner);
+        teamOwner.addTeamToOwn(newTeam, this.getSystemUser());
+        teamOwner.setAppointedOwner(newTeam,this.getSystemUser());
         return true;
     }
 
@@ -110,8 +111,10 @@ public class AssociationRepresentative extends Role {
         Referee refereeRole = (Referee) chosenUser.getRole(RoleTypes.REFEREE);
         if (refereeRole != null) {
             if (!refereeRole.hasFutureGames()) {
-                refereeRole.unAssignFromAllSeasons();
-                chosenUser.removeRole(refereeRole); //TODO: NEED TO UN ASSIGN FROM GAMES ALSO - PROBLEM
+                if (chosenUser.removeRole(refereeRole)) { //TODO: NEED TO UN ASSIGN FROM GAMES ALSO - PROBLEM
+                    refereeRole.unAssignFromAllSeasons();
+                    refereeRole.unAssignFromAllGames();
+                }
                 return true;
             }
         }
@@ -129,8 +132,12 @@ public class AssociationRepresentative extends Role {
         if (chosenSeason.doesContainsReferee(refereeRole)) {
             throw new Exception("This referee is already assigned to the chosen season");
         } else {
-            chosenSeason.assignReferee(refereeRole);
-            refereeRole.assignToSeason(chosenSeason);
+            if (EntityManager.getInstance().assignRefereeToSeason(refereeRole, chosenSeason)) {
+                chosenSeason.assignReferee(refereeRole);
+                refereeRole.assignToSeason(chosenSeason);
+            } else {
+                throw new Exception("The operation failed to execute because of a DB failure");
+            }
         }
     }
 

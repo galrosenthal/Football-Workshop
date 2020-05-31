@@ -68,6 +68,7 @@ public class Team {
         if(addToDB)
         {
             EntityManager.getInstance().addTeam(this);
+            EntityManager.getInstance().addTeamOwnerToTeam(to, this);
         }
 
     }
@@ -110,7 +111,7 @@ public class Team {
      * @return true if the player added successfully to the Team.
      */
     public boolean addTeamPlayer(TeamOwner townr, Role teamPlayer) {
-        if (!teamOwners.contains(townr) || status != TeamStatus.OPEN || !(EntityManager.getInstance().isTeamOwner(townr,this))) {
+        if (status != TeamStatus.OPEN || !(EntityManager.getInstance().isTeamOwner(townr,this))) {
             return false;
         }
         if (teamPlayer.getType() == RoleTypes.PLAYER) {
@@ -135,7 +136,7 @@ public class Team {
     }
 
     public boolean addTeamCoach(TeamOwner townr, Role coach) {
-        if (!teamOwners.contains(townr) || status != TeamStatus.OPEN || !(EntityManager.getInstance().isTeamOwner(townr,this))) {
+        if (status != TeamStatus.OPEN || !(EntityManager.getInstance().isTeamOwner(townr,this))) {
             return false;
         }
         if (coach.getType() == RoleTypes.COACH) {
@@ -146,7 +147,7 @@ public class Team {
 
 
     public boolean addTeamManager(TeamOwner townr, Role teamManager) {
-        if (!teamOwners.contains(townr) || status != TeamStatus.OPEN || !(EntityManager.getInstance().isTeamOwner(townr,this))) {
+        if (status != TeamStatus.OPEN || !(EntityManager.getInstance().isTeamOwner(townr,this))) {
             return false;
         }
         if (teamManager.getType() == RoleTypes.TEAM_MANAGER) {
@@ -165,6 +166,7 @@ public class Team {
             return false;
         }
         if (teamOwner.getType() == RoleTypes.TEAM_OWNER && !teamOwners.contains(teamOwner) &&!(EntityManager.getInstance().isTeamOwner((TeamOwner)teamOwner,this))) {
+
             /*DB*/
             EntityManager.getInstance().addTeamOwnerToTeam((TeamOwner)teamOwner, this);
             return teamOwners.add((TeamOwner) teamOwner);
@@ -185,17 +187,21 @@ public class Team {
     }
 
     public List<Player> getTeamPlayers() {
-        List<Player> allPlayersInTeam = new ArrayList<>();
+        /*List<Player> allPlayersInTeam = new ArrayList<>();
+
         for (BelongToTeam po : playersAndCoaches) {
             PartOfTeam teamAssetConnection = po.getAssetOfTheTeam();
             if (teamAssetConnection instanceof Player) {
                 allPlayersInTeam.add((Player) teamAssetConnection);
             }
         }
+
+         */
+        List<Player> allPlayersInTeam = EntityManager.getInstance().getAllPlayersInTeam(this);
         return allPlayersInTeam;
     }
-
     public List<Coach> getTeamCoaches() {
+        /*
         List<Coach> allPlayersInTeam = new ArrayList<>();
         for (BelongToTeam po : playersAndCoaches) {
             PartOfTeam teamAssetConnection = po.getAssetOfTheTeam();
@@ -203,10 +209,14 @@ public class Team {
                 allPlayersInTeam.add((Coach) teamAssetConnection);
             }
         }
-        return allPlayersInTeam;
+
+         */
+        List<Coach> allCoachesInTeam =EntityManager.getInstance().getAllCoachesInTeam(this);;
+        return allCoachesInTeam;
     }
 
     public List<TeamManager> getTeamManagers() {
+        teamManagers = EntityManager.getInstance().getTeamsManager(this);
         return teamManagers;
     }
 
@@ -420,6 +430,7 @@ public class Team {
      * @return list of Stadiums
      */
     public List<Stadium> getStadiums() {
+        stadiums = EntityManager.getInstance().getStadiumsInTeam(this);
         return stadiums;
     }
 
@@ -432,7 +443,7 @@ public class Team {
 
             if (EntityManager.getInstance().addStadium(stadium, this)) {
                 this.stadiums.add(stadium);
-
+                return true;
             }
 
 
@@ -449,6 +460,11 @@ public class Team {
             this.stadiums.remove(stadium);
             return true;
         }
+        if(getStadiums().contains(stadium))
+        {
+            this.stadiums.remove(stadium);
+            EntityManager.getInstance().removeStadiumFromTeam(stadium , this);
+        }
         return false;
     }
 
@@ -462,8 +478,8 @@ public class Team {
         List<Asset> allTeamAssets = new ArrayList<>();
         allTeamAssets.addAll(getTeamPlayers());
         allTeamAssets.addAll(getTeamCoaches());
-        allTeamAssets.addAll(this.teamManagers);
-        allTeamAssets.addAll(this.stadiums);
+        allTeamAssets.addAll(getTeamManagers());
+        allTeamAssets.addAll(getStadiums());
         return allTeamAssets;
     }
 
@@ -478,6 +494,10 @@ public class Team {
             return true;
         }
         /*check in db*/
+        if(teamOwner == null)
+        {
+            return false;
+        }
         return EntityManager.getInstance().isTeamOwner(teamOwner, this);
         //   return false;
     }

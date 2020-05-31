@@ -17,9 +17,11 @@ public class TeamOwnerTest extends GenericTestAbstract {
         Team hapoelBash = new Team("Test", true);
         hapoelBash.setTeamName("Hapoel Beer Sheeva");
 
-        SystemUser sysUserTO = new SystemUserStub("OranSh", "Oran", 62, true);
+        SystemUser sysUserTO = new SystemUser("OranSh", "Oran", true);
         TeamOwner newTeamOwner = new TeamOwner(sysUserTO, true);
         Assert.assertTrue(newTeamOwner.addTeamToOwn(hapoelBash,sysUserTO));
+        hapoelBash.addTeamOwner(newTeamOwner);
+        newTeamOwner.setAppointedOwner(hapoelBash,sysUserTO);
         Assert.assertFalse(newTeamOwner.addTeamToOwn(hapoelBash,sysUserTO));
     }
 
@@ -31,10 +33,12 @@ public class TeamOwnerTest extends GenericTestAbstract {
         Team hapoelBash = new Team("Test", true);
         hapoelBash.setTeamName("Hapoel Beer Sheeva");
 
-        SystemUser sysUserTO = new SystemUserStub("OranSh", "Oran", 62, true);
+        SystemUser sysUserTO = new SystemUser("OranSh", "Oran", true);
         TeamOwner newTeamOwner = new TeamOwner(sysUserTO, true);
         Assert.assertFalse(newTeamOwner.removeTeamOwned(hapoelBash));
         newTeamOwner.addTeamToOwn(hapoelBash,sysUserTO);
+        hapoelBash.addTeamOwner(newTeamOwner);
+        newTeamOwner.setAppointedOwner(hapoelBash,sysUserTO);
         Assert.assertTrue(newTeamOwner.removeTeamOwned(hapoelBash));
     }
 
@@ -46,10 +50,13 @@ public class TeamOwnerTest extends GenericTestAbstract {
         Team hapoelBash = new Team("Test", true);
         hapoelBash.setTeamName("Hapoel Beer Sheeva");
 
-        SystemUser sysUserTO = new SystemUserStub("OranSh", "Oran", 62, true);
+        SystemUser sysUserTO = new SystemUser("OranSh", "Oran", true);
         TeamOwner newTeamOwner = new TeamOwner(sysUserTO, true);
         Assert.assertFalse(newTeamOwner.setAppointedOwner(hapoelBash,null));
+        newTeamOwner.addTeamToOwn(hapoelBash,newTeamOwner.getSystemUser());
         newTeamOwner.setAppointedOwner(hapoelBash,newTeamOwner.getSystemUser());
+        hapoelBash.addTeamOwner(newTeamOwner);
+        newTeamOwner.setAppointedOwner(hapoelBash,sysUserTO);
         Assert.assertEquals(newTeamOwner.getSystemUser(),newTeamOwner.getAppointedOwner(hapoelBash));
 
     }

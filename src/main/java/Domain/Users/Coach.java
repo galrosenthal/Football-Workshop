@@ -17,6 +17,10 @@ public class Coach extends PartOfTeam {
     public Coach(SystemUser systemUser, boolean addToDB) {
         super(RoleTypes.COACH, systemUser);
         coachedTeams = new ArrayList<>();
+        if (addToDB) {
+            EntityManager.getInstance().addRole(this);
+        }
+
     }
 
     public Coach(SystemUser systemUser, CoachQualification qualification, boolean addToDB) {

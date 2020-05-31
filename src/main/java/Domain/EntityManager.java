@@ -18,7 +18,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EntityManager {
+public class EntityManager{
     private static EntityManager entityManagerInstance = null;
 
     private static final Pattern VALID_EMAIL_ADDRESS_REGEX =
@@ -57,15 +57,14 @@ public class EntityManager {
     public static EntityManager getInstance() {
         if (entityManagerInstance == null) {
             entityManagerInstance = new EntityManager();
-
-            SystemUser admin = new SystemUser("Administrator",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"admin" , "test@gmail.com" , false, false);
-            SystemUser arnav = new SystemUser("arnav",org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"),"arnav" , "test@gmail.com" , false, false);
-
-            admin.addNewRole(new SystemAdmin(admin, false));
-            admin.addNewRole(new AssociationRepresentative(admin, false));
-            admin.addNewRole(new Referee(admin,RefereeQualification.VAR_REFEREE, false));
-            admin.addNewRole(new TeamOwner(admin, false));
-            createObjectsForGuiTests();
+            DBManager.getInstance().startConnection();
+            SystemUser admin = new SystemUser("Administrator", org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"), "admin", "test@gmail.com", false, true);
+            SystemUser arnav = new SystemUser("arnav", org.apache.commons.codec.digest.DigestUtils.sha256Hex("Aa123456"), "arnav", "test@gmail.com", false, true);
+            admin.addNewRole(new SystemAdmin(admin, true));
+            admin.addNewRole(new AssociationRepresentative(admin, true));
+            admin.addNewRole(new Referee(admin, RefereeQualification.VAR_REFEREE, true));
+            admin.addNewRole(new TeamOwner(admin, true));
+           // createObjectsForGuiTests();
         }
 
         return entityManagerInstance;
@@ -73,29 +72,29 @@ public class EntityManager {
 
     private static void createObjectsForGuiTests() {
         //AR Controls tests
-        Stadium stadium1 = new Stadium("stadium1","london");
-        Stadium stadium2 = new Stadium("stadium2","paris");
-        EntityManager.getInstance().addStadium(stadium1);
-        EntityManager.getInstance().addStadium(stadium2);
+        Stadium stadium1 = new Stadium("stadium1","london" , true);
+        Stadium stadium2 = new Stadium("stadium2","paris", true);
+//        EntityManager.getInstance().addStadium(stadium1);
+//        EntityManager.getInstance().addStadium(stadium2);
 
-        SystemUser user1 = new SystemUser("user1","Aa123456","Oran","oran@gmail.com",false, false);
+        SystemUser user1 = new SystemUser("user1","Aa123456","Oran","oran@gmail.com",false, true);
         EntityManager.getInstance().addUser(user1);
-        SystemUser user2 = new SystemUser("user2","Aa123456","Oran","oran@gmail.com",false, false);
+        SystemUser user2 = new SystemUser("user2","Aa123456","Oran","oran@gmail.com",false, true);
         EntityManager.getInstance().addUser(user2);
-        TeamOwner to1 = new TeamOwner(user1, false);
-        TeamOwner to2 = new TeamOwner(user2, false);
-        Team team1 = new Team("team1",to1, false);
-        Team team2 = new Team("team2",to2, false);
+        TeamOwner to1 = new TeamOwner(user1, true);
+        TeamOwner to2 = new TeamOwner(user2, true);
+        Team team1 = new Team("team1",to1, true);
+        Team team2 = new Team("team2",to2, true);
 
         for (int i=0; i < 12;i++){
-            SystemUser user = new SystemUser(Integer.toString(i),Integer.toString(i), false);
-            Player player = new Player(user,new Date(), false);
+            SystemUser user = new SystemUser(Integer.toString(i),Integer.toString(i), true);
+            Player player = new Player(user,new Date(), true);
             EntityManager.getInstance().addUser(user);
             team1.addTeamPlayer(to1,player);
         }
         for (int i=12; i < 25;i++){
-            SystemUser user = new SystemUser(Integer.toString(i),Integer.toString(i), false);
-            Player player = new Player(user,new Date(), false);
+            SystemUser user = new SystemUser(Integer.toString(i),Integer.toString(i), true);
+            Player player = new Player(user,new Date(), true);
             EntityManager.getInstance().addUser(user);
             team2.addTeamPlayer(to2,player);
         }
@@ -105,35 +104,35 @@ public class EntityManager {
 
         EntityManager.getInstance().addTeam(team1);
         EntityManager.getInstance().addTeam(team2);
-        SystemUser refUser = new SystemUser("referee","referee", false);
+        SystemUser refUser = new SystemUser("referee","referee", true);
 
         EntityManager.getInstance().addUser(refUser);
 
         //To Controls Tests
-        SystemUser user3 = new SystemUser("user3","user3", false);
-        TeamOwner to3 = new TeamOwner(user3, false);
-        Team team3 = new Team("team3",(TeamOwner)EntityManager.getInstance().getUser("Administrator").getRole(RoleTypes.TEAM_OWNER), false);
+        SystemUser user3 = new SystemUser("user3","user3", true);
+        TeamOwner to3 = new TeamOwner(user3, true);
+        Team team3 = new Team("team3",(TeamOwner)EntityManager.getInstance().getUser("Administrator").getRole(RoleTypes.TEAM_OWNER), true);
         EntityManager.getInstance().addUser(user3);
         EntityManager.getInstance().addTeam(team3);
-        Stadium stadium3 = new Stadium("stadium3","london");
+        Stadium stadium3 = new Stadium("stadium3","london", true);
         EntityManager.getInstance().addStadium(stadium3);
-        Stadium stadium4 = new Stadium("stadium4","london");
+        Stadium stadium4 = new Stadium("stadium4","london", true);
         EntityManager.getInstance().addStadium(stadium4);
 
         SystemUser systemUser = EntityManager.getInstance().getUser("Administrator");
         Referee referee = (Referee)systemUser.getRole(RoleTypes.REFEREE);
-        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser", false);
-        new AssociationRepresentative(arSystemUser, false);
-        new TeamOwner(arSystemUser, false);
+        SystemUser arSystemUser = new SystemUser("arSystemUser", "arUser", true);
+        new AssociationRepresentative(arSystemUser, true);
+        new TeamOwner(arSystemUser, true);
         TeamOwner toRole = (TeamOwner) arSystemUser.getRole(RoleTypes.TEAM_OWNER);
-        Team firstTeam = new Team("Hapoel Beit Shan", toRole, false);
+        Team firstTeam = new Team("Hapoel Beit Shan", toRole, true);
         EntityManager.getInstance().addTeam(firstTeam);
-        Team secondTeam = new Team("Hapoel Beer Sheva", toRole, false);
+        Team secondTeam = new Team("Hapoel Beer Sheva", toRole, true);
         EntityManager.getInstance().addTeam(secondTeam);
 
-        Game game = new Game(new Stadium("staName", "staLoca"), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), false);
-        SystemUser avi = new SystemUser("AviCohen", "Avi Cohen", false);
-        Player player1 = new Player(avi, new Date(2001, 01, 01), false);
+        Game game = new Game(new Stadium("staName", "staLoca", true), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
+        SystemUser avi = new SystemUser("AviCohen", "Avi Cohen", true);
+        Player player1 = new Player(avi, new Date(2001, 01, 01), true);
         avi.addNewRole(player1);
         EntityManager.getInstance().addUser(avi);
         firstTeam.addTeamPlayer(toRole, player1);
@@ -151,7 +150,6 @@ public class EntityManager {
             String username = systemUsersTable.getRecordValue(i, "username");
             String name = systemUsersTable.getRecordValue(i, "name");
             String[] roles = systemUsersTable.getRecordValue(i, "role").split(";");
-
             SystemUser newUser = new SystemUser(username, name);
             for (String role : roles) {
                 switch (role) {
@@ -204,6 +202,7 @@ public class EntityManager {
      */
 
 
+
     public List<League> getLeagues() {
         if (this.allLeagues.isEmpty()) {//TODO: Replace with a function that checks if additional records should be pulled from the DB
             List<String> allLeaguesList = DBManager.getInstance().getLeagues();
@@ -236,13 +235,58 @@ public class EntityManager {
     }
 
     public List<Team> getTeams() {
-        return new ArrayList<Team>(allTeams);
+        if (this.allTeams.isEmpty()) {//TODO: Replace with a function that checks if additional records should be pulled from the DB
+            List<Team> teams = new ArrayList<>();
+
+            List<HashMap<String, String>> allTeamsDetails = DBManager.getInstance().getTeamsDetails();
+
+            for (int i = 0; i < allTeamsDetails.size(); i++) {
+                HashMap<String, String> currentTeamDetails = allTeamsDetails.get(i);
+                String teamName = currentTeamDetails.get("name");
+                TeamStatus teamStatus = TeamStatus.valueOf(currentTeamDetails.get("status"));
+                Team currentTeam = reCreateTeam(teamName, teamStatus);
+                teams.add(currentTeam);
+            }
+            //load teams
+            for (Team teamFromDB : teams) {
+                if (!this.allTeams.contains(teamFromDB)) {
+                    this.allTeams.add(teamFromDB);
+                }
+            }
+        }
+        //return a copy
+        return new ArrayList<Team>(this.allTeams);
+    }
+
+    private Team reCreateTeam(String teamName, TeamStatus teamStatus) {
+        return new Team(teamName, teamStatus, false);
+    }
+
+    public List<SystemUser> getAllUsers() {
+        if (this.allUsers.isEmpty()) {//TODO: Replace with a function that checks if additional records should be pulled from the DB
+            List<String> allUsernames = DBManager.getInstance().getUsernames();
+            List<SystemUser> users = new ArrayList<>();
+
+            for (int i = 0; i < allUsernames.size(); i++) {
+                String currentUsername = allUsernames.get(i);
+                SystemUser currentSystemUser = getUser(currentUsername);
+                users.add(currentSystemUser);
+            }
+
+            //load systemUsers
+            for (SystemUser userFromDB : users) {
+                if (!this.allUsers.contains(userFromDB)) {
+                    this.allUsers.add(userFromDB);
+                }
+            }
+        }
+        //return a copy
+        return new ArrayList<>(this.allUsers);
     }
 
     /**
      * Returns a SystemUser by his username
-     *
-     * @param username - String - The username of the user to get the SystemUser of.
+     * @param username
      * @return The SystemUser with the username, if exists in the system.
      */
     //todo: check is username in allUsers list,
@@ -250,11 +294,6 @@ public class EntityManager {
     // otherwise ask dbManager.getUserDetails(String username) and receive all Details to create user system
     // then ask dbManager.getUserRoles(String username) - ask dbManager for each role Details.
     public SystemUser getUser(String username) {
-        for (SystemUser su : allUsers) {
-            if (su.getUsername().equals(username)) {
-                return su;
-            }
-        }
         List<Pair<String, String>> userDetails = null;
         try {
             userDetails = DBManager.getInstance().getUser(username);
@@ -266,6 +305,11 @@ public class EntityManager {
         SystemUser systemUser = reCreateSystemUser(userDetails);
         reCreateSystemUserRole(systemUser, rolesDetails);
 
+        for (SystemUser su : allUsers) {
+            if (su.getUsername().equals(username)) {
+                return su;
+            }
+        }
         return systemUser;
         //return null;
     }
@@ -317,7 +361,15 @@ public class EntityManager {
             if (rolesDetail.get(i).getKey().equals("username")) {
                 username = rolesDetail.get(i).getValue();
             } else if (rolesDetail.get(i).getKey().equals("birthday")) {
-                bday = new Date(rolesDetail.get(i).getValue());
+                String string = rolesDetail.get(i).getValue();
+                DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                Date date = null;
+                try {
+                    date = format.parse(string);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                bday = date;
             }
         }
         Player player = new Player(systemUser, bday, false);
@@ -495,12 +547,18 @@ public class EntityManager {
      * @return The team with the given team name, if exists in the system.
      */
     public Team getTeam(String teamName) {
-        for (Team team : allTeams) {
-            if (team.getTeamName().toLowerCase().equals(teamName.toLowerCase())) {
-                return team;
-            }
-        }
-        return null;
+
+        HashMap<String,String> team = DBManager.getInstance().getTeam(teamName);
+        String name = team.get("name");
+        TeamStatus teamStatus = TeamStatus.valueOf(team.get("status"));
+        Team teamToGet = new Team(teamName, teamStatus,false);
+        return teamToGet;
+//        for (Team team : allTeams) {
+//            if (team.getTeamName().toLowerCase().equals(teamName.toLowerCase())) {
+//                return team;
+//            }
+//        }
+        //return null;
     }
 
     /**
@@ -519,14 +577,13 @@ public class EntityManager {
         if (stadiumList == null) {
             return null;
         }
-        Stadium stadium = new Stadium(stadiumList.get(0), stadiumList.get(1));
+        Stadium stadium = new Stadium(stadiumList.get(0), stadiumList.get(1), true);
         return stadium;
     }
 
 
     /**
      * Returns all system admins
-     *
      * @return List<SystemAdmin> SystemAdmin
      */
     public List<SystemAdmin> getSystemAdmins() {
@@ -534,7 +591,8 @@ public class EntityManager {
         for (SystemUser user :
                 allUsers) {
             Role userAdmin = user.getRole(RoleTypes.SYSTEM_ADMIN);
-            if (userAdmin != null && userAdmin.getType() == RoleTypes.SYSTEM_ADMIN) {
+            if (userAdmin != null && userAdmin.getType() == RoleTypes.SYSTEM_ADMIN )
+            {
                 sysAdmins.add((SystemAdmin) userAdmin);
             }
         }
@@ -544,11 +602,10 @@ public class EntityManager {
 
     /**
      * Checks if a team with a name that matches the given name already exists.
-     *
      * @param name - String - name
      * @return - boolean - True if a team with a name that matches the given name already exists, else false
      */
-    public boolean doesTeamExists(String name) {
+    public boolean doesTeamExists(String name){
         for (Team team : allTeams) {
             if (team.getTeamName().toLowerCase().equals(name.toLowerCase())) {
                 return true;
@@ -559,11 +616,10 @@ public class EntityManager {
 
     /**
      * Checks if a league with a name that matches the given name already exists.
-     *
      * @param name - String - name
      * @return - boolean - True if a league with a name that matches the given name already exists, else false
      */
-    public boolean doesLeagueExists(String name) {
+    public boolean doesLeagueExists(String name){
         for (League league : allLeagues) {
             if (league.getName().equals(name)) {
                 return true;
@@ -576,7 +632,6 @@ public class EntityManager {
 
     /**
      * Adds a given SystemUser to the user's list of the system.
-     *
      * @param systemUser User to add
      * @return true if successfully added the SystemUser to the system.
      */
@@ -594,7 +649,6 @@ public class EntityManager {
 
     /**
      * Removes a SystemUser by a given reference to the SystemUser to remove.
-     *
      * @param systemUser - SystemUser - the SystemUser to remove.
      * @return - boolean - true if the SystemUser removed successfully, else false
      */
@@ -604,7 +658,6 @@ public class EntityManager {
 
     /**
      * Removes a SystemUser by a given username
-     *
      * @param username - String - a name of the user to be removed
      * @return - boolean - true if the SystemUser removed successfully, else false
      */
@@ -621,7 +674,6 @@ public class EntityManager {
 
     /**
      * Adds a given Team to the team's list of the system.
-     *
      * @param team Team to add
      * @return true if successfully added the Team to the system.
      */
@@ -637,7 +689,6 @@ public class EntityManager {
 
     /**
      * Adds a given League to the league's list of the system.
-     *
      * @param league league to add
      * @return true if successfully added the League to the system.
      */
@@ -656,32 +707,28 @@ public class EntityManager {
 
     /**
      * Adds a given Stadium to the stadium's list of the system.
-     *
      * @param stadium Stadium to add
      * @return true if successfully added the Stadium to the system.
      */
     public boolean addStadium(Stadium stadium) {
         if (!(this.allStadiums.contains(stadium))) {
             this.allStadiums.add(stadium);
-            DBManager.getInstance().addStadium(stadium.getName() , stadium.getLocation());
-            return true;
+            return DBManager.getInstance().addStadium(stadium.getName(),stadium.getLocation());
         }
         return false;
     }
 
     /**
      * Checks if a given Stadium exists in the system.
-     *
      * @param stadium
      * @return true if the given Stadium exists in the system.
      */
-    public boolean isStadiumExists(Stadium stadium) {
+    public boolean isStadiumExists(Stadium stadium){
         return allStadiums.contains(stadium);
     }
 
     /**
      * Removes a Team by a given reference to the Team to remove.
-     *
      * @param team - Team - the Team to remove.
      * @return - boolean - true if the Team removed successfully, else false
      */
@@ -691,7 +738,6 @@ public class EntityManager {
 
     /**
      * Removes a league by a given name
-     *
      * @param leagueName - String - a name of the league to be removed
      * @return - boolean - true if the league removed successfully, else false
      */
@@ -717,6 +763,7 @@ public class EntityManager {
         pointsPolicies = new ArrayList<>();
         schedulingPolicies = new ArrayList<>();
 //        loggedInMap = new HashMap<>();
+//        loggedInMap = new HashMap<>();
         try {
             DBManager.deleteData("fwdb_test");
         } catch (Exception e) {
@@ -733,7 +780,6 @@ public class EntityManager {
 
     /**
      * Removes a Stadium by a given reference to the Stadium to remove.
-     *
      * @param st - Stadium - the Stadium to remove.
      * @return - boolean - true if the Stadium removed successfully, else false
      */
@@ -743,12 +789,12 @@ public class EntityManager {
 
     /**
      * Returns a list of all the system users that are referees.
-     *
      * @return - List<SystemUser> - A list of all the system users that are referees
      */
     public List<SystemUser> getReferees() {
         List<SystemUser> referees = new ArrayList<>();
-        for (SystemUser user : this.allUsers) {
+        List<SystemUser> allSystemUsers = this.getAllUsers();
+        for (SystemUser user : allSystemUsers) {
             if (user.isType(RoleTypes.REFEREE)) {
                 referees.add(user);
             }
@@ -759,7 +805,6 @@ public class EntityManager {
     /**
      * Receives user name and password from the unregistered user who wants to log in to the system,
      * performs validation and returns the relevant user.
-     *
      * @param usrNm User name
      * @param pswrd Password
      * @return The user in the system with those credentials.
@@ -784,6 +829,7 @@ public class EntityManager {
 //            loggedInMap.put(userWithUsrNm,true);
             //Log the action
             SystemLoggerManager.logInfo(this.getClass(), new LoginLogMsg(userWithUsrNm.getUsername()));
+            /*TODO SHOW ALERT!  - in case he doesnt get alert in email*/
             return userWithUsrNm;
         }
 
@@ -794,9 +840,8 @@ public class EntityManager {
 
     /**
      * This Function is used to authenticate the username with its password
-     *
      * @param userWithUsrNm the SystemUser of the username from the entity manager
-     * @param pswrd         the password recieved from the UI
+     * @param pswrd the password recieved from the UI
      * @return true if the password is correct and the user is able to login
      */
     private boolean authenticate(SystemUser userWithUsrNm, String pswrd) {
@@ -818,19 +863,18 @@ public class EntityManager {
      * At least 1 lower case letter.
      * Must not contain any spaces.
      * Adds new user with the role fan to the system, and returns the relevant user.
-     *
-     * @param name       Name.
-     * @param usrNm      User name.
-     * @param pswrd      Password.
-     * @param email      email address
+     * @param name Name.
+     * @param usrNm User name.
+     * @param pswrd Password.
+     * @param email  email address
      * @param emailAlert - boolean  - if send via email - true, otherwise false
      * @return New user with those credentials.
      * @throws Exception If user name is already belongs to a user in the system, or
-     *                   the password does not meet the security requirements.
+     * the password does not meet the security requirements.
      */
-    public SystemUser signUp(String name, String usrNm, String pswrd, String email, boolean emailAlert) throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException, InvalidEventException {
+    public SystemUser signUp(String name, String usrNm, String pswrd,String email, boolean emailAlert) throws Exception {
         //Checking if user name is already exists
-        if (getUser(usrNm) != null) {
+        if(getUser(usrNm) != null){
             String msg = "Username already exists";
             SystemLoggerManager.logError(EntityManager.class, msg);
             throw new UsernameAlreadyExistsException(msg);
@@ -843,12 +887,13 @@ public class EntityManager {
         // at least 1 lower case letter
         // must not contain any spaces
         String pswrdRegEx = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$";
-        if (!pswrd.matches(pswrdRegEx)) {
+        if(!pswrd.matches(pswrdRegEx)){
             String msg = "Password does not meet the requirements";
             SystemLoggerManager.logError(EntityManager.class, msg);
             throw new WeakPasswordException(msg);
         }
-        if (!validate(email)) {
+        if(!validate(email))
+        {
             String msg = "Invalid Email";
             SystemLoggerManager.logError(EntityManager.class, msg);
             throw new InvalidEmailException(msg);
@@ -874,17 +919,6 @@ public class EntityManager {
     }
 
 
-    public List<SystemUser> getAllUsers() {
-        return allUsers;
-    }
-
-    /**
-     * Get a list of all Teams by thier name
-     *
-     * @return List<String of all the teams names
-     */
-    public List<Team> getAllTeams() {
-        return allTeams;
     }
 
     public League getLeagueByName(String leagueName) {
@@ -1033,6 +1067,7 @@ public class EntityManager {
     }
 
     public List<SchedulingPolicy> getSchedulingPolicies() {
+        //TODO: Like getPointsPolicies
         return schedulingPolicies;
     }
 
@@ -1082,14 +1117,14 @@ public class EntityManager {
      * @return - List<Team> - owned by teamOwner
      */
     public List<Team> getOwnedTeams(TeamOwner teamOwner) {
-        List<Pair<String, String>> ownedTeams = DBManager.getInstance().getTeams(teamOwner.getSystemUser().getName());
-        List<Team> teams = new ArrayList<>();
+        List<HashMap<String, String>> ownedTeams = DBManager.getInstance().getTeams(teamOwner.getSystemUser().getUsername());
+        List<Team> teamsManaged = new ArrayList<>();
         for (int i = 0; i < ownedTeams.size(); i++) {
-            Team team = new Team(ownedTeams.get(i).getKey(), teamOwner, true);
-            team.setStatus(getTeamStatus(ownedTeams.get(i).getValue()));
-            teams.add(team);
+            String teamName = ownedTeams.get(i).get("name");
+            TeamStatus teamStatus = TeamStatus.valueOf(ownedTeams.get(i).get("status"));
+            teamsManaged.add(new Team(teamName, teamStatus, false));
         }
-        return teams;
+        return teamsManaged;
     }
 
     /**
@@ -1289,40 +1324,40 @@ public class EntityManager {
     }
 
     public boolean addSeasonToTeam(Season season, Team team) {
-        int seasonID = DBManager.getInstance().getSeasonId(season.getLeague().getName(),season.getYears());
-        return DBManager.getInstance().addSeasonToTeam(seasonID,team.getTeamName());
+        int seasonID = DBManager.getInstance().getSeasonId(season.getLeague().getName(), season.getYears());
+        return DBManager.getInstance().addSeasonToTeam(seasonID, team.getTeamName());
     }
 
     public boolean seasonInTeam(Season season, Team team) {
-        int seasonID = DBManager.getInstance().getSeasonId(season.getLeague().getName(),season.getYears());
-        return DBManager.getInstance().isSeasonInTeam(seasonID,team.getTeamName());
+        int seasonID = DBManager.getInstance().getSeasonId(season.getLeague().getName(), season.getYears());
+        return DBManager.getInstance().isSeasonInTeam(seasonID, team.getTeamName());
 
     }
 
     public boolean removeSeasonFromTeam(Season season, Team team) {
-        int seasonID = DBManager.getInstance().getSeasonId(season.getLeague().getName(),season.getYears());
-        return DBManager.getInstance().removeSeasonInTeam(seasonID,team.getTeamName());
+        int seasonID = DBManager.getInstance().getSeasonId(season.getLeague().getName(), season.getYears());
+        return DBManager.getInstance().removeSeasonInTeam(seasonID, team.getTeamName());
     }
 
     /*todo: check*/
+
     public List<Season> getAllSeasonInTeam(Team team) {
         List<Season> seasons = new ArrayList<>();
-        List<HashMap<String,String>> seasonsDetails = DBManager.getInstance().getAllSeasonInTeam(team.getTeamName());
+        List<HashMap<String, String>> seasonsDetails = DBManager.getInstance().getAllSeasonInTeam(team.getTeamName());
         for (int i = 0; i < seasonsDetails.size(); i++) {
-            HashMap<String,String> seasonDetails = seasonsDetails.get(i);
+            HashMap<String, String> seasonDetails = seasonsDetails.get(i);
             boolean isUnderWay = false;
-            if(seasonDetails.get("is_under_way").equals("true"))
-            {
+            if (seasonDetails.get("is_under_way").equals("true")) {
                 isUnderWay = true;
             }
-            seasons.add(new Season(new League(seasonDetails.get("league_name"), false), seasonDetails.get("years"),new PointsPolicy(Integer.parseInt(seasonDetails.get("victory_points")),Integer.parseInt(seasonDetails.get("loss_points")), Integer.parseInt(seasonDetails.get("tie_points"))), isUnderWay));
+            seasons.add(new Season(new League(seasonDetails.get("league_name"), false), seasonDetails.get("years"), new PointsPolicy(Integer.parseInt(seasonDetails.get("victory_points")), Integer.parseInt(seasonDetails.get("loss_points")), Integer.parseInt(seasonDetails.get("tie_points"))), isUnderWay));
         }
         return seasons;
 
     }
 
     public boolean isTeamManager(TeamManager teamManager, Team team) {
-        return DBManager.getInstance().isTeamManager(teamManager.getSystemUser().getUsername() , team.getTeamName());
+        return DBManager.getInstance().isTeamManager(teamManager.getSystemUser().getUsername(), team.getTeamName());
     }
 /*
     public boolean removeTeamManager(TeamManager teamManager, Team team) {
@@ -1337,7 +1372,7 @@ public class EntityManager {
         for (int i = 0; i < permissions.size(); i++) {
             permissionsToUpdate.add(permissions.get(i).name());
         }
-        DBManager.getInstance().updateTeamMangerPermission(teamManager.getSystemUser().getUsername() , team.getTeamName() ,permissionsToUpdate);
+        DBManager.getInstance().updateTeamMangerPermission(teamManager.getSystemUser().getUsername(), team.getTeamName(), permissionsToUpdate);
     }
 
     public List<TeamOwner> getTeamsOwners(Team team) {
@@ -1356,24 +1391,32 @@ public class EntityManager {
     }
 
     public boolean removeTeamOwner(TeamOwner teamOwner, Team team) {
-        return DBManager.getInstance().removeTeamOwner(teamOwner.getSystemUser().getUsername() , team.getTeamName());
+        return DBManager.getInstance().removeTeamOwner(teamOwner.getSystemUser().getUsername(), team.getTeamName());
     }
-
 
 
     public void updateTeamStatus(String teamName, TeamStatus status) {
-        DBManager.getInstance().updateTeamStatus(teamName , status.name());
+        DBManager.getInstance().updateTeamStatus(teamName, status.name());
     }
 
     public List<Team> getTeamsPerSeason(Season season) {
-        List<HashMap<String, String>> TeamsInSeasonDetails = DBManager.getInstance().getTeamsPerSeason(season.getYears(),season.getLeague().getName());
+        List<HashMap<String, String>> teamsInSeasonDetails = DBManager.getInstance().getTeamsPerSeason(season.getYears(), season.getLeague().getName());
         List<Team> teams = new ArrayList<>();
-        for (int i = 0; i < TeamsInSeasonDetails.size(); i++) {
-            String teamName = TeamsInSeasonDetails.get(i).get("name");
-            TeamStatus teamStatus = TeamStatus.valueOf(TeamsInSeasonDetails.get(i).get("status"));
-            teams.add(new Team(teamName, teamStatus,false));
+        for (int i = 0; i < teamsInSeasonDetails.size(); i++) {
+            String teamName = teamsInSeasonDetails.get(i).get("name");
+            TeamStatus teamStatus = TeamStatus.valueOf(teamsInSeasonDetails.get(i).get("status"));
+            teams.add(new Team(teamName, teamStatus, false));
         }
         return teams;
+    }
+
+    public boolean removeRole(SystemUser systemUser, Role role) {
+        RoleTypes roleType = role.getType();
+        return DBManager.getInstance().removeRole(systemUser.getUsername(), roleType.name());
+    }
+
+    public boolean assignRefereeToSeason(Referee refereeRole, Season season) {
+        return DBManager.getInstance().addRefereeToSeason(refereeRole.getSystemUser().getUsername(), season.getLeague().getName(), season.getYears());
     }
 
 
@@ -1382,8 +1425,90 @@ public class EntityManager {
         allLeagues = new HashSet<>();
         allTeams = new ArrayList<>();
         allStadiums = new ArrayList<>();
+        //loggedInMap = new HashMap<>();
+        systemAdmins = new ArrayList<>();
         pointsPolicies = new ArrayList<>();
         schedulingPolicies = new ArrayList<>();
+    }
+
+    public List<Team> getTeamsManaged(TeamManager teamManager) {
+        List<HashMap<String, String>> teams = DBManager.getInstance().getTeamManaged(teamManager.getSystemUser().getUsername());
+        List<Team> teamsManaged = new ArrayList<>();
+        for (int i = 0; i < teams.size(); i++) {
+            String teamName = teams.get(i).get("name");
+            TeamStatus teamStatus = TeamStatus.valueOf(teams.get(i).get("status"));
+            teamsManaged.add(new Team(teamName, teamStatus, false));
+        }
+        return teamsManaged;
+
+    }
+
+    public List<TeamManager> getTeamsManager(Team team) {
+        List<String> getTeamsManager = DBManager.getInstance().getTeamManagers(team.getTeamName());
+        List<TeamManager> teamManagers = new ArrayList<>();
+        for (int i = 0; i < getTeamsManager.size(); i++) {
+            SystemUser systemUser = getUser(getTeamsManager.get(i));
+            TeamManager teamManager = (TeamManager) systemUser.getRole(RoleTypes.TEAM_MANAGER);
+            teamManagers.add(teamManager);
+
+        }
+        return teamManagers;
+
+    }
+
+    public List<Stadium> getStadiumsInTeam(Team team) {
+        List<HashMap<String, String>> stadiumsDetails = DBManager.getInstance().getStadiumsInTeam(team.getTeamName());
+        List<Stadium> stadiums = new ArrayList<>();
+        for (int i = 0; i < stadiumsDetails.size(); i++) {
+            String stadiumName = stadiumsDetails.get(i).get("name");
+            String stadiumLocation = stadiumsDetails.get(i).get("location");
+            stadiums.add(new Stadium(stadiumName, stadiumLocation, false));
+        }
+        return stadiums;
+    }
+
+    public void removeStadiumFromTeam(Stadium stadium, Team team) {
+        int stadiumID = DBManager.getInstance().getStadiumId(stadium.getName(), stadium.getLocation());
+        DBManager.getInstance().removeStadiumFromTeam(stadiumID, team.getTeamName());
+    }
+
+    public List<Player> getAllPlayersInTeam(Team team) {
+        List<String> getPlayers = DBManager.getInstance().getAllPlayersInTeam(team.getTeamName());
+        List<Player> players = new ArrayList<>();
+        for (int i = 0; i < getPlayers.size(); i++) {
+            SystemUser systemUser = getUser(getPlayers.get(i));
+            Player player = (Player) systemUser.getRole(RoleTypes.PLAYER);
+            players.add(player);
+
+        }
+        return players;
+    }
+
+    public List<Coach> getAllCoachesInTeam(Team team) {
+        List<String> getTeamsManager = DBManager.getInstance().getAllCoachesInTeam(team.getTeamName());
+        List<Coach> coaches = new ArrayList<>();
+        for (int i = 0; i < getTeamsManager.size(); i++) {
+            SystemUser systemUser = getUser(getTeamsManager.get(i));
+            Coach coach = (Coach) systemUser.getRole(RoleTypes.COACH);
+            coaches.add(coach);
+
+        }
+        return coaches;
+    }
+
+    public boolean updateStadiumName(Stadium stadium, String toChange) {
+        return DBManager.getInstance().updateStadiumName(stadium.getName(), stadium.getLocation(), toChange);
+    }
+
+    public List<Team> getAllStadiumTeams(Stadium stadium) {
+        List<HashMap<String, String>> teamsInStadium = DBManager.getInstance().getAllStadiumTeams(stadium.getName(), stadium.getLocation());
+        List<Team> teams = new ArrayList<>();
+        for (int i = 0; i < teamsInStadium.size(); i++) {
+            String teamName = teamsInStadium.get(i).get("name");
+            TeamStatus teamStatus = TeamStatus.valueOf(teamsInStadium.get(i).get("status"));
+            teams.add(new Team(teamName, teamStatus, false));
+        }
+        return teams;
     }
 
     public void removeGameFromReferee(String refereeUsername, Game game) throws GameNotFoundException{
@@ -1402,6 +1527,137 @@ public class EntityManager {
         Date gameDate = game.getGameDate();
         boolean isFinished = game.hasFinished();
         DBManager.getInstance().addGameToReferee(refereeUsername,gameStad.getAssetName(), gameStad.getLocation(), homeTeam.getTeamName(),awayTeam.getTeamName(), gameDate, isFinished);
+
+    }
+}
+
+    /*TODO CHECK*/
+
+    public List<TeamManagerPermissions> getAllPermissionsPerTeam(Team team, TeamManager teamManager) {
+        List<String> permissions = DBManager.getInstance().getAllPermissionsPerTeam(team.getTeamName(), teamManager.getSystemUser().getUsername());
+        List<TeamManagerPermissions> teamManagerPermissions = new ArrayList<>();
+        if (permissions.contains(TeamManagerPermissions.ADD_COACH.name())) {
+            teamManagerPermissions.add(TeamManagerPermissions.ADD_COACH);
+        }
+        if (permissions.contains(TeamManagerPermissions.ADD_PLAYER.name())) {
+            teamManagerPermissions.add(TeamManagerPermissions.ADD_PLAYER);
+        }
+        if (permissions.contains(TeamManagerPermissions.REMOVE_COACH.name())) {
+            teamManagerPermissions.add(TeamManagerPermissions.REMOVE_COACH);
+        }
+        if (permissions.contains(TeamManagerPermissions.REMOVE_PLAYER.name())) {
+            teamManagerPermissions.add(TeamManagerPermissions.REMOVE_PLAYER);
+        }
+        if (permissions.contains(TeamManagerPermissions.CHANGE_POSITION_PLAYER.name())) {
+            teamManagerPermissions.add(TeamManagerPermissions.CHANGE_POSITION_PLAYER);
+        }
+        if (permissions.contains(TeamManagerPermissions.CHANGE_TEAM_JOB_COACH.name())) {
+            teamManagerPermissions.add(TeamManagerPermissions.CHANGE_TEAM_JOB_COACH);
+        }
+        return teamManagerPermissions;
+    }
+
+    public SystemUser getAppointedOwner(Team ownedTeam, TeamOwner teamOwner) {
+        String systemUser = DBManager.getInstance().getAppointedOwner(ownedTeam.getTeamName(), teamOwner.getSystemUser().getUsername());
+        return getUser(systemUser);
+    }
+
+    public void saveAlert(String username, String alert) {
+        DBManager.getInstance().saveAlert(username,alert);
+    }
+
+    public List<Game> getSeasonGames(Season season) {
+        List<Game> seasonGames = new ArrayList<>();
+
+        List<HashMap<String, String>> seasonGamesDetails = DBManager.getInstance().getSeasonGamesDetails(season.getLeague().getName(), season.getYears());
+
+        for (int i = 0; i < seasonGamesDetails.size(); i++) {
+            HashMap<String, String> currentGameDetails = seasonGamesDetails.get(i);
+            seasonGames.add(reCreateGame(currentGameDetails));
+        }
+        //return a copy
+        return seasonGames;
+    }
+
+    private Game reCreateGame(HashMap<String, String> gameDetails) {
+        Stadium stadium = getStadium(gameDetails.get("stadium_name"));
+        Team homeTeam = this.getTeam(gameDetails.get("home_team"));
+        Team awayTeam = this.getTeam(gameDetails.get("away_team"));
+
+        Date startDate = convertStringToDate(gameDetails.get("start_date"));
+        Date endDate = convertStringToDate(gameDetails.get("end_date"));
+
+        boolean finishedString = Boolean.parseBoolean(gameDetails.get("away_team"));
+
+
+        Game game = new Game(stadium, homeTeam, awayTeam, startDate,/*Check*/new ArrayList<>(), false);
+        if (endDate != null) {
+            game.setEndDate(endDate);
+        }
+        return game;
+    }
+
+    private Date convertStringToDate(String dateString) {
+        if (dateString != null) {
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            Date date = null;
+            try {
+                date = format.parse(dateString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return date;
+        }
+        return null;
+    }
+
+    public boolean removeGamesFromSeason(Season season) {
+        return DBManager.getInstance().removeGamesFromSeason(season.getLeague().getName(), season.getYears());
+    }
+
+    public void addGame(Game game) {
+        DBManager.getInstance().addGame(game.getStadium().getName(), game.getStadium().getLocation(), game.getHomeTeam().getTeamName()
+                , game.getAwayTeam().getTeamName(), game.getGameDate(), game.getEndDate(), game.hasFinished());
+        //game
+    }
+
+    public void addRefereeToGame(Referee referee, Game game) {
+        DBManager.getInstance().addRefereeToGame(referee.getSystemUser().getUsername(), game.getStadium().getName(), game.getStadium().getLocation(), game.getHomeTeam().getTeamName(), game.getAwayTeam().getTeamName());
+        //referee_in_game
+    }
+
+    public void addGameToSeason(Season season, Game game) {
+        DBManager.getInstance().addGameToSeason(season.getLeague().getName(), season.getYears(), game.getStadium().getName(), game.getStadium().getLocation(), game.getHomeTeam().getTeamName(), game.getAwayTeam().getTeamName());
+        //game_in_season
+    }
+
+    public List<Referee> getSeasonReferees(Season season) {
+        List<Referee> seasonReferees = new ArrayList<>();
+
+        List<String> refereesUsernames = DBManager.getInstance().getRefereesUsernamesOfSeason(season.getLeague().getName(), season.getYears());
+        for (String refereeUsername : refereesUsernames) {
+            seasonReferees.add((Referee) getUser(refereeUsername).getRole(RoleTypes.REFEREE));
+        }
+        return seasonReferees;
+    }
+
+    public List<Season> getRefereeSeasons(Referee referee) {
+        List<Season> refereeSeasons = new ArrayList<>();
+        List<HashMap<String, String>> refereeSeasonsDetails = DBManager.getInstance().getRefereeSeasonsDetails(referee.getSystemUser().getUsername());
+        List<League> leagues = getLeagues();
+        for (HashMap<String, String> seasonsDetails : refereeSeasonsDetails) {
+            for (League league : leagues) {
+                if (league.equals(seasonsDetails.get("league_name"))) {
+                    for (Season season : league.getSeasons()) {
+                        if (season.getYears().equals(seasonsDetails.get("years"))) {
+                            refereeSeasons.add(season);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return refereeSeasons;
 
     }
 }
