@@ -1,29 +1,23 @@
 package Domain.Game;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import Generic.GenericTestAbstract;
+import org.junit.*;
 
 import java.time.Year;
 
 import static org.junit.Assert.*;
 
-public class SeasonTest {
+public class SeasonTest extends GenericTestAbstract {
 
     private Season season;
-
-    @BeforeClass
-    public static void setUpBeforeAll() { //Will be called only once
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-    }
-
     @Before
     public void setUp() throws Exception {
-        season = new Season(new League("noName"),"2020/21");
+        season = new Season(new League("noName", true),"2020/21");
     }
 
     @Test
@@ -46,7 +40,7 @@ public class SeasonTest {
 
     @Test
     public void assignAndUnAssignRefereeUTest() {
-        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121), RefereeQualification.VAR_REFEREE);
+        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121, true), RefereeQualification.VAR_REFEREE);
         assertTrue(season.refereesSize()==0);
         season.assignReferee(referee);
         assertTrue(season.refereesSize()==1);
@@ -65,7 +59,7 @@ public class SeasonTest {
     }
     @Test
     public void doesContainsRefereeUTest() {
-        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121),RefereeQualification.VAR_REFEREE);
+        Referee referee = new RefereeStub(new SystemUserStub("stubUsername", "stub", 93121, true),RefereeQualification.VAR_REFEREE);
         assertFalse(season.doesContainsReferee(referee));
         season.assignReferee(referee);
         assertTrue(season.doesContainsReferee(referee));
@@ -73,7 +67,7 @@ public class SeasonTest {
 
     @Test
     public void assignAndUnAssignRefereeITest() {
-        Referee referee = new Referee(new SystemUser("username", "name"),RefereeQualification.VAR_REFEREE);
+        Referee referee = new Referee(new SystemUser("username", "name", true),RefereeQualification.VAR_REFEREE, true);
         assertTrue(season.refereesSize()==0);
         season.assignReferee(referee);
         assertTrue(season.refereesSize()==1);
@@ -90,4 +84,5 @@ public class SeasonTest {
         season = null;
         EntityManager.getInstance().clearAll();
     }
+
 }

@@ -12,7 +12,7 @@ public class LeagueStub extends League {
      * @param leagueName - String - League name
      */
     public LeagueStub(String leagueName, int selector) {
-        super(leagueName);
+        super(leagueName, true);
         this.selector = selector;
     }
 

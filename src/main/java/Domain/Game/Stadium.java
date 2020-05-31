@@ -18,11 +18,25 @@ public class Stadium implements Asset{
 
 
 
+    public Stadium(String stadName, String stadLocation, boolean addToDB) {
+        this.stadLocation = stadLocation;
+        this.stadName = stadName;
+        addStadiumToDB(addToDB);
+    }
+
+    private void addStadiumToDB(boolean addToDB)
+    {
+        if(addToDB){
+            EntityManager.getInstance().addStadium(this);
+        }
+    }
+
     public Stadium(String stadName, String stadLocation) {
         this.homeTeams = new ArrayList<>();
         this.stadLocation = stadLocation;
         this.stadName = stadName;
-        EntityManager.getInstance().addStadium(this);
+        addStadiumToDB(true);
+
     }
 
     @Override
@@ -44,8 +58,12 @@ public class Stadium implements Asset{
     {
         if(property.equalsIgnoreCase(namePropertyString))
         {
+            /*TODO: update stadium name*/
+
+            EntityManager.getInstance().updateStadiumName(this , toChange);
             this.stadName=toChange;
             return true;
+
         }
         return false;
     }
@@ -56,8 +74,7 @@ public class Stadium implements Asset{
         if (!(o instanceof Stadium)) return false;
         Stadium stadium = (Stadium) o;
         return stadName.equals(stadium.stadName) &&
-                stadLocation.equals(stadium.stadLocation) &&
-                homeTeams.size() == stadium.homeTeams.size();
+                stadLocation.equals(stadium.stadLocation);
     }
     @Override
     public boolean isListProperty(String property) {
@@ -77,6 +94,7 @@ public class Stadium implements Asset{
     public boolean addTeam(Team team, TeamOwner teamOwner) {
         if(team != null && team.isTeamOwner(teamOwner))
         {
+            /*already update in team*/
             homeTeams.add(team);
             return team.addStadium(this);
         }
@@ -148,10 +166,13 @@ public class Stadium implements Asset{
     }
 
     public boolean removeTeam(Team team){
+        /*already update db in team*/
         return this.homeTeams.remove(team);
     }
 
     public List<Team> getTeams() {
+
+        homeTeams = EntityManager.getInstance().getAllStadiumTeams(this);
         return this.homeTeams;
     }
 }

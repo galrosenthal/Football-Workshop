@@ -1,23 +1,37 @@
 package Domain.Users;
 
+import Domain.EntityManager;
+import Domain.Exceptions.GameNotFoundException;
 import Domain.Game.Game;
 import Domain.Game.Season;
+import Service.UIController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Referee extends Role {
 
     private RefereeQualification training;
-    private List<Game> games;
+//    private List<Game> games;
     private List<Season> seasons;
 
-
-    public Referee(SystemUser systemUser, RefereeQualification training) {
+    /**
+     * Constructor
+     *
+     * @param systemUser - SystemUser - The system user to add the new role to
+     * @param addToDB    - boolean - Whether to add the new role to the database
+     * @param training   - RefereeQualification - The training of the referee
+     */
+    public Referee(SystemUser systemUser, RefereeQualification training, boolean addToDB) {
         super(RoleTypes.REFEREE, systemUser);
         this.training = training;
-        this.games = new ArrayList<>();
+//        this.games = new ArrayList<>();
         this.seasons = new ArrayList<>();
+        if (addToDB) {
+            EntityManager.getInstance().addRole(this);
+        }
     }
 
     /**
@@ -35,7 +49,11 @@ public class Referee extends Role {
      * @return - List<Season> - A list of all the seasons that this referee is assigned to
      */
     public List<Season> getSeasons() {
-        return new ArrayList<>(seasons);
+        if (this.seasons.isEmpty()) {
+            this.seasons = EntityManager.getInstance().getRefereeSeasons(this);
+        }
+        return this.seasons;
+        //TODO:Pull From DB
     }
 
     /**
@@ -44,7 +62,29 @@ public class Referee extends Role {
      * @return - true if the referee is connected to future games.
      */
     public boolean hasFutureGames() {
-        //TODO:Checks if the referee has future games to judge.
+        /*
+        if (this.games.isEmpty()) {
+
+            //Pull games from DB
+            List<Game> refereeGames = EntityManager.getInstance().getRefereeGames(this);
+            for (Game game : refereeGames) {
+                if (!this.games.contains(game)) {
+                    this.games.add(game);
+                }
+            }
+        }
+        */
+        HashMap<String, Boolean> gamesStatus = EntityManager.getInstance().getRefereeGamesStatus(this);
+        for (Map.Entry<String, Boolean> hasGameFinished : gamesStatus.entrySet()) {
+            if (!hasGameFinished.getValue()) {
+                return true;
+            }
+        }
+        for (Game game : getGames()) {
+            if (!game.hasFinished()) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -52,9 +92,21 @@ public class Referee extends Role {
      * Un-assigns the referee role from all seasons
      */
     public void unAssignFromAllSeasons() {
-        for (Season season : this.seasons) {
+        for (Season season : getSeasons()) {
             season.unAssignReferee(this);
         }
+        //EntityManager.getInstance().unAssignRefereeFromAllSeasons(this); //Check:Should be covered with CASCADE
+        this.seasons = new ArrayList<>();
+    }
+
+    /**
+     * Un-assigns the referee role from all games
+     */
+    public void unAssignFromAllGames() {
+        for (Game game : getGames()) {
+            game.unAssignReferee(this);
+        }
+        //EntityManager.getInstance().unAssignRefereeFromAllGames(this); //Check:Should be covered with CASCADE
         this.seasons = new ArrayList<>();
     }
 
@@ -65,7 +117,9 @@ public class Referee extends Role {
      */
     public void assignToSeason(Season chosenSeason) {
         if (chosenSeason != null) {
-            this.seasons.add(chosenSeason);
+
+            //TOOD: This will not work
+            getSeasons().add(chosenSeason);
         }
     }
 
@@ -81,14 +135,22 @@ public class Referee extends Role {
     }
 
     public List<Game> getGames() {
-        return this.games;
+        return EntityManager.getInstance().getRefereeGames(this);
     }
 
     public void addGame(Game game) {
-        this.games.add(game);
+//        this.games.add(game);
+        EntityManager.getInstance().addGameToReferee(systemUser.username,game);
     }
 
-    public void removeGame(Game game){
-        this.games.remove(game);
+    public void removeGame(Game game) {
+//        this.games.remove(game);
+        try {
+            EntityManager.getInstance().removeGameFromReferee(systemUser.username,game);
+        } catch (GameNotFoundException e) {
+            e.printStackTrace();
+            UIController.showNotification(e.getMessage());
+//            this.games.add(game);
+        }
     }
 }

@@ -21,27 +21,42 @@ public class SystemUser extends User implements Fan {
     private String email;
     private boolean alertEmail;
 
-
-
-    @Override
-    public boolean removePageFromFollow() {
-        return false;
-    }
-
-    @Override
-    public boolean addPageToFollow() {
-        return false;
-    }
-
-    public SystemUser(String username, String password, String name , String email, boolean alertEmail) {
+    /**
+     * Constructor
+     *
+     * @param username      - String - The new username
+     * @param password      - String - The new user's password //TODO: after hash??
+     * @param name          - String - The new user's full name
+     * @param email         - String - The new user's email address
+     * @param notifyByEmail - boolean - Whether the user would like to receive  alerts by mail. If true then alerts will be send via emails, if false then by alerts within the application
+     * @param addToDB       - boolean - Whether to add the new role to the database
+     */
+    public SystemUser(String username, String password, String name, String email, boolean notifyByEmail, boolean addToDB) {
         this.roles = new ArrayList<>();
         this.username = username;
         this.name = name;
         this.password = password;
         this.email = email;
-        this.alertEmail = alertEmail;
+        this.alertEmail = notifyByEmail;
         gamesAlert = new ArrayList<>();
-        EntityManager.getInstance().addUser(this);
+        if (addToDB) {
+            EntityManager.getInstance().addUser(this);
+        }
+    }
+
+    public SystemUser(String username, String name, boolean addToDB)
+    {
+        this.roles = new ArrayList<>();
+        this.username = username;
+        this.name = name;
+        this.gamesAlert = new ArrayList<>();
+        this.password = "";
+        this.email = "";
+        this.alertEmail = false;
+        if(addToDB)
+        {
+            EntityManager.getInstance().addUser(this);
+        }
     }
 
     public String getEmail() {
@@ -52,16 +67,7 @@ public class SystemUser extends User implements Fan {
         return alertEmail;
     }
 
-    public SystemUser(String username, String name)
-    {
-        this.roles = new ArrayList<>();
-        this.username = username;
-        this.name = name;
-        gamesAlert = new ArrayList<>();
-        this.email = "";
-        this.alertEmail = false;
-        EntityManager.getInstance().addUser(this);
-    }
+
 
     public List<Game> getGamesAlert() {
         return gamesAlert;
@@ -79,10 +85,8 @@ public class SystemUser extends User implements Fan {
         return username;
     }
 
-    public boolean addNewRole(Role role)
-    {
-        if(role != null && !roles.contains(role))
-        {
+    public boolean addNewRole(Role role) {
+        if (role != null && !roles.contains(role)) {
             roles.add(role);
             return true;
         }
@@ -95,22 +99,17 @@ public class SystemUser extends User implements Fan {
     }
 
     public boolean isType(RoleTypes roleType) {
-        for(Role role : roles)
-        {
-            if(role.type.equals(roleType))
-            {
+        for (Role role : roles) {
+            if (role.type.equals(roleType)) {
                 return true;
             }
         }
         return false;
     }
 
-    public Role getRole(RoleTypes roleType)
-    {
-        for(Role role : roles)
-        {
-            if(role.type.equals(roleType))
-            {
+    public Role getRole(RoleTypes roleType) {
+        for (Role role : roles) {
+            if (role.type.equals(roleType)) {
                 return role;
             }
         }
@@ -118,17 +117,24 @@ public class SystemUser extends User implements Fan {
     }
 
     public boolean removeRole(Role role) {
-        if(role != null)
-        {
+        if (role != null) {
             roles.remove(role);
+            EntityManager.getInstance().removeRole(this, role);
             return true;
         }
         return false;
     }
 
 
+    @Override
+    public boolean removePageFromFollow() {
+        return false;
+    }
 
-
+    @Override
+    public boolean addPageToFollow() {
+        return false;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -2,8 +2,7 @@ package Domain.Users;
 
 import Domain.EntityManager;
 
-import java.text.ParseException;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class SystemUserStub extends SystemUser{
@@ -14,16 +13,19 @@ public class SystemUserStub extends SystemUser{
     /**
      * Selector latest number: 9
      */
-    public SystemUserStub(String username,String name,int selector)
+    public SystemUserStub(String username, String name, int selector, boolean addToDB)
     {
-        super(username,name);
+        super(username,name, false);
         this.selector = selector;
-        EntityManager.getInstance().addUser(this);
+        if(addToDB)
+        {
+            EntityManager.getInstance().addUser(this);
+        }
     }
 
     public SystemUserStub(String username,String name,String password, int selector)
     {
-        super(username,name,password,"test@gmail.com", false);
+        super(username,name,password,"test@gmail.com", false, false);
         this.selector = selector;
         EntityManager.getInstance().addUser(this);
     }
@@ -73,13 +75,13 @@ public class SystemUserStub extends SystemUser{
         }else if(selector == 6111)
         {
             return getRoles().get(0);
-        }else if(selector == 6112)
+        }else if(selector == 6112 || selector == 6132)
         {
-            return new Player(this,null);
+            return new Player(this,new Date(), true);
         }
         else if(selector == 6116)
         {
-            PlayerStub p = new PlayerStub(this,null);
+            PlayerStub p = new PlayerStub(this,new Date());
             p.setSelector(0);
             return p;
         }
@@ -124,7 +126,7 @@ public class SystemUserStub extends SystemUser{
             selector = 93132;
             return null;
         }else if( selector == 93132){
-            Referee referee =  new Referee(this ,RefereeQualification.VAR_REFEREE);
+            Referee referee =  new Referee(this ,RefereeQualification.VAR_REFEREE, true);
             return referee;
         }else if( selector == 9321){
             return new AssociationRepresentativeStub(this);
@@ -139,7 +141,7 @@ public class SystemUserStub extends SystemUser{
 
     @Override
     public boolean equals(Object o) {
-        if(selector == 0 || selector == 1)
+        if(selector == 0 || selector == 1 ||  selector == 6132)
         {
             return false;
         }

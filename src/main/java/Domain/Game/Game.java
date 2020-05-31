@@ -1,5 +1,7 @@
 package Domain.Game;
 
+import DB.DBManager;
+import Domain.EntityManager;
 import Domain.GameLogger.EventsLogger;
 import Domain.GameLogger.Goal;
 import Domain.Reports.GameReport;
@@ -15,20 +17,22 @@ public class Game extends Observable {
     private Team awayTeam;
     private Date gameDate;
     private Date endDate;
-    private List<Referee> referees; // - maybe array?
+    private List<Referee> referees;
     private EventsLogger eventsLogger;
     private GameReport gameReport;
 
-    public Game(Stadium stadium, Team homeTeam, Team awayTeam, Date gameDate, List<Referee> referees) {
+    public Game(Stadium stadium, Team homeTeam, Team awayTeam, Date gameDate, List<Referee> referees, boolean addToDB) {
         this.stadium = stadium;
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.gameDate = gameDate;
-        this.referees = referees;
+//        this.referees = referees;
         this.eventsLogger = new EventsLogger();
         this.endDate = null;
         this.gameReport = new GameReport(this);
-        //TODO: Add to EntityManager?
+        if (addToDB) {
+            EntityManager.getInstance().addGame(this);
+        }
     }
 
     public Stadium getStadium() {
@@ -80,16 +84,22 @@ public class Game extends Observable {
     }
 
     public List<Referee> getReferees() {
+        if (this.referees == null) {
+            return EntityManager.getInstance().getAllRefereesInGame(this);
+        }
         return referees;
     }
 
     public EventsLogger getEventsLogger() {
+        if (this.eventsLogger == null) {
+            //TODO:Pull From DB
+        }
         return eventsLogger;
     }
 
 
     public List<String> getGameEventsStringList() {
-        return this.eventsLogger.getEventsStringList();
+        return getEventsLogger().getEventsStringList();
     }
 
     /**
@@ -137,8 +147,9 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
-        this.eventsLogger.logGoal(scoringTeam, scoredOnTeam,playerScored, minute);
-        String notification =  scoringTeam.getTeamName() +" scored on "+scoredOnTeam.getTeamName();
+        getEventsLogger().logGoal(scoringTeam, scoredOnTeam, playerScored, minute);
+        EntityManager.getInstance().updateGoalEvent(this, scoringTeam,scoredOnTeam ,playerScored.getSystemUser().getUsername(), minute);
+        String notification = scoringTeam.getTeamName() + " scored on " + scoredOnTeam.getTeamName();
         notifyObservers(notification);
     }
 
@@ -157,7 +168,8 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
-        this.eventsLogger.logCardEvent(cardType, player, minute);
+        EntityManager.getInstance().updateCardEvent(this, cardType, player.getSystemUser().getUsername(), minute);
+        getEventsLogger().logCardEvent(cardType, player, minute);
     }
 
     /**
@@ -174,7 +186,8 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
-        this.eventsLogger.logOffsideEvent(teamWhoCommitted, minute);
+        EntityManager.getInstance().updateOffsideEvent(this,teamWhoCommitted,minute);
+        getEventsLogger().logOffsideEvent(teamWhoCommitted, minute);
     }
 
     /**
@@ -191,7 +204,8 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
-        this.eventsLogger.logPenaltyEvent(teamWhoCommitted, minute);
+        EntityManager.getInstance().updatePenaltyEvent(this, teamWhoCommitted, minute);
+        getEventsLogger().logPenaltyEvent(teamWhoCommitted, minute);
     }
 
     /**
@@ -216,7 +230,8 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
-        this.eventsLogger.logSwitchPlayersEvent(teamWhoCommitted, enteringPlayer, exitingPlayer, minute);
+        EntityManager.getInstance().updateSwitchEvent(this, teamWhoCommitted,enteringPlayer,exitingPlayer ,minute);
+        getEventsLogger().logSwitchPlayersEvent(teamWhoCommitted, enteringPlayer, exitingPlayer, minute);
     }
 
     /**
@@ -233,31 +248,34 @@ public class Game extends Observable {
         if (minute < 0) {
             throw new IllegalArgumentException("minute must be positive integer");
         }
-        this.eventsLogger.logInjuryEvent(player, minute);
+        EntityManager.getInstance().addInjuryEvent(this, player ,minute);
+        getEventsLogger().logInjuryEvent(player, minute);
     }
 
     /**
      * Adds an game-end event to the game
+     *
      * @param endDate - Date - The time the game ended
-     * @param minute - int - The minute game ended (maybe it ended before the 90th or 120th minute)
+     * @param minute  - int - The minute game ended (maybe it ended before the 90th or 120th minute)
      */
-    public void addEndGame(Date endDate, int minute){
-        this.endDate = endDate;
-        this.eventsLogger.logEndGameEvent(endDate, minute);
+    public void addEndGame(Date endDate, int minute) {
+        EntityManager.getInstance().updateEndGame(this, endDate);
+        getEventsLogger().logEndGameEvent(endDate, minute);
     }
 
 
     public void addReferee(Referee referee) {
-        this.referees.add(referee);
+        getReferees().add(referee);
     }
 
     /**
      * Returns how many hours passed since the game ended, from a given date.
+     *
      * @param currDate The date to measure the difference from the endDate to.
      * @return
      */
-    public int getHoursPassedSinceGameEnd(Date currDate){
-        if(!hasFinished())
+    public int getHoursPassedSinceGameEnd(Date currDate) {
+        if (!hasFinished())
             return 0;
         //milliseconds
         long different = currDate.getTime() - endDate.getTime();
@@ -277,7 +295,7 @@ public class Game extends Observable {
                 ", homeTeam=" + homeTeam.getTeamName() +
                 ", awayTeam=" + awayTeam.getTeamName() +
                 ", gameDate=" + gameDate;
-        if(endDate != null){
+        if (endDate != null) {
             str += ", endDate=" + endDate;
         }
         str += '}';
@@ -285,13 +303,11 @@ public class Game extends Observable {
     }
 
 
-    public Date getGameDate()
-    {
+    public Date getGameDate() {
         return this.gameDate;
     }
 
-    public Date getEndDate()
-    {
+    public Date getEndDate() {
         return this.endDate;
     }
 
@@ -323,8 +339,18 @@ public class Game extends Observable {
         super.notifyObservers();
     }
 
-    public String getGameTitle(){
+    public String getGameTitle() {
         return homeTeam.getTeamName() + " vs. " + awayTeam.getTeamName();
     }
 
+    /**
+     * Un-assigns a referee from this game
+     *
+     * @param referee - Referee - a referee role to be removed
+     */
+    public void unAssignReferee(Referee referee) {
+        if (referee != null) {
+            getReferees().remove(referee);
+        }
+    }
 }

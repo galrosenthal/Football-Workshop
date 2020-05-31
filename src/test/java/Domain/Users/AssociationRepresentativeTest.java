@@ -1,27 +1,28 @@
 package Domain.Users;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
 import Domain.EntityManager;
 import Domain.Exceptions.ExistsAlreadyException;
 import Domain.Exceptions.RoleExistsAlreadyException;
 import Domain.Game.League;
-import Domain.Game.Points;
 import Domain.Game.PointsPolicy;
 import Domain.Game.Season;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
+import Generic.GenericTestAbstract;
+import org.junit.*;
 
 
 import static org.junit.Assert.*;
 
-public class AssociationRepresentativeTest {
+public class AssociationRepresentativeTest  extends GenericTestAbstract {
 
     private AssociationRepresentative aR;
+
 
     @Test
     public void testAddLeagueITest() throws Exception {
         EntityManager.getInstance().removeLeagueByName("leagueName");
-        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5));
+        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5, true), true);
         assertTrue(aR.addLeague("leagueName"));
     }
 
@@ -29,21 +30,21 @@ public class AssociationRepresentativeTest {
     @Test(expected = Exception.class)
     public void testAddLeague2ITest() throws Exception {
         EntityManager.getInstance().removeLeagueByName("leagueName");
-        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 0));
+        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 0, true), true);
         aR.addLeague("leagueName");
         aR.addLeague("leagueName");
     }
 
     @Test(expected = RoleExistsAlreadyException.class)
     public void addRefereeUTest() throws RoleExistsAlreadyException {
-        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5));
-        aR.addReferee(new SystemUserStub("stubUsername", "stub", 9311), RefereeQualification.VAR_REFEREE);
+        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5, true), true);
+        aR.addReferee(new SystemUserStub("stubUsername", "stub", 9311, true), RefereeQualification.VAR_REFEREE);
     }
 
     @Test
     public void addReferee2UTest() {
-        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5));
-        SystemUser newRefereeUser = new SystemUserStub("stubUsername", "stub", 9312);
+        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5, true), true);
+        SystemUser newRefereeUser = new SystemUserStub("stubUsername", "stub", 9312, true);
         try {
             aR.addReferee(newRefereeUser, RefereeQualification.VAR_REFEREE);
         } catch (RoleExistsAlreadyException e) {
@@ -54,8 +55,8 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void addRefereeITest() {
-        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5));
-        SystemUser newRefereeUser = new SystemUserStub("stubUsername", "stub", 93131);
+        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5, true), true);
+        SystemUser newRefereeUser = new SystemUserStub("stubUsername", "stub", 93131, true);
         try {
             assertTrue(aR.addReferee(newRefereeUser, RefereeQualification.VAR_REFEREE));
         } catch (RoleExistsAlreadyException e) {
@@ -67,9 +68,9 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void addReferee2ITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
-        SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
+        SystemUser newRefereeUser = new SystemUser("refUsername", "refName", true);
         try {
             assertTrue(aR.addReferee(newRefereeUser, RefereeQualification.VAR_REFEREE));
         } catch (RoleExistsAlreadyException e) {
@@ -80,18 +81,18 @@ public class AssociationRepresentativeTest {
 
     @Test(expected = RoleExistsAlreadyException.class)
     public void addReferee3ITest() throws RoleExistsAlreadyException {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
-        SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
-        new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE);
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
+        SystemUser newRefereeUser = new SystemUser("refUsername", "refName", true);
+        new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE, true);
 
         aR.addReferee(newRefereeUser, RefereeQualification.VAR_REFEREE);
     }
 
     @Test
     public void removeRefereeUTest() {
-        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5));
-        SystemUser newRefereeUser = new SystemUserStub("stubUsername", "stub", 9312);
+        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5, true), true);
+        SystemUser newRefereeUser = new SystemUserStub("stubUsername", "stub", 9312, true);
 
         assertFalse(aR.removeReferee(newRefereeUser));
 
@@ -100,38 +101,38 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void removeReferee2UTest() {
-        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5));
-        SystemUser newRefereeUser = new SystemUserStub("stubUsername", "stub", 9311);
+        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5, true), true);
+        SystemUser newRefereeUser = new SystemUserStub("stubUsername", "stub", 9311, true);
 
         assertTrue(aR.removeReferee(newRefereeUser));
     }
 
     @Test
     public void removeRefereeITest() {
-        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5));
-        SystemUser newRefereeUser = new SystemUserStub("stubUsername", "stub", 93132);
+        aR = new AssociationRepresentative(new SystemUserStub("stubUsername", "stub", 5, true), true);
+        SystemUser newRefereeUser = new SystemUserStub("stubUsername", "stub", 93132, true);
 
         assertTrue(aR.removeReferee(newRefereeUser));
     }
 
     @Test
     public void removeReferee2ITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
-        SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
+        SystemUser newRefereeUser = new SystemUser("refUsername", "refName", true);
 
         assertFalse(aR.removeReferee(newRefereeUser));
     }
 
     @Test
     public void removeReferee3ITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
-        SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
-        new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE);
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
+        SystemUser newRefereeUser = new SystemUser("refUsername", "refName", true);
+        new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE, true);
 
         Referee referee = (Referee) newRefereeUser.getRole(RoleTypes.REFEREE);
-        Season season = new Season(new League("noName"), "2020/21");
+        Season season = new Season(new League("noName", true), "2020/21");
         season.assignReferee(referee);
         referee.assignToSeason(season);
 
@@ -142,12 +143,13 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void assignRefereeToSeasonUTest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
-        SystemUser newRefereeUser = new SystemUserStub("refUsername", "refName", 93121);
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
+        SystemUser newRefereeUser = new SystemUser("refUsername", "refName", true);
+        new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE , true);
         Referee refereeRole = (Referee) newRefereeUser.getRole(RoleTypes.REFEREE);
-        //new RefereeStub(newRefereeUser, "refTraining");
-        Season season = new Season(new League("noName"), "2020/21");
+        League league = new League("noName", true);
+        Season season = league.addSeason("2020/21");
 
         boolean thrown = false;
         try {
@@ -163,13 +165,13 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void assignRefereeToSeasonITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
-        SystemUser newRefereeUser = new SystemUserStub("refUsername", "refName", 93121);
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
+        SystemUser newRefereeUser = new SystemUser("refUsername", "refName", true);
+        new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE , true);
         Referee refereeRole = (Referee) newRefereeUser.getRole(RoleTypes.REFEREE);
-        //new RefereeStub(newRefereeUser, "refTraining");
-        Season season = new Season(new League("noName"), "2020/21");
-
+        League league = new League("noName", true);
+        Season season = league.addSeason( "2020/21");
         boolean thrown = false;
         try {
             aR.assignRefereeToSeason(season, refereeRole);
@@ -190,11 +192,12 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void assignRefereeToSeason2ITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
-        SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
-        Referee refereeRole = new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE);
-        Season season = new Season(new League("noName"), "2020/21");
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
+        SystemUser newRefereeUser = new SystemUser("refUsername", "refName", true);
+        Referee refereeRole = new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE, true);
+        League league = new League("noName", true);
+        Season season = league.addSeason( "2020/21");
 
         boolean thrown = false;
         try {
@@ -210,11 +213,12 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void assignRefereeToSeason3ITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
-        SystemUser newRefereeUser = new SystemUser("refUsername", "refName");
-        Referee refereeRole = new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE);
-        Season season = new Season(new League("noName"), "2020/21");
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
+        SystemUser newRefereeUser = new SystemUser("refUsername", "refName", true);
+        Referee refereeRole = new Referee(newRefereeUser, RefereeQualification.VAR_REFEREE, true);
+        League league = new League("noName", true);
+        Season season = league.addSeason( "2020/21");
 
 
         boolean thrown = false;
@@ -238,8 +242,8 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void addPointsPolicyITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
         try {
             aR.addPointsPolicy(-1, 0, 0);
             Assert.fail();
@@ -251,8 +255,8 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void addPointsPolicy2ITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
         try {
             aR.addPointsPolicy(1, 1, 0);
             Assert.fail();
@@ -264,8 +268,8 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void addPointsPolicy3ITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
         try {
             aR.addPointsPolicy(1, 0, 0);
         } catch (Exception e) {
@@ -282,8 +286,8 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void addPointsPolicy4ITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
         boolean succeeded = true;
         try {
             aR.addPointsPolicy(1, 0, 0);
@@ -297,9 +301,9 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void setPointsPolicyITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
-        Season season = new Season(new League("noName"), "2020/21");
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
+        Season season = new Season(new League("noName", true), "2020/21");
         PointsPolicy pointsPolicy = new PointsPolicy(1, -1, 0);
 
         assertTrue(season.getPointsPolicy().equals(PointsPolicy.getDefaultPointsPolicy()));
@@ -309,9 +313,9 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void setPointsPolicy2ITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
-        Season season = new Season(new League("noName"), "2020/21");
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
+        Season season = new Season(new League("noName", true), "2020/21");
 
         assertTrue(season.getPointsPolicy().equals(PointsPolicy.getDefaultPointsPolicy()));
         aR.setPointsPolicy(season, null);
@@ -321,8 +325,8 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void addSchedulingPolicyITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
         try {
             aR.addSchedulingPolicy(0, 0, 0);
             Assert.fail();
@@ -334,8 +338,8 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void addSchedulingPolicy2ITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
         try {
             aR.addSchedulingPolicy(1, 0, 0);
             Assert.fail();
@@ -346,8 +350,8 @@ public class AssociationRepresentativeTest {
     }
     @Test
     public void addSchedulingPolicy3ITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
         try {
             aR.addSchedulingPolicy(1, 1, -1);
             Assert.fail();
@@ -359,8 +363,8 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void addSchedulingPolicy4ITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
         try {
             aR.addSchedulingPolicy(1, 1, 0);
         } catch (Exception e) {
@@ -376,8 +380,8 @@ public class AssociationRepresentativeTest {
 
     @Test
     public void addSchedulingPolicy5ITest() {
-        SystemUser aRUser = new SystemUser("arUsername", "arName");
-        aR = new AssociationRepresentative(aRUser);
+        SystemUser aRUser = new SystemUser("arUsername", "arName", true);
+        aR = new AssociationRepresentative(aRUser, true);
         boolean succeeded = true;
         try {
             aR.addSchedulingPolicy(1, 1, 0);
@@ -394,6 +398,7 @@ public class AssociationRepresentativeTest {
     public void tearDown() {
         EntityManager.getInstance().clearAll();
     }
+
 }
 
 

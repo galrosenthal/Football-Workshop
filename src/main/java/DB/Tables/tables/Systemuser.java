@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Systemuser extends TableImpl<SystemuserRecord> {
 
-    private static final long serialVersionUID = -186792115;
+    private static final long serialVersionUID = -857535097;
 
     /**
      * The reference instance of <code>fwdb.systemuser</code>
@@ -59,7 +59,7 @@ public class Systemuser extends TableImpl<SystemuserRecord> {
     /**
      * The column <code>fwdb.systemuser.password</code>.
      */
-    public final TableField<SystemuserRecord, String> PASSWORD = createField(DSL.name("password"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
+    public final TableField<SystemuserRecord, String> PASSWORD = createField(DSL.name("password"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>fwdb.systemuser.email</code>.

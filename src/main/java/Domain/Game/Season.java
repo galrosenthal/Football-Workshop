@@ -1,5 +1,6 @@
 package Domain.Game;
 
+import Domain.EntityManager;
 import Domain.Users.Referee;
 
 import java.time.Year;
@@ -8,6 +9,7 @@ import java.util.*;
 public class Season {
 
     private League league;
+
     private String years; //name
     private List<Team> teams;
     private List<Referee> referees;
@@ -29,6 +31,28 @@ public class Season {
         this.games = new ArrayList<>();
         this.pointsPolicy = PointsPolicy.getDefaultPointsPolicy();
         this.isUnderway = false;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param league       - League - the league that the season belongs to
+     * @param years        - String - the season's years in the format of "yyyy/yy"
+     * @param pointsPolicy - PointsPolicy - the season's points policy
+     * @param isUnderway   - boolean - is the season underway
+     */
+    public Season(League league, String years, PointsPolicy pointsPolicy, boolean isUnderway) {
+        this.league = league;
+        this.teams = new ArrayList<>();
+        this.years = years;
+        this.referees = new ArrayList<>();
+        this.games = new ArrayList<>();
+        this.pointsPolicy = pointsPolicy;
+        this.isUnderway = isUnderway;
+    }
+
+    public League getLeague() {
+        return league;
     }
 
     /**
@@ -56,7 +80,17 @@ public class Season {
      * @return - List<Referee>
      */
     public List<Referee> getReferees() {
-        return new ArrayList<>(referees);
+        if (this.referees.isEmpty()) {
+            this.referees = EntityManager.getInstance().getSeasonReferees(this);
+        }
+        return this.referees;
+    }
+
+    public List<Game> getGames() {
+        if (this.games.isEmpty()) {
+            this.games = EntityManager.getInstance().getSeasonGames(this);
+        }
+        return this.games;
     }
 
     public boolean addTeam(Team team) {
@@ -68,10 +102,6 @@ public class Season {
         return false;
     }
 
-    /*  public boolean hasStarted() {
-          //TODO: Check if the season has started
-          return getIsUnderway();
-      }*/
     public boolean removeTeam(Team team) {
         if (!teams.contains(team)) {
             return false;
@@ -80,6 +110,7 @@ public class Season {
     }
 
     public List<Team> getTeams() {
+        teams = EntityManager.getInstance().getTeamsPerSeason(this);
         return teams;
     }
 
@@ -89,7 +120,7 @@ public class Season {
      * @return - int - the number of referees assigned to this season
      */
     public int refereesSize() {
-        return this.referees.size();
+        return getReferees().size();
     }
 
     /**
@@ -155,7 +186,7 @@ public class Season {
      */
     public boolean doesContainsReferee(Referee refereeRole) {
         if (refereeRole != null) {
-            if (this.referees.contains(refereeRole)) {
+            if (getReferees().contains(refereeRole)) {
                 return true;
             }
         }
@@ -169,7 +200,7 @@ public class Season {
      */
     public void assignReferee(Referee refereeRole) {
         if (refereeRole != null) {
-            this.referees.add(refereeRole);
+            getReferees().add(refereeRole);
         }
     }
 
@@ -180,7 +211,7 @@ public class Season {
      */
     public void unAssignReferee(Referee referee) {
         if (referee != null) {
-            this.referees.remove(referee);
+            getReferees().remove(referee);
         }
     }
 
@@ -261,6 +292,7 @@ public class Season {
 
     public void setPointsPolicy(PointsPolicy pointsPolicy) {
         this.pointsPolicy = pointsPolicy;
+        EntityManager.getInstance().setPointsPolicy(this, pointsPolicy);
     }
 
     public PointsPolicy getPointsPolicy() {
@@ -269,10 +301,11 @@ public class Season {
 
     /**
      * Checks if this season have scheduled games.
+     *
      * @return - boolean - true if this season have scheduled games, else false
      */
     public boolean scheduled() {
-        if(games.isEmpty()){
+        if (this.getGames().isEmpty()) {
             return false;
         }
         return true;
@@ -280,33 +313,32 @@ public class Season {
 
     /**
      * Generates a new schedule and create new games based on it
+     *
      * @param schedulingPolicy
      * @param startDate
      * @throws Exception
      */
     public void scheduleGames(SchedulingPolicy schedulingPolicy, Date startDate) throws Exception {
-        List<ScheduleMatch> scheduleMatches = schedulingPolicy.generateSchedule(startDate, this.teams, this.referees);
+        List<ScheduleMatch> scheduleMatches = schedulingPolicy.generateSchedule(startDate, getTeams(), getReferees());
         //Remove previous games from referees
-        for(Referee ref : referees){
-            for(Game game : games){
+        for (Referee ref : getReferees()) {
+            for (Game game : getGames()) {
                 ref.removeGame(game);
             }
         }
         //Delete previous games
-        this.games = new ArrayList<>();
-        //TODO:Maybe delete games from DB?
+        if (EntityManager.getInstance().removeGamesFromSeason(this)) { //TODO: delete games from DB?
+            this.games = new ArrayList<>();
+        }
         //Create games based on schedule
         for (int i = 0; i < scheduleMatches.size(); i++) {
             ScheduleMatch scheduleMatch = scheduleMatches.get(i);
-            Game game = new Game(scheduleMatch.getStadium(),scheduleMatch.getHomeTeam(),scheduleMatch.getAwayTeam(),scheduleMatch.getMatchDate(),scheduleMatch.getReferees());
+            Game game = new Game(scheduleMatch.getStadium(), scheduleMatch.getHomeTeam(), scheduleMatch.getAwayTeam(), scheduleMatch.getMatchDate(), scheduleMatch.getReferees(), true);
+            EntityManager.getInstance().addGameToSeason(this, game);
             this.games.add(game);
-            for(Referee ref : scheduleMatch.getReferees()){
+            for (Referee ref : scheduleMatch.getReferees()) {
                 ref.addGame(game);
             }
         }
-    }
-
-    public List<Game> getGames() {
-        return games;
     }
 }

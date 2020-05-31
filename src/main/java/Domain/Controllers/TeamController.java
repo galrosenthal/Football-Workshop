@@ -30,10 +30,9 @@ public class TeamController {
      */
     public static boolean addTeamOwner(String username, Team teamToOwn, TeamOwner owner)
     throws Exception{
-
         List<TeamOwner> teamOwners = teamToOwn.getTeamOwners();
 
-        if (!teamOwners.contains(owner)) {
+        if (!teamOwners.contains(owner) || !(EntityManager.getInstance().isTeamOwner(owner,teamToOwn)) ){
             String msg = "Only the owner of this team can add a new owner";
             SystemLoggerManager.logError(TeamController.class, msg);
             throw new NotATeamOwner(msg);
@@ -49,19 +48,18 @@ public class TeamController {
         Role newTeamOwnerRole = newTeamOwnerUser.getRole(RoleTypes.TEAM_OWNER);
         TeamOwner teamOwner;
         if (newTeamOwnerRole == null) {
-            teamOwner = new TeamOwner(newTeamOwnerUser);
+            teamOwner = new TeamOwner(newTeamOwnerUser, true);
             newTeamOwnerUser.addNewRole(teamOwner);
         }
         else
         {
 
             teamOwner = (TeamOwner) newTeamOwnerRole;
-            if (teamOwners.contains(teamOwner)) {
+            if (teamOwners.contains(teamOwner) || EntityManager.getInstance().isTeamOwner(teamOwner,teamToOwn)) {
                 String msg = "This User is already a team owner of this team";
                 SystemLoggerManager.logError(TeamController.class, msg);
                 throw new RoleExistsAlreadyException(msg);
             }
-
             if (isAlreadyOwnedAnotherTeamInSeason(teamToOwn, teamOwner)) {
                 String msg = "This User is already a team owner of a different team in same league";
                 SystemLoggerManager.logError(TeamController.class, msg);
@@ -70,11 +68,7 @@ public class TeamController {
 
         }
 
-
         teamOwner.addTeamToOwn(teamToOwn, owner.getSystemUser());
-
-
-        //TODO: maybe this if is not needed?
         if(teamToOwn.addTeamOwner(teamOwner)){
             teamOwner.setAppointedOwner(teamToOwn,owner.getSystemUser());
         }
@@ -349,7 +343,6 @@ public class TeamController {
         for(Coach coach : teamToClose.getTeamCoaches()){
             coach.removeTeam(teamToClose);
         }
-
         teamToClose.setStatus(TeamStatus.CLOSED);
         return true;
     }
@@ -483,6 +476,9 @@ public class TeamController {
         for (TeamOwner toRemove:
                 teamOwnersToRemove) {
             team.removeTeamOwner(toRemove);
+            toRemove.removeTeamOwned(team);
+            /*update db*/
+            EntityManager.getInstance().removeTeamOwner(toRemove,team);
             //Log the action
             SystemLoggerManager.logInfo(TeamController.class,
                     new RemoveTeamOwnerLogMsg(username,toRemove.getSystemUser().getUsername(), team.getTeamName()));

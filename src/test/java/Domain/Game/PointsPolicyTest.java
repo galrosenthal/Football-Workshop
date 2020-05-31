@@ -3,6 +3,11 @@ package Domain.Game;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.PlayerStub;
 import Domain.Users.SystemUserStub;
+import DB.DBManager;
+import DB.DBManagerForTest;
+import Domain.EntityManager;
+import Generic.GenericTestAbstract;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -11,14 +16,11 @@ import java.util.Date;
 
 import static org.junit.Assert.*;
 
-public class PointsPolicyTest {
+public class PointsPolicyTest extends GenericTestAbstract {
 
     private PointsPolicy pointsPolicy;
 
-    @BeforeClass
-    public static void setUpBeforeAll() { //Will be called only once
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-    }
+
 
     @Before
     public void setUp() throws Exception {
@@ -26,11 +28,22 @@ public class PointsPolicyTest {
     }
 
     @Test
+    public void testForYiftach() {
+        System.out.println(pointsPolicy);
+    }
+
+    @Test
+    public void testForYiftach2() {
+        PointsPolicy newPointsPolicy = new PointsPolicy(1, -15, 0);
+        EntityManager.getInstance().addPointsPolicy(newPointsPolicy);
+    }
+
+    @Test
     public void getPointsITest() {
-        Game game = new Game(new StadiumStub("staName", "staLoca"), new TeamStub(9511), new TeamStub(9512), new Date(2020, 01, 01), null);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), new TeamStub(9511, true), new TeamStub(9512, true), new Date(2020, 01, 01), null, true);
         try {
             game.addGoal(game.getHomeTeam(), game.getAwayTeam(),
-                    new PlayerStub(new SystemUserStub("a", "a",555)),1);
+                    new PlayerStub(new SystemUserStub("a", "a",555, true)),1);
         } catch (Exception e) {
         }
         Points points = pointsPolicy.getPoints(game);
@@ -40,10 +53,10 @@ public class PointsPolicyTest {
 
     @Test
     public void getPoints2ITest() {
-        Game game = new Game(new StadiumStub("staName", "staLoca"), new TeamStub(9511), new TeamStub(9512), new Date(2020, 01, 01), null);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), new TeamStub(9511, true), new TeamStub(9512, true), new Date(2020, 01, 01), null, true);
         try {
             game.addGoal(game.getAwayTeam(),game.getHomeTeam(),
-                    new PlayerStub(new SystemUserStub("a", "a",555)),1);
+                    new PlayerStub(new SystemUserStub("a", "a",555, true)),1);
         } catch (Exception e) {
         }
         Points points = pointsPolicy.getPoints(game);
@@ -53,9 +66,10 @@ public class PointsPolicyTest {
 
     @Test
     public void getPoints3ITest() {
-        Game game = new Game(new StadiumStub("staName", "staLoca"), new TeamStub(9511), new TeamStub(9512), new Date(2020, 01, 01), null);
+        Game game = new Game(new StadiumStub("staName", "staLoca"), new TeamStub(9511, true), new TeamStub(9512, true), new Date(2020, 01, 01), null, true);
         Points points = pointsPolicy.getPoints(game);
         assertEquals(points.getHomeTeamPoints(),1);
         assertEquals(points.getAwayTeamPoints(),1);
     }
+
 }

@@ -7,17 +7,17 @@ public class BelongToTeam {
     private PartOfTeam assetOfTheTeam;
     private String teamJob;
 
+    public BelongToTeam(Team teamBelongsTo, PartOfTeam assetOfTheTeam) {
+        this.teamBelongsTo = teamBelongsTo;
+        this.assetOfTheTeam = assetOfTheTeam;
+    }
+
     public String getTeamJob() {
         return teamJob;
     }
 
     public void setTeamJob(String teamJob) {
         this.teamJob = teamJob;
-    }
-
-    public BelongToTeam(Team teamBelongsTo, PartOfTeam assetOfTheTeam) {
-        this.teamBelongsTo = teamBelongsTo;
-        this.assetOfTheTeam = assetOfTheTeam;
     }
 
     public Team getTeamBelongsTo() {

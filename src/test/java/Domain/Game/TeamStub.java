@@ -1,5 +1,6 @@
 package Domain.Game;
 
+import Domain.EntityManager;
 import Domain.Users.*;
 
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ public class TeamStub extends Team {
     /**
      * Selector latest Number: 2
      */
-    public TeamStub(int selector) {
-        super();
+    public TeamStub(int selector, boolean addToDB) {
+        super("stubTeam "+selector, false);
         this.selector = selector;
         this.teamOwners = new ArrayList<>();
         this.players = new ArrayList<>();
@@ -29,6 +30,10 @@ public class TeamStub extends Team {
         this.setTeamName("stubTeam" + selector);
         if (selector == 66143 || selector == 66163)
             setStatus(TeamStatus.CLOSED);
+        if(addToDB)
+        {
+            EntityManager.getInstance().addTeam(this);
+        }
     }
 
     @Override
@@ -45,7 +50,7 @@ public class TeamStub extends Team {
     public List<Player> getTeamPlayers() {
         if(selector >= 1 && selector <= 6) {
             for(int i = 1 ; i <= 11; i++){
-                this.players.add(new PlayerStub(new SystemUserStub("a","a",1)));
+                this.players.add(new PlayerStub(new SystemUserStub("a","a",1, true)));
             }
         }
         return this.players;
@@ -125,8 +130,8 @@ public class TeamStub extends Team {
     }
 
     @Override
-    public void setTeamName(String testName) {
-        super.setTeamName(testName);
+    public boolean setTeamName(String testName) {
+       return super.setTeamName(testName);
     }
 
     @Override

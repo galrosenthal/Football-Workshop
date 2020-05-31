@@ -89,7 +89,7 @@ public class MainController {
                     alert = true;
                 }
                 return Controller.signUp(name, userDetailsToRegister.get(0), userDetailsToRegister.get(3), userDetailsToRegister.get(4),alert) != null;
-            } catch (InvalidEmailException e) {
+            } catch (InvalidEmailException | InvalidEventException e) {
                 e.printStackTrace();
                 return false;
             }
@@ -166,7 +166,7 @@ public class MainController {
                 try
                 {
                     Date dateFromString = new SimpleDateFormat("dd-MM-yyyy").parse(allRelevantDetails[1]);
-                    new Player(user,dateFromString);
+                    new Player(user,dateFromString, true);
                     break;
                 }
                 catch (Exception e)
@@ -175,26 +175,26 @@ public class MainController {
                     return false;
                 }
             case "coach":
-                new Coach(user);
+                new Coach(user, true);
                 break;
             case "team_manager":
-                new TeamManager(user);
+                new TeamManager(user, true);
                 break;
             case "team_owner":
-                new TeamOwner(user);
+                new TeamOwner(user, true);
                 break;
             case "referee":
                 if(allRelevantDetails.length < 2)
                 {
                     return false;
                 }
-                new Referee(user,RefereeQualification.valueOf(allRelevantDetails[1]));
+                new Referee(user,RefereeQualification.valueOf(allRelevantDetails[1]), true);
                 break;
             case "system_admin":
-                new SystemAdmin(user);
+                new SystemAdmin(user, true);
                 break;
             case "association_representative":
-                new AssociationRepresentative(user);
+                new AssociationRepresentative(user, true);
                 break;
         }
 
@@ -233,7 +233,7 @@ public class MainController {
      * @return List<String of all the teams names
      */
     public static List<String> getAllTeamsByName() {
-        List<Team> allTeams = EntityManager.getInstance().getAllTeams();
+        List<Team> allTeams = EntityManager.getInstance().getTeams();
         List<String> teamsByName = new ArrayList<>();
         for (Team t :
                 allTeams) {

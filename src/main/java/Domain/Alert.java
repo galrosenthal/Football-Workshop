@@ -49,6 +49,7 @@ public class Alert implements Subject, Observer {
                 updateSystemUsers.add(systemUser);
             } else {
                 //todo: save alert on db
+                    EntityManager.getInstance().saveAlert(systemUser.getUsername(),alert);
 
             }
         }

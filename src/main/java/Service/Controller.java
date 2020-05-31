@@ -1,5 +1,6 @@
 package Service;
 
+import DB.DBManager;
 import Domain.Controllers.TeamController;
 import Domain.EntityManager;
 import Domain.Exceptions.*;
@@ -113,8 +114,11 @@ public class Controller {
         }
 
         Team chosenTeam = getTeamByChoice(myTeamOwner);
-
-        if(chosenTeam == null){
+        if (chosenTeam.getStatus() != TeamStatus.OPEN) {
+            UIController.showNotification("Error: Cannot perform action on closed team.");
+            return false; //cannot perform action on closed team.
+        }
+        if (chosenTeam == null) {
             return false;
         }
         String newTeamOwnerUsername = getUserOwnerSelection(chosenTeam);
@@ -167,11 +171,11 @@ public class Controller {
             return null;
         }
         List<String> teamsToShow = new ArrayList<>();
-        for (int i = 0; i < myTeams.size() ; i++) {
-            if(myTeams.get(i).getStatus() == TeamStatus.CLOSED)
-                teamsToShow.add(myTeams.get(i).getTeamName()+" (closed)");
-            else if(myTeams.get(i).getStatus() == TeamStatus.PERMENENTLY_CLOSED)
-                teamsToShow.add(myTeams.get(i).getTeamName()+" (closed forever)");
+        for (int i = 0; i < myTeams.size(); i++) {
+            if (myTeams.get(i).getStatus() == TeamStatus.CLOSED)
+                teamsToShow.add(myTeams.get(i).getTeamName() + " (closed)");
+            else if (myTeams.get(i).getStatus() == TeamStatus.PERMANENTLY_CLOSED)
+                teamsToShow.add(myTeams.get(i).getTeamName() + " (closed forever)");
             else //open
                 teamsToShow.add(myTeams.get(i).getTeamName());
         }
@@ -202,6 +206,16 @@ public class Controller {
 
         if(chosenTeam == null)
         {
+            String msg = "There was no Team found";
+            SystemLoggerManager.logError(Controller.class, msg);
+            throw new NoTeamExistsException(msg);
+        }
+        if (chosenTeam.getStatus() != TeamStatus.OPEN) {
+            String msg = "Team Close";
+            SystemLoggerManager.logError(Controller.class, msg);
+            throw new TeamCloseException(msg);
+        }
+        if (chosenTeam == null) {
             String msg = "There was no Team found";
             SystemLoggerManager.logError(Controller.class, msg);
             throw new NoTeamExistsException(msg);
@@ -252,6 +266,11 @@ public class Controller {
             SystemLoggerManager.logError(Controller.class, msg);
             throw new NoTeamExistsException(msg);
         }
+        if (chosenTeam.getStatus() != TeamStatus.OPEN) {
+            String msg = "Team Close";
+            SystemLoggerManager.logError(Controller.class, msg);
+            throw new TeamCloseException(msg);
+        }
 
         boolean isSuccess = TeamController.editAssets(chosenTeam);
 
@@ -271,7 +290,7 @@ public class Controller {
      * @throws UsernameOrPasswordIncorrectException If user name or password are incorrect.
      */
     public static SystemUser login(String usrNm, String pswrd) throws UsernameOrPasswordIncorrectException, AlreadyLoggedInUser {
-        SystemUser SystemUser =  EntityManager.getInstance().login(usrNm, pswrd);
+        SystemUser SystemUser = EntityManager.getInstance().login(usrNm, pswrd);
         return SystemUser;
     }
 
@@ -289,7 +308,7 @@ public class Controller {
      * the password does not meet the security requirements.
      */
     public static SystemUser signUp(String name, String usrNm, String pswrd, String email, boolean emailAlert)
-            throws UsernameAlreadyExistsException, WeakPasswordException, InvalidEmailException {
+            throws InvalidEventException, InvalidEmailException, UsernameAlreadyExistsException, WeakPasswordException {
 
         return EntityManager.getInstance().signUp(name, usrNm, pswrd, email, emailAlert);
 

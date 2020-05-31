@@ -1,25 +1,21 @@
 package Domain.GameLogger;
 
+import DB.DBManager;
+import DB.DBManagerForTest;
 import Domain.Game.TeamStub;
 import Domain.SystemLogger.SystemLoggerManager;
 import Domain.Users.PlayerStub;
 import Domain.Users.SystemUserStub;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import Generic.GenericTestAbstract;
+import org.junit.*;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class EventsLoggerTest {
+public class EventsLoggerTest  extends GenericTestAbstract {
     private EventsLogger eventsLogger;
 
-    @BeforeClass
-    public static void setUpBeforeAll() { //Will be called only once
-        SystemLoggerManager.disableLoggers(); // disable loggers in tests
-    }
+
 
     @Before
     public void setUp() throws Exception {
@@ -34,14 +30,14 @@ public class EventsLoggerTest {
     @Test
     public void logGoalITest() {
         assertNull(eventsLogger.getGoals());
-        eventsLogger.logGoal(new TeamStub(0), new TeamStub(0),
-                new PlayerStub(new SystemUserStub("a", "a",555)),1);
+        eventsLogger.logGoal(new TeamStub(0, true), new TeamStub(0, true),
+                new PlayerStub(new SystemUserStub("a", "a",555, true)),1);
         assertNotNull(eventsLogger.getGoals());
     }
 
     @Test
     public void logCardEventITest() {
-        eventsLogger.logCardEvent("Red Card", new PlayerStub(new SystemUserStub("userName", "name", 0)), 1);
+        eventsLogger.logCardEvent("Red Card", new PlayerStub(new SystemUserStub("userName", "name", 0, true)), 1);
         List<Event> eventList = eventsLogger.getGameEvents();
 
         boolean found = false;
@@ -55,7 +51,7 @@ public class EventsLoggerTest {
     }
     @Test
     public void logCardEvent2ITest() {
-        eventsLogger.logCardEvent("Yellow Card", new PlayerStub(new SystemUserStub("userName", "name", 0)), 1);
+        eventsLogger.logCardEvent("Yellow Card", new PlayerStub(new SystemUserStub("userName", "name", 0, true)), 1);
         List<Event> eventList = eventsLogger.getGameEvents();
 
         boolean found = false;
@@ -70,7 +66,7 @@ public class EventsLoggerTest {
 
     @Test
     public void logOffsideEventITest() {
-        eventsLogger.logOffsideEvent(new TeamStub(0),1);
+        eventsLogger.logOffsideEvent(new TeamStub(0, true),1);
         List<Event> eventList = eventsLogger.getGameEvents();
 
         boolean found = false;
@@ -85,7 +81,7 @@ public class EventsLoggerTest {
 
     @Test
     public void logPenaltyEventITest() {
-        eventsLogger.logPenaltyEvent(new TeamStub(0),1);
+        eventsLogger.logPenaltyEvent(new TeamStub(0, true),1);
         List<Event> eventList = eventsLogger.getGameEvents();
 
         boolean found = false;
@@ -100,7 +96,7 @@ public class EventsLoggerTest {
 
     @Test
     public void logSwitchPlayersEventITest() {
-        eventsLogger.logSwitchPlayersEvent(new TeamStub(0), new PlayerStub(new SystemUserStub("userName1", "name1", 0)), new PlayerStub(new SystemUserStub("userName2", "name2", 0)),1);
+        eventsLogger.logSwitchPlayersEvent(new TeamStub(0, true), new PlayerStub(new SystemUserStub("userName1", "name1", 0, true)), new PlayerStub(new SystemUserStub("userName2", "name2", 0, true)),1);
         List<Event> eventList = eventsLogger.getGameEvents();
 
         boolean found = false;
@@ -116,7 +112,7 @@ public class EventsLoggerTest {
 
     @Test
     public void logInjuryEventITest() {
-        eventsLogger.logInjuryEvent( new PlayerStub(new SystemUserStub("userName", "name", 0)),1);
+        eventsLogger.logInjuryEvent( new PlayerStub(new SystemUserStub("userName", "name", 0, true)),1);
         List<Event> eventList = eventsLogger.getGameEvents();
 
         boolean found = false;
@@ -133,4 +129,5 @@ public class EventsLoggerTest {
     public void tearDown() throws Exception {
         eventsLogger = null;
     }
+
 }
