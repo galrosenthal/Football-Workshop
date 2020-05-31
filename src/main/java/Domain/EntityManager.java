@@ -605,13 +605,15 @@ public class EntityManager{
      * @param name - String - name
      * @return - boolean - True if a team with a name that matches the given name already exists, else false
      */
-    public boolean doesTeamExists(String name){
-        for (Team team : allTeams) {
+    public boolean doesTeamExists(String teamName){
+        return DBManager.getInstance().doesTeamExists(teamName);
+
+/*        for (Team team : allTeams) {
             if (team.getTeamName().toLowerCase().equals(name.toLowerCase())) {
                 return true;
             }
         }
-        return false;
+        return false;*/
     }
 
     /**

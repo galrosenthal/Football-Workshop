@@ -1418,4 +1418,20 @@ public class DBManagerForTest extends DBManager {
         }
 
     }
+    @Override
+    public boolean doesTeamExists(String teamName) {
+        DSLContext create = DBHandler.getContext();
+        try{
+            Result<?> records = create.select().from(TEAM).where(TEAM.NAME.eq(teamName)).fetch();
+            if(records.isEmpty())
+            {
+                return false;
+            }
+            return true;
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
