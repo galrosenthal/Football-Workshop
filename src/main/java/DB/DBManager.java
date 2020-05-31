@@ -1,15 +1,14 @@
 package DB;
 
 import static DB.Tables.Tables.*;
-
-import static org.jooq.impl.DSL.row;
-import static org.jooq.impl.DSL.select;
+import static org.jooq.impl.DSL.*;
 
 import DB.Tables.enums.CoachQualification;
 import DB.Tables.enums.RefereeTraining;
 import DB.Tables.enums.TeamStatus;
 import DB.Tables.enums.UserRolesRoleType;
 
+import DB.Tables.tables.Stadium;
 import Domain.Exceptions.GameNotFoundException;
 import Domain.Exceptions.UserNotFoundException;
 import Domain.Pair;
@@ -737,7 +736,9 @@ public class DBManager {
 
     public List<HashMap<String, String>> getRefereeGames(String username) {
         DSLContext create = DBHandler.getContext();
-        Result<?> records = create.select().from(REFEREE_IN_GAME.join(GAME).on(GAME.GAME_ID.eq(REFEREE_IN_GAME.GAME_ID))).where(REFEREE_IN_GAME.USERNAME.eq(username)).fetch();
+        Result<?> records = create.select(GAME.AWAY_TEAM,GAME.HOME_TEAM,STADIUM.NAME,STADIUM.LOCATION,GAME.START_DATE,GAME.END_DATE,GAME.FINISHED)
+                .from(REFEREE_IN_GAME.join(GAME).on(REFEREE_IN_GAME.GAME_ID.eq(GAME.GAME_ID)).join(STADIUM).on(GAME.STADIUM_ID.eq(STADIUM.STADIUM_ID)))
+                .where(REFEREE_IN_GAME.USERNAME.eq(username)).fetch();
         if(records.size() == 0)
         {
             return new ArrayList<>();
@@ -782,7 +783,14 @@ public class DBManager {
             HashMap<String, String> currentPointsPoliciesDetails = new HashMap<>();
             for (int j = 0; j < records.fields().length; j++) {
                 String fieldName = records.get(i).fields()[j].getName();
-                String fieldValue = records.get(i).getValue(fieldName).toString();
+                String fieldValue;
+                if(records.get(i).getValue(fieldName) == null)
+                {
+                    fieldValue = null;
+                }
+                else {
+                    fieldValue = records.get(i).getValue(fieldName).toString();
+                }
                 currentPointsPoliciesDetails.put(fieldName, fieldValue);
             }
             pointsPoliciesDetails.add(currentPointsPoliciesDetails);
@@ -1287,13 +1295,31 @@ public class DBManager {
         }
     }
 
-    public boolean addGame(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, Date startDate, Date endDate, boolean finished) {
-        DSLContext dslContext = DBHandler.getContext();
-        int succeed = dslContext.insertInto(GAME, GAME.STADIUM_ID, GAME.HOME_TEAM,
-                GAME.AWAY_TEAM, GAME.START_DATE, GAME.END_DATE, GAME.FINISHED)
-                .values(getStadiumId(stadiumName, stadiumLocation), homeTeamName,
-                        awayTeamName, convertToLocalDateViaInstant(startDate), convertToLocalDateViaInstant(endDate), finished).execute();
-        if (succeed == 0) {
+    public boolean addGame(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, Date startDate, boolean finished) {
+        if(!gameExists(stadiumName,stadiumLocation,homeTeamName,awayTeamName,startDate)) {
+            DSLContext dslContext = DBHandler.getContext();
+            try {
+                int succeed = dslContext.insertInto(GAME, GAME.STADIUM_ID, GAME.HOME_TEAM,
+                        GAME.AWAY_TEAM, GAME.START_DATE, GAME.FINISHED)
+                        .values(getStadiumId(stadiumName, stadiumLocation), homeTeamName,
+                                awayTeamName, convertToLocalDateViaInstant(startDate), finished).execute();
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return false;
+
+    }
+
+    private boolean gameExists(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, Date startDate) {
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select().from(GAME).where(GAME.STADIUM_ID.eq(getStadiumId(stadiumName, stadiumLocation)))
+                .and(GAME.HOME_TEAM.eq(homeTeamName)).and(GAME.AWAY_TEAM.eq(awayTeamName).and(GAME.START_DATE.eq(convertToLocalDateViaInstant(startDate))))
+                .fetch();
+        if(records.isEmpty())
+        {
             return false;
         }
         return true;
@@ -1313,7 +1339,7 @@ public class DBManager {
 
     private int getGameID(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName) {
         DSLContext create = DBHandler.getContext();
-        Result<?> records = create.select().from(GAME).where(GAME.STADIUM_ID.eq(getStadiumId(stadiumName, stadiumLocation)))
+        Result<?> records = create.select(GAME.GAME_ID).from(GAME).where(GAME.STADIUM_ID.eq(getStadiumId(stadiumName, stadiumLocation)))
                 .and(GAME.HOME_TEAM.eq(homeTeamName)).and(GAME.AWAY_TEAM.eq(awayTeamName))
                 .fetch();
         HashMap<String, String> gameDetails = new HashMap<>();
@@ -1426,18 +1452,18 @@ public class DBManager {
 
     }
 
-    public void addGame(String stadiumName,String stadiumLocation ,String homeTeamName, String awayTeamName, Date gameDate, boolean isFinished) {
-        int stadId = getStadiumId(stadiumName,stadiumLocation);
-        LocalDate gameLocalDate = convertToLocalDateViaInstant(gameDate);
-        DSLContext create = DBHandler.getContext();
-        try{
-            create.insertInto(GAME , GAME.STADIUM_ID , GAME.HOME_TEAM, GAME.AWAY_TEAM, GAME.START_DATE, GAME.FINISHED)
-                    .values(stadId, homeTeamName, awayTeamName, gameLocalDate, isFinished).execute();
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
+//    public void addGame(String stadiumName,String stadiumLocation ,String homeTeamName, String awayTeamName, Date gameDate, boolean isFinished) {
+//        int stadId = getStadiumId(stadiumName,stadiumLocation);
+//        LocalDate gameLocalDate = convertToLocalDateViaInstant(gameDate);
+//        DSLContext create = DBHandler.getContext();
+//        try{
+//            create.insertInto(GAME , GAME.STADIUM_ID , GAME.HOME_TEAM, GAME.AWAY_TEAM, GAME.START_DATE, GAME.FINISHED)
+//                    .values(stadId, homeTeamName, awayTeamName, gameLocalDate, isFinished).execute();
+//        }catch (Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+//    }
 
     public void addGameToReferee(String refereeUsername,String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, Date gameDate, boolean isFinished) {
         int stadId = getStadiumId(stadiumName,stadiumLocation);
@@ -1496,6 +1522,39 @@ public class DBManager {
 //            return false;
         }
 
+    }
+
+    public List<String> getAllRefereesInGame(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, Date gameDate) {
+        LocalDate gameLocalDate = convertToLocalDateViaInstant(gameDate);
+        int stadId = getStadiumId(stadiumName,stadiumLocation);
+        DSLContext create = DBHandler.getContext();
+        Result<?> records = create.select(REFEREE_IN_GAME.USERNAME).from(GAME).join(REFEREE_IN_GAME)
+                .on(GAME.GAME_ID.eq(REFEREE_IN_GAME.GAME_ID))
+                .where(GAME.START_DATE.eq(gameLocalDate).and(GAME.HOME_TEAM.eq(homeTeamName).and(GAME.AWAY_TEAM.eq(awayTeamName)
+                        .and(GAME.STADIUM_ID.eq(stadId))))).fetch();
+
+        if(records.isEmpty())
+        {
+            return new ArrayList<>();
+        }
+        return  records.getValues(REFEREE_IN_GAME.USERNAME);
+
+    }
+
+    public boolean updateEndGame(String stadiumName, String stadiumLocation, String homeTeamName, String awayTeamName, Date endDate) {
+        int gameId = getGameID(stadiumName,stadiumLocation,homeTeamName,awayTeamName);
+        LocalDate endGameDate = convertToLocalDateViaInstant(endDate);
+        DSLContext create = DBHandler.getContext();
+        try{
+            create.update(GAME).set(GAME.END_DATE,endGameDate).where(GAME.GAME_ID.eq(gameId)).execute();
+            create.update(GAME).set(GAME.FINISHED,true).where(GAME.GAME_ID.eq(gameId)).execute();
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public boolean doesTeamExists(String teamName) {

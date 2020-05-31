@@ -10,6 +10,7 @@ import Domain.Users.SystemUser;
 import Domain.Game.Stadium;
 import Domain.Users.*;
 
+import java.sql.Ref;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -64,7 +65,7 @@ public class EntityManager{
             admin.addNewRole(new AssociationRepresentative(admin, true));
             admin.addNewRole(new Referee(admin, RefereeQualification.VAR_REFEREE, true));
             admin.addNewRole(new TeamOwner(admin, true));
-           // createObjectsForGuiTests();
+            createObjectsForGuiTests();
         }
 
         return entityManagerInstance;
@@ -74,8 +75,8 @@ public class EntityManager{
         //AR Controls tests
         Stadium stadium1 = new Stadium("stadium1","london" , true);
         Stadium stadium2 = new Stadium("stadium2","paris", true);
-//        EntityManager.getInstance().addStadium(stadium1);
-//        EntityManager.getInstance().addStadium(stadium2);
+        EntityManager.getInstance().addStadium(stadium1);
+        EntityManager.getInstance().addStadium(stadium2);
 
         SystemUser user1 = new SystemUser("user1","Aa123456","Oran","oran@gmail.com",false, true);
         EntityManager.getInstance().addUser(user1);
@@ -130,15 +131,21 @@ public class EntityManager{
         Team secondTeam = new Team("Hapoel Beer Sheva", toRole, true);
         EntityManager.getInstance().addTeam(secondTeam);
 
-        Game game = new Game(new Stadium("staName", "staLoca", true), firstTeam, secondTeam, new Date(2020, 01, 01), new ArrayList<>(), true);
-        SystemUser avi = new SystemUser("AviCohen", "Avi Cohen", true);
-        Player player1 = new Player(avi, new Date(2001, 01, 01), true);
-        avi.addNewRole(player1);
-        EntityManager.getInstance().addUser(avi);
-        firstTeam.addTeamPlayer(toRole, player1);
+        Date gameDate;
+        try {
+            gameDate = new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2020");
+            Game game = new Game(new Stadium("staName", "staLoca", true), firstTeam, secondTeam,gameDate, new ArrayList<>(), true);
+            SystemUser avi = new SystemUser("AviCohen", "Avi Cohen", true);
+            Player player1 = new Player(avi, new Date(2001, 01, 01), true);
+            avi.addNewRole(player1);
+            EntityManager.getInstance().addUser(avi);
+            firstTeam.addTeamPlayer(toRole, player1);
 
-        game.addReferee(referee);
-        referee.addGame(game);
+            game.addReferee(referee);
+            referee.addGame(game);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -936,23 +943,7 @@ public class EntityManager{
 ////        loggedInMap.put(logoutUser,false);
 //    }
 
-/*
-    public List<Referee> getAllRefereesPerGame(Game game) {
-        //need to import referees table
-        List<Referee> referees = new ArrayList<>();
 
-        for (int i = 0; i < this.allUsers.size(); i++) {
-            Role role= allUsers.get(i).getRole(RoleTypes.REFEREE);
-            if(role != null)
-            {
-                Referee referee = (Referee) role;
-                if(referee.get)
-            }
-        }
-        return referees;
-    }
-
- */
 
     /**
      * Checks if a points policy already exists with the same values
@@ -1268,7 +1259,6 @@ public class EntityManager{
 
     public List<Game> getRefereeGames(Referee referee) {
         List<HashMap<String, String>> refereeGamesDetails = DBManager.getInstance().getRefereeGames(referee.getSystemUser().getUsername());
-        //TODO: Loop all games and recreate teams using Merav's functions.
         List<Game> allRefereeGames = new ArrayList<>();
         for (HashMap<String, String> gameRecord :
                 refereeGamesDetails) {
@@ -1276,14 +1266,23 @@ public class EntityManager{
             Team awayTeam = new Team(gameRecord.get(DB.Tables.tables.Game.GAME.AWAY_TEAM.getName()),false);
             Stadium gameStadium = new Stadium(gameRecord.get(DB.Tables.tables.Stadium.STADIUM.NAME.getName()),
                     gameRecord.get(DB.Tables.tables.Stadium.STADIUM.LOCATION.getName()),false);
-            Date gameDate = getDateFromLocalDate(gameRecord.get(DB.Tables.tables.Game.GAME.START_DATE));
-            allRefereeGames.add(new Game(gameStadium,homeTeam,awayTeam,gameDate,null,false));
+            Date gameDate = getDateFromLocalDate(gameRecord.get(DB.Tables.tables.Game.GAME.START_DATE.getName()));
+
+            String endGameDateString = gameRecord.get(DB.Tables.tables.Game.GAME.END_DATE.getName());
+            Date endGameDate = null;
+            if(!(endGameDateString == null))
+            {
+               endGameDate = getDateFromLocalDate(endGameDateString);
+            }
+            Game g = new Game(gameStadium,homeTeam,awayTeam,gameDate,null,false);
+            g.setEndDate(endGameDate);
+            allRefereeGames.add(g);
         }
-        return null;
+        return allRefereeGames;
     }
 
     private Date getDateFromLocalDate(String gameDate) {
-        DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         Date date = null;
         try {
             date = format.parse(gameDate);
@@ -1653,5 +1652,31 @@ public class EntityManager{
         }
         return refereeSeasons;
 
+    }
+
+    /**
+     * Get all referees in a game
+     * @param game the specific game to retrieve its referees
+     * @return List of all the referees in the game
+     */
+    public List<Referee> getAllRefereesInGame(Game game) {
+        List<String> refereesUsernames = DBManager.getInstance().getAllRefereesInGame(game.getStadium().getName(),game.getStadium().getLocation(),
+                                                                                        game.getHomeTeam().getTeamName(),game.getAwayTeam().getTeamName(),
+                                                                                        game.getGameDate());
+        List<Referee> referees = new ArrayList<>();
+        for (String username:
+                refereesUsernames)
+        {
+            SystemUser systemUser = this.getUser(username);
+            Referee referee = (Referee) systemUser.getRole(RoleTypes.REFEREE);
+            referees.add(referee);
+        }
+
+        return referees;
+    }
+
+    public void updateEndGame(Game game, Date endDate) {
+        DBManager.getInstance().updateEndGame(game.getStadium().getName(),game.getStadium().getLocation(),
+                game.getHomeTeam().getTeamName(),game.getAwayTeam().getTeamName(),endDate);
     }
 }
